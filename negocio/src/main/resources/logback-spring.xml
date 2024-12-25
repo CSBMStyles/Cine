@@ -1,0 +1,16 @@
+<configuration>
+
+    <conversionRule conversionWord="highlight"
+        converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Personaliza los colores aquí para los niveles -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %magenta(%highlight(%-5level)) [%thread] %cyan(%logger{40}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
