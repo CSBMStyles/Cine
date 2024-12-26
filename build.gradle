@@ -10,10 +10,6 @@ configurations {
     }
 }
 
-ext {
-    java = JavaVersion.VERSION_21
-}
-
 allprojects{
     group 'com.unicine'
     version = '1.0-SNAPSHOT'
@@ -24,8 +20,9 @@ allprojects{
     }
 
     java {
-        sourceCompatibility = java
-        targetCompatibility = java
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
 }
 
