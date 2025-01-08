@@ -38,7 +38,8 @@ bin
 /nbdist/
 /.nb-gradle/
 
-# VS Code
+# Visual Studio Code
 .vscode
 
+# Archivos especificos
 negocio/src/main/resources/application-secrets.properties

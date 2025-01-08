@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Persona;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 import jakarta.validation.Valid;
 
@@ -16,9 +17,9 @@ public interface PersonaServicio<T extends Persona> {
 
     T actualizar(@Valid T persona) throws Exception;
 
-    void eliminar(@Valid Integer cedula) throws Exception;
+    void eliminar(@Valid T persona, boolean confirmacion) throws Exception;
 
-    Optional<T> obtener(@Valid Integer cedula) throws Exception;
+    Optional<T> obtener(@Valid PersonaAttributeValidator cedula) throws Exception;
 
     List<T> listar();
 }

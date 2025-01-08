@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unicine.entidades.Cliente;
 import com.unicine.servicio.PersonaServicio;
 import com.unicine.util.mail.EmailService;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -90,7 +91,7 @@ public class ClienteServicioTest {
     public void actualizar() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
 
             cliente.setEstado(false);
 
@@ -113,8 +114,24 @@ public class ClienteServicioTest {
         
         Integer cedula = 1009000011;
 
+        Cliente cliente;
+
+        PersonaAttributeValidator cedulaValidator = new PersonaAttributeValidator(cedula.toString());
+
         try {
-            clienteServicio.eliminar(cedula);
+            cliente = clienteServicio.obtener(cedulaValidator).orElse(null);
+
+            Assertions.assertEquals(cedula, cliente.getCedula());
+
+            System.out.println("\n" + "Registro encontrado:" + "\n" + cliente);
+
+        } catch (Exception e) {
+            Assertions.assertTrue(true);
+
+            throw new RuntimeException(e);
+        }
+        try {
+            clienteServicio.eliminar(cliente, true);
 
         } catch (Exception e) {
             Assertions.assertTrue(false);
@@ -122,10 +139,10 @@ public class ClienteServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            clienteServicio.obtener(cedula);
+            clienteServicio.obtener(cedulaValidator);
 
         } catch (Exception e) {
-            // Realizamos una validacion de la prueba para aceptar que el cliente fue eliminado mendiante la excepcion del metodo de obtener
+    
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -139,14 +156,14 @@ public class ClienteServicioTest {
         Integer cedula = 1009000011;
 
         try {
-            Cliente cliente = clienteServicio.obtener(cedula).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator(cedula.toString())).orElse(null);
 
             Assertions.assertEquals(cedula, cliente.getCedula());
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + cliente);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -191,7 +208,7 @@ public class ClienteServicioTest {
     public void validacionCorreo(String correo) {
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
 
             cliente.setCorreo(correo);
 
@@ -213,7 +230,7 @@ public class ClienteServicioTest {
     public void validacionEstado() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
 
             cliente.setEstado(null);
 
@@ -243,7 +260,7 @@ public class ClienteServicioTest {
         telefonos.add(telefono);
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
 
             cliente.setTelefonos(telefonos);
 

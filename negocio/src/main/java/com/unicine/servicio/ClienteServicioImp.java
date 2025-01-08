@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Cliente;
 import com.unicine.repo.ClienteRepo;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 import jakarta.validation.Valid;
 
@@ -51,26 +52,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
 
         if (cliente.isEmpty()) {
             throw new Exception("El cliente no existe");
-        }
-    }
-
-    /**
-     * Metodo para comprobar la cantidad de digitos de una cedula
-     * @param numero
-     * @throws
-     */
-    private void validarFormatoCedula(Integer numero) throws Exception {
-
-        int longitud = numero.toString().length();
-
-        if (numero < 0) {
-            throw new Exception("La cédula debe ser un número positivo");
-        }
-        if (longitud < 7) {
-            throw new Exception("La cedula no puede tener menos de siete digitos"); 
-        }
-        if (longitud > 10) {
-            throw new Exception("La cedula no puede tener mas de diez digitos");
         }
     }
 
@@ -128,6 +109,25 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
+    /**
+     * Metodo para comprobar la presencia de las relaciones del teatro
+     * @param teatro
+     * @throws
+     */
+    private void comprobarConfirmacion(boolean confirmacion) {
+
+        if (!confirmacion) {
+            throw new RuntimeException("La eliminación no fue confirmada");
+        }
+   }
+
+    /**
+    * Metodo para transformar un String a un Integer
+    * @param cedula
+    * @return
+    */
+    private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
+
     // SECTION: Implementacion de servicios
 
     @Override
@@ -165,29 +165,24 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Cliente actualizar(@Valid Cliente cliente) throws Exception {
+    public Cliente actualizar(@Valid Cliente cliente) throws Exception { 
 
-        obtener(cliente.getCedula());
+        validarEdad(cliente.getFechaNacimiento());
         
-        return clienteRepo.save(cliente);
+        return clienteRepo.save(cliente); }
+
+    @Override
+    public void eliminar(@Valid Cliente cliente, boolean confirmacion) throws Exception {
+
+        comprobarConfirmacion(confirmacion);
+
+        clienteRepo.delete(cliente);
     }
 
     @Override
-    public void eliminar(@Valid Integer cedula) throws Exception {
+    public Optional<Cliente> obtener(@Valid PersonaAttributeValidator cedula) throws Exception {
 
-        validarFormatoCedula(cedula);
-
-        Optional<Cliente> eliminado = obtener(cedula);
-
-        clienteRepo.delete(eliminado.get());
-    }
-
-    @Override
-    public Optional<Cliente> obtener(@Valid Integer cedula) throws Exception {
-
-        validarFormatoCedula(cedula);
-
-        Optional<Cliente> buscado = clienteRepo.findById(cedula);
+        Optional<Cliente> buscado = clienteRepo.findById(transformar(cedula.getCedula()));
 
         validarExiste(buscado);
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Ciudad;
+import com.unicine.util.validacion.atributos.CiudadAtrributeValidator;
 
 import jakarta.validation.Valid;
 
@@ -23,7 +24,7 @@ public interface CiudadServicio {
 
     List<Ciudad> listarPaginado();
 
-    List<Ciudad> listarNombres(String nombre) throws Exception;
+    List<Ciudad> listarNombres(@Valid CiudadAtrributeValidator nombre) throws Exception;
 
     List<Ciudad> listarAscendenteNombre();
 

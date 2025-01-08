@@ -28,14 +28,14 @@ public class DistribucionSillaTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        String direccion = "com/unicine/test/resources/esquema-dos-dimensiones.json";
+        String esquema = "esquema";
 
-        DistribucionSilla distribucionSilla = new DistribucionSilla(direccion, 60, 10, 6);
+        DistribucionSilla distribucionSilla = new DistribucionSilla(esquema, null, 60, 10, 6);
         distribucionSilla.setCodigo(6);
 
         DistribucionSilla guardado = distribucionSillaRepo.save(distribucionSilla);
 
-        Assertions.assertEquals(direccion, guardado.getEsquema());
+        Assertions.assertEquals(esquema, guardado.getEsquema());
 
         System.out.println("\n" + "Registro guardado:");
         

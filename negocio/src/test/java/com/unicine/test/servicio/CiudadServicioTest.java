@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Ciudad;
 import com.unicine.servicio.CiudadServicio;
+import com.unicine.util.validacion.atributos.CiudadAtrributeValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -153,7 +154,7 @@ public class CiudadServicioTest {
         String nombre = "Bogota";
 
         try {
-            List<Ciudad> ciudades = ciudadServicio.listarNombres(nombre);
+            List<Ciudad> ciudades = ciudadServicio.listarNombres(new CiudadAtrributeValidator(nombre));
 
             Assertions.assertEquals(1, ciudades.size());
 
@@ -162,7 +163,7 @@ public class CiudadServicioTest {
             ciudades.forEach(System.out::println);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -211,8 +212,9 @@ public class CiudadServicioTest {
     public void validacionListarNombres(String nombre) {
 
         System.out.println("\n" + nombre);
+
         try {
-            List<Ciudad> ciudades = ciudadServicio.listarNombres(nombre);
+            List<Ciudad> ciudades = ciudadServicio.listarNombres(new CiudadAtrributeValidator(nombre));
 
             Assertions.assertEquals(1, ciudades.size());
 

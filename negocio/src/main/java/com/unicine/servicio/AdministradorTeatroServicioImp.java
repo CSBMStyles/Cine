@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.AdministradorTeatro;
 import com.unicine.repo.AdministradorTeatroRepo;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 import jakarta.validation.Valid;
 
@@ -53,26 +54,6 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     }
 
     /**
-     * Metodo para comprobar la cantidad de digitos de una cedula
-     * @param numero
-     * @throws
-     */
-    private void validarFormatoCedula(Integer numero) throws Exception {
-
-        int longitud = numero.toString().length();
-
-        if (numero < 0) {
-            throw new Exception("La cédula debe ser un número positivo");
-        }
-        if (longitud < 7) {
-            throw new Exception("La cedula no puede tener menos de siete digitos"); 
-        }
-        if (longitud > 10) {
-            throw new Exception("La cedula no puede tener mas de diez digitos");
-        } 
-    }
-
-    /**
      * Metodo para comprobar la presencia de una cedula en la base de datos
      * @param numero
      * @throws
@@ -99,6 +80,25 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
             throw new RuntimeException("Este correo ya esta registrado");
         }
     }
+
+    /**
+     * Metodo para comprobar la presencia de las relaciones del teatro
+     * @param teatro
+     * @throws
+     */
+    private void comprobarConfirmacion(boolean confirmacion) {
+
+        if (!confirmacion) {
+            throw new RuntimeException("La eliminación no fue confirmada");
+        }
+   }
+
+    /**
+    * Metodo para transformar un String a un Integer
+    * @param cedula
+    * @return
+    */
+    private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
 
     // SECTION: Metodos del servicio
 
@@ -138,29 +138,20 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     }
 
     @Override
-    public AdministradorTeatro actualizar(@Valid AdministradorTeatro administrador) throws Exception {
+    public AdministradorTeatro actualizar(@Valid AdministradorTeatro administrador) throws Exception { return administradorTeatroRepo.save(administrador); }
 
-        obtener(administrador.getCedula());
+    @Override
+    public void eliminar(@Valid AdministradorTeatro administrador, boolean confirmacion) throws Exception {
 
-        return administradorTeatroRepo.save(administrador);
+        comprobarConfirmacion(confirmacion);
+
+        administradorTeatroRepo.delete(administrador);
     }
 
     @Override
-    public void eliminar(@Valid Integer cedula) throws Exception {
+    public Optional<AdministradorTeatro> obtener(@Valid PersonaAttributeValidator cedula) throws Exception {
 
-        validarFormatoCedula(cedula);
-
-        Optional<AdministradorTeatro> eliminado =  obtener(cedula);
-        
-        administradorTeatroRepo.delete(eliminado.get());
-    }
-
-    @Override
-    public Optional<AdministradorTeatro> obtener(@Valid Integer cedula) throws Exception {
-
-        validarFormatoCedula(cedula);
-
-        Optional <AdministradorTeatro> buscado = administradorTeatroRepo.findById(cedula);
+        Optional <AdministradorTeatro> buscado = administradorTeatroRepo.findById(transformar(cedula.getCedula()));
         
         validarExiste(buscado);
 

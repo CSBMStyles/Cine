@@ -13,6 +13,7 @@ import com.unicine.entidades.AdministradorTeatro;
 import com.unicine.entidades.Ciudad;
 import com.unicine.entidades.Teatro;
 import com.unicine.repo.TeatroRepo;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 import jakarta.validation.Valid;
 
@@ -96,8 +97,10 @@ public class TeatroServicioImp implements TeatroServicio {
      */
     private void validarExisteAdministrador(Integer cedula) {
 
+        PersonaAttributeValidator validador = new PersonaAttributeValidator(cedula.toString());
+
         try {
-            administradorServicio.obtener(cedula);
+            administradorServicio.obtener(validador);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

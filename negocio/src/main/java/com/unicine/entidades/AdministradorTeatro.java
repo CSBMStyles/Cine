@@ -21,8 +21,9 @@ import java.io.Serializable;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AdministradorTeatro extends Persona implements Serializable {
 
+    // NOTE: Se agrega la anotación `cascade` para que se realicen las operaciones en cascada osea que si se elimina un administrador se elimina el teatro que construye
     @ToString.Exclude
-    @OneToMany(mappedBy = "administradorTeatro", cascade =  CascadeType.ALL) // NOTE: Se agrega la anotación `cascade` para que se realicen las operaciones en cascada osea que si se elimina un administrador se elimina el teatro que construye
+    @OneToMany(mappedBy = "administradorTeatro", cascade =  CascadeType.ALL) 
     private List<Teatro> teatros;
 
     @Builder

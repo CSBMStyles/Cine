@@ -17,6 +17,7 @@ import com.unicine.entidades.Teatro;
 import com.unicine.servicio.CiudadServicio;
 import com.unicine.servicio.PersonaServicio;
 import com.unicine.servicio.TeatroServicio;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -38,10 +39,8 @@ public class TeatroServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() {
-
-        // Datos necesarios para la creacion de un teatro
-
-        String telefono = "Avenida 1 # 4-6 Este";
+        
+        String direccion = "Avenida 1 # 4-6 Este";
 
         Ciudad ciudad;
 
@@ -57,7 +56,7 @@ public class TeatroServicioTest {
         AdministradorTeatro administradorTeatro;
         
         try {
-            administradorTeatro = administradorServicio.obtener(1119000000).orElse(null);
+            administradorTeatro = administradorServicio.obtener(new PersonaAttributeValidator("1119000000")).orElse(null);
 
         } catch (Exception e) {
             Assertions.assertTrue(false);
@@ -67,12 +66,12 @@ public class TeatroServicioTest {
 
         // Creacion del teatro
 
-        Teatro teatro = new Teatro(telefono, "3162316812", ciudad, administradorTeatro);
+        Teatro teatro = new Teatro(direccion, "3162316812", ciudad, administradorTeatro);
 
         try {
             Teatro nuevo = teatroServicio.registrar(teatro);
             
-            Assertions.assertEquals(telefono, nuevo.getDireccion());
+            Assertions.assertEquals(direccion, nuevo.getDireccion());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 

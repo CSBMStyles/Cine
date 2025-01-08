@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unicine.util.validacion.MultiPattern;
+import com.unicine.util.validacion.anotaciones.MultiPattern;
 
 @Entity
 @Getter
@@ -41,7 +41,7 @@ public class Teatro implements Serializable {
     @NotBlank(message = "La dirección no puede estar vacía")
     @MultiPattern({
         @Pattern(regexp = ".{4,}", message = "La dirección debe tener al menos cuatro caracteres"),
-        @Pattern(regexp = ".{0,100}", message = "La dirección no puede tener más de cien caracteres")
+        @Pattern(regexp = ".{1,100}", message = "La dirección no puede tener más de cien caracteres")
     })
     @Column(nullable = false, length = 100)
     private String direccion;

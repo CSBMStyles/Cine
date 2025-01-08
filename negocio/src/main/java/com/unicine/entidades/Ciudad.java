@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,6 +17,8 @@ import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
+
+import com.unicine.util.validacion.anotaciones.MultiPattern;
 
 @Entity
 @Getter
@@ -36,8 +37,11 @@ public class Ciudad implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = "El nombre no puede estar en blanco")
-    @Size(min = 4, max = 100, message = "El nombre debe tener entre tres, hasta cien caracteres")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "El nombre solo puede contener letras y espacios")
+    @MultiPattern({
+        @Pattern(regexp = ".{2,}", message = "El nombre de la ciudad no debe ser menor a dos caracteres"),
+        @Pattern(regexp = ".{1,100}", message = "El nombre de la ciudad no debe pasar los cien caracteres"),
+        @Pattern(regexp = "^[a-zA-Z ]+$", message = "El nombre de la ciudad solo puede contener letras y espacios")
+    })
     @Column(nullable = false, length = 100)
     private String nombre;
 

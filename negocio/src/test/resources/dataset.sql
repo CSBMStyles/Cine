@@ -27,11 +27,121 @@ insert into ciudad (id, nombre) values (3,"Cali");
 insert into ciudad (id, nombre) values (4,"Bogota");
 insert into ciudad (id, nombre) values (5,"Choco");
 
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (10, 8, 1, 80, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg");
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (12, 8, 2, 96, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg");
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (14, 8, 3, 112, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg");
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (10, 8, 4, 80, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg");
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (14, 8, 5, 112, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg");
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (10, 8, 1, 80, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]');
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (12, 8, 2, 96, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]');
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (14, 8, 3, 112, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]');
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (10, 8, 4, 80, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]');
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (14, 8, 5, 112, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]');
 
 insert into teatro (administrador_teatro_cedula, ciudad_id, id, telefono, direccion) values (1119000000, 5, 1, "3185469257", "Carrera 14 # 4-6 Norte");
 insert into teatro (administrador_teatro_cedula, ciudad_id, id, telefono, direccion) values (1228000000, 4, 2, "3185749321", "Calle 3 # 1 A 24 Sur");

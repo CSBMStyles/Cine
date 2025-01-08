@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Administrador;
 import com.unicine.servicio.PersonaServicio;
+import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -64,7 +65,7 @@ public class AdministradorServicioTest {
     public void actualizar() {
 
         try{
-            Administrador administrador = administradorServicio.obtener(1001000000).orElse(null);
+            Administrador administrador = administradorServicio.obtener(new PersonaAttributeValidator("1001000000")).orElse(null);
 
             administrador.setNombre("Roberto");
 
@@ -85,8 +86,24 @@ public class AdministradorServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
         
+        Integer cedula = 1001000000;
+
+        Administrador administrador;
+
+        PersonaAttributeValidator cedulaValidator = new PersonaAttributeValidator(cedula.toString());
+
         try {
-            administradorServicio.eliminar(1001000000);
+            administrador = administradorServicio.obtener(cedulaValidator).orElse(null);
+
+            Assertions.assertEquals(cedula, administrador.getCedula());
+
+        } catch (Exception e) {
+            Assertions.assertTrue(true);
+
+            throw new RuntimeException(e);
+        }
+        try {
+            administradorServicio.eliminar(administrador, true);
 
         } catch (Exception e) {
             Assertions.assertTrue(false);
@@ -94,7 +111,7 @@ public class AdministradorServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            administradorServicio.obtener(1001000000);
+            administradorServicio.obtener(cedulaValidator);
 
         } catch (Exception e) {
             // Realizamos una validacion de la prueba para aceptar que el administrador fue eliminado mendiante la excepcion del metodo de obtener
@@ -111,7 +128,7 @@ public class AdministradorServicioTest {
     public void obtener() {
 
         try {
-            Administrador administrador = administradorServicio.obtener(1001000000).orElse(null);
+            Administrador administrador = administradorServicio.obtener(new PersonaAttributeValidator("1001000000")).orElse(null);
 
             Assertions.assertEquals(1001000000, administrador.getCedula());
 

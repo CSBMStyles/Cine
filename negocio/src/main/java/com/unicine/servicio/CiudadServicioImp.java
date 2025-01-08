@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Ciudad;
 import com.unicine.repo.CiudadRepo;
+import com.unicine.util.validacion.atributos.CiudadAtrributeValidator;
 
 import jakarta.validation.Valid;
 
@@ -50,25 +51,6 @@ public class CiudadServicioImp implements CiudadServicio {
         }
     }
 
-    /**
-     * Metodo para comprobar que el nombre de la ciudad solo contenga letras y espacios
-     * @param nombre
-     * @throws
-     */
-    private void validarNombre(String nombre) throws Exception {   
-
-        if (nombre.length() < 2) {
-            throw new Exception("El nombre de la ciudad no debe ser menor a dos caracteres");
-        } 
-        if (nombre.length() > 100) {
-            throw new Exception("El nombre de la ciudad no debe pasar los cien caracteres");
-        }
-
-        if (!nombre.matches("^[a-zA-Z ]+$")) {
-            throw new Exception("El nombre de la ciudad solo puede contener letras y espacios");
-        }
-    }
-
     // SECTION: Implementacion de servicios
 
     @Override
@@ -100,11 +82,9 @@ public class CiudadServicioImp implements CiudadServicio {
     }
 
     @Override
-    public List<Ciudad> listarNombres(String nombre) throws Exception { 
+    public List<Ciudad> listarNombres(@Valid CiudadAtrributeValidator nombre) throws Exception { 
 
-        validarNombre(nombre);
-
-        List<Ciudad> ciudades = ciudadRepo.findByNombre(nombre);
+        List<Ciudad> ciudades = ciudadRepo.findByNombre(nombre.getNombre());
 
         validarExiste(ciudades);
 
