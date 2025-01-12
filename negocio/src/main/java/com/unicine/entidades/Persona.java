@@ -4,10 +4,13 @@ package com.unicine.entidades;
 
 import jakarta.persistence.Id;
 
+import com.unicine.util.validacion.anotaciones.MultiPattern;
+
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.MappedSuperclass;
@@ -47,12 +50,15 @@ public class Persona {
     @NotBlank(message = "El correo no puede estar vacio")
     @Email(message = "El correo no tiene un formato válido")
     @Size(max = 150, message = "El correo no puede tener más de cincuenta caracteres")
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(nullable = false, length = 150)
     private String correo;
 
     @ToString.Exclude
     @NotBlank(message = "La contraseña no puede estar en blanco")
-    @Size(min = 6, max = 200, message = "La contraseña debe estar entre seis y doscientos caracteres")
+    @MultiPattern({
+        @Pattern(regexp = "\\d{8,}", message = "La contraseña debe tener al menos ocho caracteres"),
+        @Pattern(regexp = "\\d{1,200}", message = "La contraseña no puede tener más de doscientos caracteres")
+    })
     @Column(nullable = false, length = 200)
     private String password;
 

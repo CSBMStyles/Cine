@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.DistribucionSilla;
-import com.unicine.util.validacion.atributos.DistribucionAttributeValidator;
+import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -18,7 +18,7 @@ public interface DistribucionSillaServicio {
 
     void eliminar(@Valid DistribucionSilla distribucion, boolean confirmacion) throws Exception;
 
-    Optional<DistribucionSilla> obtener(@Valid DistribucionAttributeValidator validacion) throws Exception;
+    Optional<DistribucionSilla> obtener(@Valid DistribucionAtributoValidator validacion) throws Exception;
 
     List<DistribucionSilla> listar();
 

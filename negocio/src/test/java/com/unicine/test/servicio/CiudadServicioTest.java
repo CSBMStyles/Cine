@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Ciudad;
 import com.unicine.servicio.CiudadServicio;
-import com.unicine.util.validacion.atributos.CiudadAtrributeValidator;
+import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -55,18 +55,17 @@ public class CiudadServicioTest {
         String nombre = "Cundinamarca";
 
         try{
-            Ciudad ciudad = ciudadServicio.obtener(1).orElse(null);
+            Ciudad ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
 
             ciudad.setNombre(nombre);
 
             Ciudad actualizado = ciudadServicio.actualizar(ciudad);
 
             Assertions.assertEquals(nombre, actualizado.getNombre());
-
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -80,8 +79,10 @@ public class CiudadServicioTest {
 
         Ciudad ciudad;
 
+        CiudadAtributoValidator validator = new CiudadAtributoValidator(codigo);
+
         try {
-            ciudad = ciudadServicio.obtener(codigo).orElse(null);
+            ciudad = ciudadServicio.obtener(validator).orElse(null);
         } catch (Exception e) {
             Assertions.assertTrue(false);
 
@@ -97,7 +98,7 @@ public class CiudadServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            ciudadServicio.obtener(codigo);
+            ciudadServicio.obtener(validator).orElse(null);
 
         } catch (Exception e) {
             // Realizamos una validacion de la prueba para aceptar que el ciudad fue eliminado mendiante la excepcion del metodo de obtener
@@ -114,7 +115,7 @@ public class CiudadServicioTest {
         Integer codigo = 1;
 
         try {
-            Ciudad ciudad = ciudadServicio.obtener(codigo).orElse(null);
+            Ciudad ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(codigo)).orElse(null);
 
             Assertions.assertEquals(codigo, ciudad.getCodigo());
 
@@ -122,6 +123,28 @@ public class CiudadServicioTest {
 
         } catch (Exception e) {
             Assertions.assertTrue(false);
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void obtenerNombres() {
+
+        String nombre = "Bogota";
+
+        try {
+            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(new CiudadAtributoValidator(nombre));
+
+            Assertions.assertEquals(1, ciudades.size());
+
+            System.out.println("\n" + "Listado de registros:");
+
+            ciudades.forEach(System.out::println);
+
+        } catch (Exception e) {
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -147,28 +170,6 @@ public class CiudadServicioTest {
         }
     }
 
-    @Test
-    @Sql("classpath:dataset.sql")
-    public void listarNombres() {
-
-        String nombre = "Bogota";
-
-        try {
-            List<Ciudad> ciudades = ciudadServicio.listarNombres(new CiudadAtrributeValidator(nombre));
-
-            Assertions.assertEquals(1, ciudades.size());
-
-            System.out.println("\n" + "Listado de registros:");
-
-            ciudades.forEach(System.out::println);
-
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
-    }
-
     // 🟥
 
     @ParameterizedTest
@@ -183,7 +184,7 @@ public class CiudadServicioTest {
     public void validacionNombre(String nombre) {
 
         try{
-            Ciudad ciudad = ciudadServicio.obtener(1).orElse(null);
+            Ciudad ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
 
             ciudad.setNombre(nombre);
 
@@ -214,7 +215,7 @@ public class CiudadServicioTest {
         System.out.println("\n" + nombre);
 
         try {
-            List<Ciudad> ciudades = ciudadServicio.listarNombres(new CiudadAtrributeValidator(nombre));
+            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(new CiudadAtributoValidator(nombre));
 
             Assertions.assertEquals(1, ciudades.size());
 

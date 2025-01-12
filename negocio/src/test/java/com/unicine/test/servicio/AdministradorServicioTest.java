@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Administrador;
 import com.unicine.servicio.PersonaServicio;
-import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
+import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -65,11 +65,13 @@ public class AdministradorServicioTest {
     public void actualizar() {
 
         try{
-            Administrador administrador = administradorServicio.obtener(new PersonaAttributeValidator("1001000000")).orElse(null);
+            Administrador administrador = administradorServicio.obtener(new PersonaAtributoValidator("1001000000")).orElse(null);
+
+            Integer cedulaPresente = administrador.getCedula();
 
             administrador.setNombre("Roberto");
 
-            Administrador actualizado = administradorServicio.actualizar(administrador);
+            Administrador actualizado = administradorServicio.actualizar(administrador, cedulaPresente);
 
             Assertions.assertEquals("Roberto", actualizado.getNombre());
 
@@ -90,7 +92,7 @@ public class AdministradorServicioTest {
 
         Administrador administrador;
 
-        PersonaAttributeValidator cedulaValidator = new PersonaAttributeValidator(cedula.toString());
+        PersonaAtributoValidator cedulaValidator = new PersonaAtributoValidator(cedula.toString());
 
         try {
             administrador = administradorServicio.obtener(cedulaValidator).orElse(null);
@@ -128,7 +130,7 @@ public class AdministradorServicioTest {
     public void obtener() {
 
         try {
-            Administrador administrador = administradorServicio.obtener(new PersonaAttributeValidator("1001000000")).orElse(null);
+            Administrador administrador = administradorServicio.obtener(new PersonaAtributoValidator("1001000000")).orElse(null);
 
             Assertions.assertEquals(1001000000, administrador.getCedula());
 

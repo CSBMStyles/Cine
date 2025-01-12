@@ -13,7 +13,9 @@ import com.unicine.entidades.AdministradorTeatro;
 import com.unicine.entidades.Ciudad;
 import com.unicine.entidades.Teatro;
 import com.unicine.repo.TeatroRepo;
-import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
+import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
+import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
+import com.unicine.util.validacion.atributos.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -72,7 +74,7 @@ public class TeatroServicioImp implements TeatroServicio {
         Optional<Teatro> existe = teatroRepo.buscarDireccionExcluido(teatro.getDireccion(), teatro.getCiudad().getCodigo(), teatro.getCodigo());
        
         if (existe.isPresent()) {
-            throw new RuntimeException("La dirección del teatro ya existe en la ciudad, excepto el teatro que se esta actualizando");
+            throw new RuntimeException("La dirección del teatro ya existe en la ciudad");
         }
     }
 
@@ -84,7 +86,7 @@ public class TeatroServicioImp implements TeatroServicio {
          private void validarExisteCiudad(Integer codigo) { 
 
             try {
-                ciudadServicio.obtener(codigo);
+                ciudadServicio.obtener(new CiudadAtributoValidator(codigo));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -97,7 +99,7 @@ public class TeatroServicioImp implements TeatroServicio {
      */
     private void validarExisteAdministrador(Integer cedula) {
 
-        PersonaAttributeValidator validador = new PersonaAttributeValidator(cedula.toString());
+        PersonaAtributoValidator validador = new PersonaAtributoValidator(cedula.toString());
 
         try {
             administradorServicio.obtener(validador);
@@ -135,6 +137,13 @@ public class TeatroServicioImp implements TeatroServicio {
         }
    }
 
+   /**
+    * Metodo para transformar un String a un Integer
+    * @param codigo
+    * @return
+    */
+   private Integer transformar(String codigo) { return Integer.parseInt(codigo); }
+
     // SECTION: Implementacion de servicios
 
     // 2️⃣ Funciones del Administrador de Teatro
@@ -166,9 +175,9 @@ public class TeatroServicioImp implements TeatroServicio {
     }
 
     @Override
-    public Optional<Teatro> obtener(Integer codigo) throws Exception {
+    public Optional<Teatro> obtener(@Valid TeatroAtributoValidator validator) throws Exception {
 
-        Optional<Teatro> buscado = teatroRepo.findById(codigo);
+        Optional<Teatro> buscado = teatroRepo.findById(transformar(validator.getCodigo()));
 
         validarExiste(buscado);
 

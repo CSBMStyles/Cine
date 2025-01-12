@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Ciudad;
 import com.unicine.repo.CiudadRepo;
-import com.unicine.util.validacion.atributos.CiudadAtrributeValidator;
+import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -63,13 +63,23 @@ public class CiudadServicioImp implements CiudadServicio {
     public void eliminar(@Valid Ciudad eliminado) throws Exception { ciudadRepo.delete(eliminado); }
 
     @Override
-    public Optional<Ciudad> obtener(Integer codigo) throws Exception {
+    public Optional<Ciudad> obtener(@Valid CiudadAtributoValidator validator) throws Exception {
 
-        Optional<Ciudad> buscado = ciudadRepo.findById(codigo);
+        Optional<Ciudad> buscado = ciudadRepo.findById(validator.getCodigo());
 
         validarExiste(buscado);
 
         return buscado;
+    }
+
+    @Override
+    public List<Ciudad> obtenerNombre(@Valid CiudadAtributoValidator validator) throws Exception { 
+
+        List<Ciudad> ciudades = ciudadRepo.findByNombre(validator.getNombre());
+
+        validarExiste(ciudades);
+
+        return ciudades; 
     }
 
     @Override
@@ -79,16 +89,6 @@ public class CiudadServicioImp implements CiudadServicio {
     public List<Ciudad> listarPaginado() { 
 
         return ciudadRepo.findAll(PageRequest.of(0, 10)).toList();
-    }
-
-    @Override
-    public List<Ciudad> listarNombres(@Valid CiudadAtrributeValidator nombre) throws Exception { 
-
-        List<Ciudad> ciudades = ciudadRepo.findByNombre(nombre.getNombre());
-
-        validarExiste(ciudades);
-
-        return ciudades; 
     }
 
     @Override

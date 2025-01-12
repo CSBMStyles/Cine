@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unicine.entidades.Cliente;
 import com.unicine.servicio.PersonaServicio;
 import com.unicine.util.mail.EmailService;
-import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
+import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -91,18 +91,20 @@ public class ClienteServicioTest {
     public void actualizar() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
 
-            cliente.setEstado(false);
+            Integer cedulaPresente = cliente.getCedula();
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            cliente.setCorreo("maria@gmail.com");
+
+            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
 
             Assertions.assertEquals(false, actualizado.getEstado());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -116,7 +118,7 @@ public class ClienteServicioTest {
 
         Cliente cliente;
 
-        PersonaAttributeValidator cedulaValidator = new PersonaAttributeValidator(cedula.toString());
+        PersonaAtributoValidator cedulaValidator = new PersonaAtributoValidator(cedula.toString());
 
         try {
             cliente = clienteServicio.obtener(cedulaValidator).orElse(null);
@@ -156,7 +158,7 @@ public class ClienteServicioTest {
         Integer cedula = 1009000011;
 
         try {
-            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator(cedula.toString())).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator(cedula.toString())).orElse(null);
 
             Assertions.assertEquals(cedula, cliente.getCedula());
 
@@ -197,7 +199,7 @@ public class ClienteServicioTest {
     @ValueSource(strings = {
         "", // Caso vacío
         "   ", // Espacios en blanco
-        "pepe@hotmail.com", // Correo existente
+        "juan@outlook.com", // Correo existente
         "correo@dominio", // Falta el dominio
         "correo@.com", // Dominio incorrecto
         "@dominio.com", // Falta el nombre de usuario
@@ -207,12 +209,16 @@ public class ClienteServicioTest {
     @Sql("classpath:dataset.sql")
     public void validacionCorreo(String correo) {
 
+        System.out.println("Correo: " + correo);
+
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+
+            Integer cedulaPresente = cliente.getCedula();
 
             cliente.setCorreo(correo);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
 
             Assertions.assertEquals(correo, actualizado.getCorreo());
 
@@ -230,11 +236,13 @@ public class ClienteServicioTest {
     public void validacionEstado() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+
+            Integer cedulaPresente = cliente.getCedula();
 
             cliente.setEstado(null);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
 
             Assertions.assertEquals(null, actualizado.getEstado());
 
@@ -260,11 +268,13 @@ public class ClienteServicioTest {
         telefonos.add(telefono);
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAttributeValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+
+            Integer cedulaPresente = cliente.getCedula();
 
             cliente.setTelefonos(telefonos);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
 
             Assertions.assertEquals(1, actualizado.getTelefonos().size());
 

@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DistribucionAttributeValidator {
+public class DistribucionAtributoValidator {
 
-    @Pattern(regexp = "^[1-9]\\d*$", message = "El código de la distribución debe ser un número positivo")
+    @Pattern(regexp = "^[1-9]\\d*$", message = "El código de la distribución debe ser un número positivo, los caracteres no son permitidos")
     private String codigo;
 }

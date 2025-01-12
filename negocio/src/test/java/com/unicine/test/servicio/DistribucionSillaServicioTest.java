@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.unicine.entidades.DistribucionSilla;
 import com.unicine.servicio.DistribucionSillaServicio;
-import com.unicine.util.validacion.atributos.DistribucionAttributeValidator;
+import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -82,7 +82,7 @@ public class DistribucionSillaServicioTest {
         String json = gson.toJson(matriz);
 
         try{
-            DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAttributeValidator("1")).orElse(null);
+            DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
 
             System.out.println("\n" + "Registro antigüo:" + "\n" + distribucion);
 
@@ -109,7 +109,7 @@ public class DistribucionSillaServicioTest {
 
         DistribucionSilla distribucion;
 
-        DistribucionAttributeValidator distribucionCodigo = new DistribucionAttributeValidator(codigo.toString());
+        DistribucionAtributoValidator distribucionCodigo = new DistribucionAtributoValidator(codigo.toString());
 
         try {
             distribucion = distribucionServicio.obtener(distribucionCodigo).orElse(null);
@@ -145,7 +145,7 @@ public class DistribucionSillaServicioTest {
     public void obtener() {
 
         try {
-            DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAttributeValidator("1")).orElse(null);
+            DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
 
             Assertions.assertEquals(5, distribucion.getCodigo());
 

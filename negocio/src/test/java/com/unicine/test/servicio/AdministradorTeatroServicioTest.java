@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.AdministradorTeatro;
 import com.unicine.servicio.PersonaServicio;
-import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
+import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -65,11 +65,13 @@ public class AdministradorTeatroServicioTest {
     public void actualizar() {
 
         try{
-            AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAttributeValidator("1119000000")).orElse(null);
+            AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
+
+            Integer cedulaPresente = administrador.getCedula();
 
             administrador.setNombre("Daniela");
 
-            AdministradorTeatro actualizado = administradorTeatroServicio.actualizar(administrador);
+            AdministradorTeatro actualizado = administradorTeatroServicio.actualizar(administrador, cedulaPresente);
 
             Assertions.assertEquals("Daniela", actualizado.getNombre());
 
@@ -90,7 +92,7 @@ public class AdministradorTeatroServicioTest {
 
         AdministradorTeatro administrador;
 
-        PersonaAttributeValidator cedulaValidator = new PersonaAttributeValidator(cedula.toString());
+        PersonaAtributoValidator cedulaValidator = new PersonaAtributoValidator(cedula.toString());
 
         try {
             administrador = administradorTeatroServicio.obtener(cedulaValidator).orElse(null);
@@ -129,7 +131,7 @@ public class AdministradorTeatroServicioTest {
     public void obtener() {
 
         try {
-            AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAttributeValidator("1119000000")).orElse(null);
+            AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
 
             Assertions.assertEquals(1119000000, administrador.getCedula());
 

@@ -31,6 +31,14 @@ public interface ClienteRepo extends JpaRepository<Cliente, Integer> {
     */
     List<Cliente> findByEstado(Boolean estado);
 
+    /**
+     * Consulta para obtener un cliente por su correo excluyendo el cliente que esta actualmente
+     * @param correo
+     * @return cliente
+     */
+    @Query("select c from Cliente c where c.correo = :correo and c.cedula != :cedula")
+    Optional<Cliente> buscarCorreoExcluido(String correo, Integer cedula);
+
     // NOTE: Una forma de recibir parametros en una consulta es usando el signo de interrogacion y el numero de la posicion del parametro
 
     /**

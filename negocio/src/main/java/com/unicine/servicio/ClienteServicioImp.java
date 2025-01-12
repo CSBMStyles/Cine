@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Cliente;
 import com.unicine.repo.ClienteRepo;
-import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
+import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -77,6 +77,20 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     private void validarExisteCorreo(String correo) {
 
         Optional<Cliente> existe = clienteRepo.findByCorreo(correo);
+       
+        if (existe.isPresent()) {
+            throw new RuntimeException("Este correo ya esta registrado");
+        }
+    }
+
+    /**
+     * Método que verifica si existe un cliente con el mismo correo mediante la cedula, excluyendo el cliente que se esta actualizando, ya que se puede o no modificar la cedula
+     * @param cliente
+     * @return si existe el correo devuelve true, de lo contrario false
+     */
+    private void validarRepiteCorreo(String correoModificar, Integer cedulaPresente) throws Exception {
+
+        Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedulaPresente);
        
         if (existe.isPresent()) {
             throw new RuntimeException("Este correo ya esta registrado");
@@ -165,11 +179,12 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Cliente actualizar(@Valid Cliente cliente) throws Exception { 
+    public Cliente actualizar(@Valid Cliente cliente, Integer cedulaPresente) throws Exception { 
 
-        validarEdad(cliente.getFechaNacimiento());
-        
-        return clienteRepo.save(cliente); }
+        validarRepiteCorreo(cliente.getCorreo(), cedulaPresente);
+
+        return clienteRepo.save(cliente);
+    }
 
     @Override
     public void eliminar(@Valid Cliente cliente, boolean confirmacion) throws Exception {
@@ -180,7 +195,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Optional<Cliente> obtener(@Valid PersonaAttributeValidator cedula) throws Exception {
+    public Optional<Cliente> obtener(@Valid PersonaAtributoValidator cedula) throws Exception {
 
         Optional<Cliente> buscado = clienteRepo.findById(transformar(cedula.getCedula()));
 

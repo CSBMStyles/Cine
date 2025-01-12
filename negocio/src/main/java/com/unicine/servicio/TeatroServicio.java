@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Teatro;
+import com.unicine.util.validacion.atributos.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -17,7 +18,7 @@ public interface TeatroServicio {
 
     void eliminar(@Valid Teatro teatro, boolean confirmacion) throws Exception;
 
-    Optional<Teatro> obtener(Integer codigo) throws Exception;
+    Optional<Teatro> obtener(@Valid TeatroAtributoValidator codigo) throws Exception;
 
     List<Teatro> listar();
 

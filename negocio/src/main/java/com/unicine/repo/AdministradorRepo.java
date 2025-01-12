@@ -20,6 +20,14 @@ public interface AdministradorRepo extends JpaRepository<Administrador, Integer>
     Optional<Administrador> findByCorreo(String correo);
 
     /**
+     * Consulta para obtener un administrador por su correo excluyendo el administrador que esta actualmente
+     * @param correo
+     * @return administrador
+     */
+    @Query("select a from Administrador a where a.correo = :correo and a.cedula != :cedula")
+    Optional<Administrador> buscarCorreoExcluido(String correo, Integer cedula);
+
+    /**
      * Consulta para comprobar la autenticacion de un administrador
      * @param atributos: correo y password del administrador
      * @return administrador

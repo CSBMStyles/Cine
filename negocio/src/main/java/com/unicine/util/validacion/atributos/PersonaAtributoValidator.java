@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PersonaAttributeValidator {
+public class PersonaAtributoValidator {
     
     @NotBlank(message = "La cédula no puede estar vacía")
     @MultiPattern({

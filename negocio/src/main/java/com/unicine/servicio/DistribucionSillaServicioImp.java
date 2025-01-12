@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.DistribucionSilla;
 import com.unicine.repo.DistribucionSillaRepo;
-import com.unicine.util.validacion.atributos.DistribucionAttributeValidator;
+import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
 
 import jakarta.validation.Valid;
 import com.google.gson.Gson;
@@ -128,7 +128,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la distribucion usando las anotaciones para validar
 
     @Override
-    public Optional<DistribucionSilla> obtener(@Valid DistribucionAttributeValidator validacion) throws Exception {
+    public Optional<DistribucionSilla> obtener(@Valid DistribucionAtributoValidator validacion) throws Exception {
 
         Optional<DistribucionSilla> buscado = distribucionRepo.findById(transformar(validacion.getCodigo()));
 

@@ -8,7 +8,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Administrador;
 import com.unicine.repo.AdministradorRepo;
-import com.unicine.util.validacion.atributos.PersonaAttributeValidator;
+import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -82,6 +82,21 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     /**
+     * Método que verifica si existe un administrador con el mismo correo mediante la cedula, excluyendo el cliente que se esta actualizando, ya que se puede o no modificar la cedula
+     * @param correo
+     * @param cedula
+     * @return si existe el correo devuelve true, de lo contrario false
+     */
+    private void validarRepiteCorreo(String correoModificar, Integer cedulaPresente) throws Exception {
+
+        Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedulaPresente);
+       
+        if (existe.isPresent()) {
+            throw new RuntimeException("Este correo ya esta registrado");
+        }
+    }
+
+    /**
      * Metodo para comprobar la presencia de las relaciones del teatro
      * @param teatro
      * @throws
@@ -136,7 +151,12 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Administrador actualizar(@Valid Administrador administrador) throws Exception { return administradorRepo.save(administrador); }
+    public Administrador actualizar(@Valid Administrador administrador, Integer cedulaPresente) throws Exception {
+
+        validarRepiteCorreo(administrador.getCorreo(), cedulaPresente);
+        
+        return administradorRepo.save(administrador);
+    }
 
     @Override
     public void eliminar(@Valid Administrador administrador, boolean confirmacion) throws Exception {
@@ -147,7 +167,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Optional<Administrador> obtener(@Valid PersonaAttributeValidator cedula) throws Exception {
+    public Optional<Administrador> obtener(@Valid PersonaAtributoValidator cedula) throws Exception {
 
         Optional<Administrador> buscado = administradorRepo.findById(transformar(cedula.getCedula()));
 

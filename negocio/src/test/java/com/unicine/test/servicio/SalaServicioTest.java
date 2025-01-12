@@ -11,30 +11,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entidades.AdministradorTeatro;
-import com.unicine.entidades.Ciudad;
+import com.unicine.entidades.DistribucionSilla;
 import com.unicine.entidades.Teatro;
-import com.unicine.servicio.CiudadServicio;
-import com.unicine.servicio.PersonaServicio;
+import com.unicine.entidades.TipoSala;
+import com.unicine.entidades.Sala;
+import com.unicine.servicio.DistribucionSillaServicio;
+import com.unicine.servicio.SalaServicio;
 import com.unicine.servicio.TeatroServicio;
-import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
-import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
+import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
+import com.unicine.util.validacion.atributos.SalaAtributoValidator;
 import com.unicine.util.validacion.atributos.TeatroAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
-public class TeatroServicioTest {
+public class SalaServicioTest {
+
+    @Autowired
+    private SalaServicio salaServicio;
 
     @Autowired
     private TeatroServicio teatroServicio;
 
     @Autowired
-    private CiudadServicio ciudadServicio;
-
-    @Autowired
-    private PersonaServicio<AdministradorTeatro> administradorServicio;
+    private DistribucionSillaServicio distribucionServicio;
 
     // 🟩
 
@@ -42,43 +43,41 @@ public class TeatroServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
         
-        String direccion = "Avenida 1 # 4-6 Este";
-
-        Ciudad ciudad;
+        Teatro teatro;
 
         try {
-            ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
+            teatro = teatroServicio.obtener(new TeatroAtributoValidator("1")).orElse(null);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
 
-        AdministradorTeatro administradorTeatro;
+        DistribucionSilla distribucionSilla;
         
         try {
-            administradorTeatro = administradorServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
+            distribucionSilla = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
 
-        // Creacion del teatro
+        // Creacion del sala
 
-        Teatro teatro = new Teatro(direccion, "3162316812", ciudad, administradorTeatro);
+        Sala sala = new Sala("ARX-01", TipoSala.valueOf("DX4"), teatro, distribucionSilla);
 
         try {
-            Teatro nuevo = teatroServicio.registrar(teatro);
+            Sala nuevo = salaServicio.registrar(sala);
             
-            Assertions.assertEquals(direccion, nuevo.getDireccion());
+            Assertions.assertEquals("ARX-01", nuevo.getNombre());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -88,16 +87,16 @@ public class TeatroServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        String telefono = "3125867145";
+        String nombre = "P-01: Premier Dorada";
 
         try{
-            Teatro teatro = teatroServicio.obtener(new TeatroAtributoValidator("1")).orElse(null);
+            Sala sala = salaServicio.obtener(new SalaAtributoValidator(1)).orElse(null);
 
-            teatro.setTelefono(telefono);
+            sala.setNombre(nombre);
 
-            Teatro actualizado = teatroServicio.actualizar(teatro);
+            Sala actualizado = salaServicio.actualizar(sala);
 
-            Assertions.assertEquals(telefono, actualizado.getTelefono());
+            Assertions.assertEquals(nombre, actualizado.getNombre());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
@@ -112,14 +111,12 @@ public class TeatroServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        Integer codigo = 1;
+        SalaAtributoValidator validator = new SalaAtributoValidator(1);
 
-        TeatroAtributoValidator validator = new TeatroAtributoValidator(codigo.toString());
-
-        Teatro teatro;
+        Sala sala;
 
         try {
-            teatro = teatroServicio.obtener(validator).orElse(null);
+            sala = salaServicio.obtener(validator).orElse(null);
 
         } catch (Exception e) {
             Assertions.assertTrue(false);
@@ -128,7 +125,7 @@ public class TeatroServicioTest {
         }
 
         try {
-            teatroServicio.eliminar(teatro, true);
+            salaServicio.eliminar(sala, true);
 
         } catch (Exception e) {
             Assertions.assertTrue(false);
@@ -137,10 +134,10 @@ public class TeatroServicioTest {
         }
 
         try {
-            teatroServicio.obtener(validator);
+            salaServicio.obtener(validator);
 
         } catch (Exception e) {
-            // Realizamos una validacion de la prueba para aceptar que el teatro fue eliminado mendiante la excepcion del metodo de obtener
+            // Realizamos una validacion de la prueba para aceptar que el sala fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -154,11 +151,11 @@ public class TeatroServicioTest {
         Integer codigo = 1;
 
         try {
-            Teatro teatro = teatroServicio.obtener(new TeatroAtributoValidator(codigo.toString())).orElse(null);
+            Sala sala = salaServicio.obtener(new SalaAtributoValidator(codigo)).orElse(null);
 
-            Assertions.assertEquals(codigo, teatro.getCodigo());
+            Assertions.assertEquals(codigo, sala.getCodigo());
 
-            System.out.println("\n" + "Registro encontrado:" + "\n" + teatro);
+            System.out.println("\n" + "Registro encontrado:" + "\n" + sala);
 
         } catch (Exception e) {
             Assertions.assertTrue(true);
@@ -172,7 +169,7 @@ public class TeatroServicioTest {
     public void listar() {
 
         try {
-            List<Teatro> lista = teatroServicio.listar();
+            List<Sala> lista = salaServicio.listar();
 
             Assertions.assertEquals(6, lista.size());
 
@@ -193,23 +190,19 @@ public class TeatroServicioTest {
     @ValueSource(strings = {
         "", // Caso vacío
         "  ", // Espacios en blanco
-        "C", // Caso menor a un caracter
-        "Calle 3 # 1 A 24 Sur", // Existente
+        "Atl", // Caso menor a un caracter
+        "Atlantis", // Existente
     })
     @Sql("classpath:dataset.sql")
-    public void validacionDireccion(String direcion) {
+    public void validacionNombres(String nombre) {
 
-        System.out.println("\n" + direcion);
+        System.out.println("\n" + nombre);
         try{
-            Teatro teatro = teatroServicio.obtener(new TeatroAtributoValidator("3")).orElse(null);
+            List<Sala> salas = salaServicio.obtenerNombresTeatro(new SalaAtributoValidator(nombre), 5);
 
-            teatro.setDireccion(direcion);
+            Assertions.assertEquals(1, salas.size());
 
-            Teatro actualizado = teatroServicio.actualizar(teatro);
-
-            Assertions.assertEquals(direcion, actualizado.getDireccion());
-
-            System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
+            System.out.println("\n" + "Registros:" + "\n" + salas);
 
         } catch (Exception e) {
             Assertions.assertThrows(Exception.class, () -> {throw e;});

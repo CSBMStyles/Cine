@@ -4,6 +4,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,7 +43,7 @@ public class Sala implements Serializable {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @NotBlank(message = "El tipo de sala no puede estar vacío")
+    @NotNull(message = "El tipo de sala no puede estar vacío")
     @Column (nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private TipoSala tipoSala;
@@ -50,9 +51,11 @@ public class Sala implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
+    @NotNull(message = "El teatro no puede estar vacío")
     private Teatro teatro;
 
     @ManyToOne
+    @NotNull(message = "La distribución de sillas no puede estar vacía")
     private DistribucionSilla distribucionSilla;
 
     @ToString.Exclude
