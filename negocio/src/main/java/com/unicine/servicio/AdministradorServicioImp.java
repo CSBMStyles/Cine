@@ -3,6 +3,8 @@ package com.unicine.servicio;
 import java.util.List;
 import java.util.Optional;
 
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,6 +21,9 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final AdministradorRepo administradorRepo;
 
+    // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
+    private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
+
     public AdministradorServicioImp(AdministradorRepo administradorRepo) {
         this.administradorRepo = administradorRepo;
     }
@@ -32,9 +37,13 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
      */
     private Administrador comprobarAutenticacion(String correo, String password) throws Exception {
 
-        Optional<Administrador> administrador = administradorRepo.comprobarAutenticacion(correo, password);
+        Optional<Administrador> administrador = administradorRepo.findByCorreo(correo);
 
         if (administrador.isEmpty()) {
+            throw new Exception("El correo no existe");
+        }
+
+        if (!encriptador.checkPassword(password, administrador.get().getPassword())) {
             throw new Exception("Los datos de autenticación son incorrectos");
         }
 
@@ -87,9 +96,9 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
      * @param cedula
      * @return si existe el correo devuelve true, de lo contrario false
      */
-    private void validarRepiteCorreo(String correoModificar, Integer cedulaPresente) throws Exception {
+    private void validarRepiteCorreo(String correoModificar, Integer cedula) throws Exception {
 
-        Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedulaPresente);
+        Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
             throw new RuntimeException("Este correo ya esta registrado");
@@ -115,6 +124,12 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     */
     private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
 
+    /**
+     * Metodo para encriptar la contraseña de un administrador
+     * @param administrador
+     */
+    private void encriptar(Administrador administrador) { administrador.setPassword(encriptador.encryptPassword(administrador.getPassword())); }
+
     // SECTION: Metodos del servicio
 
     // 1️⃣ Funciones del Administrador
@@ -133,8 +148,8 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         validarExisteCedula(administrador.getCedula());
         validarExisteCorreo(administrador.getCorreo());
 
-        /* StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
-        administrador.setPassword(spe.encryptPassword(administrador.getPassword())); */
+        encriptar(administrador);
+
         Administrador registro = administradorRepo.save(administrador);
 
         /* AES256TextEncryptor textEncryptor = new AES256TextEncryptor();
@@ -151,9 +166,9 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Administrador actualizar(@Valid Administrador administrador, Integer cedulaPresente) throws Exception {
+    public Administrador actualizar(@Valid Administrador administrador) throws Exception {
 
-        validarRepiteCorreo(administrador.getCorreo(), cedulaPresente);
+        validarRepiteCorreo(administrador.getCorreo(), administrador.getCedula());
         
         return administradorRepo.save(administrador);
     }

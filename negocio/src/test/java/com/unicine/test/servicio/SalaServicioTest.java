@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.DistribucionSilla;
 import com.unicine.entidades.Teatro;
-import com.unicine.entidades.TipoSala;
 import com.unicine.entidades.Sala;
 import com.unicine.servicio.DistribucionSillaServicio;
 import com.unicine.servicio.SalaServicio;
 import com.unicine.servicio.TeatroServicio;
+import com.unicine.util.emuns.TipoSala;
 import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
 import com.unicine.util.validacion.atributos.SalaAtributoValidator;
 import com.unicine.util.validacion.atributos.TeatroAtributoValidator;

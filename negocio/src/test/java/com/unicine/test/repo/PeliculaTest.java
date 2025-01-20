@@ -20,10 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.unicine.dto.DetallePeliculaHorarioDTO;
-import com.unicine.entidades.EstadoPelicula;
-import com.unicine.entidades.GeneroPelicula;
 import com.unicine.entidades.Pelicula;
 import com.unicine.repo.PeliculaRepo;
+import com.unicine.util.emuns.EstadoPelicula;
+import com.unicine.util.emuns.GeneroPelicula;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -53,7 +53,7 @@ public class PeliculaTest {
         repartos.add("David Howard Thornton");
         repartos.add("Jenna Kanell");
         
-        EstadoPelicula estado = EstadoPelicula.EN_CARTELERA;
+        EstadoPelicula estado = EstadoPelicula.CARTELERA;
         Pelicula pelicula = new Pelicula(estado, generos, imagenes, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
         pelicula.setCodigo(6);
 
@@ -225,7 +225,7 @@ public class PeliculaTest {
     @Sql("classpath:dataset.sql")
     public void listarPeliculasCuidadEstado() {
 
-        List<Pelicula> peliculas = peliculaRepo.listarPeliculasCuidadEstado(1, EstadoPelicula.EN_CARTELERA);
+        List<Pelicula> peliculas = peliculaRepo.listarPeliculasCuidadEstado(1, EstadoPelicula.CARTELERA);
 
         Assertions.assertEquals(1, peliculas.size());
 
@@ -240,7 +240,7 @@ public class PeliculaTest {
     @Sql("classpath:dataset.sql")
     public void listarPeliculasEstado() {
 
-        List<Pelicula> peliculas = peliculaRepo.listarPeliculasEstado(EstadoPelicula.EN_CARTELERA);
+        List<Pelicula> peliculas = peliculaRepo.listarPeliculasEstado(EstadoPelicula.CARTELERA);
 
         Assertions.assertEquals(3, peliculas.size());
 

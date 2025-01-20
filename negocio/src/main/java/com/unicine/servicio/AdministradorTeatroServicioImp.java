@@ -3,6 +3,8 @@ package com.unicine.servicio;
 import java.util.List;
 import java.util.Optional;
 
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,6 +21,9 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final AdministradorTeatroRepo administradorTeatroRepo;
 
+    // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
+    private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
+
     public AdministradorTeatroServicioImp(AdministradorTeatroRepo administradorTeatroRepo) {
         this.administradorTeatroRepo = administradorTeatroRepo;
     }
@@ -32,9 +37,13 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
      */
     private AdministradorTeatro comprobarAutenticacion(String correo, String password) throws Exception {
 
-        Optional<AdministradorTeatro> administrador = administradorTeatroRepo.comprobarAutenticacion(correo, password);
+        Optional<AdministradorTeatro> administrador = administradorTeatroRepo.findByCorreo(correo);
 
         if (administrador.isEmpty()) {
+            throw new Exception("El correo no existe");
+        }
+
+        if (!encriptador.checkPassword(password, administrador.get().getPassword())) {
             throw new Exception("Los datos de autenticación son incorrectos");
         }
 
@@ -88,9 +97,9 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
      * @param cedula
      * @return si existe el correo devuelve true, de lo contrario false
      */
-    private void validarRepiteCorreo(String correoModificar, Integer cedulaPresente) throws Exception {
+    private void validarRepiteCorreo(String correoModificar, Integer cedula) throws Exception {
 
-        Optional<AdministradorTeatro> existe = administradorTeatroRepo.buscarCorreoExcluido(correoModificar, cedulaPresente);
+        Optional<AdministradorTeatro> existe = administradorTeatroRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
             throw new RuntimeException("Este correo ya esta registrado");
@@ -116,6 +125,12 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     */
     private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
 
+    /**
+     * Metodo para encriptar la contraseña de un administrador
+     * @param administrador
+     */
+    private void encriptar(AdministradorTeatro administrador) { administrador.setPassword(encriptador.encryptPassword(administrador.getPassword())); }
+
     // SECTION: Metodos del servicio
 
     // 2️⃣ Funion del Administrador Teatro
@@ -136,8 +151,8 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
         validarExisteCedula(administrador.getCedula());
         validarExisteCorreo(administrador.getCorreo());
 
-        /* StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
-        administrador.setPassword(spe.encryptPassword(administrador.getPassword())); */
+        encriptar(administrador);
+        
         AdministradorTeatro registro = administradorTeatroRepo.save(administrador);
 
         /* AES256TextEncryptor textEncryptor = new AES256TextEncryptor();
@@ -154,9 +169,9 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     }
 
     @Override
-    public AdministradorTeatro actualizar(@Valid AdministradorTeatro administrador, Integer cedulaPresente) throws Exception {
+    public AdministradorTeatro actualizar(@Valid AdministradorTeatro administrador) throws Exception {
 
-        validarRepiteCorreo(administrador.getCorreo(), cedulaPresente);
+        validarRepiteCorreo(administrador.getCorreo(), administrador.getCedula());
 
         return administradorTeatroRepo.save(administrador);
     }

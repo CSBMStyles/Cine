@@ -15,7 +15,7 @@ public interface PersonaServicio<T extends Persona> {
 
     T registrar(@Valid T persona) throws Exception;
 
-    T actualizar(@Valid T persona, Integer cedulaPresente) throws Exception;
+    T actualizar(@Valid T persona) throws Exception;
 
     void eliminar(@Valid T persona, boolean confirmacion) throws Exception;
 

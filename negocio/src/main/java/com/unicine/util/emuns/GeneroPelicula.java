@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.util.emuns;
 
 public enum GeneroPelicula {
     TERROR,

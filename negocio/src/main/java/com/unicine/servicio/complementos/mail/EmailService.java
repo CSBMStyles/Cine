@@ -1,4 +1,4 @@
-package com.unicine.util.mail;
+package com.unicine.servicio.complementos.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;

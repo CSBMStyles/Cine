@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
+import com.unicine.util.emuns.EstadoPropio;
+
 @Entity
 @Getter
 @Setter

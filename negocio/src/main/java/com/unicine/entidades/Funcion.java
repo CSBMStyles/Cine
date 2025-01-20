@@ -3,11 +3,14 @@ package com.unicine.entidades;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
@@ -18,6 +21,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
+
+import com.unicine.util.emuns.FormatoPelicula;
 
 @Entity
 @Getter
@@ -40,15 +45,23 @@ public class Funcion implements Serializable {
     @Column(nullable = false)
     private Double precio;
 
+    @NotNull(message = "El formato no puede estar vacío")
+    @Column (nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private FormatoPelicula formato;
+
     // SECTION: Relaciones
 
     @ManyToOne
+    @NotNull(message = "La sala no puede estar vacía")
     private Sala sala;
 
-    @ManyToOne
+    @NotNull(message = "El horario no puede estar vacío")
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Horario horario;
 
     @ManyToOne
+    @NotNull(message = "La película no puede estar vacía")
     private Pelicula pelicula;
 
     @ToString.Exclude
@@ -58,8 +71,9 @@ public class Funcion implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public Funcion(Double precio, Sala sala, Horario horario, Pelicula pelicula) {
+    public Funcion(Double precio, FormatoPelicula formato, Sala sala, Horario horario, Pelicula pelicula) {
         this.precio = precio;
+        this.formato = formato;
         this.sala = sala;
         this.horario = horario;
         this.pelicula = pelicula;

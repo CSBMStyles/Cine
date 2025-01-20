@@ -1,10 +1,9 @@
 package com.unicine.entidades;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
-import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -49,8 +47,8 @@ public class Horario implements Serializable {
     // SECTION: Relaciones
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "horario", cascade = CascadeType.ALL)
-    private List<Funcion> funciones;
+    @OneToOne(mappedBy = "horario")
+    private Funcion funcion;
     
     // SECTION: Constructor
 

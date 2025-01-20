@@ -18,12 +18,12 @@ import com.unicine.entidades.Compra;
 import com.unicine.entidades.Cupon;
 import com.unicine.entidades.CuponCliente;
 import com.unicine.entidades.Funcion;
-import com.unicine.entidades.MedioPago;
 import com.unicine.repo.ClienteRepo;
 import com.unicine.repo.CompraRepo;
 import com.unicine.repo.CuponClienteRepo;
 import com.unicine.repo.CuponRepo;
 import com.unicine.repo.FuncionRepo;
+import com.unicine.util.emuns.MedioPago;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

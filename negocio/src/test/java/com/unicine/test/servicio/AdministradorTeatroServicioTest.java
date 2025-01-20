@@ -67,11 +67,9 @@ public class AdministradorTeatroServicioTest {
         try{
             AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
 
-            Integer cedulaPresente = administrador.getCedula();
-
             administrador.setNombre("Daniela");
 
-            AdministradorTeatro actualizado = administradorTeatroServicio.actualizar(administrador, cedulaPresente);
+            AdministradorTeatro actualizado = administradorTeatroServicio.actualizar(administrador);
 
             Assertions.assertEquals("Daniela", actualizado.getNombre());
 

@@ -182,17 +182,4 @@ public class ClienteTest {
             System.out.println(c);
         }
     }
-
-    @Test
-    @Sql("classpath:dataset.sql")
-    public void comprobarAutenticacion(){
-
-        Optional<Cliente> cliente = clienteRepo.comprobarAutenticacion("pepe@hotmail.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-
-        Assertions.assertTrue(cliente.isPresent());
-
-        System.out.println("\n" + "Registro autenticado:");
-
-        System.out.println(cliente);
-    }
 }

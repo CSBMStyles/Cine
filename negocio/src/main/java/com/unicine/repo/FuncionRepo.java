@@ -6,9 +6,11 @@ import com.unicine.entidades.Horario;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -25,6 +27,14 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
      */
     @Query("select f from Sala s join s.funciones f where s.codigo = :codigoSala and f.horario = :horario")
     List<Funcion> obtenerFuncionesHorarioSala(Integer codigoSala, Horario horario);
+
+    /**
+     * Verifica si existe solapamiento de horarios en una sala
+     * 
+     * @return funcion que se solapa
+     */
+    @Query("select f from Funcion f where f.sala.codigo = :#{#funcion.sala.codigo} and not (f.horario.fechaFin < :#{#horario.fechaInicio} or f.horario.fechaInicio > :#{#horario.fechaFin})")
+    Optional<Funcion> solapaHorarioSala(@Param("funcion") Funcion funcion, @Param("horario") Horario horario);
 
     /**
      * Consulta para obtener las funciones de una sala

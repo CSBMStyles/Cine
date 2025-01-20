@@ -3,18 +3,13 @@ package com.unicine.servicio;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entidades.AdministradorTeatro;
-import com.unicine.entidades.Ciudad;
 import com.unicine.entidades.Teatro;
 import com.unicine.repo.TeatroRepo;
-import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
-import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 import com.unicine.util.validacion.atributos.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;
@@ -25,12 +20,6 @@ public class TeatroServicioImp implements TeatroServicio {
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final TeatroRepo teatroRepo;
-
-    @Autowired
-    private CiudadServicio ciudadServicio;
-
-    @Autowired
-    private PersonaServicio<AdministradorTeatro> administradorServicio;
 
     public TeatroServicioImp(TeatroRepo teatroRepo) {
         this.teatroRepo = teatroRepo;
@@ -79,53 +68,6 @@ public class TeatroServicioImp implements TeatroServicio {
     }
 
     /**
-     * Metodo para comprobar la presencia de la ciudad que se esta buscando
-     * @param numero
-     * @throws
-    */
-         private void validarExisteCiudad(Integer codigo) { 
-
-            try {
-                ciudadServicio.obtener(new CiudadAtributoValidator(codigo));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    /**
-     * Metodo para comprobar la presencia del administrador que se esta buscando
-     * @param numero
-     * @throws
-     */
-    private void validarExisteAdministrador(Integer cedula) {
-
-        PersonaAtributoValidator validador = new PersonaAtributoValidator(cedula.toString());
-
-        try {
-            administradorServicio.obtener(validador);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Metodo para comprobar la presencia de las relaciones del teatro
-     * @param teatro
-     * @throws
-     */
-    private void validarExisteRelaciones(Teatro teatro) {
-
-         // Ruta para obtener el codigo del administrador
-         AdministradorTeatro administrador = teatro.getAdministradorTeatro();
-
-         // Ruta para obtener el codigo de la ciudad
-         Ciudad ciudad = teatro.getCiudad();
-
-        validarExisteCiudad(ciudad.getCodigo());
-        validarExisteAdministrador(administrador.getCedula());
-    }
-
-    /**
      * Metodo para comprobar la presencia de las relaciones del teatro
      * @param teatro
      * @throws
@@ -152,7 +94,6 @@ public class TeatroServicioImp implements TeatroServicio {
     public Teatro registrar(@Valid Teatro teatro) throws Exception { 
 
         validarExisteDireccion(teatro);
-        validarExisteRelaciones(teatro);
 
         return teatroRepo.save(teatro);
     }
@@ -161,7 +102,6 @@ public class TeatroServicioImp implements TeatroServicio {
     public Teatro actualizar(@Valid Teatro teatro) throws Exception {
 
         validarRepiteDireccion(teatro);
-        validarExisteRelaciones(teatro);
 
         return teatroRepo.save(teatro);
     }

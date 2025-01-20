@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.unicine.entidades.EstadoPelicula;
 import com.unicine.entidades.Horario;
+import com.unicine.util.emuns.EstadoPelicula;
 
 @Getter
 @Setter

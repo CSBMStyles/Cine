@@ -38,14 +38,4 @@ public interface ClienteRepo extends JpaRepository<Cliente, Integer> {
      */
     @Query("select c from Cliente c where c.correo = :correo and c.cedula != :cedula")
     Optional<Cliente> buscarCorreoExcluido(String correo, Integer cedula);
-
-    // NOTE: Una forma de recibir parametros en una consulta es usando el signo de interrogacion y el numero de la posicion del parametro
-
-    /**
-     * Consulta para comprobar la autenticacion de un cliente
-     * @param atributos: correo del cliente, password del cliente
-     * @return cliente
-     */
-    @Query("select c from Cliente c where c.correo = ?1 and c.password = ?2")
-    Optional<Cliente> comprobarAutenticacion(String correo, String password);
 }

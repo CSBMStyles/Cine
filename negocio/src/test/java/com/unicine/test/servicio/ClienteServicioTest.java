@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +17,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Cliente;
+import com.unicine.entidades.Persona;
 import com.unicine.servicio.PersonaServicio;
-import com.unicine.util.mail.EmailService;
+import com.unicine.servicio.complementos.auth.AuthenticationService;
+import com.unicine.servicio.complementos.mail.EmailService;
 import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
@@ -28,6 +31,9 @@ public class ClienteServicioTest {
 
     @Autowired
     private PersonaServicio<Cliente> clienteServicio;
+
+    @Autowired
+    private AuthenticationService authService;
 
     @Autowired
     private EmailService emailService;
@@ -41,7 +47,7 @@ public class ClienteServicioTest {
         String correo = "pepe@hotmail.com";
 
         try {
-            Cliente cliente = clienteServicio.login(correo, "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+            Cliente cliente = clienteServicio.login(correo, "78!Kz9'Aovr1>`A5");
 
             Assertions.assertEquals(correo, cliente.getCorreo());
 
@@ -51,6 +57,25 @@ public class ClienteServicioTest {
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "pepe@hotmail.com,78!Kz9'Aovr1>`A5,Cliente",
+        "admin@unicine.com,78!Kz9'Aovr1>`A5,Administrador",
+        "adminteatro@unicine.com,78!Kz9'Aovr1>`A5,AdministradorTeatro"
+    })
+    @Sql("classpath:dataset.sql")
+    public void loginMultipleUsers(String correo, String password, String tipoEsperado) {
+        try {
+            Persona usuario = authService.login(correo, password);
+
+            Assertions.assertEquals(tipoEsperado, usuario.getClass().getSimpleName());
+            
+        } catch (Exception e) {
+
+            Assertions.fail("Falló la autenticación: " + e.getMessage());
         }
     }
 
@@ -80,7 +105,7 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
+            Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
@@ -93,11 +118,9 @@ public class ClienteServicioTest {
         try{
             Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
 
-            Integer cedulaPresente = cliente.getCedula();
-
             cliente.setCorreo("maria@gmail.com");
 
-            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
+            Cliente actualizado = clienteServicio.actualizar(cliente);
 
             Assertions.assertEquals(false, actualizado.getEstado());
 
@@ -214,11 +237,9 @@ public class ClienteServicioTest {
         try{
             Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
 
-            Integer cedulaPresente = cliente.getCedula();
-
             cliente.setCorreo(correo);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
+            Cliente actualizado = clienteServicio.actualizar(cliente);
 
             Assertions.assertEquals(correo, actualizado.getCorreo());
 
@@ -238,11 +259,9 @@ public class ClienteServicioTest {
         try{
             Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
 
-            Integer cedulaPresente = cliente.getCedula();
-
             cliente.setEstado(null);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
+            Cliente actualizado = clienteServicio.actualizar(cliente);
 
             Assertions.assertEquals(null, actualizado.getEstado());
 
@@ -270,11 +289,9 @@ public class ClienteServicioTest {
         try{
             Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
 
-            Integer cedulaPresente = cliente.getCedula();
-
             cliente.setTelefonos(telefonos);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente, cedulaPresente);
+            Cliente actualizado = clienteServicio.actualizar(cliente);
 
             Assertions.assertEquals(1, actualizado.getTelefonos().size());
 

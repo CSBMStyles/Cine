@@ -22,6 +22,9 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
+
+import com.unicine.util.emuns.MedioPago;
+
 import java.time.LocalDateTime;
 
 @Entity

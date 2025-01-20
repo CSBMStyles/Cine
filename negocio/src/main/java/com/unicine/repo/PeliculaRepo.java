@@ -1,8 +1,8 @@
 package com.unicine.repo;
 
 import com.unicine.dto.DetallePeliculaHorarioDTO;
-import com.unicine.entidades.EstadoPelicula;
 import com.unicine.entidades.Pelicula;
+import com.unicine.util.emuns.EstadoPelicula;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,6 +26,22 @@ public interface PeliculaRepo extends JpaRepository<Pelicula, Integer> {
      */
     @Query("select p from Pelicula p where p.nombre = :nombrePelicula")
     Optional<Pelicula> obtenerPeliculaNombre(String nombrePelicula);
+
+    /**
+     * Consulta para obtener una pelicula por su nombre excluyendo el que esta presente
+     * @param atributo: nombre de la pelicula
+     * @return pelicula
+     */
+    @Query("select p from Pelicula p where p.nombre = :nombrePelicula and p.codigo != :codigoPelicula")
+    Optional<Pelicula> obtenerNombreExcluido(String nombrePelicula, Integer codigoPelicula);
+
+    /**
+     * Consulta para obtener una pelicula por su nombre
+     * @param atributo: nombre de la pelicula
+     * @return pelicula
+     */
+    @Query("select p from Pelicula p where p.nombre like concat('%',:nombre,'%')")
+    List<Pelicula> buscarNombres(String nombre);
 
     /**
      * Consulta para obtener una pelicula de una funcion por su codigo

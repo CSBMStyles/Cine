@@ -6,20 +6,20 @@
     2. Los datos que se insertan tienen igualmente un orden que debe seguirse segun como esta en la base de datos, eso es en caso de que en la consulta no se tenga declarado los atributos de la tabla a insertar, en este archivo si se encuenta, entonces no nos preocupamos por el orden, pero si hay que tener en cuenta que esten todos los que necesitamos.
 */
 
-insert into administrador (cedula, apellido, nombre, correo, password) values (1001000000, "Barrera", "Cristian", "cristianbarrera100@gmail.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+insert into administrador (cedula, apellido, nombre, correo, password) values (1001000000, "Barrera", "Cristian", "cristianbarrera100@gmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
 
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1119000000, "Bello", "Jhon", "jhona.belloc@uqvirtual.edu.co", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1228000000, "Camacho", "Maria", "mariaf.camachog@uqvirtual.edu.co", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1337000000, "Barrera", "Cristian", "cristians.barreram@uqvirtual.edu.co", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1446000000, "Barragan", "Alejandro", "henrya.barraganp@uqvirtual.edu.co", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1557000000, "Restrepo", "Rodolfo", "rodolfo.restrepo@uqvirtual.edu.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1667000800, "Quintero", "Jose", "jose.quintero@uqvirtual.edu.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1119000000, "Bello", "Jhon", "jhona.belloc@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1228000000, "Camacho", "Maria", "mariaf.camachog@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1337000000, "Barrera", "Cristian", "cristians.barreram@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1446000000, "Barragan", "Alejandro", "henrya.barraganp@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1557000000, "Restrepo", "Rodolfo", "rodolfo.restrepo@uqvirtual.edu.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1667000800, "Quintero", "Jose", "jose.quintero@uqvirtual.edu.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
 
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1009000011, 1, "2001-12-14", "Rodrigez", "Pepe", "pepe@hotmail.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1008000022, 0, "1993-11-02", "Perez", "Juan", "juan@outlook.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1007000033, 0, "2000-07-18", "Gomez", "Luis", "luis@yahoo.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1006000044, 1, "2002-01-06", "Martinez", "Maria", "maria@gmail.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1005000055, 0, "1991-12-18", "Lopez", "Luisa", "luisa@google.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1009000011, 1, "2001-12-14", "Rodrigez", "Pepe", "pepe@hotmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1008000022, 0, "1993-11-02", "Perez", "Juan", "juan@outlook.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1007000033, 0, "2000-07-18", "Gomez", "Luis", "luis@yahoo.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1006000044, 1, "2002-01-06", "Martinez", "Maria", "maria@gmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1005000055, 0, "1991-12-18", "Lopez", "Luisa", "luisa@google.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
 
 insert into ciudad (id, nombre) values (1,"Armenia");
 insert into ciudad (id, nombre) values (2,"Pereira");
@@ -159,18 +159,19 @@ insert into sala (distribucion_silla_id, id, teatro_id, nombre, tipo_sala) value
 insert into sala (distribucion_silla_id, id, teatro_id, nombre, tipo_sala) values (5, 7, 1, "Plaza Imperial", "DX4");
 insert into sala (distribucion_silla_id, id, teatro_id, nombre, tipo_sala) values (1, 8, 1, "Colon", "IMAX");
 
-insert into horario (id, fecha_fin, fecha_inicio) values (1, "2024-12-14T22:00:00", "2024-12-14T20:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (2, "2024-12-15T23:00:00", "2024-12-15T21:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (3, "2024-12-16T23:00:00", "2024-12-16T22:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (4, "2024-12-17T22:00:00", "2024-12-17T20:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (5, "2024-12-22T22:00:00", "2024-12-22T20:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (6, "2024-12-24T23:00:00", "2024-12-24T20:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (1, "2025-12-14T06:00:00", "2025-12-14T05:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (2, "2025-12-15T09:00:00", "2025-12-15T08:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (3, "2025-12-16T12:00:00", "2025-12-16T11:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (4, "2025-12-17T15:00:00", "2025-12-17T14:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (5, "2025-12-22T18:00:00", "2025-12-22T17:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (6, "2025-12-24T15:00:00", "2025-12-24T14:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (7, "2025-12-24T21:00:00", "2025-12-24T20:00:00");
 
-insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (1, 4.2, 18, "Pinocho", "https://www.youtube.com/embed/TITv1TNi5mI", "PROXIMO_ESTRENO", "En un pueblo italiano, el títere de madera Pinocho cobra vida gracias al Hada Azul. Pinocho se esfuerza por comportarse como un niño de carne y hueso, pero su vida da un giro al abandonar a su padre para unirse a un circo.");
-insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (2, 3.5, null, "Dragon Ball: Super Hero", "https://www.youtube.com/embed/lXLPVQ-WrU4", "EN_CARTELERA", "La malvada organización Red Ribbon Army se reforma con nuevos y más poderosos androides, Gamma {1} y Gamma {2} para buscar venganza.");
-insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (3, 4.0, 18, "Smile", "https://www.youtube.com/embed/yhKiQGJop_8", "EN_CARTELERA", "Después de ser testigo de un extraño y traumático accidente que involucró a una paciente, la Dr. Rose Cotter (Sosie Bacon) empieza a experimentar sucesos aterradores que no puede explicarse. A medida que el terror comienza a apoderarse de su vida, Rose debe enfrentarse a su pasado para sobrevivir y escapar de su horrible nueva realidad.");
-insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (4, 4.5, null, "Minions", "https://www.youtube.com/embed/W27moupirnI", "EN_CARTELERA", "En los años 70, Gru crece siendo un gran admirador de <<Los salvajes seis>>, un supergrupo de villanos. Para demostrarles que puede ser malvado, Gru idea un plan con la esperanza de formar parte de la banda. Por suerte, cuenta con la ayuda de sus fieles seguidores, los Minions, siempre dispuestos a sembrar el caos.");
-insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (5, 4.1, 18, "Encanto", "https://www.youtube.com/embed/SAH_W9q_brE", "PROXIMO_ESTRENO", "En lo alto de las montañas de Colombia hay un lugar encantado llamado Encanto. Aquí, en una casa mágica, vive la extraordinaria familia Madrigal donde todos tienen habilidades fantásticas.");
+insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (1, 4.2, 18, "Pinocho", "https://www.youtube.com/embed/TITv1TNi5mI", "PREVENTA", "En un pueblo italiano, el títere de madera Pinocho cobra vida gracias al Hada Azul. Pinocho se esfuerza por comportarse como un niño de carne y hueso, pero su vida da un giro al abandonar a su padre para unirse a un circo.");
+insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (2, 3.5, null, "Dragon Ball: Super Hero", "https://www.youtube.com/embed/lXLPVQ-WrU4", "CARTELERA", "La malvada organización Red Ribbon Army se reforma con nuevos y más poderosos androides, Gamma {1} y Gamma {2} para buscar venganza.");
+insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (3, 4.0, 18, "Smile", "https://www.youtube.com/embed/yhKiQGJop_8", "CARTELERA", "Después de ser testigo de un extraño y traumático accidente que involucró a una paciente, la Dr. Rose Cotter (Sosie Bacon) empieza a experimentar sucesos aterradores que no puede explicarse. A medida que el terror comienza a apoderarse de su vida, Rose debe enfrentarse a su pasado para sobrevivir y escapar de su horrible nueva realidad.");
+insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (4, 4.5, null, "Minions", "https://www.youtube.com/embed/W27moupirnI", "CARTELERA", "En los años 70, Gru crece siendo un gran admirador de <<Los salvajes seis>>, un supergrupo de villanos. Para demostrarles que puede ser malvado, Gru idea un plan con la esperanza de formar parte de la banda. Por suerte, cuenta con la ayuda de sus fieles seguidores, los Minions, siempre dispuestos a sembrar el caos.");
+insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (5, 4.1, 18, "Encanto", "https://www.youtube.com/embed/SAH_W9q_brE", "PREVENTA", "En lo alto de las montañas de Colombia hay un lugar encantado llamado Encanto. Aquí, en una casa mágica, vive la extraordinaria familia Madrigal donde todos tienen habilidades fantásticas.");
 
 insert into pelicula_repartos (pelicula_id, repartos) values(1, "Tom Hanks");
 insert into pelicula_repartos (pelicula_id, repartos) values(1, "Cynthia Erivo");
@@ -215,7 +216,7 @@ insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (3, 3,
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (4, 4, 4, 6800, 3);
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (5, 5, 5, 7100, 2);
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (6, 6, 4, 6800, 1);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (1, 7, 3, 10000, 8);
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (7, 7, 3, 10000, 1);
 
 insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1009000011,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg", "unicine/clientes/cliente1_zfhe3z");
 insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1008000022,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente2_rpyvof.jpg", "unicine/clientes/cliente2_rpyvof");

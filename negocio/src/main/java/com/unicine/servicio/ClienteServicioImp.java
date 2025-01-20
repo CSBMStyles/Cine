@@ -5,6 +5,8 @@ import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -21,6 +23,9 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final ClienteRepo clienteRepo;
 
+    // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
+    private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
+
     public ClienteServicioImp(ClienteRepo clienteRepo) {
         this.clienteRepo = clienteRepo;
     }
@@ -34,9 +39,13 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
      */
     private Cliente comprobarAutenticacion(String correo, String password) throws Exception {
 
-        Optional<Cliente> cliente = clienteRepo.comprobarAutenticacion(correo, password);
+        Optional<Cliente> cliente = clienteRepo.findByCorreo(correo);
 
         if (cliente.isEmpty()) {
+            throw new Exception("El correo no existe");
+        }
+
+        if (!encriptador.checkPassword(password, cliente.get().getPassword())) {
             throw new Exception("Los datos de autenticación son incorrectos");
         }
 
@@ -88,9 +97,9 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
      * @param cliente
      * @return si existe el correo devuelve true, de lo contrario false
      */
-    private void validarRepiteCorreo(String correoModificar, Integer cedulaPresente) throws Exception {
+    private void validarRepiteCorreo(String correoModificar, Integer cedula) throws Exception {
 
-        Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedulaPresente);
+        Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
             throw new RuntimeException("Este correo ya esta registrado");
@@ -142,6 +151,12 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     */
     private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
 
+    /**
+     * Metodo para encriptar la contraseña de un cliente
+     * @param cliente
+     */
+    private void encriptar(Cliente cliente) { cliente.setPassword(encriptador.encryptPassword(cliente.getPassword())); }
+
     // SECTION: Implementacion de servicios
 
     @Override
@@ -161,8 +176,8 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         validarExisteCorreo(cliente.getCorreo());
         validarEdad(cliente.getFechaNacimiento());
 
-        /* StrongPasswordEncryptor spe = new StrongPasswordEncryptor();
-        cliente.setPassword(spe.encryptPassword(cliente.getPassword())); */
+        encriptar(cliente);
+
         Cliente registro = clienteRepo.save(cliente);
 
         /* AES256TextEncryptor textEncryptor = new AES256TextEncryptor();
@@ -179,9 +194,9 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Cliente actualizar(@Valid Cliente cliente, Integer cedulaPresente) throws Exception { 
+    public Cliente actualizar(@Valid Cliente cliente) throws Exception { 
 
-        validarRepiteCorreo(cliente.getCorreo(), cedulaPresente);
+        validarRepiteCorreo(cliente.getCorreo(), cliente.getCedula());
 
         return clienteRepo.save(cliente);
     }

@@ -27,7 +27,7 @@ public class AdministradorServicioTest {
     public void login() {
 
         try {
-            Administrador administrador = administradorServicio.login("cristianbarrera100@gmail.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+            Administrador administrador = administradorServicio.login("cristianbarrera100@gmail.com", "78!Kz9'Aovr1>`A5");
 
             Assertions.assertEquals("cristianbarrera100@gmail.com", administrador.getCorreo());
 
@@ -67,11 +67,9 @@ public class AdministradorServicioTest {
         try{
             Administrador administrador = administradorServicio.obtener(new PersonaAtributoValidator("1001000000")).orElse(null);
 
-            Integer cedulaPresente = administrador.getCedula();
-
             administrador.setNombre("Roberto");
 
-            Administrador actualizado = administradorServicio.actualizar(administrador, cedulaPresente);
+            Administrador actualizado = administradorServicio.actualizar(administrador);
 
             Assertions.assertEquals("Roberto", actualizado.getNombre());
 

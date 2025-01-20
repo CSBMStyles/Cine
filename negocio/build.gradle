@@ -5,6 +5,7 @@ dependencies {
     implementation 'com.cloudinary:cloudinary-http44:1.39.0'
     implementation 'com.google.zxing:core:3.5.3'
     implementation 'com.google.zxing:javase:3.5.3'
+    implementation 'org.jasypt:jasypt:1.9.3'
     implementation 'mysql:mysql-connector-java:8.0.33'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

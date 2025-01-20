@@ -15,10 +15,10 @@ import org.springframework.test.context.jdbc.Sql;
 import com.unicine.entidades.DistribucionSilla;
 import com.unicine.entidades.Sala;
 import com.unicine.entidades.Teatro;
-import com.unicine.entidades.TipoSala;
 import com.unicine.repo.DistribucionSillaRepo;
 import com.unicine.repo.SalaRepo;
 import com.unicine.repo.TeatroRepo;
+import com.unicine.util.emuns.TipoSala;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

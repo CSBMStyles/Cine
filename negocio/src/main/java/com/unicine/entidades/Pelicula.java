@@ -28,6 +28,9 @@ import java.util.Map;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.unicine.util.emuns.EstadoPelicula;
+import com.unicine.util.emuns.GeneroPelicula;
+
 @Entity
 @Getter
 @Setter

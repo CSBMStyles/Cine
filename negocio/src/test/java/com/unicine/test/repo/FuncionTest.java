@@ -23,6 +23,7 @@ import com.unicine.repo.FuncionRepo;
 import com.unicine.repo.HorarioRepo;
 import com.unicine.repo.PeliculaRepo;
 import com.unicine.repo.SalaRepo;
+import com.unicine.util.emuns.FormatoPelicula;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -54,7 +55,7 @@ public class FuncionTest {
 
         Pelicula pelicula = peliculaRepo.findById(1).orElse(null);
 
-        Funcion funcion = new Funcion(6000.00, sala, horario, pelicula);
+        Funcion funcion = new Funcion(6000.00, FormatoPelicula.DOBLADO, sala, horario, pelicula);
         funcion.setCodigo(8);
 
         Funcion guardado = funcionRepo.save(funcion);

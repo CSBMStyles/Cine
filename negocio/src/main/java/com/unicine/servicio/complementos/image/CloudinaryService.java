@@ -1,4 +1,4 @@
-package com.unicine.util.image;
+package com.unicine.servicio.complementos.image;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

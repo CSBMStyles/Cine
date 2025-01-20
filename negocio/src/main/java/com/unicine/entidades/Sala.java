@@ -22,6 +22,8 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
+import com.unicine.util.emuns.TipoSala;
+
 @Entity
 @Getter
 @Setter

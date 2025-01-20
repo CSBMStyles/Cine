@@ -16,10 +16,10 @@ import com.unicine.entidades.Cliente;
 import com.unicine.entidades.Pelicula;
 import com.unicine.entidades.Coleccion;
 import com.unicine.entidades.ColeccionComposicion;
-import com.unicine.entidades.EstadoPropio;
 import com.unicine.repo.ClienteRepo;
 import com.unicine.repo.ColeccionRepo;
 import com.unicine.repo.PeliculaRepo;
+import com.unicine.util.emuns.EstadoPropio;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

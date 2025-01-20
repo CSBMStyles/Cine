@@ -56,8 +56,8 @@ public class Persona {
     @ToString.Exclude
     @NotBlank(message = "La contraseña no puede estar en blanco")
     @MultiPattern({
-        @Pattern(regexp = "\\d{8,}", message = "La contraseña debe tener al menos ocho caracteres"),
-        @Pattern(regexp = "\\d{1,200}", message = "La contraseña no puede tener más de doscientos caracteres")
+        @Pattern(regexp = ".{8,}", message = "La contraseña debe tener al menos ocho caracteres"),
+        @Pattern(regexp = ".{1,200}", message = "La contraseña no puede tener más de doscientos caracteres")
     })
     @Column(nullable = false, length = 200)
     private String password;
