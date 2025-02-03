@@ -38,21 +38,14 @@ public class DistribucionSilla implements Serializable {
     @Column(nullable = false, columnDefinition = "json")
     private String esquema;
 
-    @ToString.Exclude
-    @Column(nullable = true, columnDefinition = "json")
-    private String esquemaTemporal;
-
-    @NotNull(message = "El total de sillas no puede estar vacío")
     @PositiveOrZero(message = "El total de sillas debe ser un número positivo")
     @Column(nullable = false)
     private Integer totalSillas;
 
-    @NotNull(message = "El número de filas no puede estar vacío")
     @PositiveOrZero(message = "El número de filas debe ser un número positivo")
     @Column(nullable = false)
     private Integer filas;
 
-    @NotNull(message = "El número de columnas no puede estar vacío")
     @PositiveOrZero(message = "El número de columnas debe ser un número positivo")
     @Column(nullable = false)
     private Integer columnas;
@@ -66,11 +59,7 @@ public class DistribucionSilla implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public DistribucionSilla(String esquema, String esquemaTemporal, Integer totalSillas, Integer filas, Integer columnas) {
+    public DistribucionSilla(String esquema) {
         this.esquema = esquema;
-        this.esquemaTemporal = esquemaTemporal;
-        this.totalSillas = totalSillas;
-        this.filas = filas;
-        this.columnas = columnas;
     }
 }

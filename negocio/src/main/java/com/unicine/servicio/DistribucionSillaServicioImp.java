@@ -58,23 +58,27 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     * @param distribucion
     * @param matriz
     */
-    private void reemplazarDatos(DistribucionSilla distribucion, String[][] matriz) {
+    private void reemplazarDatos(DistribucionSilla distribucion) {
+
+        Gson gson = new Gson();
+        String[][] matriz = gson.fromJson(distribucion.getEsquema(), String[][].class);
 
         // Contar filas y columnas
         int filas = matriz.length;
         int columnas = (filas > 0) ? matriz[0].length : 0;
 
-        // Contar el total de sillas que tienen "D" usando programación funcional
+        // Contar el total de sillas que no son espacios vacíos usando programación
+        // funcional
         int totalSillas = (int) Arrays.stream(matriz)
-                .flatMap(Arrays::stream) // Convierte la matriz en un stream plano de elementos
-                .filter("D"::equals) // Filtra solo los elementos que son "D"
-                .count(); // Cuenta los elementos restantes
+                .flatMap(Arrays::stream)    // Convertir matriz a un arreglo de una dimensión
+                .filter(silla -> silla != null && !silla.trim().isEmpty()) // Filtrar sillas no vacías
+                .count();   // Contar sillas no vacías
 
         // Setear filas, columnas y total de sillas en la entidad DistribucionSilla
         distribucion.setFilas(filas);
         distribucion.setColumnas(columnas);
-        distribucion.setTotalSillas(totalSillas);        
-   }
+        distribucion.setTotalSillas(totalSillas);
+    }
 
    /**
     * Metodo para transformar un String a un Integer
@@ -90,14 +94,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     @Override
     public DistribucionSilla registrar(@Valid DistribucionSilla distribucion) throws Exception {
 
-        Gson gson = new Gson();
-        String[][] matriz = gson.fromJson(distribucion.getEsquema(), String[][].class);
-
-        reemplazarDatos(distribucion, matriz);
-
-        // Convertir la matriz de vuelta a JSON y clonar el esquema original para el temporal
-        String json = gson.toJson(matriz);
-        distribucion.setEsquemaTemporal(json);
+        reemplazarDatos(distribucion);
 
         return distribucionRepo.save(distribucion);
     }
@@ -105,14 +102,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     @Override
     public DistribucionSilla actualizar(@Valid DistribucionSilla distribucion) throws Exception {
 
-        Gson gson = new Gson();
-        String[][] matriz = gson.fromJson(distribucion.getEsquema(), String[][].class);
-
-        reemplazarDatos(distribucion, matriz);
-
-        // Convertir la matriz de vuelta a JSON y clonar el esquema original para el temporal
-        String json = gson.toJson(matriz);
-        distribucion.setEsquemaTemporal(json);
+        reemplazarDatos(distribucion);
         
         return distribucionRepo.save(distribucion);
     }

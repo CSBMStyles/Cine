@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.google.gson.Gson;
 import com.unicine.entidades.DistribucionSilla;
 import com.unicine.repo.DistribucionSillaRepo;
 
@@ -28,9 +29,23 @@ public class DistribucionSillaTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        String esquema = "esquema";
+        String[][] matriz = {
+            { " ", " ", "D", "D", "D", "D", "D", "D", " ", " " },
+            { " ", "D", "D", "D", "D", "D", "D", "D", "D", " " },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" },
+            { "D", "D", "D", "D", "D", "D", "D", "D", "D", "D" }
+        };
+        
+        Gson gson = new Gson();
+        String esquema = gson.toJson(matriz);
 
-        DistribucionSilla distribucionSilla = new DistribucionSilla(esquema, null, 60, 10, 6);
+        DistribucionSilla distribucionSilla = new DistribucionSilla(esquema);
         distribucionSilla.setCodigo(6);
 
         DistribucionSilla guardado = distribucionSillaRepo.save(distribucionSilla);
@@ -142,12 +157,11 @@ public class DistribucionSillaTest {
     @Sql("classpath:dataset.sql")
     public void obtenerDistribucionFuncion() {
 
-        Optional<DistribucionSilla> buscado = distribucionSillaRepo.obtenerDistribucionFuncion(1);
+       String buscado = distribucionSillaRepo.obtenerDistribucionFuncion(1);
 
-        Assertions.assertTrue(buscado.isPresent());
+        Assertions.assertNotNull(buscado);
 
         System.out.println("\n" + "Registro obtenido:");
 
-        System.out.println(buscado.orElse(null));
     }
 }

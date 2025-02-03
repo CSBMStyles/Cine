@@ -9,6 +9,10 @@ import jakarta.validation.Valid;
 
 public interface FuncionServicio {
 
+    // *️⃣ Funciones de Soporte
+
+    Double calcularPrecio(Double precioBase, Double descuentoDia);
+
     // 2️⃣ Funciones del Administrador de Teatro
 
     Funcion registrar(@Valid Funcion funcion) throws Exception;

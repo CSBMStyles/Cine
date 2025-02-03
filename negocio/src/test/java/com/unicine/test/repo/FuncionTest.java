@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -277,7 +278,7 @@ public class FuncionTest {
 
         LocalDateTime fechaFin = fechaRecibida.atStartOfDay().plusDays(1);
 
-        List<Funcion> funciones = funcionRepo.listarFuncionesTeatroFecha(1, LocalDateTime.now(), fechaFin);
+        List<Funcion> funciones = funcionRepo.listarFuncionesTeatroFecha(1, LocalDateTime.now(ZoneId.of("America/Bogota")), fechaFin);
 
         Assertions.assertEquals(1, funciones.size());
 

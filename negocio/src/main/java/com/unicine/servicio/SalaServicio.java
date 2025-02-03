@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Sala;
+import com.unicine.util.emuns.TipoSala;
 import com.unicine.util.validacion.atributos.SalaAtributoValidator;
 
 import jakarta.validation.Valid;
 
 public interface SalaServicio {
+
+    // *️⃣ Funciones de Soporte
+
+    Double obtenerPrecioBase(TipoSala tipoSala);
 
     // 2️⃣ Funciones del Administrador de Teatro
 

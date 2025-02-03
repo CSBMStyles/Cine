@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ClienteRepo extends JpaRepository<Cliente, Integer> {
+    
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // NOTE: Se crea un metodo para buscar un cliente por su correo la razon por la que no se usa el @Querry es porque se puede hacer una inferencia de la consulta usando el nombre del metodo y el nombre de la columna

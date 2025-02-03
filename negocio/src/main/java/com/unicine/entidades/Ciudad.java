@@ -51,6 +51,10 @@ public class Ciudad implements Serializable {
     @OneToMany(mappedBy = "ciudad", cascade = CascadeType.ALL)
     private List<Teatro> teatros;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "ciudad", cascade =  CascadeType.ALL)
+    private List<PeliculaDisposicion> peliculaDisposicion;
+
     // SECTION: Constructor
 
     @Builder

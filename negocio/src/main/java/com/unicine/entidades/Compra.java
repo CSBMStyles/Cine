@@ -26,6 +26,7 @@ import java.util.List;
 import com.unicine.util.emuns.MedioPago;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -86,7 +87,7 @@ public class Compra implements Serializable {
     @Builder
     public Compra(MedioPago medioPago, CuponCliente cuponCliente, Cliente cliente, Funcion funcion) {
         this.medioPago = medioPago;
-        this.fechaCompra = LocalDateTime.now();
+        this.fechaCompra = LocalDateTime.now(ZoneId.of("America/Bogota"));
         this.cuponCliente = cuponCliente;
         this.cliente = cliente;
         this.funcion = funcion;

@@ -1,6 +1,11 @@
 package com.unicine.servicio;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Funcion;
 import com.unicine.entidades.Horario;
+import com.unicine.entidades.Sala;
 import com.unicine.repo.FuncionRepo;
 import com.unicine.repo.HorarioRepo;
 import com.unicine.util.message.HorarioRespuesta;
@@ -25,9 +31,52 @@ public class HorarioServicioImp implements HorarioServicio {
 
     private final FuncionRepo funcionRepo;
 
+    private final Map<String, Double> descuentoDia;
+
     public HorarioServicioImp(HorarioRepo horarioRepo, FuncionRepo funcionRepo) {
         this.horarioRepo = horarioRepo;
         this.funcionRepo = funcionRepo;
+        this.descuentoDia = new HashMap<>();
+        initializeDescuentoDia();
+    }
+
+    // SECTION: Inicializacion del servicio
+
+    private void initializeDescuentoDia() {
+
+        descuentoDia.put("LUN", 0.5); // 50% de descuento
+        descuentoDia.put("MAR", 0.2); // 20% de descuento 
+        descuentoDia.put("MIE", 0.4); // 40% de descuento
+        descuentoDia.put("JUE", 0.2); // 20% de descuento
+        descuentoDia.put("VIE", 0.0); // 0% de descuento
+        descuentoDia.put("SAB", 0.0); // 0% de descuento
+        descuentoDia.put("DOM", 0.2); // 20% de descuento
+    }
+
+    /**
+     * Método para obtener el descuento segun el día de la semana
+     * @param horario
+     * @return descuento del día
+     */
+    public Double obtenerDescuentoDia(Horario horario) {
+
+        String dia = obtenerDia(horario.getFechaInicio());
+
+        return descuentoDia.get(dia);
+    }
+
+    /**
+     * Método para obtener el día de la semana
+     * @param fechaInicio
+     * @return día de la semana usando un formato de tres letras
+     */
+    public String obtenerDia(LocalDateTime fechaInicio) {
+
+        // Crear un formateador con tres letras para el día
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE", Locale.of("es"));
+
+        // Formatear la fecha, obtener el día y convertir a mayúsculas
+        return fechaInicio.format(formatter).toUpperCase();
     }
 
     // SECTION: Metodos de soporte
@@ -49,17 +98,14 @@ public class HorarioServicioImp implements HorarioServicio {
      * @param funcion solapada
      * @return respuesta conteniendo el mensaje, funcion y estado de la operación
      */
-    private HorarioRespuesta<Funcion> instanciarRespuesta(Optional<Funcion> funcionSolapada) {
+    private HorarioRespuesta<?> comprobacionRespuesta(Optional<Funcion> funcionSolapada, Horario horario) {
 
-        return new HorarioRespuesta<Funcion>("El horario se solapa con otra función", funcionSolapada.get(), false);
-    }
+        if (funcionSolapada.isPresent()) {
+            
+            return new HorarioRespuesta<Funcion>("El horario se solapa con otra función", funcionSolapada.get(), false);
+        } 
 
-    /**
-     * Funcion para instanciar la respuesta de la operación exitosa
-     * @param guardado
-     * @return respuesta conteniendo el mensaje, horario y estado de la operación
-     */
-    private HorarioRespuesta<Horario> instanciarRespuesta(Horario guardado) {
+        Horario guardado = horarioRepo.save(horario);
 
         return new HorarioRespuesta<Horario>("Horario registrado exitosamente", guardado, true);
     }
@@ -80,16 +126,11 @@ public class HorarioServicioImp implements HorarioServicio {
     // 2️⃣ Funciones del Administrador de Horario
 
     @Override
-    public HorarioRespuesta<?> registrar(@Valid Horario horario) throws Exception {
+    public HorarioRespuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception {
 
-        Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioSala(horario.getFuncion(), horario);
+        Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioSala(sala.getCodigo(), horario.getFechaInicio(), horario.getFechaFin());
 
-        if (funcionSolapada.isPresent()) {
-            return instanciarRespuesta(funcionSolapada);
-
-        } else { Horario guardado = horarioRepo.save(horario);
-            return instanciarRespuesta(guardado);
-        }
+        return comprobacionRespuesta(funcionSolapada, horario);
     }
 
     @Override

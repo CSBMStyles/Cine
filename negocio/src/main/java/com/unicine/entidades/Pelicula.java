@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,8 +63,8 @@ public class Pelicula implements Serializable {
     private String nombre;
 
     @ElementCollection
-    @Column(nullable = true, length = 150)
-    private List< @Size(max = 150, message = "Los nombres del reparto no puede tener mas de cientocincuenta caracteres") String> repartos;
+    @Column(nullable = true)
+    private Map<@Size(max = 150, message = "El rol del actor no puede tener mas de ciento cincuenta caracteres") String, @Size(max = 150, message = "El nombre del actor no puede tener mas de ciento cincuenta caracteres") String> repartos;
 
     @Lob
     @NotNull(message = "La sinopsis no puede estar vacía")
@@ -97,14 +98,18 @@ public class Pelicula implements Serializable {
     @ToString.Exclude
     @OneToMany(mappedBy = "pelicula", cascade =  CascadeType.ALL)
     private List<Coleccion> colecccion;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "pelicula", cascade =  CascadeType.ALL)
+    private List<PeliculaDisposicion> peliculaDisposicion;
     
     // SECTION: Constructor
 
     @Builder
-    public Pelicula(EstadoPelicula estado, List<GeneroPelicula> generos, Map<String, String> imagenes, String nombre, List<String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
+    public Pelicula(EstadoPelicula estado, List<GeneroPelicula> generos, Map<String, String> imagenes, String nombre, Map<String, String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
         this.estado = estado;
         this.generos = generos;
-        this.imagenes = imagenes;
+        this.imagenes = new HashMap<>(imagenes);
         this.nombre = nombre;
         this.repartos = repartos;
         this.sinopsis = sinopsis;

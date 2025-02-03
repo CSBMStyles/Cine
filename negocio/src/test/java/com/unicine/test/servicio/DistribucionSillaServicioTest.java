@@ -43,19 +43,19 @@ public class DistribucionSillaServicioTest {
         };
         
         Gson gson = new Gson();
-        String json = gson.toJson(matriz);
+        String esquema = gson.toJson(matriz);
 
-        DistribucionSilla distribucion = new DistribucionSilla(json, null, 0, 0, 0);
+        DistribucionSilla distribucion = new DistribucionSilla(esquema);
 
         try {
             DistribucionSilla nuevo = distribucionServicio.registrar(distribucion);
             
-            Assertions.assertEquals(json, nuevo.getEsquema());
+            Assertions.assertEquals(esquema, nuevo.getEsquema());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
-            Assertions.assertTrue(true);
+            Assertions.fail(e);
 
             throw new RuntimeException(e);
         }
@@ -79,18 +79,18 @@ public class DistribucionSillaServicioTest {
         };
 
         Gson gson = new Gson();
-        String json = gson.toJson(matriz);
+        String esquema = gson.toJson(matriz);
 
         try{
             DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
 
             System.out.println("\n" + "Registro antigüo:" + "\n" + distribucion);
 
-            distribucion.setEsquema(json);
+            distribucion.setEsquema(esquema);
 
             DistribucionSilla actualizado = distribucionServicio.actualizar(distribucion);
 
-            Assertions.assertEquals(json, actualizado.getEsquema());
+            Assertions.assertEquals(esquema, actualizado.getEsquema());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 

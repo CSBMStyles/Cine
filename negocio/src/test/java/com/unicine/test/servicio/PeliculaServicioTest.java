@@ -42,9 +42,10 @@ public class PeliculaServicioTest {
         generos.add(GeneroPelicula.ACCION);
 
         // Crear la lista de reparto
-        List<String> repartos = new ArrayList<>();
-        repartos.add("David Howard Thornton");
-        repartos.add("Jenna Kanell");
+        Map<String, String> repartos = new HashMap<>();
+        repartos.put("Director", "Damien Leone");
+        repartos.put("Terrifier", "David Howard");
+        repartos.put("Tara", "Jenna Kanell");
         
         EstadoPelicula estado = EstadoPelicula.CARTELERA;
         Pelicula pelicula = new Pelicula(estado, generos, imagenes, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);

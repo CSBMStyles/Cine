@@ -27,6 +27,17 @@ public class FuncionServicioImp implements FuncionServicio {
     // SECTION: Metodos de soporte
 
     /**
+     * Método para calcular el precio de la función
+     * @param precioBase
+     * @param descuentoDia
+     * @return precio de la función
+     */
+    public Double calcularPrecio(Double precioBase, Double descuentoDia) {
+
+        return precioBase - (precioBase * descuentoDia);
+    }
+
+    /**
      * Metodo para comprobar la presencia la función que se esta buscando
      * @param funcion
      */
@@ -69,7 +80,7 @@ public class FuncionServicioImp implements FuncionServicio {
     // *️⃣ Funciones Generales
 
     @Override
-    public Optional<Funcion> obtener(@Valid Integer codigo) throws Exception {
+    public Optional<Funcion> obtener(Integer codigo) throws Exception {
 
         Optional<Funcion> buscado = funcionRepo.findById(codigo);
 

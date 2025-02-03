@@ -27,18 +27,7 @@ insert into ciudad (id, nombre) values (3,"Cali");
 insert into ciudad (id, nombre) values (4,"Bogota");
 insert into ciudad (id, nombre) values (5,"Choco");
 
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (10, 8, 1, 80, '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]', '[ 
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (10, 8, 1, 80, '[ 
             [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
             [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
@@ -50,97 +39,49 @@ insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esqu
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
         ]');
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (12, 8, 2, 96, '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (12, 8, 2, 96, '[ 
+            ["D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"]
+        ]');
+
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (14, 8, 3, 112, '[ 
+            ["D", "D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"]
+        ]');
+
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (10, 8, 4, 80, '[ 
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]', '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
         ]');
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (14, 8, 3, 112, '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]', '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]');
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (10, 8, 4, 80, '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]', '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]');
-insert into distribucion_silla (columnas, filas, id, total_sillas, esquema, esquema_temporal) values (14, 8, 5, 112, '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
-        ]', '[ 
-            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+
+insert into distribucion_silla (columnas, filas, id, total_sillas, esquema) values (14, 8, 5, 112, '[ 
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D", " ", "D", "D"]
         ]');
 
 insert into teatro (administrador_teatro_cedula, ciudad_id, id, telefono, direccion) values (1119000000, 5, 1, "3185469257", "Carrera 14 # 4-6 Norte");
@@ -173,21 +114,21 @@ insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, est
 insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (4, 4.5, null, "Minions", "https://www.youtube.com/embed/W27moupirnI", "CARTELERA", "En los años 70, Gru crece siendo un gran admirador de <<Los salvajes seis>>, un supergrupo de villanos. Para demostrarles que puede ser malvado, Gru idea un plan con la esperanza de formar parte de la banda. Por suerte, cuenta con la ayuda de sus fieles seguidores, los Minions, siempre dispuestos a sembrar el caos.");
 insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (5, 4.1, 18, "Encanto", "https://www.youtube.com/embed/SAH_W9q_brE", "PREVENTA", "En lo alto de las montañas de Colombia hay un lugar encantado llamado Encanto. Aquí, en una casa mágica, vive la extraordinaria familia Madrigal donde todos tienen habilidades fantásticas.");
 
-insert into pelicula_repartos (pelicula_id, repartos) values(1, "Tom Hanks");
-insert into pelicula_repartos (pelicula_id, repartos) values(1, "Cynthia Erivo");
-insert into pelicula_repartos (pelicula_id, repartos) values(1, "Luke Evans");
-insert into pelicula_repartos (pelicula_id, repartos) values(2, "Masako Nozawa");
-insert into pelicula_repartos (pelicula_id, repartos) values(2, "Toshio Furukawa");
-insert into pelicula_repartos (pelicula_id, repartos) values(2, "Ryō Horikawa");
-insert into pelicula_repartos (pelicula_id, repartos) values(2, "Yūko Minaguchi");
-insert into pelicula_repartos (pelicula_id, repartos) values(3, "Sosie Bacon");
-insert into pelicula_repartos (pelicula_id, repartos) values(3, "Jessie T Usher");
-insert into pelicula_repartos (pelicula_id, repartos) values(4, "Sandra Bullock");
-insert into pelicula_repartos (pelicula_id, repartos) values(4, "Jon Hamm");
-insert into pelicula_repartos (pelicula_id, repartos) values(4, "Michael Keaton");
-insert into pelicula_repartos (pelicula_id, repartos) values(5, "Stephanie Beatriz");
-insert into pelicula_repartos (pelicula_id, repartos) values(5, "María Cecilia Botero");
-insert into pelicula_repartos (pelicula_id, repartos) values(5, "John Leguizamo");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(1, "Tom Hanks", "Gepetto");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(1, "Cynthia Erivo", "Hada Azul");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(1, "Luke Evans", "Cocinero");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(2, "Masako Nozawa", "Son Gohan");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(2, "Toshio Furukawa", "Picolo");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(2, "Ryō Horikawa", "Vegeta");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(2, "Yūko Minaguchi", "Pan");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(3, "Sosie Bacon", "Rose Cotter");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(3, "Jessie T Usher", "Trevor");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(4, "Steve Carell", "Gru");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(4, "Alan Arkin", "Wild Knuckles");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(4, "Michelle Yeoh", "Master Chow");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "Stephanie Beatriz", "Mirabel");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "María Cecilia Botero", "Abuela Alma");
+insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "John Leguizamo", "Bruno");
 
 insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(1, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667875113/unicine/peliculas/pinocho_wehtj2.jpg","unicine/peliculas/pinocho_wehtj2");
 insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(2, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775208/unicine/peliculas/Dragon_Ball_Super_Super_Hero_kgaa1r.jpg","unicine/peliculas/Dragon_Ball_Super_Super_Hero_kgaa1r");
@@ -217,6 +158,83 @@ insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (4, 4,
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (5, 5, 5, 7100, 2);
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (6, 6, 4, 6800, 1);
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (7, 7, 3, 10000, 1);
+
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (1, '[ 
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', 80, 0, 0, 1);
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (2, '[ 
+            ["D", "D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"]
+        ]', 96, 0, 0, 2);
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (3, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', 112, 0, 0, 3);
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (4, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', 80, 0, 0, 4);
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (5, '[ 
+            [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
+            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"]
+        ]', 112, 0, 0, 5);
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (6, '[ 
+            ["D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"]
+        ]', 96, 0, 0, 6);
+insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (7, '[ 
+            ["D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"]
+        ]', 112, 0, 0, 7);
 
 insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1009000011,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg", "unicine/clientes/cliente1_zfhe3z");
 insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1008000022,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente2_rpyvof.jpg", "unicine/clientes/cliente2_rpyvof");

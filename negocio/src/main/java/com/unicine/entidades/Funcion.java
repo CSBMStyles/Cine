@@ -56,13 +56,17 @@ public class Funcion implements Serializable {
     @NotNull(message = "La sala no puede estar vacía")
     private Sala sala;
 
-    @NotNull(message = "El horario no puede estar vacío")
     @OneToOne(cascade = CascadeType.REMOVE)
+    @NotNull(message = "El horario no puede estar vacío")
     private Horario horario;
 
     @ManyToOne
     @NotNull(message = "La película no puede estar vacía")
     private Pelicula pelicula;
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "funcion", cascade = CascadeType.REMOVE)
+    private FuncionEsquema funcionEsquema;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "funcion", cascade = CascadeType.ALL)

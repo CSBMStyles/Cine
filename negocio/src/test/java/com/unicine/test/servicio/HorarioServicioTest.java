@@ -1,7 +1,9 @@
 package com.unicine.test.servicio;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Funcion;
 import com.unicine.entidades.Horario;
+import com.unicine.entidades.Sala;
+import com.unicine.repo.FuncionRepo;
 import com.unicine.servicio.HorarioServicio;
+import com.unicine.servicio.SalaServicio;
 import com.unicine.util.message.HorarioRespuesta;
+import com.unicine.util.validacion.atributos.SalaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -23,6 +29,12 @@ public class HorarioServicioTest {
 
     @Autowired
     private HorarioServicio horarioServicio;
+
+    @Autowired
+    private SalaServicio salaServicio;
+
+    @Autowired
+    private FuncionRepo funcionRepo;
 
     // 🟩
 
@@ -35,34 +47,94 @@ public class HorarioServicioTest {
 
         Horario horario = new Horario(fechaInicio, fechaFin);
 
+        Sala sala;
+
         try {
-            HorarioRespuesta<?> nuevo = horarioServicio.registrar(horario);
+            sala = salaServicio.obtener(new SalaAtributoValidator(2)).orElse(null);
+
+            System.out.println("Sala: " + sala);
+        } catch (Exception e) {
+
+            Assertions.fail(e);
+
+            throw new RuntimeException(e);
+        }
+
+        try {
+            HorarioRespuesta<?> nuevo = horarioServicio.registrar(horario, sala);
 
             if (nuevo.getData() instanceof Funcion) {
 
-                Funcion funcion = (Funcion) nuevo.getData();
+                Funcion funcionRespuesta = (Funcion) nuevo.getData();
 
-                System.out.println(nuevo.getMensaje());
-                System.out.println("Sala: " + funcion.getSala().getNombre());
-                System.out.println("Película: " + funcion.getPelicula().getNombre());
-                System.out.println("Hora: " + funcion.getHorario().getFechaInicio());
-                System.out.println("Fin: " + funcion.getHorario().getFechaFin());
+                System.out.println("Mensaje: " + nuevo.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + nuevo.isExito());
 
-                if (!nuevo.isExito()) {
-                    throw new RuntimeException("No se puede guardar la función con el horario actual");
-                }
+            }
+            
+            if (nuevo.getData() instanceof Horario) {
 
-            } else if (nuevo.getData() instanceof Horario) {
+                Horario horarioRespuesta = (Horario) nuevo.getData();
 
-                System.out.println(nuevo.getMensaje());
-                System.out.println(nuevo.getData());
-                System.out.println(nuevo.isExito());
+                System.out.println("Mensaje: " + nuevo.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + nuevo.isExito());
             }
 
             Assertions.assertTrue(nuevo.isExito());
 
         } catch (Exception e) {
-            Assertions.assertTrue(true);
+
+            Assertions.fail(e);
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void registrarSolapado() {
+
+        LocalDateTime fechaInicio = LocalDateTime.of(2025, 12, 22, 17, 30, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2025, 12, 22, 17, 59, 00);
+
+        Horario horario = new Horario(fechaInicio, fechaFin);
+
+        Sala sala;
+
+        try {
+            sala = salaServicio.obtener(new SalaAtributoValidator(2)).orElse(null);
+
+            System.out.println("Sala: " + sala);
+        } catch (Exception e) {
+
+            Assertions.fail(e);
+
+            throw new RuntimeException(e);
+        }
+
+        // TODO: Comprobar implementacion de DTO
+
+        try {
+            HorarioRespuesta<?> nuevo = horarioServicio.registrar(horario, sala);
+
+            if (nuevo.getData() instanceof Funcion) {
+
+                Funcion funcionRespuesta = (Funcion) nuevo.getData();
+
+                System.out.println("Mensaje: " + nuevo.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + nuevo.isExito());
+
+            }
+            
+            if (nuevo.getData() instanceof Horario) {
+
+                Horario horarioRespuesta = (Horario) nuevo.getData();
+
+                System.out.println("Mensaje: " + nuevo.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + nuevo.isExito());
+            }
+
+            Assertions.assertFalse(nuevo.isExito());
+
+        } catch (Exception e) {
+
+            Assertions.fail(e);
 
             throw new RuntimeException(e);
         }
@@ -154,9 +226,13 @@ public class HorarioServicioTest {
         try {
             List<Horario> lista = horarioServicio.listar();
 
-            Assertions.assertEquals(6, lista.size());
+            Assertions.assertEquals(7, lista.size());
 
             System.out.println("\n" + "Listado de registros:");
+
+            LocalDateTime horaActual = LocalDateTime.now(ZoneId.of("America/Bogota"));
+
+            System.out.println("Hora actual: " + horaActual);
 
             lista.forEach(System.out::println);
 

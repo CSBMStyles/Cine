@@ -10,11 +10,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
+    
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
@@ -33,8 +33,8 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
      * 
      * @return funcion que se solapa
      */
-    @Query("select f from Funcion f where f.sala.codigo = :#{#funcion.sala.codigo} and not (f.horario.fechaFin < :#{#horario.fechaInicio} or f.horario.fechaInicio > :#{#horario.fechaFin})")
-    Optional<Funcion> solapaHorarioSala(@Param("funcion") Funcion funcion, @Param("horario") Horario horario);
+    @Query("select f from Funcion f join f.sala s where s.codigo = :codigoSala and not (f.horario.fechaFin < :fechaInicio or f.horario.fechaInicio > :fechaFin)")
+    Optional<Funcion> solapaHorarioSala(Integer codigoSala, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
     /**
      * Consulta para obtener las funciones de una sala
