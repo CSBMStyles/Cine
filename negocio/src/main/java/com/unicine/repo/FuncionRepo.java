@@ -30,11 +30,19 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
 
     /**
      * Verifica si existe solapamiento de horarios en una sala
-     * 
+     * @param atributos: codigo de la sala, fecha de inicio, fecha de fin
      * @return funcion que se solapa
      */
-    @Query("select f from Funcion f join f.sala s where s.codigo = :codigoSala and not (f.horario.fechaFin < :fechaInicio or f.horario.fechaInicio > :fechaFin)")
+    @Query("select f from Funcion f join f.sala s where s.codigo = :codigoSala and not (f.horario.fechaFin <= :fechaInicio or f.horario.fechaInicio >= :fechaFin)")
     Optional<Funcion> solapaHorarioSala(Integer codigoSala, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+
+    /**
+     * Verifica si existe solapamiento de horarios en una sala excluyendo el horario actual
+     * @param atributos: codigo de la sala, codigo del horario, fecha de inicio, fecha de fin
+     * @return funcion que se solapa
+     */
+    @Query("select f from Funcion f join f.horario h join f.sala s where s.codigo = :codigoSala and h.codigo != :codigoHorario and not (h.fechaFin <= :fechaInicio or h.fechaInicio >= :fechaFin)")
+    Optional<Funcion> solapaHorarioTeatro (Integer codigoSala, Integer codigoHorario, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
     /**
      * Consulta para obtener las funciones de una sala

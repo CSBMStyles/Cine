@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import com.unicine.entidades.Horario;
 import com.unicine.entidades.Sala;
-import com.unicine.util.message.HorarioRespuesta;
+import com.unicine.util.message.Respuesta;
 
 import jakarta.validation.Valid;
 
@@ -20,9 +20,9 @@ public interface HorarioServicio {
 
     // 2️⃣ Funciones del Administrador de Teatro
 
-    HorarioRespuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception;
+    Respuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception;
 
-    Horario actualizar(@Valid Horario horario) throws Exception;
+    Respuesta<?> actualizar(@Valid Horario horario) throws Exception;
 
     void eliminar(@Valid Horario horario, boolean confirmacion) throws Exception;
 

@@ -18,6 +18,6 @@ public interface DistribucionSillaRepo extends JpaRepository<DistribucionSilla, 
      * @param atributo: codigo de la funcion
      * @return distribucion de silla
      */
-    @Query("select ds.esquema from Sala s join s.distribucionSilla ds join s.funciones f where f.codigo = :codigoFuncion")
-    String obtenerDistribucionFuncion(Integer codigoFuncion);
+    @Query("select ds.esquema from DistribucionSilla ds join ds.salas s join s.funciones f where f.codigo = :codigoFuncion")
+    String obtenerEsquemaFuncion(Integer codigoFuncion);
 }

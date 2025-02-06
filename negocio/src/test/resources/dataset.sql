@@ -107,6 +107,7 @@ insert into horario (id, fecha_fin, fecha_inicio) values (4, "2025-12-17T15:00:0
 insert into horario (id, fecha_fin, fecha_inicio) values (5, "2025-12-22T18:00:00", "2025-12-22T17:00:00");
 insert into horario (id, fecha_fin, fecha_inicio) values (6, "2025-12-24T15:00:00", "2025-12-24T14:00:00");
 insert into horario (id, fecha_fin, fecha_inicio) values (7, "2025-12-24T21:00:00", "2025-12-24T20:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (8, "2025-12-24T23:00:00", "2025-12-24T22:00:00");
 
 insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (1, 4.2, 18, "Pinocho", "https://www.youtube.com/embed/TITv1TNi5mI", "PREVENTA", "En un pueblo italiano, el títere de madera Pinocho cobra vida gracias al Hada Azul. Pinocho se esfuerza por comportarse como un niño de carne y hueso, pero su vida da un giro al abandonar a su padre para unirse a un circo.");
 insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (2, 3.5, null, "Dragon Ball: Super Hero", "https://www.youtube.com/embed/lXLPVQ-WrU4", "CARTELERA", "La malvada organización Red Ribbon Army se reforma con nuevos y más poderosos androides, Gamma {1} y Gamma {2} para buscar venganza.");
@@ -158,6 +159,7 @@ insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (4, 4,
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (5, 5, 5, 7100, 2);
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (6, 6, 4, 6800, 1);
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (7, 7, 3, 10000, 1);
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (8, 8, 3, 12000, 1);
 
 insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (1, '[ 
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],

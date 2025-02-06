@@ -7,13 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class HorarioRespuesta<T> {
+public class Respuesta<T> {
 
     private String mensaje;
 
     private T data;
 
     private boolean exito;
-
-    
 }

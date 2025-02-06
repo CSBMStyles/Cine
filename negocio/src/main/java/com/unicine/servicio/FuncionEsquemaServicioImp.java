@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -27,11 +25,13 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final FuncionEsquemaRepo funcionEsquemaRepo;
 
-    private final DistribucionSillaRepo distribucionSillaRepo;
+    private final DistribucionSillaRepo distribucionRepo;
 
-    public FuncionEsquemaServicioImp(FuncionEsquemaRepo funcionEsquemaRepo, DistribucionSillaRepo distribucionSillaRepo) {
+    private final Gson gson = new Gson();
+
+    public FuncionEsquemaServicioImp(FuncionEsquemaRepo funcionEsquemaRepo, DistribucionSillaRepo distribucionRepo) {
         this.funcionEsquemaRepo = funcionEsquemaRepo;
-        this.distribucionSillaRepo = distribucionSillaRepo;
+        this.distribucionRepo = distribucionRepo;
     }
 
     // SECTION: Metodos de soporte
@@ -44,8 +44,50 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     private void validarExiste(Optional<FuncionEsquema> funcionEsquema) throws Exception {
 
         if (funcionEsquema.isEmpty()) {
-            throw new Exception("La disposicion de pelicula no existe");
+            throw new Exception("El esquma de la funcion no existe no existe");
         }
+    }
+
+    /**
+     * Metodo para obtener la funcion de sillas de una funcion
+     * 
+     * @param funcion
+     * @return
+     */
+    private String obtenerEsquema(Funcion funcion) {
+
+        return distribucionRepo.obtenerEsquemaFuncion(funcion.getCodigo());
+    }
+
+    /**
+     * Metodo para reemplazar los datos de la disposicion de la funcion
+     * 
+     * @param esquema
+     * @param funcionEsquema
+     */
+    private void reemplazarDatos(String esquema, FuncionEsquema funcionEsquema) {
+
+        // Convertir el string JSON a una matriz bidimensional de Strings
+        String[][] matriz = gson.fromJson(esquema, String[][].class);
+
+        // Iniciar conteo usando streams para procesar la matriz
+        Map<String, Integer> conteo = Arrays.stream(matriz)    // Convierte la matriz en stream
+                .flatMap(Arrays::stream)                       // Aplana la matriz a un arreglo
+                .filter(s -> s != null && !s.trim().isEmpty()) // Filtra valores nulos y vacíos
+                .collect(Collectors.groupingBy(                // Agrupa los elementos
+                        Function.identity(),                   // Usa el valor como clave
+                        Collectors.collectingAndThen(          // Transforma el resultado
+                        Collectors.counting(),                 // Cuenta ocurrencias
+                        Long::intValue)));                     // Conversion de datos
+
+        // Asinar el conteo de las sillas en mantenimiento de la funcion
+        funcionEsquema.setMantenimiento(conteo.getOrDefault("M", 0));
+        // Asignar el conteo de las sillas disponibles de la funcion
+        funcionEsquema.setDisponibles(conteo.getOrDefault("D", 0));
+        // Asignar el conteo de las sillas ocupadas de la funcion
+        funcionEsquema.setOcupadas(conteo.getOrDefault("O", 0));
+        // Asignar el esquema temporal de la funcion
+        funcionEsquema.setEsquemaTemporal(gson.toJson(matriz));
     }
 
     /**
@@ -60,41 +102,6 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
         }
    }
 
-   /**
-    * Metodo para obtener la funcion de sillas de una funcion
-    * @param funcion
-    * @return
-    */
-   private String obtenerEsquemaFuncion(Funcion funcion) {
-
-        return distribucionSillaRepo.obtenerDistribucionFuncion(funcion.getCodigo());
-    }
-
-    private void reemplazarDatos(String esquema, FuncionEsquema funcionEsquema) {
-        // Crear instancia de gson para manejar conversiones JSON
-        Gson gson = new Gson();
-        
-        // Convertir el string JSON a una matriz bidimensional de Strings
-        String[][] matriz = gson.fromJson(esquema, String[][].class);
-    
-        // Iniciar conteo usando streams para procesar la matriz
-        Map<String, Integer> conteo = Arrays.stream(matriz)         // Convierte la matriz en stream
-                .flatMap(Arrays::stream)                            // Aplana la matriz a un arreglo
-                .filter(s -> s != null && !s.trim().isEmpty())      // Filtra valores nulos y vacíos
-                .collect(Collectors.groupingBy(                     // Agrupa los elementos
-                        Function.identity(),                        // Usa el valor como clave
-                        Collectors.collectingAndThen(               // Transforma el resultado
-                            Collectors.counting(),              // Cuenta ocurrencias
-                            Long::intValue)));                  // Conversion de datos
-    
-        // Actualiza los contadores en el objeto funcionEsquema
-        funcionEsquema.setMantenimiento(conteo.getOrDefault("M", 0));
-        funcionEsquema.setDisponibles(conteo.getOrDefault("D", 0));
-        funcionEsquema.setOcupadas(conteo.getOrDefault("O", 0));
-        
-        funcionEsquema.setEsquemaTemporal(esquema);
-    }
-
     // SECTION: Implementacion de servicios
 
     // 1️⃣ Funcion del Administrador
@@ -102,13 +109,18 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     @Override
     public FuncionEsquema registrar(@Valid FuncionEsquema funcionEsquema) throws Exception { 
         
-        reemplazarDatos(obtenerEsquemaFuncion(funcionEsquema.getFuncion()), funcionEsquema);
+        reemplazarDatos(obtenerEsquema(funcionEsquema.getFuncion()), funcionEsquema);
 
         return funcionEsquemaRepo.save(funcionEsquema); 
     }
 
     @Override
-    public FuncionEsquema actualizar(@Valid FuncionEsquema funcionEsquema) throws Exception { return funcionEsquemaRepo.save(funcionEsquema); }
+    public FuncionEsquema actualizar(@Valid FuncionEsquema funcionEsquema) throws Exception { 
+        
+        reemplazarDatos(funcionEsquema.getEsquemaTemporal(), funcionEsquema);
+
+        return funcionEsquemaRepo.save(funcionEsquema); 
+    }
 
     @Override
     public void eliminar(@Valid FuncionEsquema eliminado, boolean confirmacion) throws Exception { 
@@ -132,22 +144,4 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
 
     @Override
     public List<FuncionEsquema> listar() { return funcionEsquemaRepo.findAll(); }
-
-    @Override
-    public List<FuncionEsquema> listarPaginado() { 
-
-        return funcionEsquemaRepo.findAll(PageRequest.of(0, 10)).toList();
-    }
-
-    @Override
-    public List<FuncionEsquema> listarAscendente() { 
-        
-        return funcionEsquemaRepo.findAll(Sort.by("codigo").ascending());
-    }
-
-    @Override
-    public List<FuncionEsquema> listarDescendente() { 
-        
-        return funcionEsquemaRepo.findAll(Sort.by("codigo").descending());
-    }
 }

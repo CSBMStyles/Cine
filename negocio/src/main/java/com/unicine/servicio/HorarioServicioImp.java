@@ -13,12 +13,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.unicine.dto.FuncionInterseccionDTO;
 import com.unicine.entidades.Funcion;
 import com.unicine.entidades.Horario;
 import com.unicine.entidades.Sala;
 import com.unicine.repo.FuncionRepo;
 import com.unicine.repo.HorarioRepo;
-import com.unicine.util.message.HorarioRespuesta;
+import com.unicine.util.message.Respuesta;
 
 import jakarta.validation.Valid;
 
@@ -98,16 +99,38 @@ public class HorarioServicioImp implements HorarioServicio {
      * @param funcion solapada
      * @return respuesta conteniendo el mensaje, funcion y estado de la operación
      */
-    private HorarioRespuesta<?> comprobacionRespuesta(Optional<Funcion> funcionSolapada, Horario horario) {
+    private Respuesta<?> comprobacionRespuesta(Optional<Funcion> funcionSolapada, Horario horario) {
 
         if (funcionSolapada.isPresent()) {
             
-            return new HorarioRespuesta<Funcion>("El horario se solapa con otra función", funcionSolapada.get(), false);
-        } 
+            Funcion funcion = funcionSolapada.get();
 
-        Horario guardado = horarioRepo.save(horario);
+            return new Respuesta<FuncionInterseccionDTO>("El horario se solapa con otra función", transformarDTO(funcion), false);
+        } else {
 
-        return new HorarioRespuesta<Horario>("Horario registrado exitosamente", guardado, true);
+            Horario guardado = horarioRepo.save(horario);
+
+            return new Respuesta<Horario>("Horario registrado exitosamente", guardado, true);
+        }
+    }
+
+    /**
+     * Metodo para obtener el DTO de la función que se solapa
+     * @param funcionSolapada
+     * @return DTO de la función
+     */
+    private FuncionInterseccionDTO transformarDTO(Funcion funcion) {
+
+        return new FuncionInterseccionDTO
+        (
+            funcion.getSala().getNombre(), 
+            funcion.getPelicula().getNombre(), 
+            funcion.getFormato(), 
+            funcion.getPelicula().getImagenes(), 
+            funcion.getPelicula().getGeneros(), 
+            funcion.getHorario().getFechaInicio(), 
+            funcion.getHorario().getFechaFin()
+        );
     }
 
     /**
@@ -126,7 +149,7 @@ public class HorarioServicioImp implements HorarioServicio {
     // 2️⃣ Funciones del Administrador de Horario
 
     @Override
-    public HorarioRespuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception {
+    public Respuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception {
 
         Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioSala(sala.getCodigo(), horario.getFechaInicio(), horario.getFechaFin());
 
@@ -134,9 +157,14 @@ public class HorarioServicioImp implements HorarioServicio {
     }
 
     @Override
-    public Horario actualizar(@Valid Horario horario) throws Exception {
+    public Respuesta<?> actualizar(@Valid Horario horario) throws Exception {
 
-        return horarioRepo.save(horario);
+        // Se extrae el código de la sala de la función para mayor claridad
+        Integer salaCodigo = horario.getFuncion().getSala().getCodigo();
+
+        Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioTeatro(salaCodigo, horario.getCodigo(), horario.getFechaInicio(), horario.getFechaFin());
+
+        return comprobacionRespuesta(funcionSolapada, horario);
     }
 
     @Override

@@ -22,7 +22,7 @@ import com.unicine.servicio.FuncionServicio;
 import com.unicine.servicio.HorarioServicio;
 import com.unicine.servicio.PeliculaServicio;
 import com.unicine.util.emuns.FormatoPelicula;
-import com.unicine.util.message.HorarioRespuesta;
+import com.unicine.util.message.Respuesta;
 import com.unicine.util.validacion.atributos.PeliculaAtributoValidator;
 import com.unicine.util.validacion.atributos.SalaAtributoValidator;
 
@@ -86,7 +86,7 @@ public class FuncionServicioTest {
         Double descuento = 0.0;
 
         try {
-            HorarioRespuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
 
             if (!repuestaHorario.isExito()) {
 
@@ -155,7 +155,7 @@ public class FuncionServicioTest {
 
         try {
             
-            FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(new FuncionEsquema("", 0, 0, 0, funcion));
+            FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(new FuncionEsquema(funcion));
 
             System.out.println("\n" + "Funcion esquema registrado:" + "\n" + funcionEsquema);
 

@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 
 public interface FuncionEsquemaServicio {
 
-    // 2️⃣ Funciones del Administrador de Teatro
+    // *️⃣ Funciones Automaticas
 
     FuncionEsquema registrar(@Valid FuncionEsquema funcionEsquema) throws Exception;
 
@@ -17,13 +17,9 @@ public interface FuncionEsquemaServicio {
 
     void eliminar(@Valid FuncionEsquema funcionEsquema, boolean confirmacion) throws Exception;
 
+    // *️⃣ Funciones Globales
+
     Optional<FuncionEsquema> obtener(Integer codigo) throws Exception;
 
     List<FuncionEsquema> listar();
-
-    List<FuncionEsquema> listarPaginado();
-
-    List<FuncionEsquema> listarAscendente();
-
-    List<FuncionEsquema> listarDescendente();
 }

@@ -157,11 +157,22 @@ public class DistribucionSillaTest {
     @Sql("classpath:dataset.sql")
     public void obtenerDistribucionFuncion() {
 
-       String buscado = distribucionSillaRepo.obtenerDistribucionFuncion(1);
+       String buscado = distribucionSillaRepo.obtenerEsquemaFuncion(1);
 
         Assertions.assertNotNull(buscado);
 
-        System.out.println("\n" + "Registro obtenido:");
+        Gson gson = new Gson();
+
+        String[][] matriz = gson.fromJson(buscado, String[][].class);
+
+        for (String[] fila : matriz) {
+            for (String silla : fila) {
+                System.out.print(silla + " ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("\n" + "Registro obtenido:" + "\n" + buscado);
 
     }
 }

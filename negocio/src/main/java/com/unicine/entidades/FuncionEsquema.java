@@ -32,39 +32,31 @@ public class FuncionEsquema implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El estado no puede estar vacío")
     @Column(nullable = true, columnDefinition = "json")
     private String esquemaTemporal;
 
-    @NotNull(message = "El número de sillas ocupadas no puede estar vacío")
     @PositiveOrZero(message = "El número de sillas ocupadas debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer ocupadas;
 
-    @NotNull(message = "El número de sillas disponibles no puede estar vacío")
     @PositiveOrZero(message = "El número de sillas disponibles debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer disponibles;
 
-    @NotNull(message = "El número de sillas en mantenimiento no puede estar vacío")
     @PositiveOrZero(message = "El número de sillas en mantenimiento debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer mantenimiento;
 
     // SECTION: Relaciones
 
+    @NotNull(message = "La función no estar vacía")
     @OneToOne
-    @NotNull(message = "La función no puede estar vacía")
     private Funcion funcion;
     
     // SECTION: Constructor
 
     @Builder
-    public FuncionEsquema(String esquemaTemporal, Integer ocupadas, Integer disponibles, Integer mantenimiento, Funcion funcion) {
-        this.esquemaTemporal = esquemaTemporal;
-        this.ocupadas = ocupadas;
-        this.disponibles = disponibles;
-        this.mantenimiento = mantenimiento;
+    public FuncionEsquema(Funcion funcion) {
         this.funcion = funcion;
     }
 }
