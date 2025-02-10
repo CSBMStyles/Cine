@@ -40,13 +40,12 @@ public class Funcion implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El precio no puede estar vacío")
     @PositiveOrZero(message = "El precio debe ser un número positivo")
     @Column(nullable = false)
     private Double precio;
 
     @NotNull(message = "El formato no puede estar vacío")
-    @Column (nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private FormatoPelicula formato;
 
@@ -75,8 +74,7 @@ public class Funcion implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public Funcion(Double precio, FormatoPelicula formato, Sala sala, Horario horario, Pelicula pelicula) {
-        this.precio = precio;
+    public Funcion(FormatoPelicula formato, Sala sala, Horario horario, Pelicula pelicula) {
         this.formato = formato;
         this.sala = sala;
         this.horario = horario;

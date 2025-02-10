@@ -14,8 +14,8 @@ import com.unicine.servicio.CiudadServicio;
 import com.unicine.servicio.PeliculaDisposicionServicio;
 import com.unicine.servicio.PeliculaServicio;
 import com.unicine.util.emuns.EstadoPelicula;
-import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
-import com.unicine.util.validacion.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validaciones.atributos.CiudadAtributoValidator;
+import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
 import java.util.List;
 
@@ -42,24 +42,16 @@ public class PeliculaDisposicionServicioTest {
         Pelicula pelicula;
         try {
             pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
-        } catch (Exception e) {
-            
-            Assertions.assertTrue(false);
 
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         // Obtenemos la ciudad apartir de una lista, puede automatizarse para que se seleccione la ciudad por apartir del administrador que lo crea y su ubicacion
         Ciudad ciudad;
         try {
             ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
-        } catch (Exception e) {
 
-            Assertions.assertTrue(false);
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            throw new RuntimeException(e);
-        }
-        
         PeliculaDisposicion peliculaDisposicion = new PeliculaDisposicion(estado, pelicula, ciudad);
 
         try {
@@ -69,12 +61,8 @@ public class PeliculaDisposicionServicioTest {
             
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
-        } catch (Exception e) {
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
@@ -91,31 +79,26 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) {
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminar() {
+        
         Integer codigo = 1;
 
         try {
             PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
+
             peliculaDisposicionServicio.eliminar(peliculaDisposicion, true);
             
             Assertions.assertThrows(Exception.class, () -> {
                 peliculaDisposicionServicio.obtener(codigo);
             });
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
     @Test
@@ -131,12 +114,8 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + peliculaDisposicion);
 
-        } catch (Exception e) {
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
@@ -148,10 +127,8 @@ public class PeliculaDisposicionServicioTest {
             System.out.println("\n" + "Listado de registros:");
             lista.forEach(System.out::println);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
+
     }
 
     @Test
@@ -171,11 +148,7 @@ public class PeliculaDisposicionServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) {
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.AdministradorTeatro;
 import com.unicine.repo.AdministradorTeatroRepo;
-import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
+import com.unicine.util.validaciones.atributos.PersonaAtributoValidator;
 
 import jakarta.validation.Valid;
 

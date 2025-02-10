@@ -1,8 +1,11 @@
 package com.unicine.servicio;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -10,7 +13,8 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Pelicula;
 import com.unicine.repo.PeliculaRepo;
-import com.unicine.util.validacion.atributos.PeliculaAtributoValidator;
+import com.unicine.servicio.complementos.image.CloudinaryService;
+import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -20,6 +24,10 @@ public class PeliculaServicioImp implements PeliculaServicio {
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final PeliculaRepo peliculaRepo;
+
+    @Autowired
+    private CloudinaryService cloudinaryService; // Inyecta el servicio de Cloudinary
+
 
     public PeliculaServicioImp(PeliculaRepo peliculaRepo) {
         this.peliculaRepo = peliculaRepo;
@@ -76,6 +84,24 @@ public class PeliculaServicioImp implements PeliculaServicio {
     }
 
     /**
+     * Método para subir una imagen a Cloudinary e ingresarle los valores de la imagen guardada
+     * @param pelicula
+     * @param imagen
+     */
+    @SuppressWarnings("unchecked")
+    private void subirImagen(Pelicula pelicula, File imagen) throws Exception {
+
+        Map<String, String> respuesta = cloudinaryService.subirImagen(imagen, "peliculas");
+
+        // Obtener la URL de la imagen subida
+        String urlImagen = respuesta.get("url");
+        String publicId = respuesta.get("public_id");
+
+        // Actualizar la entidad Pelicula con la URL de la imagen
+        pelicula.getImagenes().put(publicId, urlImagen);    // Guardamos el public id como clave y la URL como valor
+    }
+
+    /**
      * Metodo para validar la confirmacion de la eliminacion
      * @param confirmacion
      */
@@ -91,9 +117,10 @@ public class PeliculaServicioImp implements PeliculaServicio {
     // 1️⃣ Funciones del Administrador
 
     @Override
-    public Pelicula registrar(@Valid Pelicula pelicula) throws Exception { 
+    public Pelicula registrar(@Valid Pelicula pelicula, File imagen) throws Exception { 
 
         validarExisteNombre(pelicula);
+        subirImagen(pelicula, imagen);
 
         return peliculaRepo.save(pelicula);
     }

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.unicine.entidades.Sala;
 import com.unicine.util.emuns.TipoSala;
-import com.unicine.util.validacion.atributos.SalaAtributoValidator;
+import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
 
 import jakarta.validation.Valid;
 

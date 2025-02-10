@@ -14,7 +14,7 @@ public interface HorarioServicio {
 
     // *️⃣ Funciones de Soporte
 
-    Double obtenerDescuentoDia(Horario horario);
+    Double obtenerDescuentoDia(LocalDateTime fechaInicio);
 
     String obtenerDia(LocalDateTime fechaInicio);
 

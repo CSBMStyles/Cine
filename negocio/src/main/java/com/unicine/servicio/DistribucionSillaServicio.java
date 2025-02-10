@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.DistribucionSilla;
-import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
+import com.unicine.util.validaciones.atributos.DistribucionAtributoValidator;
 
 import jakarta.validation.Valid;
 

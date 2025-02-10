@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entidades.Ciudad;
 import com.unicine.servicio.CiudadServicio;
-import com.unicine.util.validacion.atributos.CiudadAtributoValidator;
+import com.unicine.util.validaciones.atributos.CiudadAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 

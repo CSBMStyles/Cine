@@ -64,7 +64,8 @@ public class Pelicula implements Serializable {
 
     @ElementCollection
     @Column(nullable = true)
-    private Map<@Size(max = 150, message = "El rol del actor no puede tener mas de ciento cincuenta caracteres") String, @Size(max = 150, message = "El nombre del actor no puede tener mas de ciento cincuenta caracteres") String> repartos;
+    private Map<@Size(max = 150, message = "El rol del actor no puede tener mas de ciento cincuenta caracteres") String, 
+                @Size(max = 150, message = "El nombre del actor no puede tener mas de ciento cincuenta caracteres") String> repartos;
 
     @Lob
     @NotNull(message = "La sinopsis no puede estar vacía")
@@ -72,6 +73,7 @@ public class Pelicula implements Serializable {
     private String sinopsis;
 
     @ElementCollection
+    @NotNull(message = "Las imágenes no pueden estar vacías")
     @Column(nullable = false)
     private Map<String, String> imagenes;
 

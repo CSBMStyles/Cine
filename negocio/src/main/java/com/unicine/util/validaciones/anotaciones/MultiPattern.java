@@ -1,4 +1,4 @@
-package com.unicine.util.validacion.anotaciones;
+package com.unicine.util.validaciones.anotaciones;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

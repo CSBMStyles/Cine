@@ -152,14 +152,14 @@ insert into pelicula_generos (generos, pelicula_id) values (9, 5);
 insert into pelicula_generos (generos, pelicula_id) values (10, 5);
 insert into pelicula_generos (generos, pelicula_id) values (12, 5);
 
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (1, 1, 1, 7000, 6);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (2, 2, 2, 6500, 5);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (3, 3, 3, 6800, 4);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (4, 4, 4, 6800, 3);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (5, 5, 5, 7100, 2);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (6, 6, 4, 6800, 1);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (7, 7, 3, 10000, 1);
-insert into funcion (horario_id, id, pelicula_id, precio, sala_id) values (8, 8, 3, 12000, 1);
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (1, 1, 1, 7000, 6, "DOBLADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (2, 2, 2, 6500, 5, "SUBTITULADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (3, 3, 3, 6800, 4, "DOBLADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (4, 4, 4, 6800, 3, "SUBTITULADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (5, 5, 5, 7100, 2, "DOBLADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (6, 6, 4, 6800, 1, "SUBTITULADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (7, 7, 3, 10000, 1, "DOBLADO");
+insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (8, 8, 3, 12000, 1, "SUBTITULADO");
 
 insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (1, '[ 
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],

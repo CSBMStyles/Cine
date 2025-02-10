@@ -1,5 +1,6 @@
 package com.unicine.test.servicio;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import com.unicine.entidades.Pelicula;
 import com.unicine.servicio.PeliculaServicio;
 import com.unicine.util.emuns.EstadoPelicula;
 import com.unicine.util.emuns.GeneroPelicula;
-import com.unicine.util.validacion.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -34,8 +35,10 @@ public class PeliculaServicioTest {
     public void registrar() {
 
         // Creamos un mapa de imágenes
+        File imagen = new File("C:/Users/ASUS/Documents/Herramientas/Proyectos/Codigo/Java/unicine-z/n" + //
+                        "egocio/src/test/resources/Terrifier.png");
+
         Map<String, String> imagenes = new HashMap<>();
-        imagenes.put("http://example.com/imagen-1.jpg", "perfil");
 
         // Crear la lista de generos
         List<GeneroPelicula> generos = new ArrayList<>();
@@ -51,7 +54,7 @@ public class PeliculaServicioTest {
         Pelicula pelicula = new Pelicula(estado, generos, imagenes, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
 
         try {
-            Pelicula nuevo = peliculaServicio.registrar(pelicula);
+            Pelicula nuevo = peliculaServicio.registrar(pelicula, imagen);
             
             Assertions.assertEquals("Terrifier", nuevo.getNombre());
 
@@ -74,6 +77,7 @@ public class PeliculaServicioTest {
             Pelicula pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
 
             pelicula.setRestriccionEdad(edad);
+            pelicula.getGeneros().add(GeneroPelicula.TERROR);
 
             Pelicula actualizado = peliculaServicio.actualizar(pelicula);
 
@@ -149,16 +153,16 @@ public class PeliculaServicioTest {
     @Sql("classpath:dataset.sql")
     public void obtenerNombres() {
 
-        String nombre = "Bogota";
+        String nombre = "P";
 
         try {
-            List<Pelicula> ciudades = peliculaServicio.obtenerNombrePeliculas(new PeliculaAtributoValidator(nombre));
+            List<Pelicula> peliculas = peliculaServicio.obtenerNombrePeliculas(new PeliculaAtributoValidator(nombre));
 
-            Assertions.assertEquals(1, ciudades.size());
+            Assertions.assertEquals(2, peliculas.size());
 
             System.out.println("\n" + "Listado de registros:");
 
-            ciudades.forEach(System.out::println);
+            peliculas.forEach(System.out::println);
 
         } catch (Exception e) {
             Assertions.assertTrue(true);

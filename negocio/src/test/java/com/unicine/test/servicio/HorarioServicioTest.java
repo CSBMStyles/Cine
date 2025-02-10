@@ -18,7 +18,7 @@ import com.unicine.entidades.Sala;
 import com.unicine.servicio.HorarioServicio;
 import com.unicine.servicio.SalaServicio;
 import com.unicine.util.message.Respuesta;
-import com.unicine.util.validacion.atributos.SalaAtributoValidator;
+import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 

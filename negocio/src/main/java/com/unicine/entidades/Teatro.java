@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unicine.util.validacion.anotaciones.MultiPattern;
+import com.unicine.util.validaciones.anotaciones.MultiPattern;
 
 @Entity
 @Getter

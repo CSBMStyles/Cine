@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Cliente;
 import com.unicine.repo.ClienteRepo;
-import com.unicine.util.validacion.atributos.PersonaAtributoValidator;
+import com.unicine.util.validaciones.atributos.PersonaAtributoValidator;
 
 import jakarta.validation.Valid;
 

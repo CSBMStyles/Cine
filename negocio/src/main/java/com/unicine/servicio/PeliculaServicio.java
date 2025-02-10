@@ -1,10 +1,11 @@
 package com.unicine.servicio;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Pelicula;
-import com.unicine.util.validacion.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -12,7 +13,7 @@ public interface PeliculaServicio {
 
     // 1️⃣ Funciones del Administrador
 
-    Pelicula registrar(@Valid Pelicula pelicula) throws Exception;
+    Pelicula registrar(@Valid Pelicula pelicula, File imagen) throws Exception;
 
     Pelicula actualizar(@Valid Pelicula pelicula) throws Exception;
 

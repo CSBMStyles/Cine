@@ -161,17 +161,6 @@ public class DistribucionSillaTest {
 
         Assertions.assertNotNull(buscado);
 
-        Gson gson = new Gson();
-
-        String[][] matriz = gson.fromJson(buscado, String[][].class);
-
-        for (String[] fila : matriz) {
-            for (String silla : fila) {
-                System.out.print(silla + " ");
-            }
-            System.out.println();
-        }
-
         System.out.println("\n" + "Registro obtenido:" + "\n" + buscado);
 
     }

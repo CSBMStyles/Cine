@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Funcion;
+import com.unicine.entidades.Horario;
+import com.unicine.entidades.Sala;
 
 import jakarta.validation.Valid;
 
@@ -11,7 +13,7 @@ public interface FuncionServicio {
 
     // *️⃣ Funciones de Soporte
 
-    Double calcularPrecio(Double precioBase, Double descuentoDia);
+    Double calcularPrecio(Sala sala, Horario horario);
 
     // 2️⃣ Funciones del Administrador de Teatro
 

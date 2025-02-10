@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import com.unicine.util.validacion.anotaciones.MultiPattern;
+import com.unicine.util.validaciones.anotaciones.MultiPattern;
 
 @Entity
 @Getter

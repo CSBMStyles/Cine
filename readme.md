@@ -16,7 +16,8 @@ Descarge la ultima version del programa: `MySQL` [🔗](https://www.mysql.com/).
 > [!IMPORTANT]
 > 1. Realize el proceso de instalación normalmente llegando al punto donde pregunte por el método de autenticación marque Legacy Authentication Method (MySQL 5.x Compatibility).
 
-![Configuración de autenticación MySQL](assets/images/mysql-auth-config.png)
+![Configuración de autenticación MySQL](readme/images/mysql.png)
+
 
 > [!NOTE]
 > 2, Es necesario asignarle al root una contraseña que en caso de no hacerlo puede presentar problemar en la configuracion del archivo: `application.properties` [🔗](https://github.com/CSBMStyles/Cine/blob/main/negocio/src/main/resources/application.properties) o de otro tipo.

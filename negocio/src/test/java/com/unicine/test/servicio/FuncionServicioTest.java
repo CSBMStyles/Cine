@@ -23,8 +23,8 @@ import com.unicine.servicio.HorarioServicio;
 import com.unicine.servicio.PeliculaServicio;
 import com.unicine.util.emuns.FormatoPelicula;
 import com.unicine.util.message.Respuesta;
-import com.unicine.util.validacion.atributos.PeliculaAtributoValidator;
-import com.unicine.util.validacion.atributos.SalaAtributoValidator;
+import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -57,24 +57,14 @@ public class FuncionServicioTest {
 
         Sala sala;
 
-        Double precioBase;
-
         try {
             sala = salaServicio.obtener(new SalaAtributoValidator(5)).orElse(null);
 
-            precioBase = salaServicio.obtenerPrecioBase(sala.getTipoSala());
-
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
-            System.out.println("\n" + "Precio base de la sala:" + "\n" + precioBase);
 
             Assertions.assertNotNull(sala);
 
-        } catch (Exception e) {
-
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
 
@@ -82,8 +72,6 @@ public class FuncionServicioTest {
         LocalDateTime fechaFin = LocalDateTime.of(2025, 12, 30, 22, 00);
 
         Horario horario = null;
-
-        Double descuento = 0.0;
 
         try {
             Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
@@ -97,22 +85,13 @@ public class FuncionServicioTest {
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
-            descuento = horarioServicio.obtenerDescuentoDia(horario);
-
             System.out.println("\n" + "Horario creado:" + "\n" + horario);
 
             System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
 
-            System.out.println("\n" + "Descuento del dia:" + "\n" + descuento);
-
             Assertions.assertTrue(repuestaHorario.isExito());
 
-        } catch (Exception e) {
-            
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
 
@@ -125,31 +104,19 @@ public class FuncionServicioTest {
 
             Assertions.assertNotNull(pelicula);
 
-        } catch (Exception e) {
-
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         Funcion funcion;
         
         try {
 
-            Double precio = funcionServicio.calcularPrecio(precioBase, descuento);
-
-            funcion = funcionServicio.registrar(new Funcion(precio, FormatoPelicula.DOBLADO, sala, horario, pelicula));
+            funcion = funcionServicio.registrar(new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula));
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 
             Assertions.assertNotNull(funcion);
 
-        } catch (Exception e) {
-
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
 
@@ -162,53 +129,153 @@ public class FuncionServicioTest {
             Assertions.assertNotNull(funcionEsquema);
 
 
-        } catch (Exception e) {
-
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
-/*     @Test
+    @Test
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
+        // NOTE: El administrador cuando actualiza tiene la posibilidad de modificar la referencia del horario, sala y pelicula, entonces en una interfaz tenemos una lista y selecciona una que lo reemplaza.
+        
+        // Primero obtenemos la funcion a actualizar.
+
+        Funcion funcion;
+
+        try {
+            funcion = funcionServicio.obtener(1).orElse(null);
+
+            System.out.println("\n" + "Registro encontrado:" + "\n" + funcion);
+
+            Assertions.assertEquals(1, funcion.getCodigo());
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        boolean modificarSala = true; // Tomamos el codigo de la sala que se desea cambiar.
+
+        boolean modificaHorario = true; // En caso que modifique el horario
+
+        // En caso que modifique el la sala necesitamos recalcular el precio de la funcion.
+
+        funcion.setFormato(FormatoPelicula.SUBTITULADO);
+
+        if (modificarSala) {
+
+            try {
+                
+                Sala sala = salaServicio.obtener(new SalaAtributoValidator(3)).orElse(null);
+
+                funcion.setSala(sala);
+
+                System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
+
+                Assertions.assertNotNull(sala);
+
+            } catch (Exception e) { throw new RuntimeException(e); }
+        }
+
+        if (modificaHorario) {
+
+            Horario horario = funcion.getHorario();
+
+            System.out.println("\n" + "Horario antes de modificar:" + "\n" + horario);
+
+            try {
+
+                LocalDateTime fechaInicio = LocalDateTime.of(2025, 12, 14, 05, 30);
+
+                horario.setFechaInicio(fechaInicio);
+
+                Respuesta<?> repuestaHorario = horarioServicio.actualizar(horario);
+    
+                if (!repuestaHorario.isExito()) {
+    
+                    Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
+                }
+    
+                horario = (Horario) repuestaHorario.getData();
+    
+                String dia = horarioServicio.obtenerDia(horario.getFechaInicio());
+    
+                System.out.println("\n" + "Horario actualizado:" + "\n" + horario);
+    
+                System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
+    
+                funcion.setHorario(horario);
+    
+                Assertions.assertTrue(repuestaHorario.isExito());
+    
+            } catch (Exception e) { throw new RuntimeException(e); }
+        }
+
+        try {
+
+            Funcion actualizado = funcionServicio.actualizar(funcion);
+
+            Assertions.assertNotNull(actualizado);
+
+            System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        Integer codigo = 1;
+        Integer codigoFuncion = 1;
 
-        TeatroAtributoValidator validator = new TeatroAtributoValidator(codigo.toString());
+        Integer codigoHorario;
 
-        Teatro teatro;
+        Integer codigoEsquema;
+
+        Funcion funcion;
 
         try {
-            teatro = funcionServicio.obtener(validator).orElse(null);
+            funcion = funcionServicio.obtener(codigoFuncion).orElse(null);
+
+            System.out.println("\n" + "Registro encontrado:" + "\n" + funcion);
+
+            System.out.println("\n" + "Horario:" + "\n" + funcion.getHorario().getCodigo());
+
+            System.out.println("\n" + "Funcion de Esquema:" + "\n" + funcion.getFuncionEsquema().getCodigo());
+
+            codigoHorario = funcion.getHorario().getCodigo();
+
+            codigoEsquema = funcion.getFuncionEsquema().getCodigo();
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        try {
+            funcionServicio.eliminar(funcion, true);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        try {
+            funcionServicio.obtener(codigoFuncion);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
 
-            throw new RuntimeException(e);
+            Assertions.assertThrows(Exception.class, () -> {throw e;});
+
+            System.out.println(e.getMessage());
         }
 
         try {
-            funcionServicio.eliminar(teatro, true);
+            horarioServicio.obtener(codigoHorario);
 
         } catch (Exception e) {
-            Assertions.assertTrue(false);
 
-            throw new RuntimeException(e);
+            Assertions.assertThrows(Exception.class, () -> {throw e;});
+
+            System.out.println(e.getMessage());
         }
 
         try {
-            funcionServicio.obtener(validator);
+            funcionEsquemaServicio.obtener(codigoEsquema);
 
         } catch (Exception e) {
-            // Realizamos una validacion de la prueba para aceptar que el teatro fue eliminado mendiante la excepcion del metodo de obtener
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -222,18 +289,14 @@ public class FuncionServicioTest {
         Integer codigo = 1;
 
         try {
-            Teatro teatro = funcionServicio.obtener(new TeatroAtributoValidator(codigo.toString())).orElse(null);
+            Funcion funcion = funcionServicio.obtener(1).orElse(null);
 
-            Assertions.assertEquals(codigo, teatro.getCodigo());
+            Assertions.assertEquals(codigo, funcion.getCodigo());
 
-            System.out.println("\n" + "Registro encontrado:" + "\n" + teatro);
+            System.out.println("\n" + "Registro encontrado:" + "\n" + funcion);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
-    } */
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -248,10 +311,22 @@ public class FuncionServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
 
-            throw new RuntimeException(e);
-        }
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void listarPaginado() {
+
+        try {
+            List<Funcion> lista = funcionServicio.listarPaginado();
+
+            Assertions.assertEquals(5, lista.size());
+
+            System.out.println("\n" + "Listado de registros paginado:");
+
+            lista.forEach(System.out::println);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 }

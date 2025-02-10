@@ -3,12 +3,15 @@ package com.unicine.servicio;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entidades.Funcion;
+import com.unicine.entidades.Horario;
+import com.unicine.entidades.Sala;
 import com.unicine.repo.FuncionRepo;
 
 import jakarta.validation.Valid;
@@ -19,6 +22,12 @@ public class FuncionServicioImp implements FuncionServicio {
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final FuncionRepo funcionRepo;
+
+    @Autowired
+    private SalaServicio salaServicio;
+
+    @Autowired
+    private HorarioServicio horarioServicio;
 
     public FuncionServicioImp(FuncionRepo funcionRepo) {
         this.funcionRepo = funcionRepo;
@@ -32,9 +41,20 @@ public class FuncionServicioImp implements FuncionServicio {
      * @param descuentoDia
      * @return precio de la función
      */
-    public Double calcularPrecio(Double precioBase, Double descuentoDia) {
+    public Double calcularPrecio(Sala sala, Horario horario) { 
+        
+        Double precioBase = salaServicio.obtenerPrecioBase(sala.getTipoSala());
 
-        return precioBase - (precioBase * descuentoDia);
+        Double descuentoDia = horarioServicio.obtenerDescuentoDia(horario.getFechaInicio());
+
+        return precioBase - (precioBase * descuentoDia); }
+
+    /** */
+    public void reemplazarPrecio(Funcion funcion) {
+
+        Double precio = calcularPrecio(funcion.getSala(), funcion.getHorario());
+
+        funcion.setPrecio(precio);
     }
 
     /**
@@ -64,10 +84,19 @@ public class FuncionServicioImp implements FuncionServicio {
     // 2️⃣ Funciones del Administrador de Teatro
 
     @Override
-    public Funcion registrar(@Valid Funcion funcion) throws Exception { return funcionRepo.save(funcion); }
+    public Funcion registrar(@Valid Funcion funcion) throws Exception { 
+        
+        reemplazarPrecio(funcion);
+
+        return funcionRepo.save(funcion); }
 
     @Override
-    public Funcion actualizar(@Valid Funcion funcion) throws Exception { return funcionRepo.save(funcion); }
+    public Funcion actualizar(@Valid Funcion funcion) throws Exception { 
+        
+        reemplazarPrecio(funcion);
+
+        return funcionRepo.save(funcion); 
+    }
 
     @Override
     public void eliminar(@Valid Funcion eliminado, boolean confirmacion) throws Exception { 
@@ -95,7 +124,7 @@ public class FuncionServicioImp implements FuncionServicio {
     @Override
     public List<Funcion> listarPaginado() { 
 
-        return funcionRepo.findAll(PageRequest.of(0, 10)).toList();
+        return funcionRepo.findAll(PageRequest.of(0, 5, Sort.by("codigo").ascending())).toList();
     }
 
     @Override

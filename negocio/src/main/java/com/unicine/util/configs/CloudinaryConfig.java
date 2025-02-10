@@ -1,4 +1,4 @@
-package com.unicine.util.config;
+package com.unicine.util.configs;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

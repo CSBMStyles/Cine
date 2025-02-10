@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entidades.Teatro;
-import com.unicine.util.validacion.atributos.TeatroAtributoValidator;
+import com.unicine.util.validaciones.atributos.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;
 

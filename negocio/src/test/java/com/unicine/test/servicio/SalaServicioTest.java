@@ -18,9 +18,9 @@ import com.unicine.servicio.DistribucionSillaServicio;
 import com.unicine.servicio.SalaServicio;
 import com.unicine.servicio.TeatroServicio;
 import com.unicine.util.emuns.TipoSala;
-import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
-import com.unicine.util.validacion.atributos.SalaAtributoValidator;
-import com.unicine.util.validacion.atributos.TeatroAtributoValidator;
+import com.unicine.util.validaciones.atributos.DistribucionAtributoValidator;
+import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
+import com.unicine.util.validaciones.atributos.TeatroAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -48,22 +48,15 @@ public class SalaServicioTest {
         try {
             teatro = teatroServicio.obtener(new TeatroAtributoValidator("1")).orElse(null);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         DistribucionSilla distribucionSilla;
         
         try {
             distribucionSilla = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            throw new RuntimeException(e);
-        }
 
         // Creacion del sala
 
@@ -76,11 +69,7 @@ public class SalaServicioTest {
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
     @Test
@@ -100,11 +89,8 @@ public class SalaServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            throw new RuntimeException(e);
-        }
     }
 
     @Test
@@ -118,26 +104,18 @@ public class SalaServicioTest {
         try {
             sala = salaServicio.obtener(validator).orElse(null);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         try {
             salaServicio.eliminar(sala, true);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         try {
             salaServicio.obtener(validator);
 
         } catch (Exception e) {
-            // Realizamos una validacion de la prueba para aceptar que el sala fue eliminado mendiante la excepcion del metodo de obtener
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -157,11 +135,7 @@ public class SalaServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + sala);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
     @Test
@@ -177,11 +151,8 @@ public class SalaServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(false);
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            throw new RuntimeException(e);
-        }
     }
 
     // 🟥
@@ -205,6 +176,7 @@ public class SalaServicioTest {
             System.out.println("\n" + "Registros:" + "\n" + salas);
 
         } catch (Exception e) {
+            
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());

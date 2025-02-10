@@ -44,7 +44,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     private void validarExiste(Optional<FuncionEsquema> funcionEsquema) throws Exception {
 
         if (funcionEsquema.isEmpty()) {
-            throw new Exception("El esquma de la funcion no existe no existe");
+            throw new Exception("El esquema de la funcion no existe");
         }
     }
 

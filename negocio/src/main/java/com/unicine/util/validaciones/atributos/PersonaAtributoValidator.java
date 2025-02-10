@@ -1,6 +1,6 @@
-package com.unicine.util.validacion.atributos;
+package com.unicine.util.validaciones.atributos;
 
-import com.unicine.util.validacion.anotaciones.MultiPattern;
+import com.unicine.util.validaciones.anotaciones.MultiPattern;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

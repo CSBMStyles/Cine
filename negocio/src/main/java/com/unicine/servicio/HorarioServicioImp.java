@@ -2,10 +2,8 @@ package com.unicine.servicio;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +17,7 @@ import com.unicine.entidades.Horario;
 import com.unicine.entidades.Sala;
 import com.unicine.repo.FuncionRepo;
 import com.unicine.repo.HorarioRepo;
+import com.unicine.util.componets.HorarioDescuentoInit;
 import com.unicine.util.message.Respuesta;
 
 import jakarta.validation.Valid;
@@ -32,26 +31,12 @@ public class HorarioServicioImp implements HorarioServicio {
 
     private final FuncionRepo funcionRepo;
 
-    private final Map<String, Double> descuentoDia;
+    private final HorarioDescuentoInit descuentoInitializer;
 
-    public HorarioServicioImp(HorarioRepo horarioRepo, FuncionRepo funcionRepo) {
+    public HorarioServicioImp(HorarioRepo horarioRepo, FuncionRepo funcionRepo, HorarioDescuentoInit descuentoInitializer) {
         this.horarioRepo = horarioRepo;
         this.funcionRepo = funcionRepo;
-        this.descuentoDia = new HashMap<>();
-        initializeDescuentoDia();
-    }
-
-    // SECTION: Inicializacion del servicio
-
-    private void initializeDescuentoDia() {
-
-        descuentoDia.put("LUN", 0.5); // 50% de descuento
-        descuentoDia.put("MAR", 0.2); // 20% de descuento 
-        descuentoDia.put("MIE", 0.4); // 40% de descuento
-        descuentoDia.put("JUE", 0.2); // 20% de descuento
-        descuentoDia.put("VIE", 0.0); // 0% de descuento
-        descuentoDia.put("SAB", 0.0); // 0% de descuento
-        descuentoDia.put("DOM", 0.2); // 20% de descuento
+        this.descuentoInitializer = descuentoInitializer;
     }
 
     /**
@@ -59,11 +44,12 @@ public class HorarioServicioImp implements HorarioServicio {
      * @param horario
      * @return descuento del día
      */
-    public Double obtenerDescuentoDia(Horario horario) {
+    @Override
+    public Double obtenerDescuentoDia(LocalDateTime fechaInicio) {
 
-        String dia = obtenerDia(horario.getFechaInicio());
+        String dia = obtenerDia(fechaInicio);
 
-        return descuentoDia.get(dia);
+        return descuentoInitializer.obtenerDescuento(dia);
     }
 
     /**
@@ -71,6 +57,7 @@ public class HorarioServicioImp implements HorarioServicio {
      * @param fechaInicio
      * @return día de la semana usando un formato de tres letras
      */
+    @Override
     public String obtenerDia(LocalDateTime fechaInicio) {
 
         // Crear un formateador con tres letras para el día

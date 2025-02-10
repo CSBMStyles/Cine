@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.unicine.entidades.DistribucionSilla;
 import com.unicine.servicio.DistribucionSillaServicio;
-import com.unicine.util.validacion.atributos.DistribucionAtributoValidator;
+import com.unicine.util.validaciones.atributos.DistribucionAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
