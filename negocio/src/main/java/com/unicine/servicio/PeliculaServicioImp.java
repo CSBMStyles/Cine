@@ -1,6 +1,7 @@
 package com.unicine.servicio;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,10 +11,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entidades.Pelicula;
 import com.unicine.repo.PeliculaRepo;
-import com.unicine.servicio.complementos.image.CloudinaryService;
+import com.unicine.servicio.complementos.image.ImageKitService;
 import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
@@ -26,7 +28,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private final PeliculaRepo peliculaRepo;
 
     @Autowired
-    private CloudinaryService cloudinaryService; // Inyecta el servicio de Cloudinary
+    private ImageKitService imageKitService;
 
 
     public PeliculaServicioImp(PeliculaRepo peliculaRepo) {
@@ -88,17 +90,26 @@ public class PeliculaServicioImp implements PeliculaServicio {
      * @param pelicula
      * @param imagen
      */
-    @SuppressWarnings("unchecked")
     private void subirImagen(Pelicula pelicula, File imagen) throws Exception {
+        /* try {
+            Map<String, String> respuesta = imageKitService.subirImagen(
+                new MockMultipartFile(
+                    imagen.getName(),
+                    imagen.getName(),
+                    Files.probeContentType(imagen.toPath()),
+                    Files.readAllBytes(imagen.toPath())
+                ),
+                "peliculas"
+            );
 
-        Map<String, String> respuesta = cloudinaryService.subirImagen(imagen, "peliculas");
-
-        // Obtener la URL de la imagen subida
-        String urlImagen = respuesta.get("url");
-        String publicId = respuesta.get("public_id");
-
-        // Actualizar la entidad Pelicula con la URL de la imagen
-        pelicula.getImagenes().put(publicId, urlImagen);    // Guardamos el public id como clave y la URL como valor
+            pelicula.getImagenes().put(
+                respuesta.get("fileId"), // Usar fileId como clave
+                respuesta.get("url")
+            );
+            
+        } catch (IOException e) {
+            throw new Exception("Error subiendo imagen: " + e.getMessage());
+        } */
     }
 
     /**

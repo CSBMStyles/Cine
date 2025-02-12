@@ -35,8 +35,7 @@ public class PeliculaServicioTest {
     public void registrar() {
 
         // Creamos un mapa de imágenes
-        File imagen = new File("C:/Users/ASUS/Documents/Herramientas/Proyectos/Codigo/Java/unicine-z/n" + //
-                        "egocio/src/test/resources/Terrifier.png");
+        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.jpg");
 
         Map<String, String> imagenes = new HashMap<>();
 
