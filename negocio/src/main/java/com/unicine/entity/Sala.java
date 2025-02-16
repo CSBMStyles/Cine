@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unicine.util.emuns.TipoSala;
+import com.unicine.enumeration.TipoSala;
 
 @Entity
 @Getter

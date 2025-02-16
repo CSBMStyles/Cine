@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;

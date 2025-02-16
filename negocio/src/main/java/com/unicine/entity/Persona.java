@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 /* NOTE: La clase Persona funciona como padre para la clase Administrador, AdministradorTeatro, y Cliente. Esta no se refleja como entidad por la estategia aplicada en las hijas para la herencia */
 

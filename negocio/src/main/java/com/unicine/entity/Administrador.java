@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 /* NOTE: Clase que extiende de la clase Persona obteniendo sus atributos, en la base de datos aparece a causa de que es entidad */
 

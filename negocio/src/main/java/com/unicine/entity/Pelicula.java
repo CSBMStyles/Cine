@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
@@ -29,8 +29,8 @@ import java.util.Map;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import com.unicine.util.emuns.EstadoPelicula;
-import com.unicine.util.emuns.GeneroPelicula;
+import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.enumeration.GeneroPelicula;
 
 @Entity
 @Getter
@@ -73,7 +73,6 @@ public class Pelicula implements Serializable {
     private String sinopsis;
 
     @ElementCollection
-    @NotNull(message = "Las imágenes no pueden estar vacías")
     @Column(nullable = false)
     private Map<String, String> imagenes;
 
@@ -108,10 +107,10 @@ public class Pelicula implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public Pelicula(EstadoPelicula estado, List<GeneroPelicula> generos, Map<String, String> imagenes, String nombre, Map<String, String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
+    public Pelicula(EstadoPelicula estado, List<GeneroPelicula> generos, String nombre, Map<String, String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
         this.estado = estado;
         this.generos = generos;
-        this.imagenes = new HashMap<>(imagenes);
+        this.imagenes = new HashMap<>();
         this.nombre = nombre;
         this.repartos = repartos;
         this.sinopsis = sinopsis;

@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
-import com.unicine.util.emuns.EstadoPropio;
+import com.unicine.enumeration.EstadoPropio;
 
 @Entity
 @Getter

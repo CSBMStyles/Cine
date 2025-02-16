@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unicine.util.emuns.MedioPago;
+import com.unicine.enumeration.MedioPago;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

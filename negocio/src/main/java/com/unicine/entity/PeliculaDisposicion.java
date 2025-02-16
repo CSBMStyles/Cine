@@ -1,4 +1,4 @@
-package com.unicine.entidades;
+package com.unicine.entity;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -15,7 +15,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
-import com.unicine.util.emuns.EstadoPelicula;
+import com.unicine.enumeration.EstadoPelicula;
 
 @Entity
 @Getter

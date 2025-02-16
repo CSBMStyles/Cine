@@ -131,7 +131,7 @@ insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "S
 insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "María Cecilia Botero", "Abuela Alma");
 insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "John Leguizamo", "Bruno");
 
-insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(1, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667875113/unicine/peliculas/pinocho_wehtj2.jpg","unicine/peliculas/pinocho_wehtj2");
+insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(1, "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/DSC_9462.webp","67aea76d432c476416d2dd46");
 insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(2, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775208/unicine/peliculas/Dragon_Ball_Super_Super_Hero_kgaa1r.jpg","unicine/peliculas/Dragon_Ball_Super_Super_Hero_kgaa1r");
 insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(3, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775212/unicine/peliculas/Smile_dl13uz.jpg","unicine/peliculas/Smile_dl13uz");
 insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(4, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775203/unicine/peliculas/Minions_gqwkoe.jpg","unicine/peliculas/Minions_gqwkoe");
