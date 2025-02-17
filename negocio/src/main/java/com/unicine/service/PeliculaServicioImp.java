@@ -17,7 +17,6 @@ import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
 import io.imagekit.sdk.models.results.Result;
-import io.imagekit.sdk.models.results.ResultRenameFile;
 import jakarta.validation.Valid;
 
 @Service
@@ -86,19 +85,14 @@ public class PeliculaServicioImp implements PeliculaServicio {
     }
 
     /**
-     * Método para subir una imagen a imagekit e ingresarle los valores de la imagen guardada
+     * Método para reasignar los datos de la imagen
      * @param pelicula
-     * @param imagen
+     * @param result
      */
-    private void subirImagen(Pelicula pelicula, File imagen) throws Exception {
- 
-        // Subir la imagen a imagekit
-        Result result = imageKitService.subirImagen(imagen, "peliculas/" + pelicula.getNombre());
+    private void reasignarDatos(Pelicula pelicula, Result result) {
 
         // Extraer la respuesta en forma de mapa
         Map<String, Object> respuesta = result.getResponseMetaData().getMap();
-
-        // Extraer la URL y el public_id del mapa
 
         String publicId = (String) respuesta.get("fileId");
 
@@ -108,24 +102,27 @@ public class PeliculaServicioImp implements PeliculaServicio {
         pelicula.getImagenes().put(publicId, urlImagen);
     }
 
+    /**
+     * Método para subir una imagen a imagekit e ingresarle los valores de la imagen guardada
+     * @param pelicula
+     * @param imagen
+     */
+    private void subirImagen(Pelicula pelicula, File imagen) throws Exception {
+ 
+        // Subir la imagen a imagekit
+        Result result = imageKitService.subirImagen(imagen, "peliculas/" + pelicula.getNombre());
 
-    private void actualizarImagen(Pelicula pelicula, File imagen, String idAntiguo) throws Exception {
+        reasignarDatos(pelicula, result);
+    }
+
+
+    private void actualizarImagen(Pelicula pelicula, File imagen, String imagenAntiguo) throws Exception {
         
         if (imagen != null) {
             // Subir la imagen a imagekit
-            ResultRenameFile result = imageKitService.actualizarImagen(imagen, idAntiguo, "peliculas/" + pelicula.getNombre());
+            Result result = imageKitService.actualizarImagen(imagen, imagenAntiguo, "peliculas/" + pelicula.getNombre());
 
-            // Extraer la respuesta en forma de mapa
-            Map<String, Object> respuesta = result.getResponseMetaData().getMap();
-
-            // Extraer la URL y el public_id del mapa
-
-            String publicId = (String) respuesta.get("fileId");
-
-            String urlImagen = (String) respuesta.get("url");
-            
-            // Actualizar la entidad
-            pelicula.getImagenes().put(publicId, urlImagen);
+            reasignarDatos(pelicula, result);
         }
     }
 

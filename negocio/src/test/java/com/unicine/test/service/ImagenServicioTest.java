@@ -2,16 +2,22 @@ package com.unicine.test.service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import java.awt.FileDialog;
+import java.awt.Frame;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Window;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import com.unicine.entity.Pelicula;
 import com.unicine.enumeration.EstadoPelicula;
@@ -26,51 +32,36 @@ import io.imagekit.sdk.models.results.ResultList;
 
 @SpringBootTest
 @Transactional
-public class PeliculaServicioTest {
-
-    @Autowired
-    private PeliculaServicio peliculaServicio;
+public class ImagenServicioTest {
 
     @Autowired
     private ImageKitService imageKitService;
+
+    @Autowired
+    private PeliculaServicio peliculaServicio;
 
     // 🟩
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void registrar() {
+    public void subirImagenPelicula() {
 
         // Creamos un mapa de imágenes
-        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.jpg");
+        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.JPG");
 
-        // Crear la lista de generos
-        List<GeneroPelicula> generos = new ArrayList<>();
-        generos.add(GeneroPelicula.ACCION);
-
-        // Crear la lista de reparto
-        Map<String, String> repartos = new HashMap<>();
-        repartos.put("Director", "Damien Leone");
-        repartos.put("Terrifier", "David Howard");
-        repartos.put("Tara", "Jenna Kanell");
-        
-        EstadoPelicula estado = EstadoPelicula.CARTELERA;
-        Pelicula pelicula = new Pelicula(estado, generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
+        Pelicula entidad;
 
         try {
-            Pelicula nuevo = peliculaServicio.registrar(pelicula, imagen);
-            
-            Assertions.assertEquals("Terrifier", nuevo.getNombre());
+            entidad = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+        } catch (Exception e) { throw new RuntimeException(e); }
 
-            System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
-
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
+        try {
+            imageKitService.subirImagen(imagen, "peliculas/" + entidad.getNombre());
+        } catch (Exception e) { throw new RuntimeException(e); }
+        System.out.println(imagen);
     }
 
-    @Test
+    /* @Test
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
@@ -92,8 +83,6 @@ public class PeliculaServicioTest {
         String fileIdSeleccionado = "67b243a4432c476416f7ff91";
 
         try {
-
-            /* peliculaServicio.subirImagen(pelicula, imagen); */
 
             Pelicula actualizado = peliculaServicio.actualizar(pelicula, imagen, fileIdSeleccionado);
 
@@ -219,7 +208,7 @@ public class PeliculaServicioTest {
 
             throw new RuntimeException(e);
         }
-    }
+    } */
 
 
 }

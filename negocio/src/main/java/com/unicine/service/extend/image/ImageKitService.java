@@ -21,9 +21,10 @@ import com.unicine.util.config.ImageKitConfig;
 import io.imagekit.sdk.ImageKit;
 import io.imagekit.sdk.config.Configuration;
 import io.imagekit.sdk.models.FileCreateRequest;
+import io.imagekit.sdk.models.GetFileListRequest;
 import io.imagekit.sdk.models.RenameFileRequest;
 import io.imagekit.sdk.models.results.Result;
-import io.imagekit.sdk.models.results.ResultRenameFile;
+import io.imagekit.sdk.models.results.ResultList;
 import jakarta.annotation.PostConstruct;
 
 @Service
@@ -53,7 +54,9 @@ public class ImageKitService {
      * @return Nombre del archivo sin la extensión.
      */
     private String borrarExtension(String fileName) {
+
         int index = fileName.lastIndexOf('.');
+        
         return index > 0 ? fileName.substring(0, index) : fileName;
     }
 
@@ -67,25 +70,34 @@ public class ImageKitService {
     private byte[] convertirWebp(File file, float quality) throws IOException {
 
         // Se lee la imagen original
-        BufferedImage image = ImageIO.read(file);
-        if (image == null) {
-            throw new RuntimeException("No se pudo leer la imagen: " + file.getAbsolutePath());
-        } // Eliminar este bloque en caso que no se identifique la imagen el Buffered es el que lanza la Exception
+        BufferedImage image;
+
+        try {
+            image = ImageIO.read(file);
+
+        } catch (Exception e) {
+
+            throw new IOException("Error al leer la imagen: " + file.getAbsolutePath());
+        }
         
         // Se prepara un stream para almacenar la imagen convertida
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
         // Se obtiene un escritor compatible con el formato webp
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("webp");
+
         if (!writers.hasNext()) {
+
             throw new RuntimeException("No se encontró un writer para el formato webp");
         }
         
         // Se selecciona el primer escritor disponible
         ImageWriter writer = writers.next();
+
         try (ImageOutputStream ios = ImageIO.createImageOutputStream(baos)) {
             // Se establece el stream de salida para el escritor
             writer.setOutput(ios);
+
             ImageWriteParam param = writer.getDefaultWriteParam();
             
             // Si el escritor soporta compresión, se establece la calidad
@@ -111,25 +123,6 @@ public class ImageKitService {
         }
         // Se retorna la imagen convertida como un arreglo de bytes
         return baos.toByteArray();
-    }
-
-
-    /**
-     * Método para obtener los datos de una imagen en el servidor de imageKit.io
-     * 
-     * @param fileId
-     * @return Resultado de la consulta de la imagen
-     */
-    public Result obtenerDatosImagen(String fileId) throws IOException {
-
-        try {
-            Result result = ImageKit.getInstance().getFileDetail(fileId);
-            return result;
-
-        } catch (Exception e) {
-
-            throw new IOException("Error al obtener los datos de la imagen: " + e.getMessage());
-        }
     }
 
     /**
@@ -168,7 +161,7 @@ public class ImageKitService {
      * @param folder
      * @return resultado de la actualización de la imagen
      */
-    public ResultRenameFile actualizarImagen(File fileActual, String fileIdAntiguo, String folder) throws IOException {
+    public Result actualizarImagen(File fileActual, String fileIdAntiguo, String folder) throws IOException {
 
         Result datosAntiguo = obtenerDatosImagen(fileIdAntiguo);
 
@@ -197,9 +190,10 @@ public class ImageKitService {
         renameRequest.setPurgeCache(true);
 
         try {
-                   ImageKit.getInstance().upload(request);
+                   imageKit.upload(request);
 
-            return ImageKit.getInstance().renameFile(renameRequest);
+                   imageKit.renameFile(renameRequest);
+            return obtenerDatosImagen(fileIdAntiguo);
 
         } catch (Exception e) {
 
@@ -224,6 +218,51 @@ public class ImageKitService {
         } catch (Exception e) {
 
             throw new IOException("Error al eliminar la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para obtener los datos de una imagen en el servidor de imageKit.io
+     * 
+     * @param fileId
+     * @return Resultado de la consulta de la imagen
+     */
+    public Result obtenerDatosImagen(String fileId) throws IOException {
+
+        try {
+            Result result = imageKit.getFileDetail(fileId);
+            return result;
+
+        } catch (Exception e) {
+
+            throw new IOException("Error al obtener los datos de la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método para listar las imágenes en una carpeta del servidor de imageKit.io
+     * 
+     * @param folderPath
+     * @return Resultado de la lista de imágenes
+     */
+    public ResultList  listarImagenes(String folderPath) throws IOException {
+
+        GetFileListRequest getFileListRequest = new GetFileListRequest();
+
+        getFileListRequest.setPath("/" + folderPath);
+        getFileListRequest.setFileType("all");
+
+        getFileListRequest.setSort("ASC_CREATED");
+
+
+        try {
+            ResultList  result = imageKit.getFileList(getFileListRequest);
+
+            return result;
+
+        } catch (Exception e) {
+
+            throw new IOException("Error al listar las imagenes: " + e.getMessage());
         }
     }
 }
