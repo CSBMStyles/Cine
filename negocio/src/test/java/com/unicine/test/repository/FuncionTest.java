@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.unicine.entity.Funcion;
 import com.unicine.entity.Horario;
@@ -24,7 +25,9 @@ import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.HorarioRepo;
 import com.unicine.repository.PeliculaRepo;
 import com.unicine.repository.SalaRepo;
-import com.unicine.transfer.DetalleFuncionesDTO;
+import com.unicine.transfer.data.DetalleFuncionesDTO;
+import com.unicine.transfer.mapper.FuncionMapper;
+import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -246,13 +249,18 @@ public class FuncionTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarDetallesFunciones() {
-        List<DetalleFuncionesDTO> detalle = funcionRepo.listarDetallesFunciones(1);
+        List<DetalleFuncionesProjection> detalle = funcionRepo.listarDetallesFunciones(1);
 
         Assertions.assertEquals(1, detalle.size());
 
         System.out.println("\n" + "Listado de detalles de funciones:");
 
-        detalle.forEach(System.out::println);
+        // Mapeamos manualmente cada proyección a nuestro DTO
+        List<DetalleFuncionesDTO> dtos = detalle.stream().map(FuncionMapper::convertirDTO).collect(Collectors.toList());
+
+        System.out.println("\nListado de detalles de funciones (DTO):");
+        
+        dtos.forEach(dto -> System.out.println(dto.getNombrePelicula()));                                           
     }
 
     @Test

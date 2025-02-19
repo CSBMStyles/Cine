@@ -16,7 +16,7 @@ import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
 import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.HorarioRepo;
-import com.unicine.transfer.FuncionInterseccionDTO;
+import com.unicine.transfer.data.FuncionInterseccionDTO;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 import com.unicine.util.option.Respuesta;
 

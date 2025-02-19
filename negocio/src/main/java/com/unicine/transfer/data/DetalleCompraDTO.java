@@ -1,4 +1,4 @@
-package com.unicine.transfer;
+package com.unicine.transfer.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

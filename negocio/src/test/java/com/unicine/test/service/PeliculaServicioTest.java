@@ -57,7 +57,7 @@ public class PeliculaServicioTest {
         Pelicula pelicula = new Pelicula(estado, generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
 
         try {
-            Pelicula nuevo = peliculaServicio.registrar(pelicula, imagen);
+            Pelicula nuevo = peliculaServicio.registrar(pelicula);
             
             Assertions.assertEquals("Terrifier", nuevo.getNombre());
 
@@ -93,9 +93,7 @@ public class PeliculaServicioTest {
 
         try {
 
-            /* peliculaServicio.subirImagen(pelicula, imagen); */
-
-            Pelicula actualizado = peliculaServicio.actualizar(pelicula, imagen, fileIdSeleccionado);
+            Pelicula actualizado = peliculaServicio.actualizar(pelicula);
 
             Assertions.assertEquals(20, actualizado.getRestriccionEdad());
 

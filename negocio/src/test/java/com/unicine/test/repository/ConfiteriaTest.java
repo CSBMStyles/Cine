@@ -1,8 +1,6 @@
 package com.unicine.test.repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -30,11 +28,7 @@ public class ConfiteriaTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        // Creamos un mapa de imágenes
-        Map<String, String> imagenes = new HashMap<>();
-        imagenes.put("http://example.com/imagen-1.jpg", "perfil");
-
-        Confiteria confiteria = new Confiteria("Papas Fritas", 5000.00, imagenes);
+        Confiteria confiteria = new Confiteria("Papas Fritas", 5000.00);
         confiteria.setCodigo(6);
 
         Confiteria guardado = confiteriaRepo.save(confiteria);

@@ -23,7 +23,7 @@ import com.unicine.entity.Pelicula;
 import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
 import com.unicine.repository.PeliculaRepo;
-import com.unicine.transfer.DetallePeliculaHorarioDTO;
+import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -50,12 +50,9 @@ public class PeliculaTest {
         repartos.put("Terrifier", "David Howard");
         repartos.put("Tara", "Jenna Kanell");
 
-        
         EstadoPelicula estado = EstadoPelicula.CARTELERA;
         Pelicula pelicula = new Pelicula(estado, generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
         pelicula.setCodigo(6);
-
-        pelicula.getImagenes().put("http://example.com/imagen-1.jpg", "perfil");
 
         Pelicula guardado = peliculaRepo.save(pelicula);
 

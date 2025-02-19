@@ -1,9 +1,9 @@
-package com.unicine.transfer;
+package com.unicine.transfer.data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
+import com.unicine.entity.Imagen;
 import com.unicine.enumeration.FormatoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
 
@@ -24,7 +24,7 @@ public class FuncionInterseccionDTO {
 
     private FormatoPelicula formato;
 
-    private Map<String, String> imagenesPelicula;
+    private List<Imagen> imagen;
 
     private List<GeneroPelicula> generos;
 

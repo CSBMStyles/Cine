@@ -21,6 +21,13 @@ insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo,
 insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1006000044, 1, "2002-01-06", "Martinez", "Maria", "maria@gmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
 insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1005000055, 0, "1991-12-18", "Lopez", "Luisa", "luisa@google.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
 
+insert into cliente_telefonos (cliente_cedula, telefonos) values (1009000011, "3146832477");
+insert into cliente_telefonos (cliente_cedula, telefonos) values (1009000011, "3008245984");
+insert into cliente_telefonos (cliente_cedula, telefonos) values (1008000022, "3176857415");
+insert into cliente_telefonos (cliente_cedula, telefonos) values (1007000033, "3126845287");
+insert into cliente_telefonos (cliente_cedula, telefonos) values (1006000044, "3139847645");
+insert into cliente_telefonos (cliente_cedula, telefonos) values (1005000055, "3101036478");
+
 insert into ciudad (id, nombre) values (1,"Armenia");
 insert into ciudad (id, nombre) values (2,"Pereira");
 insert into ciudad (id, nombre) values (3,"Cali");
@@ -131,12 +138,6 @@ insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "S
 insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "María Cecilia Botero", "Abuela Alma");
 insert into pelicula_repartos (pelicula_id, repartos, repartos_key) values(5, "John Leguizamo", "Bruno");
 
-insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(1, "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/DSC_3672","67b243a4432c476416f7ff91");
-insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(2, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775208/unicine/peliculas/Dragon_Ball_Super_Super_Hero_kgaa1r.jpg","unicine/peliculas/Dragon_Ball_Super_Super_Hero_kgaa1r");
-insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(3, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775212/unicine/peliculas/Smile_dl13uz.jpg","unicine/peliculas/Smile_dl13uz");
-insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(4, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775203/unicine/peliculas/Minions_gqwkoe.jpg","unicine/peliculas/Minions_gqwkoe");
-insert into pelicula_imagenes (pelicula_id, imagenes, imagenes_key) values(5, "https://res.cloudinary.com/dwu4xtiun/image/upload/v1667775197/unicine/peliculas/Encanto_fhr4vu.jpg","unicine/peliculas/Encanto_fhr4vu");
-
 insert into pelicula_generos (generos, pelicula_id) values (1, 1);
 insert into pelicula_generos (generos, pelicula_id) values (2, 1);
 insert into pelicula_generos (generos, pelicula_id) values (4, 1);
@@ -238,21 +239,14 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
             ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"]
         ]', 112, 0, 0, 7);
 
-insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1009000011,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente1_zfhe3z.jpg", "unicine/clientes/cliente1_zfhe3z");
-insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1008000022,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente2_rpyvof.jpg", "unicine/clientes/cliente2_rpyvof");
-insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1007000033,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente3_nad9sh.jpg", "unicine/clientes/cliente3_nad9sh");
-insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1006000044,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668100350/unicine/clientes/cliente4_jspbf9.jpg", "unicine/clientes/cliente4_jspbf9");
-insert into cliente_imagenes (cliente_cedula, imagenes, imagenes_key) values (1005000055,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1668099880/unicine/clientes/cliente5_akhhrd.jpg", "unicine/clientes/cliente5_akhhrd");
-
-insert into cliente_telefonos (cliente_cedula, telefonos) values (1009000011, "3146832477");
-insert into cliente_telefonos (cliente_cedula, telefonos) values (1009000011, "3008245984");
-insert into cliente_telefonos (cliente_cedula, telefonos) values (1008000022, "3176857415");
-insert into cliente_telefonos (cliente_cedula, telefonos) values (1007000033, "3126845287");
-insert into cliente_telefonos (cliente_cedula, telefonos) values (1006000044, "3139847645");
-insert into cliente_telefonos (cliente_cedula, telefonos) values (1005000055, "3101036478");
-
 insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.15, 1, "2022-12-25T20:00:00", "Primer registro", "Cupon del 15% de descuento por registrarse por primera vez en nuestra plataforma");
 insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.1, 2, "2022-12-19T15:45:00", "Primera compra", "Cupon del 10% de descuento por realizar una primera compra por medio de nuestra plataforma");
+
+insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1005000055, 1, 1, 1);
+insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000044, 2, 0, 2);
+insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000044, 1, 1, 3);
+insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1007000033, 2, 1, 4);
+insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1008000022, 1, 0, 5);
 
 insert into confiteria (id, precio, nombre) values (1, 15000, "Combo para Niños");
 insert into confiteria (id, precio, nombre) values (2, 49900, "Combo para Pareja");
@@ -260,17 +254,7 @@ insert into confiteria (id, precio, nombre) values (3, 29800, "Crispeta + Dos Ga
 insert into confiteria (id, precio, nombre) values (4, 19900, "Gaseosa + Perro Caliente + Crispeta + KitKat");
 insert into confiteria (id, precio, nombre) values (5, 6000, "Nevado de Arequipe");
 
-insert into confiteria_imagenes (confiteria_id, imagenes, imagenes_key) values (1,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1667927564/unicine/confiteria/combo_ni%C3%B1os_ydpbay.jpg", "unicine/confiteria/combo_ni%C3%B1os_ydpbay");
-insert into confiteria_imagenes (confiteria_id, imagenes, imagenes_key) values (2,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1667927565/unicine/confiteria/combo_para_dos_r5rvxp.jpg", "unicine/confiteria/combo_para_dos_r5rvxp");
-insert into confiteria_imagenes (confiteria_id, imagenes, imagenes_key) values (3,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1667927564/unicine/confiteria/crispeta_2gaseosas_vnrpli.jpg", "unicine/confiteria/crispeta_2gaseosas_vnrpli");
-insert into confiteria_imagenes (confiteria_id, imagenes, imagenes_key) values (4,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1667927565/unicine/confiteria/combo_para_dos_r5rvxp.jpg", "unicine/confiteria/combo_para_dos_r5rvxp");
-insert into confiteria_imagenes (confiteria_id, imagenes, imagenes_key) values (5,"https://res.cloudinary.com/dwu4xtiun/image/upload/v1667927565/unicine/confiteria/nevado_arequipe_afpfeo.jpg", "unicine/confiteria/nevado_arequipe_afpfeo");
-
-insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1005000055, 1, 1, 1);
-insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000044, 2, 0, 2);
-insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000044, 1, 1, 3);
-insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1007000033, 2, 1, 4);
-insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1008000022, 1, 0, 5);
+insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67b243a4432c476416f7ff91", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/DSC_3672", null, 1, null);
 
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI");
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1007000033, 2, 5, 2, 59800, "2024-12-15T14:47:41", "2024-12-15T20:00:00", "VISA");

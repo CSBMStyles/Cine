@@ -1,7 +1,7 @@
 package com.unicine.repository;
 
 import com.unicine.entity.Entrada;
-import com.unicine.transfer.DetalleSillaDTO;
+import com.unicine.transfer.data.DetalleSillaDTO;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
-    String direccion = "com.unicine.transfer";
+    String direccion = "com.unicine.transfer.data";
 
     // SECTION: Relacion con compra
 

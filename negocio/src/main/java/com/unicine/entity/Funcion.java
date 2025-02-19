@@ -55,7 +55,7 @@ public class Funcion implements Serializable {
     @NotNull(message = "La sala no puede estar vacía")
     private Sala sala;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull(message = "El horario no puede estar vacío")
     private Horario horario;
 
@@ -64,7 +64,7 @@ public class Funcion implements Serializable {
     private Pelicula pelicula;
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "funcion", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "funcion", cascade = CascadeType.ALL)
     private FuncionEsquema funcionEsquema;
 
     @ToString.Exclude

@@ -16,7 +16,7 @@ import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
 import com.unicine.service.HorarioServicio;
 import com.unicine.service.SalaServicio;
-import com.unicine.transfer.FuncionInterseccionDTO;
+import com.unicine.transfer.data.FuncionInterseccionDTO;
 import com.unicine.util.option.Respuesta;
 import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
 

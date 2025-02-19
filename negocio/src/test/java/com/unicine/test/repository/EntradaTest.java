@@ -15,7 +15,7 @@ import com.unicine.entity.Compra;
 import com.unicine.entity.Entrada;
 import com.unicine.repository.CompraRepo;
 import com.unicine.repository.EntradaRepo;
-import com.unicine.transfer.DetalleSillaDTO;
+import com.unicine.transfer.data.DetalleSillaDTO;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
+import com.unicine.entity.interfa.Imagenable;
 import com.unicine.util.validaciones.anotaciones.MultiPattern;
 
 @Entity
@@ -30,7 +30,7 @@ import com.unicine.util.validaciones.anotaciones.MultiPattern;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Cliente extends Persona implements Serializable {
+public class Cliente extends Persona implements Serializable, Imagenable {
 
     // SECTION: Atributos
 
@@ -80,4 +80,8 @@ public class Cliente extends Persona implements Serializable {
         this.telefonos = telefonos;
     }
 
+    @Override
+    public String getFolderPrefix() {
+        return "clientes";
+    }
 }

@@ -1,6 +1,5 @@
 package com.unicine.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +12,9 @@ public interface PeliculaServicio {
 
     // 1️⃣ Funciones del Administrador
 
-    Pelicula registrar(@Valid Pelicula pelicula, File imagen) throws Exception;
+    Pelicula registrar(@Valid Pelicula pelicula) throws Exception;
 
-    Pelicula actualizar(@Valid Pelicula pelicula, File imagen, String fileIdAntiguo) throws Exception;
+    Pelicula actualizar(@Valid Pelicula pelicula) throws Exception;
 
     void eliminar(@Valid Pelicula pelicula, boolean confirmacion) throws Exception;
 

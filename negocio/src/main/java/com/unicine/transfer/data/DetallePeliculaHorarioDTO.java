@@ -1,4 +1,4 @@
-package com.unicine.transfer;
+package com.unicine.transfer.data;
 
 import com.unicine.entity.Horario;
 import com.unicine.entity.Pelicula;

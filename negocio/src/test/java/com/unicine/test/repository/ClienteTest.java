@@ -2,8 +2,6 @@ package com.unicine.test.repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -34,17 +32,13 @@ public class ClienteTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        // Creamos un mapa de imágenes
-        Map<String, String> imagenes = new HashMap<>();
-        imagenes.put("http://example.com/imagen-1.jpg", "perfil");
-
         // Crear la lista de teléfonos
         ArrayList<String> telefonos = new ArrayList<>();
         telefonos.add("3160369165");
 
         LocalDate fechaNacimiento = LocalDate.of(1990, 10, 10);
 
-        Cliente cliente = new Cliente(1004000066, "Juan", "Parra", "juan@gmail.com", "78!Kz9'Aovr1>`A5", false, fechaNacimiento, imagenes, telefonos);
+        Cliente cliente = new Cliente(1004000066, "Juan", "Parra", "juan@gmail.com", "78!Kz9'Aovr1>`A5", false, fechaNacimiento, telefonos);
 
         Cliente guardado = clienteRepo.save(cliente);
 

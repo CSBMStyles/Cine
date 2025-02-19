@@ -2,9 +2,7 @@ package com.unicine.test.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -85,17 +83,13 @@ public class ClienteServicioTest {
 
         Integer cedula = 1004000066;
 
-         // Creamos un mapa de imágenes
-        Map<String, String> imagenes = new HashMap<>();
-        imagenes.put("http://example.com/imagen-1.jpg", "perfil");
-
         // Crear la lista de teléfonos
         ArrayList<String> telefonos = new ArrayList<>();
         telefonos.add("3160369165");
 
         LocalDate fechaNacimiento = LocalDate.of(1990, 10, 10);
 
-        Cliente cliente = new Cliente(cedula, "Juan", "Parra", "juan@gmail.com", "78!Kz9'Aovr1>`A5", false, fechaNacimiento, imagenes, telefonos);
+        Cliente cliente = new Cliente(cedula, "Juan", "Parra", "juan@gmail.com", "78!Kz9'Aovr1>`A5", false, fechaNacimiento, telefonos);
 
         try {
             Cliente nuevo = clienteServicio.registrar(cliente);

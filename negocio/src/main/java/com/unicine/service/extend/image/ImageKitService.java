@@ -56,7 +56,7 @@ public class ImageKitService {
     private String borrarExtension(String fileName) {
 
         int index = fileName.lastIndexOf('.');
-        
+
         return index > 0 ? fileName.substring(0, index) : fileName;
     }
 
@@ -67,7 +67,7 @@ public class ImageKitService {
      * @param quality Calidad de la imagen
      * @return
      */
-    private byte[] convertirWebp(File file, float quality) throws IOException {
+    private byte[] convertirFormato(File file, float quality) throws IOException {
 
         // Se lee la imagen original
         BufferedImage image;
@@ -135,18 +135,15 @@ public class ImageKitService {
     public Result subirImagen(File file, String folder) throws IOException {
 
         // Convertir la imagen a formato webp conservando el setenta por ciento de calidad
-        byte[] fileData = convertirWebp(file, 0.7f);
         
-        FileCreateRequest request = new FileCreateRequest(fileData, borrarExtension(file.getName()));
+        FileCreateRequest request = new FileCreateRequest(convertirFormato(file, 0.7f), borrarExtension(file.getName()));
 
         request.setFolder("unicine/" + folder);
         request.setUseUniqueFileName(false);
         
         // Realiza la subida
         try {
-            Result result = ImageKit.getInstance().upload(request);
-            System.out.println(result);
-            return result;
+            return imageKit.upload(request);
             
         } catch (Exception e) {
 
@@ -173,7 +170,7 @@ public class ImageKitService {
         String nameAntiguo = respuesta.get("name").toString();
 
         // Convertir la imagen a formato WebP con 70% de calidad
-        byte[] fileData = convertirWebp(fileActual, 0.7f);
+        byte[] fileData = convertirFormato(fileActual, 0.7f);
         
         // Actualizar el nombre de archivo a extensión webp.
         String nameNuevo = borrarExtension(fileActual.getName());

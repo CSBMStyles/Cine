@@ -21,14 +21,15 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.unicine.entity.interfa.Imagenable;
 import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
 
@@ -38,7 +39,7 @@ import com.unicine.enumeration.GeneroPelicula;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Pelicula implements Serializable {
+public class Pelicula implements Serializable, Imagenable {
 
     // SECTION: Atributos
 
@@ -72,10 +73,6 @@ public class Pelicula implements Serializable {
     @Column(nullable = false, columnDefinition = "text")
     private String sinopsis;
 
-    @ElementCollection
-    @Column(nullable = false)
-    private Map<String, String> imagenes;
-
     @Size(max = 200, message = "La url del trailer no puede tener más de doscientos caracteres")
     @Column(nullable = true, length = 200)
     private String urlTrailer;
@@ -103,6 +100,10 @@ public class Pelicula implements Serializable {
     @ToString.Exclude
     @OneToMany(mappedBy = "pelicula", cascade =  CascadeType.ALL)
     private List<PeliculaDisposicion> peliculaDisposicion;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "pelicula", cascade =  CascadeType.ALL)
+    private List<Imagen> imagenes;
     
     // SECTION: Constructor
 
@@ -110,7 +111,6 @@ public class Pelicula implements Serializable {
     public Pelicula(EstadoPelicula estado, List<GeneroPelicula> generos, String nombre, Map<String, String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
         this.estado = estado;
         this.generos = generos;
-        this.imagenes = new HashMap<>();
         this.nombre = nombre;
         this.repartos = repartos;
         this.sinopsis = sinopsis;
@@ -119,15 +119,8 @@ public class Pelicula implements Serializable {
         this.restriccionEdad = restriccionEdad;
     }
 
-    /*
-     * Método que retorna la imagen principal de la película
-     * @return String url de la imagen principal
-     */
-    public String getImagenPrincipal(){
-        if (!imagenes.isEmpty()){
-            String primera = imagenes.keySet().toArray()[0].toString(); // Recorre el mapa de imágenes y obtiene la primera
-            return imagenes.get(primera);
-        }
-        return ""; // En caso de que no haya imágenes
+    @Override
+    public String getFolderPrefix() {
+        return "peliculas";
     }
 }

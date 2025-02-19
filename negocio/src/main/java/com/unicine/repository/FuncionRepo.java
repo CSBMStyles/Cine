@@ -2,7 +2,7 @@ package com.unicine.repository;
 
 import com.unicine.entity.Funcion;
 import com.unicine.entity.Horario;
-import com.unicine.transfer.DetalleFuncionesDTO;
+import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
-    String direccion = "com.unicine.transfer";
+    String direccion = "com.unicine.transfer.data";
 
     /**
      * Consulta para obtener las funciones de una sala y horario
@@ -81,8 +81,15 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
      * @param atributos: codigo de la pelicula
      * @return lista de detalles de funciones: nombre de la pelicula, estado de la pelicula, imagenes de la pelicula, codigo de la sala, direccion del teatro, nombre de la ciudad, horario de la funcion
      */
-    @Query("select new " + direccion + ".DetalleFuncionesDTO( f.pelicula.nombre, f.pelicula.estado, f.pelicula.imagenes, f.sala.codigo, f.sala.teatro.direccion, f.sala.teatro.ciudad.nombre, f.horario ) from Funcion f where f.pelicula.codigo = :codigoPelicula")
-    List<DetalleFuncionesDTO> listarDetallesFunciones(Integer codigoPelicula);
+    @Query("select f.pelicula.nombre as nombrePelicula, " +
+       "f.pelicula.estado as estadoPelicula, " +
+       "f.pelicula.imagenes as imagenes, " +
+       "f.sala.codigo as codigoSala, " +
+       "f.sala.teatro.direccion as direccionTeatro, " +
+       "f.sala.teatro.ciudad.nombre as nombreCiudad, " +
+       "f.horario as horario " +
+       "from Funcion f where f.pelicula.codigo = :codigoPelicula")
+    List<DetalleFuncionesProjection> listarDetallesFunciones(Integer codigoPelicula);
 
     /**
      * #️⃣ Consulta para obtener las funciones con compras vacias de teatros especificos

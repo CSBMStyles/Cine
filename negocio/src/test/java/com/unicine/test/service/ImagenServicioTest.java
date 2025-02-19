@@ -18,10 +18,12 @@ import org.springframework.data.domain.Window;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import com.unicine.entity.Cliente;
+import com.unicine.entity.Imagen;
 import com.unicine.entity.Pelicula;
 import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
+import com.unicine.service.ImagenServicio;
 import com.unicine.service.PeliculaServicio;
 import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
@@ -35,7 +37,7 @@ import io.imagekit.sdk.models.results.ResultList;
 public class ImagenServicioTest {
 
     @Autowired
-    private ImageKitService imageKitService;
+    private ImagenServicio imagenServicio;
 
     @Autowired
     private PeliculaServicio peliculaServicio;
@@ -47,18 +49,21 @@ public class ImagenServicioTest {
     public void subirImagenPelicula() {
 
         // Creamos un mapa de imágenes
-        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.JPG");
+        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.JPG");
 
-        Pelicula entidad;
-
-        try {
-            entidad = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
-        } catch (Exception e) { throw new RuntimeException(e); }
+        Pelicula pelicula;
 
         try {
-            imageKitService.subirImagen(imagen, "peliculas/" + entidad.getNombre());
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
         } catch (Exception e) { throw new RuntimeException(e); }
-        System.out.println(imagen);
+
+        Imagen imagen = new Imagen();
+        imagen.setPelicula(pelicula);
+
+        try {
+            imagenServicio.registrar(imagen, file, pelicula);
+            
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
     /* @Test

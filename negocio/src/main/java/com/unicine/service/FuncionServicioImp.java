@@ -49,7 +49,10 @@ public class FuncionServicioImp implements FuncionServicio {
 
         return precioBase - (precioBase * descuentoDia); }
 
-    /** */
+    /**
+     * Método para reemplazar el precio de la función
+     * @param funcion
+     */
     public void reemplazarPrecio(Funcion funcion) {
 
         Double precio = calcularPrecio(funcion.getSala(), funcion.getHorario());

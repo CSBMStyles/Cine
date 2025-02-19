@@ -1,11 +1,8 @@
 package com.unicine.service;
 
-import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,10 +10,8 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.Pelicula;
 import com.unicine.repository.PeliculaRepo;
-import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
 
-import io.imagekit.sdk.models.results.Result;
 import jakarta.validation.Valid;
 
 @Service
@@ -25,9 +20,6 @@ public class PeliculaServicioImp implements PeliculaServicio {
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final PeliculaRepo peliculaRepo;
-
-    @Autowired
-    private ImageKitService imageKitService;
 
 
     public PeliculaServicioImp(PeliculaRepo peliculaRepo) {
@@ -85,48 +77,6 @@ public class PeliculaServicioImp implements PeliculaServicio {
     }
 
     /**
-     * Método para reasignar los datos de la imagen
-     * @param pelicula
-     * @param result
-     */
-    private void reasignarDatos(Pelicula pelicula, Result result) {
-
-        // Extraer la respuesta en forma de mapa
-        Map<String, Object> respuesta = result.getResponseMetaData().getMap();
-
-        String publicId = (String) respuesta.get("fileId");
-
-        String urlImagen = (String) respuesta.get("url");
-
-        // Actualizar la entidad
-        pelicula.getImagenes().put(publicId, urlImagen);
-    }
-
-    /**
-     * Método para subir una imagen a imagekit e ingresarle los valores de la imagen guardada
-     * @param pelicula
-     * @param imagen
-     */
-    private void subirImagen(Pelicula pelicula, File imagen) throws Exception {
- 
-        // Subir la imagen a imagekit
-        Result result = imageKitService.subirImagen(imagen, "peliculas/" + pelicula.getNombre());
-
-        reasignarDatos(pelicula, result);
-    }
-
-
-    private void actualizarImagen(Pelicula pelicula, File imagen, String imagenAntiguo) throws Exception {
-        
-        if (imagen != null) {
-            // Subir la imagen a imagekit
-            Result result = imageKitService.actualizarImagen(imagen, imagenAntiguo, "peliculas/" + pelicula.getNombre());
-
-            reasignarDatos(pelicula, result);
-        }
-    }
-
-    /**
      * Metodo para validar la confirmacion de la eliminacion
      * @param confirmacion
      */
@@ -142,19 +92,17 @@ public class PeliculaServicioImp implements PeliculaServicio {
     // 1️⃣ Funciones del Administrador
 
     @Override
-    public Pelicula registrar(@Valid Pelicula pelicula, File imagen) throws Exception { 
+    public Pelicula registrar(@Valid Pelicula pelicula) throws Exception { 
 
         validarExisteNombre(pelicula);
-        subirImagen(pelicula, imagen);
 
         return peliculaRepo.save(pelicula);
     }
 
     @Override
-    public Pelicula actualizar(@Valid Pelicula pelicula, File imagen, String imagenAntiguo) throws Exception {
+    public Pelicula actualizar(@Valid Pelicula pelicula) throws Exception {
 
         validarRepiteNombre(pelicula);
-        actualizarImagen(pelicula, imagen, imagenAntiguo);
 
         return peliculaRepo.save(pelicula);
     }

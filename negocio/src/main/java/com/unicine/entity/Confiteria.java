@@ -8,7 +8,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +19,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+
+import com.unicine.entity.interfa.Imagenable;
 
 @Entity
 @Getter
@@ -28,7 +28,7 @@ import java.util.Map;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Confiteria implements Serializable {
+public class Confiteria implements Serializable, Imagenable {
 
     // SECTION: Atributos
 
@@ -48,34 +48,26 @@ public class Confiteria implements Serializable {
     @Column(nullable = false)
     private Double precio;
 
-    @ElementCollection
-    @Column(nullable = false)
-    private Map<String, String> imagenes;
-
     // SECTION: Relaciones
 
     @ToString.Exclude
     @OneToMany(mappedBy = "confiteria", cascade = CascadeType.ALL)
     private List<CompraConfiteria> compraConfiterias;
-    
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "confiteria", cascade = CascadeType.ALL)
+    private List<Imagen> imagenes;
+
     // SECTION: Constructor
 
     @Builder
-    public Confiteria(String nombre, Double precio, Map<String, String> imagenes) {
+    public Confiteria(String nombre, Double precio) {
         this.nombre = nombre;
         this.precio = precio;
-        this.imagenes = imagenes;
     }
 
-    /*
-     * Método que retorna la imagen principal de la película
-     * @return String url de la imagen principal
-     */
-    public String getImagenPrincipal(){
-        if (!imagenes.isEmpty()){
-            String primera = imagenes.keySet().toArray()[0].toString(); // Recorre el mapa de imágenes y obtiene la primera
-            return imagenes.get(primera);
-        }
-        return ""; // En caso de que no haya imágenes
+    @Override
+    public String getFolderPrefix() {
+        return "confiterias";
     }
 }

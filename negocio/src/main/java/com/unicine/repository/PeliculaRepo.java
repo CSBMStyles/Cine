@@ -2,7 +2,7 @@ package com.unicine.repository;
 
 import com.unicine.entity.Pelicula;
 import com.unicine.enumeration.EstadoPelicula;
-import com.unicine.transfer.DetallePeliculaHorarioDTO;
+import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface PeliculaRepo extends JpaRepository<Pelicula, Integer> {
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
-    String direccion = "com.unicine.transfer";
+    String direccion = "com.unicine.transfer.data";
 
     /**
      * Consulta para obtener una pelicula por su nombre
