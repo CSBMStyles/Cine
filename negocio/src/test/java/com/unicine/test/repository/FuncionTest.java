@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
@@ -26,10 +27,11 @@ import com.unicine.repository.HorarioRepo;
 import com.unicine.repository.PeliculaRepo;
 import com.unicine.repository.SalaRepo;
 import com.unicine.transfer.data.DetalleFuncionesDTO;
-import com.unicine.transfer.mapper.FuncionMapper;
+import com.unicine.transfer.mapper.DetalleFuncionMapper;
 import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 
 @DataJpaTest
+@Import(DetalleFuncionMapper.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FuncionTest {
 
@@ -48,6 +50,9 @@ public class FuncionTest {
 
     @Autowired
     private PeliculaRepo peliculaRepo;
+
+    @Autowired
+    private DetalleFuncionMapper funcionMapper;
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -253,14 +258,12 @@ public class FuncionTest {
 
         Assertions.assertEquals(1, detalle.size());
 
-        System.out.println("\n" + "Listado de detalles de funciones:");
-
         // Mapeamos manualmente cada proyección a nuestro DTO
-        List<DetalleFuncionesDTO> dtos = detalle.stream().map(FuncionMapper::convertirDTO).collect(Collectors.toList());
+        List<DetalleFuncionesDTO> dtos = detalle.stream().map(funcionMapper::convertirDTO).collect(Collectors.toList());
 
         System.out.println("\nListado de detalles de funciones (DTO):");
         
-        dtos.forEach(dto -> System.out.println(dto.getNombrePelicula()));                                           
+        dtos.forEach(dto -> System.out.println(dto));                                           
     }
 
     @Test
