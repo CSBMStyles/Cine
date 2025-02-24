@@ -81,7 +81,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     }
 
     @Override
-    public String getFolderPrefix() {
+    public String getCarpetaPrefijo() {
         return "clientes";
     }
 }

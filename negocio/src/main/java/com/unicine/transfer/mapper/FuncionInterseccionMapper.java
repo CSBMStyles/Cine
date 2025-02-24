@@ -1,25 +1,28 @@
 package com.unicine.transfer.mapper;
 
-import com.unicine.transfer.data.FuncionInterseccionDTO;
-import com.unicine.transfer.projetion.FuncionInterseccionProjection;
+import org.springframework.stereotype.Component;
 
+import com.unicine.entity.Funcion;
+import com.unicine.transfer.data.FuncionInterseccionDTO;
+
+@Component
 public class FuncionInterseccionMapper {
 
-    public static FuncionInterseccionDTO convertirDTO(FuncionInterseccionProjection projection) {
+    public FuncionInterseccionDTO convertirDTO(Funcion funcion) {
         return new FuncionInterseccionDTO(
-            projection.getNombreSala(),
+            funcion.getSala().getNombre(),
 
-            projection.getNombrePelicula(),
+            funcion.getPelicula().getNombre(), 
 
-            projection.getFormato(),
+            funcion.getFormato(), 
 
-            projection.getImagen(),
+            funcion.getPelicula().getImagenes(), 
 
-            projection.getGeneros(),
+            funcion.getPelicula().getGeneros(), 
 
-            projection.getFechaInicio(),
+            funcion.getHorario().getFechaInicio(), 
 
-            projection.getFechaFin()
+            funcion.getHorario().getFechaFin()
         );
     }
 }

@@ -33,7 +33,7 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
      * @param atributos: codigo de la sala, fecha de inicio, fecha de fin
      * @return funcion que se solapa
      */
-    @Query("select f from Funcion f join f.sala s where s.codigo = :codigoSala and not (f.horario.fechaFin <= :fechaInicio or f.horario.fechaInicio >= :fechaFin)")
+    @Query("select f from Funcion f where f.sala.codigo = :codigoSala and not (f.horario.fechaFin <= :fechaInicio or f.horario.fechaInicio >= :fechaFin)")
     Optional<Funcion> solapaHorarioSala(Integer codigoSala, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
     /**

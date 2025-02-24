@@ -67,7 +67,7 @@ public class Confiteria implements Serializable, Imagenable {
     }
 
     @Override
-    public String getFolderPrefix() {
+    public String getCarpetaPrefijo() {
         return "confiterias";
     }
 }

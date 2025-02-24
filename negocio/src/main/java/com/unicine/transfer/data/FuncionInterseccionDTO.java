@@ -24,7 +24,7 @@ public class FuncionInterseccionDTO {
 
     private FormatoPelicula formato;
 
-    private List<Imagen> imagen;
+    private List<Imagen> imagenes;
 
     private List<GeneroPelicula> generos;
 

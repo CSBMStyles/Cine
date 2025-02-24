@@ -12,12 +12,15 @@ import java.awt.Frame;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Window;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.beust.jcommander.Parameter;
 import com.unicine.entity.Cliente;
 import com.unicine.entity.Imagen;
 import com.unicine.entity.Pelicula;
@@ -25,8 +28,10 @@ import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
 import com.unicine.service.ImagenServicio;
 import com.unicine.service.PeliculaServicio;
+import com.unicine.service.PersonaServicio;
 import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validaciones.atributos.PersonaAtributoValidator;
 
 import io.imagekit.sdk.models.results.ResultList;
 
@@ -40,21 +45,50 @@ public class ImagenServicioTest {
     private ImagenServicio imagenServicio;
 
     @Autowired
+    private PersonaServicio<Cliente> clienteServicio;
+
+    @Autowired
     private PeliculaServicio peliculaServicio;
 
     // 🟩
 
     @Test
     @Sql("classpath:dataset.sql")
+    public void subirImagenCliente() {
+
+        // Creamos un mapa de imágenes
+        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/Perfil/Luisa-Lopez.jpg");
+
+        Cliente cliente;
+
+        try {
+            cliente = clienteServicio.obtener(new PersonaAtributoValidator("1005000055")).orElse(null);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        Imagen imagen = new Imagen();
+        imagen.setCliente(cliente);
+
+        try {
+            imagenServicio.registrar(imagen, file, cliente);
+
+            System.out.println("Imagen subida: " + imagen);
+            
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
     public void subirImagenPelicula() {
 
         // Creamos un mapa de imágenes
-        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.JPG");
+        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/Pelicula/Dragon Ball/Dragon-Ball-Super-Heroes-2.jpg");
 
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(2)).orElse(null);
+
         } catch (Exception e) { throw new RuntimeException(e); }
 
         Imagen imagen = new Imagen();
@@ -62,6 +96,8 @@ public class ImagenServicioTest {
 
         try {
             imagenServicio.registrar(imagen, file, pelicula);
+
+            System.out.println("Imagen subida: " + imagen);
             
         } catch (Exception e) { throw new RuntimeException(e); }
     }

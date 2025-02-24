@@ -12,11 +12,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unicine.entity.Funcion;
 import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
 import com.unicine.service.HorarioServicio;
 import com.unicine.service.SalaServicio;
 import com.unicine.transfer.data.FuncionInterseccionDTO;
+import com.unicine.transfer.mapper.FuncionInterseccionMapper;
 import com.unicine.util.option.Respuesta;
 import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
 
@@ -31,6 +33,9 @@ public class HorarioServicioTest {
 
     @Autowired
     private SalaServicio salaServicio;
+
+    @Autowired
+    private FuncionInterseccionMapper funcionMapper;
 
     // 🟩
 
@@ -191,7 +196,7 @@ public class HorarioServicioTest {
         // Se parsean las cadenas recibidas a LocalDateTime
         LocalDateTime fechaInicio = LocalDateTime.parse(inicioStr);
         LocalDateTime fechaFin = LocalDateTime.parse(finStr);
-    
+
         // Se crea el objeto Horario con los tiempos parametrizados
         Horario horario = new Horario(fechaInicio, fechaFin);
     
@@ -209,9 +214,11 @@ public class HorarioServicioTest {
             Respuesta<?> actualizado = horarioServicio.registrar(horario, sala);
     
             // Se imprime la respuesta según el tipo de objeto devuelto
-            if (actualizado.getData() instanceof FuncionInterseccionDTO) {
+            if (actualizado.getData() instanceof Funcion) {
 
-                FuncionInterseccionDTO funcionRespuesta = (FuncionInterseccionDTO) actualizado.getData();
+                Funcion funcionSolapado = (Funcion) actualizado.getData();
+
+                FuncionInterseccionDTO funcionRespuesta = funcionMapper.convertirDTO(funcionSolapado);
 
                 System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
             }

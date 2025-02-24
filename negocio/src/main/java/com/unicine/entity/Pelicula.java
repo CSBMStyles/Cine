@@ -120,7 +120,7 @@ public class Pelicula implements Serializable, Imagenable {
     }
 
     @Override
-    public String getFolderPrefix() {
+    public String getCarpetaPrefijo() {
         return "peliculas";
     }
 }

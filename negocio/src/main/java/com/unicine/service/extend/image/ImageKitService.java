@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -53,11 +54,39 @@ public class ImageKitService {
      * @param fileName Nombre original del archivo.
      * @return Nombre del archivo sin la extensión.
      */
-    private String borrarExtension(String fileName) {
+    private String renombrarImagen(String fileName) {
 
+        // Obtener el nombre sin la extensión.
         int index = fileName.lastIndexOf('.');
 
-        return index > 0 ? fileName.substring(0, index) : fileName;
+        String baseName = index > 0 ? fileName.substring(0, index) : fileName;
+
+        // Reemplazar los espacios por guiones.
+        baseName = baseName.replace(" ", "-").replace("_", "-");
+        
+        // Eliminar cualquier caracter que no sea alfanumérico o alguno de los siguientes: '.', '_' o '-'.
+        baseName = baseName.replaceAll("[^a-zA-Z0-9._-]", "");
+
+        return baseName;
+    }
+
+    /**
+     * Verifica si el archivo ya está en formato webp.
+     */
+    private boolean comprobarFormato(File file) {
+
+        return file.getName().toLowerCase().endsWith(".webp");
+    }
+
+    private BufferedImage leerImagen(File file) throws IOException {
+
+        try {
+            return ImageIO.read(file);
+
+        } catch (Exception e) {
+
+            throw new IOException("Error al leer la imagen: " + file.getAbsolutePath());
+        }
     }
 
     /**
@@ -69,16 +98,13 @@ public class ImageKitService {
      */
     private byte[] convertirFormato(File file, float quality) throws IOException {
 
-        // Se lee la imagen original
-        BufferedImage image;
-
-        try {
-            image = ImageIO.read(file);
-
-        } catch (Exception e) {
-
-            throw new IOException("Error al leer la imagen: " + file.getAbsolutePath());
+        // Verificar la extensión; si ya es webp, se pueden leer los bytes directamente
+        if (comprobarFormato(file)) {
+            return Files.readAllBytes(file.toPath());
         }
+
+        // Se lee la imagen original
+        BufferedImage image = leerImagen(file);
         
         // Se prepara un stream para almacenar la imagen convertida
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -136,7 +162,7 @@ public class ImageKitService {
 
         // Convertir la imagen a formato webp conservando el setenta por ciento de calidad
         
-        FileCreateRequest request = new FileCreateRequest(convertirFormato(file, 0.7f), borrarExtension(file.getName()));
+        FileCreateRequest request = new FileCreateRequest(convertirFormato(file, 0.7f), renombrarImagen(file.getName()));
 
         request.setFolder("unicine/" + folder);
         request.setUseUniqueFileName(false);
@@ -173,7 +199,7 @@ public class ImageKitService {
         byte[] fileData = convertirFormato(fileActual, 0.7f);
         
         // Actualizar el nombre de archivo a extensión webp.
-        String nameNuevo = borrarExtension(fileActual.getName());
+        String nameNuevo = renombrarImagen(fileActual.getName());
 
         FileCreateRequest request = new FileCreateRequest(fileData, nameAntiguo); //
 

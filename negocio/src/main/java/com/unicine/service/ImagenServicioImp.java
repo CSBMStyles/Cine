@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.unicine.entity.Cliente;
 import com.unicine.entity.Imagen;
 import com.unicine.entity.interfa.Imagenable;
 import com.unicine.repository.ImagenRepo;
@@ -48,6 +49,37 @@ public class ImagenServicioImp implements ImagenServicio {
     }
 
     /**
+     * Metodo para renombrar el contenedor de la imagen
+     * @param nombre
+     * @return
+     */
+    private String renombrarContenedor(String nombre) {
+
+        // Obtenemos el nombre y reemplazamos los espacios por guión
+        String nombreContenedor = nombre.replace(" ", "-").replace("_", "-");
+
+        // Eliminamos todo lo que no sea alfanumérico o . _ -
+        return nombreContenedor.replaceAll("[^a-zA-Z0-9._-]", "");
+    }
+
+    /**
+     * Metodo para construir la carpeta de la imagen
+     * @param propietario
+     * @return
+     */
+    private String constructorCarpeta(Imagenable propietario) {
+
+        if (propietario instanceof Cliente) {
+
+            return propietario.getCarpetaPrefijo();
+        }
+
+        String formatoLimpio = renombrarContenedor(propietario.getNombre());
+    
+    return propietario.getCarpetaPrefijo() + "/" + formatoLimpio;
+    }
+
+    /**
      * Método para reasignar los datos de la imagen
      * @param pelicula
      * @param result
@@ -63,6 +95,7 @@ public class ImagenServicioImp implements ImagenServicio {
 
         // Actualizar la imagen
         imagen.setCodigo(fileId);
+
         imagen.setUrl(urlImagen);
     }
 
@@ -74,18 +107,25 @@ public class ImagenServicioImp implements ImagenServicio {
     private Result subirImagen(File file, Imagenable propietario) throws Exception {
 
         // NOTE: La razon de crear una interfaz Imagenable es para poder utilizar la misma funcion para subir imagenes de diferentes entidades
-
-        String folder = propietario.getFolderPrefix() + "/" + propietario.getNombre();
+        
+        String folder = constructorCarpeta(propietario);
  
         // Subir la imagen a imagekit
        return imageKitService.subirImagen(file, folder);
     }
 
+    /**
+     * Método para actualizar una imagen a imagekit e ingresarle los valores de la imagen guardada
+     * @param file
+     * @param imagenAntiguo
+     * @param propietario
+     * @return
+     */
     private Result actualizarImagen(File file, String imagenAntiguo, Imagenable propietario) throws Exception {
         
         // NOTE: La razon de crear una interfaz Imagenable es para poder utilizar la misma funcion para subir imagenes de diferentes entidades
 
-        String folder = propietario.getFolderPrefix() + "/" + propietario.getNombre();
+        String folder = constructorCarpeta(propietario);
 
         // Actualizar la imagen a imagekit
         return imageKitService.actualizarImagen(file, imagenAntiguo, folder);

@@ -16,7 +16,6 @@ import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
 import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.HorarioRepo;
-import com.unicine.transfer.data.FuncionInterseccionDTO;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 import com.unicine.util.option.Respuesta;
 
@@ -92,32 +91,13 @@ public class HorarioServicioImp implements HorarioServicio {
             
             Funcion funcion = funcionSolapada.get();
 
-            return new Respuesta<FuncionInterseccionDTO>("El horario se solapa con otra función", transformarDTO(funcion), false);
+            return new Respuesta<Funcion>("El horario se solapa con otra función", funcion, false);
         } else {
 
             Horario guardado = horarioRepo.save(horario);
 
             return new Respuesta<Horario>("Horario registrado exitosamente", guardado, true);
         }
-    }
-
-    /**
-     * Metodo para obtener el DTO de la función que se solapa
-     * @param funcionSolapada
-     * @return DTO de la función
-     */
-    private FuncionInterseccionDTO transformarDTO(Funcion funcion) {
-
-        return new FuncionInterseccionDTO
-        (
-            funcion.getSala().getNombre(), 
-            funcion.getPelicula().getNombre(), 
-            funcion.getFormato(), 
-            funcion.getPelicula().getImagenes(), 
-            funcion.getPelicula().getGeneros(), 
-            funcion.getHorario().getFechaInicio(), 
-            funcion.getHorario().getFechaFin()
-        );
     }
 
     /**
