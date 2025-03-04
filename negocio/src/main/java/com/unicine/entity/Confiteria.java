@@ -20,7 +20,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unicine.entity.interfa.Imagenable;
+import com.unicine.entity.interfaced.Imagenable;
 
 @Entity
 @Getter

@@ -1,6 +1,6 @@
-package com.unicine.util.validaciones.atributos;
+package com.unicine.util.validation.attributes;
 
-import com.unicine.util.validaciones.anotaciones.MultiPattern;
+import com.unicine.util.validation.annotation.MultiPattern;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CiudadAtributoValidator {
+public class SalaAtributoValidator {
 
     @Positive(message = "El codigo de la ciudad debe ser un numero positivo")
     @Max(value = 100, message = "El codigo de la ciudad no debe ser mayor a cien")
@@ -19,15 +19,14 @@ public class CiudadAtributoValidator {
     @MultiPattern({
         @Pattern(regexp = ".{2,}", message = "El nombre de la ciudad no debe ser menor a dos caracteres"),
         @Pattern(regexp = ".{1,100}", message = "El nombre de la ciudad no debe pasar los cien caracteres"),
-        @Pattern(regexp = "^[a-zA-Z ]+$", message = "El nombre de la ciudad solo puede contener letras y espacios")
     })
     private String nombre;
 
-    public CiudadAtributoValidator(Integer codigo) {
+    public SalaAtributoValidator(Integer codigo) {
         this.codigo = codigo;
     }
 
-    public CiudadAtributoValidator(String nombre) {
+    public SalaAtributoValidator(String nombre) {
         this.nombre = nombre;
     }
     

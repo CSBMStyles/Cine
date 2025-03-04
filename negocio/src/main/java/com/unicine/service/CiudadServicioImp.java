@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.Ciudad;
 import com.unicine.repository.CiudadRepo;
-import com.unicine.util.validaciones.atributos.CiudadAtributoValidator;
+import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 
 import jakarta.validation.Valid;
 

@@ -254,18 +254,30 @@ insert into confiteria (id, precio, nombre) values (3, 29800, "Crispeta + Dos Ga
 insert into confiteria (id, precio, nombre) values (4, 19900, "Gaseosa + Perro Caliente + Crispeta + KitKat");
 insert into confiteria (id, precio, nombre) values (5, 6000, "Nevado de Arequipe");
 
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba247432c476416296194", "https://ik.imagekit.io/vfreipue8w/unicine/clientes/Pepe-Rodrigez", 1009000011, null, null);
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba311432c4764162dd85a", "https://ik.imagekit.io/vfreipue8w/unicine/clientes/Juan-Perez", 1008000022, null, null);
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba3c5432c47641631ac27", "https://ik.imagekit.io/vfreipue8w/unicine/clientes/Luis-Gomez", 1007000033, null, null);
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba45a432c476416346b8f", "https://ik.imagekit.io/vfreipue8w/unicine/clientes/Maria-Martinez", 1006000044, null, null);
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba4d0432c476416360d40", "https://ik.imagekit.io/vfreipue8w/unicine/clientes/Luisa-Lopez", 1005000055, null, null);
+
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c243ec432c4764163416e0", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Pepe-Rodrigez", null, null, 1009000011, null, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c24524432c4764163a0e68", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Juan-Perez", null, null, 1008000022, null, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c2459f432c4764163c6ad9", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Luis-Gomez", null, null, 1007000033, null, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c24605432c4764163e48db", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Maria-Martinez", null, null, 1006000044, null, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c6527c432c4764165ab4e3", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Luisa-Lopez", null, null, 1005000055, null, null);
 
 
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba774432c4764163eeda3", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/Pinocho-1", null, 1, null);
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bba775432c4764163ef577", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/Pinocho-2", null, 1, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bba774432c4764163eeda3", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/Pinocho-1", null, null, null, 1, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bba775432c4764163ef577", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Pinocho/Pinocho-2", null, null, null, 1, null);
 
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bbc062432c476416cd0d17", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Dragon-Ball-Super-Hero/Dragon-Ball-1", null, 2, null);
-insert into imagen (id, url, cliente_cedula, pelicula_id, confiteria_id) values ("67bbc0ce432c476416cfc268", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Dragon-Ball-Super-Hero/Dragon-Ball-Super-Heroes-2", null, 2, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bbc062432c476416cd0d17", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Dragon-Ball-Super-Hero/Dragon-Ball-1", null, null, null, 2, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bbc0ce432c476416cfc268", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Dragon-Ball-Super-Hero/Dragon-Ball-Super-Heroes-2", null, null, null, 2, null);
+
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf8f97432c47641698a85b", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Smile/Smile-1", null, null, null, 3, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf90e1432c4764169e833a", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Smile/Smile-2", null, null, null, 3, null);
+
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf93db432c476416b496ce", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Minions/Minions-1", null, null, null, 4, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf9453432c476416b66395", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Minions/Minions-2", null, null, null, 4, null);
+
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf9570432c476416bac374", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-1", null, null, null, 5, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf95db432c476416bd3216", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-2", null, null, null, 5, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c654d3432c4764166a1c23", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
+
 
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI");
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1007000033, 2, 5, 2, 59800, "2024-12-15T14:47:41", "2024-12-15T20:00:00", "VISA");

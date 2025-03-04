@@ -14,8 +14,8 @@ import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.service.CiudadServicio;
 import com.unicine.service.PeliculaDisposicionServicio;
 import com.unicine.service.PeliculaServicio;
-import com.unicine.util.validaciones.atributos.CiudadAtributoValidator;
-import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validation.attributes.CiudadAtributoValidator;
+import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import java.util.List;
 

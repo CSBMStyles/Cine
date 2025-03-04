@@ -4,7 +4,7 @@ package com.unicine.entity;
 
 import jakarta.persistence.Id;
 
-import com.unicine.util.validaciones.anotaciones.MultiPattern;
+import com.unicine.util.validation.annotation.MultiPattern;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;

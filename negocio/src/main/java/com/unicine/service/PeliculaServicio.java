@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.Pelicula;
-import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
 

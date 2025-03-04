@@ -1,4 +1,4 @@
-package com.unicine.entity.interfa;
+package com.unicine.entity.interfaced;
 
 public interface Imagenable {
     String getNombre();

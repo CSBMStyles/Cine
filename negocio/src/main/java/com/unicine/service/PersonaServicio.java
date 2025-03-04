@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.Persona;
-import com.unicine.util.validaciones.atributos.PersonaAtributoValidator;
+import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import jakarta.validation.Valid;
 

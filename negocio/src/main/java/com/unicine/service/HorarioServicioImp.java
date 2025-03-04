@@ -11,13 +11,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.unicine.api.response.Respuesta;
 import com.unicine.entity.Funcion;
 import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
 import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.HorarioRepo;
 import com.unicine.util.initializer.HorarioDescuentoInit;
-import com.unicine.util.option.Respuesta;
 
 import jakarta.validation.Valid;
 

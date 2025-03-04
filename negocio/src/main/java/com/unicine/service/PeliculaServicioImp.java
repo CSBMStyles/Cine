@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.Pelicula;
 import com.unicine.repository.PeliculaRepo;
-import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
 

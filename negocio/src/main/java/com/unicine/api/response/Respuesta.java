@@ -1,4 +1,4 @@
-package com.unicine.util.option;
+package com.unicine.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

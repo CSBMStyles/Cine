@@ -12,7 +12,7 @@ import com.unicine.entity.Sala;
 import com.unicine.enumeration.TipoSala;
 import com.unicine.repository.SalaRepo;
 import com.unicine.util.initializer.SalaPrecioInit;
-import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
+import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 import jakarta.validation.Valid;
 

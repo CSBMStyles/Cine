@@ -29,7 +29,7 @@ import java.util.Map;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import com.unicine.entity.interfa.Imagenable;
+import com.unicine.entity.interfaced.Imagenable;
 import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
 

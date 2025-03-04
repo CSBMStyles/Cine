@@ -17,9 +17,9 @@ import com.unicine.entity.Teatro;
 import com.unicine.service.CiudadServicio;
 import com.unicine.service.PersonaServicio;
 import com.unicine.service.TeatroServicio;
-import com.unicine.util.validaciones.atributos.CiudadAtributoValidator;
-import com.unicine.util.validaciones.atributos.PersonaAtributoValidator;
-import com.unicine.util.validaciones.atributos.TeatroAtributoValidator;
+import com.unicine.util.validation.attributes.CiudadAtributoValidator;
+import com.unicine.util.validation.attributes.PersonaAtributoValidator;
+import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 

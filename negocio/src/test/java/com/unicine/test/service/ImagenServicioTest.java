@@ -30,8 +30,8 @@ import com.unicine.service.ImagenServicio;
 import com.unicine.service.PeliculaServicio;
 import com.unicine.service.PersonaServicio;
 import com.unicine.service.extend.image.ImageKitService;
-import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
-import com.unicine.util.validaciones.atributos.PersonaAtributoValidator;
+import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
+import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import io.imagekit.sdk.models.results.ResultList;
 
@@ -67,9 +67,12 @@ public class ImagenServicioTest {
         } catch (Exception e) { throw new RuntimeException(e); }
 
         Imagen imagen = new Imagen();
+        
         imagen.setCliente(cliente);
 
         try {
+            /* clienteServicio.validarImagen(cliente.getCedula()); */
+
             imagenServicio.registrar(imagen, file, cliente);
 
             System.out.println("Imagen subida: " + imagen);
@@ -82,16 +85,17 @@ public class ImagenServicioTest {
     public void subirImagenPelicula() {
 
         // Creamos un mapa de imágenes
-        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/Pelicula/Dragon Ball/Dragon-Ball-Super-Heroes-2.jpg");
+        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
 
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(2)).orElse(null);
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
         Imagen imagen = new Imagen();
+
         imagen.setPelicula(pelicula);
 
         try {
@@ -102,55 +106,74 @@ public class ImagenServicioTest {
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
-    /* @Test
+    @Test
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
 
-        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.JPG");
+        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
 
         Pelicula pelicula;
 
         try{
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
         // Variables que el usuario modifica
-        pelicula.setRestriccionEdad(20);
-        pelicula.getGeneros().add(GeneroPelicula.TERROR);
-        System.out.println(pelicula.getImagenes());
+        // NOTE: Listamos las imagenes de la pelicula y seleccionamos el fileId de la imagen que queremos actualizar
 
-        String fileIdSeleccionado = "67b243a4432c476416f7ff91";
+        Imagen imagenAntigua;
+
+        String fileIdSeleccionado = "67c654d3432c4764166a1c23";
+
+        try {
+            imagenAntigua = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
+
+            Assertions.assertNotNull(imagenAntigua, "La imagen antigua no debe estar vacía");
+
+            System.out.println("\n" + "Registro encontrado:" + "\n" + imagenAntigua);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
 
         try {
 
-            Pelicula actualizado = peliculaServicio.actualizar(pelicula, imagen, fileIdSeleccionado);
+            Imagen actualizado = imagenServicio.actualizar(imagenAntigua, file, pelicula);
 
-            Assertions.assertEquals(20, actualizado.getRestriccionEdad());
+            Assertions.assertEquals(fileIdSeleccionado, actualizado.getCodigo());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) {
-            Assertions.assertTrue(true);
-
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void listarImagenes() {
-        
-        try {
-            ResultList result = imageKitService.listarImagenes("unicine/peliculas/Pinocho");
+    public void renombrar(){
 
-            result.getResults().forEach(file -> {
-                System.out.println("FileId: " + file.getFileId() + "\n" + "Nombre: " + file.getName());
-            });
+        Imagen imagenAntigua;
+
+        String fileIdSeleccionado = "67c654d3432c4764166a1c23";
+
+        String nuevoNombre = "Renombre.jpg";
+
+        try {
+            imagenAntigua = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
+
+            Assertions.assertNotNull(imagenAntigua, "La imagen antigua no debe estar vacía");
+
+            System.out.println("\n" + "Registro encontrado:" + "\n" + imagenAntigua);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        try {
+            Imagen renombrado = imagenServicio.renombrar(imagenAntigua, nuevoNombre, imagenAntigua.getPelicula());
+
+            System.out.println("Imagen renombrada: " + renombrado);
 
         } catch (Exception e) { throw new RuntimeException(e); }
     }
+
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -249,6 +272,20 @@ public class ImagenServicioTest {
 
             throw new RuntimeException(e);
         }
+    }
+
+    /* @Test
+    @Sql("classpath:dataset.sql")
+    public void listarImagenes() {
+        
+        try {
+            ResultList result = imageKitService.listarImagenes("unicine/peliculas/Pinocho");
+
+            result.getResults().forEach(file -> {
+                System.out.println("FileId: " + file.getFileId() + "\n" + "Nombre: " + file.getName());
+            });
+
+        } catch (Exception e) { throw new RuntimeException(e); }
     } */
 
 

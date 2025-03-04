@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.DistribucionSilla;
 import com.unicine.repository.DistribucionSillaRepo;
-import com.unicine.util.validaciones.atributos.DistribucionAtributoValidator;
+import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
 
 import jakarta.validation.Valid;
 import com.google.gson.Gson;

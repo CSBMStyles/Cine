@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.unicine.entity.interfa.Imagenable;
-import com.unicine.util.validaciones.anotaciones.MultiPattern;
+import com.unicine.entity.interfaced.Imagenable;
+import com.unicine.util.validation.annotation.MultiPattern;
 
 @Entity
 @Getter

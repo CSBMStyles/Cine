@@ -35,6 +35,12 @@ public class Imagen implements Serializable {
     @OneToOne
     private Cliente cliente;
 
+    @OneToOne
+    private Administrador administrador;
+
+    @OneToOne
+    private AdministradorTeatro administradorTeatro;
+
     @ManyToOne
     private Pelicula pelicula;
 

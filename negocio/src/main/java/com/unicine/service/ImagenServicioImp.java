@@ -11,11 +11,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Cliente;
 import com.unicine.entity.Imagen;
-import com.unicine.entity.interfa.Imagenable;
+import com.unicine.entity.Persona;
+import com.unicine.entity.interfaced.Imagenable;
 import com.unicine.repository.ImagenRepo;
 import com.unicine.service.extend.image.ImageKitService;
+import com.unicine.util.funtional.image.RefactorizadorRuta;
 
 import io.imagekit.sdk.models.results.Result;
 import jakarta.validation.Valid;
@@ -29,6 +30,9 @@ public class ImagenServicioImp implements ImagenServicio {
 
     @Autowired
     private ImageKitService imageKitService;
+
+    @Autowired
+    private RefactorizadorRuta refactorizadorRuta;
 
     public ImagenServicioImp(ImagenRepo imagenRepo) {
         this.imagenRepo = imagenRepo;
@@ -44,22 +48,22 @@ public class ImagenServicioImp implements ImagenServicio {
     private void validarExiste(Optional<Imagen> imagen) throws Exception {
 
         if (imagen.isEmpty()) {
-            throw new Exception("La disposicion de pelicula no existe");
+            throw new Exception("La imagen no existe");
         }
     }
 
-    /**
-     * Metodo para renombrar el contenedor de la imagen
-     * @param nombre
-     * @return
-     */
-    private String renombrarContenedor(String nombre) {
+    private void validarExiste(Imagenable propietario) throws Exception {
 
-        // Obtenemos el nombre y reemplazamos los espacios por guión
-        String nombreContenedor = nombre.replace(" ", "-").replace("_", "-");
+        if (propietario instanceof Persona) {
+            
+            Persona persona = (Persona) propietario;
 
-        // Eliminamos todo lo que no sea alfanumérico o . _ -
-        return nombreContenedor.replaceAll("[^a-zA-Z0-9._-]", "");
+            Optional<Imagen> imagenRelacion = imagenRepo.findByPersona(persona.getCedula());
+            
+            if (imagenRelacion.isPresent()) {
+                throw new Exception("La persona ya tiene una imagen, deberia utilizar el metodo actualizar");
+            }
+        }  
     }
 
     /**
@@ -69,14 +73,16 @@ public class ImagenServicioImp implements ImagenServicio {
      */
     private String constructorCarpeta(Imagenable propietario) {
 
-        if (propietario instanceof Cliente) {
+        if (propietario instanceof Persona) {
 
-            return propietario.getCarpetaPrefijo();
-        }
+            return "personas" + "/" + propietario.getCarpetaPrefijo();
 
-        String formatoLimpio = renombrarContenedor(propietario.getNombre());
+        } else {
+
+            String nombreEntidad = refactorizadorRuta.remplazarDenominacion(propietario.getNombre());
     
-    return propietario.getCarpetaPrefijo() + "/" + formatoLimpio;
+            return propietario.getCarpetaPrefijo() + "/" + nombreEntidad;
+        }
     }
 
     /**
@@ -89,6 +95,8 @@ public class ImagenServicioImp implements ImagenServicio {
         // Extraer la respuesta en forma de mapa
         Map<String, Object> respuesta = result.getResponseMetaData().getMap();
 
+        System.out.println("Respuesta de la peticion" + respuesta);
+
         String fileId = respuesta.get("fileId").toString();
 
         String urlImagen = respuesta.get("url").toString();
@@ -97,39 +105,6 @@ public class ImagenServicioImp implements ImagenServicio {
         imagen.setCodigo(fileId);
 
         imagen.setUrl(urlImagen);
-    }
-
-    /**
-     * Método para subir una imagen a imagekit e ingresarle los valores de la imagen guardada
-     * @param pelicula
-     * @param imagen
-     */
-    private Result subirImagen(File file, Imagenable propietario) throws Exception {
-
-        // NOTE: La razon de crear una interfaz Imagenable es para poder utilizar la misma funcion para subir imagenes de diferentes entidades
-        
-        String folder = constructorCarpeta(propietario);
- 
-        // Subir la imagen a imagekit
-       return imageKitService.subirImagen(file, folder);
-    }
-
-    /**
-     * Método para actualizar una imagen a imagekit e ingresarle los valores de la imagen guardada
-     * @param file
-     * @param imagenAntiguo
-     * @param propietario
-     * @return
-     */
-    private Result actualizarImagen(File file, String imagenAntiguo, Imagenable propietario) throws Exception {
-        
-        // NOTE: La razon de crear una interfaz Imagenable es para poder utilizar la misma funcion para subir imagenes de diferentes entidades
-
-        String folder = constructorCarpeta(propietario);
-
-        // Actualizar la imagen a imagekit
-        return imageKitService.actualizarImagen(file, imagenAntiguo, folder);
-
     }
 
     /**
@@ -151,7 +126,11 @@ public class ImagenServicioImp implements ImagenServicio {
     @Override
     public Imagen registrar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception { 
 
-        Result result = subirImagen(file, propietario);
+        validarExiste(propietario);
+
+        String folder = constructorCarpeta(propietario);
+
+        Result result = imageKitService.subirImagen(file, folder, propietario, false, null);
 
         reasignarDatos(imagen, result);
 
@@ -159,14 +138,27 @@ public class ImagenServicioImp implements ImagenServicio {
     }
 
     @Override
-    public Imagen actualizar(@Valid Imagen imagen, File file, String fileIdAntiguo, Imagenable propietario) throws Exception { 
+    public Imagen actualizar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception { 
         
-        Result result = actualizarImagen(file, fileIdAntiguo, propietario);
+        String folder = constructorCarpeta(propietario);
+
+        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario);
 
         reasignarDatos(imagen, result);
 
         return imagenRepo.save(imagen); 
     }
+
+    @Override
+    public Imagen renombrar(@Valid Imagen imagen, String nuevoNombre, Imagenable propietario) throws Exception {
+
+        Result result = imageKitService.renombrarImagen(imagen.getCodigo(), nuevoNombre, propietario);
+
+        reasignarDatos(imagen, result);
+
+        return imagenRepo.save(imagen);
+    }
+
 
     // Implementar de aqui en adelante
 

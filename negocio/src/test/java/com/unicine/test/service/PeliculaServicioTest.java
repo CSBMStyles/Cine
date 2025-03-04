@@ -18,7 +18,7 @@ import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.enumeration.GeneroPelicula;
 import com.unicine.service.PeliculaServicio;
 import com.unicine.service.extend.image.ImageKitService;
-import com.unicine.util.validaciones.atributos.PeliculaAtributoValidator;
+import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import io.imagekit.sdk.models.results.ResultList;
 

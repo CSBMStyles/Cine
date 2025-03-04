@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unicine.api.response.Respuesta;
 import com.unicine.entity.Funcion;
 import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
@@ -19,8 +20,7 @@ import com.unicine.service.HorarioServicio;
 import com.unicine.service.SalaServicio;
 import com.unicine.transfer.data.FuncionInterseccionDTO;
 import com.unicine.transfer.mapper.FuncionInterseccionMapper;
-import com.unicine.util.option.Respuesta;
-import com.unicine.util.validaciones.atributos.SalaAtributoValidator;
+import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 

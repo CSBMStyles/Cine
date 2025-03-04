@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.unicine.api.response.Respuesta;
 import com.unicine.entity.Horario;
 import com.unicine.entity.Sala;
-import com.unicine.util.option.Respuesta;
 
 import jakarta.validation.Valid;
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.Ciudad;
-import com.unicine.util.validaciones.atributos.CiudadAtributoValidator;
+import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 
 import jakarta.validation.Valid;
 

@@ -1,4 +1,4 @@
-package com.unicine.util.validaciones.atributos;
+package com.unicine.util.validation.attributes;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;

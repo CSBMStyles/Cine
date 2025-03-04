@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.Imagen;
-import com.unicine.entity.interfa.Imagenable;
+import com.unicine.entity.interfaced.Imagenable;
 
 import jakarta.validation.Valid;
 
@@ -15,7 +15,9 @@ public interface ImagenServicio {
 
     Imagen registrar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception;
 
-    Imagen actualizar(@Valid Imagen imagen, File file, String fileIdAntiguo, Imagenable propietario) throws Exception;
+    Imagen actualizar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception;
+
+    Imagen renombrar(@Valid Imagen imagen, String nuevoNombre, Imagenable propietario) throws Exception;
 
     void eliminar(@Valid Imagen imagen, boolean confirmacion) throws Exception;
 
