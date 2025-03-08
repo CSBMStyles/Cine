@@ -276,7 +276,7 @@ insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, 
 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf9570432c476416bac374", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-1", null, null, null, 5, null);
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf95db432c476416bd3216", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-2", null, null, null, 5, null);
-insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c654d3432c4764166a1c23", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67cca0f3432c47641676174c", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
 
 
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI");

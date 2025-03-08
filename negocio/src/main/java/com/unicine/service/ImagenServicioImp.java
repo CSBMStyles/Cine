@@ -2,8 +2,8 @@ package com.unicine.service;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -16,9 +16,13 @@ import com.unicine.entity.Persona;
 import com.unicine.entity.interfaced.Imagenable;
 import com.unicine.repository.ImagenRepo;
 import com.unicine.service.extend.image.ImageKitService;
+import com.unicine.transfer.record.VersionArchivo;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
 
 import io.imagekit.sdk.models.results.Result;
+import io.imagekit.sdk.models.results.ResultFileVersionDetails;
+import io.imagekit.sdk.models.results.ResultFileVersions;
+import io.imagekit.sdk.models.results.ResultList;
 import jakarta.validation.Valid;
 
 @Service
@@ -92,14 +96,15 @@ public class ImagenServicioImp implements ImagenServicio {
      */
     private void reasignarDatos(Imagen imagen, Result result) {
 
-        // Extraer la respuesta en forma de mapa
-        Map<String, Object> respuesta = result.getResponseMetaData().getMap();
+        String fileId = result.getFileId();
 
-        System.out.println("Respuesta de la peticion" + respuesta);
+        String urlImagen = result.getUrl();
 
-        String fileId = respuesta.get("fileId").toString();
+        // REVIEW: Recordar borrar esta infomacion
 
-        String urlImagen = respuesta.get("url").toString();
+        System.out.println("Version: " + result.getVersionInfo().getAsJsonObject().get("id"));
+
+        System.out.println("Actualizado: " + result.getUpdatedAt());
 
         // Actualizar la imagen
         imagen.setCodigo(fileId);
@@ -118,6 +123,26 @@ public class ImagenServicioImp implements ImagenServicio {
             throw new RuntimeException("La eliminación no fue confirmada");
         }
    }
+
+   /**
+     * Metodo para obtener los ids de las imagenes eliminadas
+     * @param eliminados
+     * @return
+     */
+   private List<String> obtenerEliminadosId(List<Imagen> eliminados) {
+
+        return eliminados.stream().map(Imagen::getCodigo).collect(Collectors.toList());
+    }
+
+    /**
+     * Metodo para obtener los ids de las imagenes de la carpeta
+     * @param result
+     * @return identificadores de las imagenes
+     */
+    private List<String> obtenerImagenesCarpetaId(ResultList result) {
+
+        return result.getResults().stream().map(response -> response.getFileId()).collect(Collectors.toList());
+    }
 
     // SECTION: Implementacion de servicios
 
@@ -150,6 +175,16 @@ public class ImagenServicioImp implements ImagenServicio {
     }
 
     @Override
+    public Imagen restaurar(@Valid Imagen imagen, String versionId) throws Exception {
+
+        Result result = imageKitService.restaurarVersion(imagen.getCodigo(), versionId);
+
+        reasignarDatos(imagen, result);
+        
+        return imagenRepo.save(imagen);
+    }
+
+    @Override
     public Imagen renombrar(@Valid Imagen imagen, String nuevoNombre, Imagenable propietario) throws Exception {
 
         Result result = imageKitService.renombrarImagen(imagen.getCodigo(), nuevoNombre, propietario);
@@ -159,15 +194,24 @@ public class ImagenServicioImp implements ImagenServicio {
         return imagenRepo.save(imagen);
     }
 
-
-    // Implementar de aqui en adelante
-
     @Override
     public void eliminar(@Valid Imagen eliminado, boolean confirmacion) throws Exception { 
         
         comprobarConfirmacion(confirmacion);
 
+        imageKitService.eliminarImagen(eliminado.getCodigo());
+
         imagenRepo.delete(eliminado);
+    }
+
+    @Override
+    public void eliminarMultiple (@Valid List<Imagen> eliminados, boolean confirmacion) throws Exception { 
+        
+        comprobarConfirmacion(confirmacion);
+        
+        imageKitService.eliminarImagenes(obtenerEliminadosId(eliminados));
+
+        imagenRepo.deleteAll(eliminados);
     }
 
     // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la imagen usando las anotaciones para validar
@@ -183,7 +227,32 @@ public class ImagenServicioImp implements ImagenServicio {
     }
 
     @Override
-    public List<Imagen> listar() { return imagenRepo.findAll(); }
+    public List<String> listar(@Valid Imagenable propietario) throws Exception {
+
+        String folder = constructorCarpeta(propietario);
+
+        ResultList result = imageKitService.listarImagenes(folder);
+
+        return obtenerImagenesCarpetaId(result);
+    }
+
+    @Override
+    public List<VersionArchivo> listarVersiones(String fileId) throws Exception {
+
+        ResultFileVersions result = imageKitService.listarVersiones(fileId);
+
+        System.out.println("Respuesta detallada de versiones:" + result);
+
+        List<ResultFileVersionDetails> listaRespuesta = result.getResultFileVersionDetailsList();
+
+        // Convierte una lista de respuestas de versiones de archivo en una lista de objetos VersionArchivo.
+        List<VersionArchivo> listaVersiones = listaRespuesta.stream().map(version -> new VersionArchivo
+        (version.getFileId(), version.getUrl(), version.getUpdatedAt())) // Mapea cada versión recuperada extrayendo su fileId, URL y fecha de actualización
+        .collect(Collectors.toList()); // Convierte una lista de respuestas de versiones de archivo en una lista de objetos VersionArchivo.
+
+        return listaVersiones;
+    }
+    
 
     @Override
     public List<Imagen> listarPaginado() { 

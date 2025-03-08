@@ -1,6 +1,5 @@
 package com.unicine.test.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,9 +39,6 @@ public class PeliculaServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        // Creamos un mapa de imágenes
-        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.jpg");
-
         // Crear la lista de generos
         List<GeneroPelicula> generos = new ArrayList<>();
         generos.add(GeneroPelicula.ACCION);
@@ -75,8 +71,6 @@ public class PeliculaServicioTest {
     public void actualizar() {
 
 
-        File imagen = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.JPG");
-
         Pelicula pelicula;
 
         try{
@@ -87,9 +81,8 @@ public class PeliculaServicioTest {
         // Variables que el usuario modifica
         pelicula.setRestriccionEdad(20);
         pelicula.getGeneros().add(GeneroPelicula.TERROR);
-        System.out.println(pelicula.getImagenes());
 
-        String fileIdSeleccionado = "67b243a4432c476416f7ff91";
+        System.out.println(pelicula.getImagenes());
 
         try {
 

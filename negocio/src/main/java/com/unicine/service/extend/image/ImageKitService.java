@@ -3,7 +3,6 @@ package com.unicine.service.extend.image;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ import io.imagekit.sdk.models.GetFileListRequest;
 import io.imagekit.sdk.models.RenameFileRequest;
 import io.imagekit.sdk.models.results.Result;
 import io.imagekit.sdk.models.results.ResultFileDelete;
+import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
 import jakarta.annotation.PostConstruct;
 
@@ -86,7 +86,7 @@ public class ImageKitService {
             
         } catch (Exception e) {
 
-            throw new IOException("Error al subir la imagen: " + e.getMessage());
+            throw new IOException("Error al subir la imagen: " + e);
         }
     }
 
@@ -101,10 +101,9 @@ public class ImageKitService {
 
         Result archivoExitente = obtenerDatos(fileIdAntiguo);
 
-         // Extraer la respuesta en forma de mapa
-        Map<String, Object> respuesta = archivoExitente.getResponseMetaData().getMap();
+        String nombreAntiguo = archivoExitente.getName();
 
-        String nombreAntiguo = respuesta.get("name").toString();
+        System.out.println("Nombre antiguo: " + nombreAntiguo);
 
         try {
             subirImagen(fileActual, folder, propietario, true, nombreAntiguo);
@@ -113,9 +112,26 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al actualizar la imagen: " + e.getMessage());
+            throw new IOException("Error al actualizar la imagen: " + e);
         }
+    }
 
+    /**
+     * Método para restaurar una versión de una imagen en el servidor de ImageKit
+     * 
+     * @param fileId Identificador del arhivo
+     * @param versionId Identificador de la versión
+     * @return Resultado de la restauración
+     */
+    public Result restaurarVersion(String fileId, String versionId) throws IOException {
+
+        try {
+            return imageKit.restoreFileVersion(fileId, versionId);
+
+        } catch (Exception e) {
+
+            throw new IOException("Error al restaurar la versión de la imagen: " + e);
+        }
     }
 
     /**
@@ -129,15 +145,11 @@ public class ImageKitService {
 
         Result archivoExistente = obtenerDatos(fileId);
 
-        Map<String, Object> respuesta = archivoExistente.getResponseMetaData().getMap();
+        String pathArchivo = archivoExistente.getFilePath();
 
-        String pathArchivo = respuesta.get("filePath").toString();
+        String nombreAntiguo = archivoExistente.getName();
 
-        String nombreAntiguo = respuesta.get("name").toString();
-
-        String nombre = nombreAntiguo;
-
-        nombre = refactorizadorRuta.nombrarArchivo(nombreNuevo, propietario);
+        String nombre = refactorizadorRuta.nombrarArchivo(nombreNuevo, propietario);
 
         RenameFileRequest renameRequest = new RenameFileRequest();
 
@@ -155,7 +167,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al renombrar el archivo: " + e.getMessage());  
+            throw new IOException("Error al renombrar el archivo: " + e);  
         }
     }
 
@@ -163,20 +175,18 @@ public class ImageKitService {
      * Metodo para eliminar una imagen en el servidor de imageKit.io
      * 
      * @param fileId
-     * @return resultado de la eliminación de la imagen
+     * @return Resultado de la eliminación de la imagen
      */
     public Result eliminarImagen(String fileId) throws IOException {
 
         try {
             Result result = imageKit.deleteFile(fileId);
 
-            System.out.println(result);
-
             return result;
 
         } catch (Exception e) {
 
-            throw new IOException("Error al eliminar la imagen: " + e.getMessage());
+            throw new IOException("Error al eliminar la imagen: " + e);
         }
     }
 
@@ -185,13 +195,11 @@ public class ImageKitService {
         try {
             ResultFileDelete result = imageKit.bulkDeleteFiles(fileIds);
 
-            System.out.println(result);
-
             return result;
 
         } catch (Exception e) {
 
-            throw new IOException("Error al eliminar las imágenes: " + e.getMessage());
+            throw new IOException("Error al eliminar las imágenes: " + e);
         }
     }
 
@@ -210,7 +218,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al obtener los datos de la imagen: " + e.getMessage());
+            throw new IOException("Error al obtener los datos de la imagen: " + e);
         }
     }
 
@@ -220,24 +228,42 @@ public class ImageKitService {
      * @param folderPath
      * @return Resultado de la lista de imágenes
      */
-    public ResultList  listarImagenes(String folderPath) throws IOException {
+    public ResultList listarImagenes(String folderPath) throws IOException {
 
         GetFileListRequest getFileListRequest = new GetFileListRequest();
 
-        getFileListRequest.setPath("/" + folderPath);
+        getFileListRequest.setPath("/unicine/" + folderPath);
         getFileListRequest.setFileType("all");
 
         getFileListRequest.setSort("ASC_CREATED");
 
-
         try {
-            ResultList  result = imageKit.getFileList(getFileListRequest);
+            ResultList result = imageKit.getFileList(getFileListRequest);
 
             return result;
 
         } catch (Exception e) {
 
-            throw new IOException("Error al listar las imagenes: " + e.getMessage());
+            throw new IOException("Error al listar las imagenes: " + e);
+        }
+    }
+
+    /**
+     * Metodo para listar las versiones que tiene una imagen
+     * 
+     * @param fileId Identificador del arvhivo
+     * @return Resultado de la version
+     */
+    public ResultFileVersions listarVersiones(String fileId) throws IOException {
+
+        try {
+            ResultFileVersions result = imageKit.getFileVersions(fileId);
+
+            return result;
+
+        } catch (Exception e) {
+
+            throw new IOException("Error al listar las versiones de la imagen: " + e);
         }
     }
 }

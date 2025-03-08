@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.unicine.entity.Imagen;
 import com.unicine.entity.interfaced.Imagenable;
+import com.unicine.transfer.record.VersionArchivo;
 
 import jakarta.validation.Valid;
 
@@ -17,13 +18,19 @@ public interface ImagenServicio {
 
     Imagen actualizar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception;
 
+    Imagen restaurar(@Valid Imagen imagen, String versionId) throws Exception;
+
     Imagen renombrar(@Valid Imagen imagen, String nuevoNombre, Imagenable propietario) throws Exception;
 
     void eliminar(@Valid Imagen imagen, boolean confirmacion) throws Exception;
 
+    void eliminarMultiple(@Valid List<Imagen> imagenes, boolean confirmacion) throws Exception;
+
     Optional<Imagen> obtener(@Valid String codigo) throws Exception;
 
-    List<Imagen> listar();
+    List<String> listar(@Valid Imagenable propietario) throws Exception;
+
+    List<VersionArchivo> listarVersiones(String fileId) throws Exception;
 
     List<Imagen> listarPaginado();
 
