@@ -14,8 +14,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.Cliente;
 import com.unicine.entity.Coleccion;
-import com.unicine.entity.ColeccionComposicion;
 import com.unicine.entity.Pelicula;
+import com.unicine.entity.composed.ColeccionCompuesta;
 import com.unicine.enumeration.EstadoPropio;
 import com.unicine.repository.ClienteRepo;
 import com.unicine.repository.ColeccionRepo;
@@ -59,7 +59,7 @@ public class ColeccionTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        ColeccionComposicion id = new ColeccionComposicion(1009000011, 1);
+        ColeccionCompuesta id = new ColeccionCompuesta(1009000011, 1);
 
         Coleccion guardado = coleccionRepo.findById(id).orElse(null);
 
@@ -80,7 +80,7 @@ public class ColeccionTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        ColeccionComposicion id = new ColeccionComposicion(1009000011, 1);
+        ColeccionCompuesta id = new ColeccionCompuesta(1009000011, 1);
 
         Coleccion buscado = coleccionRepo.findById(id).orElse(null);
 
@@ -101,7 +101,7 @@ public class ColeccionTest {
     @Sql("classpath:dataset.sql")
     public void obtener() {
 
-        ColeccionComposicion id = new ColeccionComposicion(1009000011, 1);
+        ColeccionCompuesta id = new ColeccionCompuesta(1009000011, 1);
 
         Optional<Coleccion> buscado = coleccionRepo.findById(id);
 

@@ -153,6 +153,25 @@ insert into pelicula_generos (generos, pelicula_id) values (9, 5);
 insert into pelicula_generos (generos, pelicula_id) values (10, 5);
 insert into pelicula_generos (generos, pelicula_id) values (12, 5);
 
+-- Registros que tienen funciones
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 3, "ESTRENO", "2025-12-16T11:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 3, "CARTELERA", "2025-12-24T20:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 4, "CARTELERA", "2025-12-24T14:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 5, "CARTELERA", "2025-12-22T17:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (3, 4, "ESTRENO", "2025-12-17T14:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (4, 1, "ESTRENO", "2025-12-14T05:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (4, 2, "ESTRENO", "2025-12-15T08:00:00");
+
+-- Registros sin funciones activas
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 1, "PREVENTA", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 2, "PREVENTA", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 4, "PENDIENTE", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 5, "PENDIENTE", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 1, "PENDIENTE", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 2, "PREVENTA", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (3, 1, "FUERA_CARTELERA", null);
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (3, 2, "PENDIENTE", null);
+
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (1, 1, 1, 7000, 6, "DOBLADO");
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (2, 2, 2, 6500, 5, "SUBTITULADO");
 insert into funcion (horario_id, id, pelicula_id, precio, sala_id, formato) values (3, 3, 3, 6800, 4, "DOBLADO");
@@ -276,7 +295,7 @@ insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, 
 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf9570432c476416bac374", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-1", null, null, null, 5, null);
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf95db432c476416bd3216", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-2", null, null, null, 5, null);
-insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67cca0f3432c47641676174c", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67ccc3e2432c47641609d9e1", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
 
 
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI");

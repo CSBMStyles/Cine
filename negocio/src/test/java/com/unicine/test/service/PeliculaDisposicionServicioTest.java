@@ -7,16 +7,27 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unicine.api.response.Respuesta;
 import com.unicine.entity.Ciudad;
+import com.unicine.entity.Funcion;
+import com.unicine.entity.Horario;
 import com.unicine.entity.Pelicula;
 import com.unicine.entity.PeliculaDisposicion;
+import com.unicine.entity.Sala;
+import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.enumeration.FormatoPelicula;
 import com.unicine.service.CiudadServicio;
+import com.unicine.service.FuncionServicio;
+import com.unicine.service.HorarioServicio;
 import com.unicine.service.PeliculaDisposicionServicio;
 import com.unicine.service.PeliculaServicio;
+import com.unicine.service.SalaServicio;
 import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
+import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
@@ -27,37 +38,45 @@ public class PeliculaDisposicionServicioTest {
     private PeliculaDisposicionServicio peliculaDisposicionServicio;
 
     @Autowired
+    private FuncionServicio funcionServicio;
+
+    @Autowired
+    private SalaServicio salaServicio;
+
+    @Autowired
     private PeliculaServicio peliculaServicio;
 
     @Autowired 
     private CiudadServicio ciudadServicio;
 
-    @Test
-    @Sql("classpath:dataset.sql")
-    public void registrar() {
+    @Autowired
+    private HorarioServicio horarioServicio;
 
-        EstadoPelicula estado = EstadoPelicula.CARTELERA;
+    @Test
+    @Sql("classpath:dataset.sql") 
+    public void registrar() { // ✅ Estado: PENDIENTE {Es el estado inicial entonces no deberia haber problemas}
 
         // Obtenemos la pelicula apartir del que se haya seleccionado, esta configuracion se recomienda que este en la misma interfaz de la creacion de pelicula
         Pelicula pelicula;
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
         // Obtenemos la ciudad apartir de una lista, puede automatizarse para que se seleccione la ciudad por apartir del administrador que lo crea y su ubicacion
         Ciudad ciudad;
+
         try {
-            ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
+            ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(3)).orElse(null);
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
-        PeliculaDisposicion peliculaDisposicion = new PeliculaDisposicion(estado, pelicula, ciudad);
+        PeliculaDisposicion peliculaDisposicion = new PeliculaDisposicion(pelicula, ciudad);
 
         try {
             PeliculaDisposicion nuevo = peliculaDisposicionServicio.registrar(peliculaDisposicion);
             
-            Assertions.assertEquals(estado, nuevo.getEstadoPelicula());
+            Assertions.assertEquals("PENDIENTE", nuevo.getEstadoPelicula().toString());
             
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
@@ -68,8 +87,11 @@ public class PeliculaDisposicionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void actualizar() {
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(1, 1);
+
         try {
-            PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(1).orElse(null);
+            PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
 
             peliculaDisposicion.setEstadoPelicula(EstadoPelicula.PREVENTA);
 
@@ -87,7 +109,7 @@ public class PeliculaDisposicionServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
         
-        Integer codigo = 1;
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(1, 1);
 
         try {
             PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
@@ -105,12 +127,12 @@ public class PeliculaDisposicionServicioTest {
     @Sql("classpath:dataset.sql")
     public void obtener() {
 
-        Integer codigo = 1;
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(1, 1);
 
         try {
             PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
 
-            Assertions.assertEquals(codigo, peliculaDisposicion.getCodigo());
+            Assertions.assertEquals(codigo, peliculaDisposicion.getCiudad().getCodigo() + peliculaDisposicion.getPelicula().getCodigo());
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + peliculaDisposicion);
 
@@ -123,8 +145,11 @@ public class PeliculaDisposicionServicioTest {
     public void listar() {
         try {
             List<PeliculaDisposicion> lista = peliculaDisposicionServicio.listar();
+
             Assertions.assertTrue(lista.size() > 0);
+
             System.out.println("\n" + "Listado de registros:");
+
             lista.forEach(System.out::println);
 
         } catch (Exception e) { throw new RuntimeException(e); }
@@ -134,11 +159,14 @@ public class PeliculaDisposicionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarRecomendacionPeliculaEstado() {
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(1, 1);
+
         try {
 
             EstadoPelicula estado = EstadoPelicula.FUERA_CARTELERA;
 
-            PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(1).orElse(null);
+            PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
 
             List<PeliculaDisposicion> lista = peliculaDisposicionServicio.listarRecomendacionPeliculaEstado(peliculaDisposicion, estado);
 
@@ -150,5 +178,211 @@ public class PeliculaDisposicionServicioTest {
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
+    }
+
+    // ℹ️ Pruebas para los cambios de estados
+
+    @Test
+    @Sql("classpath:dataset.sql") 
+    public void cambiarPendientePreventa() { // ✅ Estado: PREVENTA
+
+        // El administrador del teatro debio haber seleccionado sala de las que maneja.
+
+        Sala sala;
+
+        try {
+            sala = salaServicio.obtener(new SalaAtributoValidator(4)).orElse(null); // Esta sala pertenece a la ciudad {1}
+
+            System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
+
+            Assertions.assertNotNull(sala);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
+
+        LocalDateTime fechaInicio = LocalDateTime.of(2025, 03, 20, 15, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2025, 03, 20, 17, 00);
+
+        Horario horario = null;
+
+        try {
+            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+
+            if (!repuestaHorario.isExito()) {
+
+                Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
+            }
+
+            horario = (Horario) repuestaHorario.getData();
+
+            String dia = horarioServicio.obtenerDia(fechaInicio);
+
+            System.out.println("\n" + "Horario creado:" + "\n" + horario);
+
+            System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
+
+            Assertions.assertTrue(repuestaHorario.isExito());
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
+
+        Pelicula pelicula;
+
+        try {
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(4)).orElse(null);
+
+            System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
+
+            Assertions.assertNotNull(pelicula);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
+
+        PeliculaDisposicion peliculaDisposicion;
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(sala.getTeatro().getCiudad().getCodigo(), pelicula.getCodigo());
+
+        try {
+            peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
+
+            System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
+
+            Assertions.assertNotNull(peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+
+        // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
+
+        Funcion funcion;
+        
+        try {
+
+            funcion = funcionServicio.registrar(new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula));
+
+            System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
+
+            Assertions.assertNotNull(funcion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
+
+        try {
+            
+            PeliculaDisposicion disposicionActual = peliculaDisposicionServicio.actualizar(peliculaDisposicion);
+
+            Assertions.assertEquals("PREVENTA", disposicionActual.getEstadoPelicula().toString());
+
+            System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    /**
+     * Para esta simulación no deberia haber intervencion humana o accion, entonces teniendo en cuenta que la aplicacion se encuentra en ejecucion esta prueba trata de que cuando se inicia creamos una función simulando que existe y que esa funcion no ha comenzado, pasado el tiempo de la fechaInicio se cambia el estado a ESTRENO.
+     */
+    @Test
+    @Sql("classpath:dataset.sql") 
+    public void cambiarPreventaEstreno() { // 🔍 Estado: ESTRENO
+
+        // El administrador del teatro debio haber seleccionado sala de las que maneja.
+
+        Sala sala;
+
+        try {
+            sala = salaServicio.obtener(new SalaAtributoValidator(4)).orElse(null); // Esta sala pertenece a la ciudad {1}
+
+            System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
+
+            Assertions.assertNotNull(sala);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
+        // El horario lo ponemos en un futuro proximo para simular la existencia de una funcion existente y tambien mientras de se hace la prueba ver como cambia el estado de la disposicion al llegar el tiempo de la fechaInicio
+
+        LocalDateTime fechaInicio = LocalDateTime.now().plusMinutes(2);
+        LocalDateTime fechaFin = LocalDateTime.now().plusMinutes(4);
+
+        Horario horario = null;
+
+        try {
+            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+
+            if (!repuestaHorario.isExito()) {
+
+                Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
+            }
+
+            horario = (Horario) repuestaHorario.getData();
+
+            String dia = horarioServicio.obtenerDia(fechaInicio);
+
+            System.out.println("\n" + "Horario creado:" + "\n" + horario);
+
+            System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
+
+            Assertions.assertTrue(repuestaHorario.isExito());
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
+
+        Pelicula pelicula;
+
+        try {
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(4)).orElse(null);
+
+            System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
+
+            Assertions.assertNotNull(pelicula);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
+
+        PeliculaDisposicion peliculaDisposicion;
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(sala.getTeatro().getCiudad().getCodigo(), pelicula.getCodigo());
+
+        try {
+            peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
+
+            System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
+
+            Assertions.assertNotNull(peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+
+        // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
+
+        Funcion funcion;
+        
+        try {
+
+            funcion = funcionServicio.registrar(new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula));
+
+            System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
+
+            Assertions.assertNotNull(funcion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
+
+        try {
+            
+            PeliculaDisposicion disposicionActual = peliculaDisposicionServicio.actualizar(peliculaDisposicion);
+
+            Assertions.assertEquals("ESTRENO", disposicionActual.getEstadoPelicula().toString());
+
+            System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.PeliculaDisposicion;
+import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enumeration.EstadoPelicula;
 
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ public interface PeliculaDisposicionServicio {
 
     // *️⃣ Funciones Generales
 
-    Optional<PeliculaDisposicion> obtener(Integer codigo) throws Exception;
+    Optional<PeliculaDisposicion> obtener(@Valid PeliculaDisposicionCompuesta codigo) throws Exception;
 
     List<PeliculaDisposicion> listar();
 

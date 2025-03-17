@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.Cliente;
 import com.unicine.entity.Imagen;
@@ -67,19 +67,34 @@ public class ImagenServicioTest {
 
         MockMultipartFile multipartFile = new MockMultipartFile("file", path.getFileName().toString(), "image/jpg", content);
 
-        System.out.println("Formato" + multipartFile.getName());
+        System.out.println("Formato: " + multipartFile.getName());
 
-        System.out.println("Nombre del archivo" + multipartFile.getOriginalFilename());
+        System.out.println("Nombre del archivo: " + multipartFile.getOriginalFilename());
 
-        System.out.println("Tipo de contenido" + multipartFile.getContentType());
+        System.out.println("Tamaño: " + multipartFile.getSize() / Math.pow(1024.0, 2));
+
+        System.out.println("Tamaño maximo: " + 5);
+        
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void subirImagenCliente() {
 
-        // Creamos un mapa de imágenes
-        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/Perfil/Luisa-Lopez.jpg");
+        MultipartFile file;
+
+        try {
+            // Creamos un archivo MultipartFile usando un archivo físico
+            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+
+            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
+
+            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+
+            // IMPORTANT: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+        
 
         Cliente cliente;
 
@@ -93,7 +108,6 @@ public class ImagenServicioTest {
         imagen.setCliente(cliente);
 
         try {
-            /* clienteServicio.validarImagen(cliente.getCedula()); */
 
             imagenServicio.registrar(imagen, file, cliente);
 
@@ -106,14 +120,25 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void subirImagenPelicula() {
 
-        // Creamos un mapa de imágenes
-        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+        MultipartFile file;
 
+        try {
+            // Creamos un archivo MultipartFile usando un archivo físico
+            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+
+            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
+
+            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+        
         Pelicula pelicula;
 
         try {
             pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
-
+            
+            Assertions.assertNotNull(pelicula, "La película no debe ser nula");
+            
         } catch (Exception e) { throw new RuntimeException(e); }
 
         Imagen imagen = new Imagen();
@@ -121,10 +146,14 @@ public class ImagenServicioTest {
         imagen.setPelicula(pelicula);
 
         try {
-            imagenServicio.registrar(imagen, file, pelicula);
-
-            System.out.println("Imagen subida: " + imagen);
+            Imagen resultado = imagenServicio.registrar(imagen, file, pelicula);
             
+            Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
+
+            Assertions.assertNotNull(resultado.getCodigo(), "El código de la imagen no debe ser nulo");
+
+            System.out.println("Imagen subida: " + resultado);
+
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
@@ -132,14 +161,22 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
+        MultipartFile file;
 
-        File file = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_5118.jpg");
+        try {
+            // Preparamos el archivo MultipartFile para actualizar
+            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3929 M.JPG");
 
-        // NOTE: Listamos las imagenes de la pelicula y seleccionamos el fileId de la imagen que queremos actualizar
+            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
 
-        Imagen imagenAntigua;
+            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
 
-        String fileIdSeleccionado = "67cca0f3432c47641676174c";
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+            // Obtenemos la imagen a actualizar
+            String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
+
+            Imagen imagenAntigua;
 
         try {
             imagenAntigua = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
@@ -150,15 +187,15 @@ public class ImagenServicioTest {
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
-        try {
 
+        try {
             Imagen actualizado = imagenServicio.actualizar(imagenAntigua, file, imagenAntigua.getPelicula());
 
             Assertions.assertEquals(fileIdSeleccionado, actualizado.getCodigo());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) { throw new RuntimeException(e); }    
     }
 
     @Test
@@ -197,7 +234,7 @@ public class ImagenServicioTest {
 
         Imagen imagenAntigua;
 
-        String fileIdSeleccionado = "67cca0f3432c47641676174c";
+        String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         String nuevoNombre = "Renombre.jpg";
 
@@ -223,7 +260,7 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        String fileIdSeleccionado = "67cca0f3432c47641676174c";
+        String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         Imagen imagen;
 
@@ -258,7 +295,7 @@ public class ImagenServicioTest {
 
         List<String> fileIds = new ArrayList<>();
 
-        fileIds.add("67cca0f3432c47641676174c");
+        fileIds.add("67ccc3e2432c47641609d9e1");
 
         List<Imagen> imagenes = new ArrayList<>();
 
@@ -303,7 +340,7 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void obtener() {
 
-        String fileIdSeleccionado = "67cca0f3432c47641676174c";
+        String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         try {
             Imagen imagen = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
@@ -319,7 +356,7 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void obtenerOrigen() {
 
-        String fileIdSeleccionado = "67cca0f3432c47641676174c";
+        String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         try {
             Result imagen = imagenKitIo.obtenerDatos(fileIdSeleccionado);
@@ -398,7 +435,7 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void listarVersionesImagen() {
 
-        String fileIdSeleccionado = "67cca0f3432c47641676174c";
+        String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         try {
             List<VersionArchivo> imagen = imagenServicio.listarVersiones(fileIdSeleccionado);

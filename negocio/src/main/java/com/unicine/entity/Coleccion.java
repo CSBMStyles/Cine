@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
+import com.unicine.entity.composed.ColeccionCompuesta;
 import com.unicine.enumeration.EstadoPropio;
 
 @Entity
@@ -23,7 +24,7 @@ import com.unicine.enumeration.EstadoPropio;
 @Setter
 @ToString
 @NoArgsConstructor
-@IdClass(ColeccionComposicion.class)
+@IdClass(ColeccionCompuesta.class)
 public class Coleccion implements Serializable {
 
     // SECTION: Atributos

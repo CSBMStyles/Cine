@@ -1,6 +1,5 @@
 package com.unicine.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.Imagen;
 import com.unicine.entity.Persona;
@@ -56,7 +56,7 @@ public class ImagenServicioImp implements ImagenServicio {
         }
     }
 
-    private void validarExiste(Imagenable propietario) throws Exception {
+    private void validarExisteImagen(Imagenable propietario) throws Exception {
 
         if (propietario instanceof Persona) {
             
@@ -144,14 +144,34 @@ public class ImagenServicioImp implements ImagenServicio {
         return result.getResults().stream().map(response -> response.getFileId()).collect(Collectors.toList());
     }
 
+    /**
+     * Método para validar que el tamaño de la imagen no exceda los 5MB
+     * @param file Archivo MultipartFile a validar
+     * @throws Exception Si el tamaño del archivo excede los 5MB
+     */
+    private void validarTamanoImagen(MultipartFile file) throws Exception {
+
+        long tamanoMaximo = 5;
+
+        double conversion = file.getSize() / Math.pow(1024.0, 2);
+        
+        if (conversion > tamanoMaximo) {
+
+            // La razon de dividir el tamaño de la imagen es por el formato, este esta en bytes entonces lo convertimos en mega bytes
+            throw new Exception("El tamaño de la imagen excede el límite permitido de 5 MB. Tamaño actual: " + String.format("%.2f", conversion) + " MB"); 
+        }
+    }
+
     // SECTION: Implementacion de servicios
 
     // 1️⃣ Funcion del Administrador
 
     @Override
-    public Imagen registrar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception { 
+    public Imagen registrar(@Valid Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
 
-        validarExiste(propietario);
+        validarExisteImagen(propietario);
+
+        validarTamanoImagen(file);
 
         String folder = constructorCarpeta(propietario);
 
@@ -163,7 +183,9 @@ public class ImagenServicioImp implements ImagenServicio {
     }
 
     @Override
-    public Imagen actualizar(@Valid Imagen imagen, File file, Imagenable propietario) throws Exception { 
+    public Imagen actualizar(@Valid Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
+        
+        validarTamanoImagen(file);
         
         String folder = constructorCarpeta(propietario);
 

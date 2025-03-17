@@ -79,7 +79,7 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
     /**
      * Consulta para obtener los detalles de las funciones de una pelicula
      * @param atributos: codigo de la pelicula
-     * @return lista de detalles de funciones: nombre de la pelicula, estado de la pelicula, imagenes de la pelicula, codigo de la sala, direccion del teatro, nombre de la ciudad, horario de la funcion
+     * @return lista de detalles de funciones
      */
     @Query("select f.pelicula.nombre as nombrePelicula, " +
        "f.pelicula.estado as estadoPelicula, " +
@@ -90,6 +90,22 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
        "f.horario as horario " +
        "from Funcion f where f.pelicula.codigo = :codigoPelicula")
     List<DetalleFuncionesProjection> listarDetallesFunciones(Integer codigoPelicula);
+
+    /**
+     * Consulta para obtener las funciones de una pelicula en una ciudad para la disposicion
+     * @param atributos: codigo de la pelicula, codigo de la ciudad, fecha actual
+     * @return lista de funciones
+     */
+    @Query("select f from Funcion f join f.sala s join s.teatro t join t.ciudad c where f.pelicula.codigo = :peliculaId and c.codigo = :ciudadId and f.horario.fechaFin > :fechaActual")
+    List<Funcion> buscarFuncionesActivasDisposicion(Integer peliculaId, Integer ciudadId, LocalDateTime fechaActual);
+
+    /**
+     * Consulta para obtener la primera funcion de una pelicula en una ciudad para la disposicion
+     * @param atributos: codigo de la pelicula, codigo de la ciudad
+     * @return lista de funciones
+     */
+    @Query("select f from Funcion f join f.sala s join s.teatro t join t.ciudad c where f.pelicula.codigo = :peliculaId and c.codigo = :ciudadId order by f.horario.fechaInicio ASC")
+    List<Funcion> buscarPrimeraFuncionDisposicion(Integer peliculaId, Integer ciudadId);
 
     /**
      * #️⃣ Consulta para obtener las funciones con compras vacias de teatros especificos

@@ -4,31 +4,16 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+
 import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ProcesadorImagen {
-
-    /**
-     * Verifica si el archivo ya está en formato webp.
-     */
-    public boolean comprobarFormato(File file) {
-
-        return file.getName().toLowerCase().endsWith(".webp");
-    }
-
-    /**
-     * Metodo para devolver los bytes de un archivo en caso que tenga el formato webp
-     */
-    public byte[] devolverBytes(File file) throws IOException {
-
-        return Files.readAllBytes(file.toPath());
-    }
 
     /**
      * Metodo para leer una imagen
@@ -53,6 +38,25 @@ public class ProcesadorImagen {
     }
 
     /**
+     * Metodo para leer una imagen desde un MultipartFile
+     * @param file MultipartFile de imagen a leer
+     * @return buffered
+     */
+    public BufferedImage leerImagen(MultipartFile file) throws IOException {
+        try {
+            BufferedImage image = ImageIO.read(file.getInputStream());
+
+            if (image == null) {
+                throw new IOException("No se pudo leer la imagen. Formato no soportado: " + file.getOriginalFilename());
+            }
+            return image;
+
+        } catch (Exception e) {
+            throw new IOException("Error al leer la imagen: " + file.getOriginalFilename() + ": " + e);
+        }
+    }
+
+    /**
      * Metodo para convertir una imagen a formato webp
      * 
      * @param file Archivo de imagen a convertir
@@ -60,11 +64,6 @@ public class ProcesadorImagen {
      * @return
      */
     public byte[] convertirFormato(File file, float quality) throws IOException {
-
-        // Verificar la extensión; si ya es webp, se pueden leer los bytes directamente
-        if (comprobarFormato(file)) {
-            return devolverBytes(file);
-        }
 
         // Se lee la imagen original
         BufferedImage image = leerImagen(file);
@@ -85,6 +84,36 @@ public class ProcesadorImagen {
 
         } catch (Exception e) {
 
+            throw new IOException("Error al convertir la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Metodo para convertir una imagen de MultipartFile a formato webp
+     * 
+     * @param file MultipartFile de imagen a convertir
+     * @param quality Calidad de la imagen
+     * @return
+     */
+    public byte[] convertirFormato(MultipartFile file, float quality) throws IOException {
+        // Se lee la imagen original
+        BufferedImage image = leerImagen(file);
+        
+        try {
+            // Convertir la imagen a formato webp
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // Configurar la calidad de la imagen
+            Thumbnails.of(image)
+                .scale(1.0)
+                .outputQuality(quality)
+                .outputFormat("webp")
+                .toOutputStream(outputStream);
+                
+            // Retornar los bytes de la imagen convertida
+            return outputStream.toByteArray();
+
+        } catch (Exception e) {
             throw new IOException("Error al convertir la imagen: " + e.getMessage());
         }
     }

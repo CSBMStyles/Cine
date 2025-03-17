@@ -1,4 +1,4 @@
-package com.unicine.entity;
+package com.unicine.entity.composed;
 
 import java.io.Serializable;
 
@@ -7,15 +7,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ColeccionComposicion implements Serializable {
+public class ColeccionCompuesta implements Serializable {
 
     private Integer cliente;
 

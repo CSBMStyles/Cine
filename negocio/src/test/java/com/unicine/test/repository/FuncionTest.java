@@ -225,7 +225,7 @@ public class FuncionTest {
     @Sql("classpath:dataset.sql")
     public void listarFuncionesCiudad() {
 
-        List<Funcion> funciones = funcionRepo.listarFuncionesCiudad(2);
+        List<Funcion> funciones = funcionRepo.listarFuncionesCiudad(4);
 
         Assertions.assertEquals(2, funciones.size());
 

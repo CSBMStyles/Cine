@@ -88,7 +88,7 @@ public class FuncionServicioImp implements FuncionServicio {
 
     @Override
     public Funcion registrar(@Valid Funcion funcion) throws Exception { 
-        
+
         reemplazarPrecio(funcion);
 
         return funcionRepo.save(funcion); }

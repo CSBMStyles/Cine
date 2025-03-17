@@ -1,11 +1,11 @@
 package com.unicine.service.extend.image;
 
 import java.util.List;
-import java.io.File;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.interfaced.Imagenable;
 import com.unicine.util.config.ImageKitConfig;
@@ -50,14 +50,16 @@ public class ImageKitService {
     }
 
     /**
-     * Método para subir una imagen al servidor de imageKit.io
-     *
-     * @param file   El archivo de imagen a subir.
-     * @param folder La carpeta en imageKit.io donde se almacenará la imagen.
-     * @return Un mapa con la respuesta de imageKit.io
+     * Método para subir una imagen al servidor de imageKit.io usando MultipartFile
+     * 
+     * @param file Archivo MultipartFile a subir
+     * @param folder Carpeta donde se guardará la imagen
+     * @param propietario Propietario de la imagen
+     * @param sobrescribir Si se debe sobrescribir la imagen
+     * @param nombrePersonalizado Nombre personalizado para la imagen
+     * @return Resultado de la subida
      */
-    public Result subirImagen(File file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) throws IOException {
-
+    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) throws IOException {
         // Convertir la imagen a formato webp conservando el setenta por ciento de calidad
         byte[] fileData = procesadorImagen.convertirFormato(file, 0.7f);
 
@@ -65,7 +67,7 @@ public class ImageKitService {
         String name;
 
         if (nombrePersonalizado == null) {
-            name = refactorizadorRuta.nombrarArchivo(file.getName(), propietario);
+            name = refactorizadorRuta.nombrarArchivo(file.getOriginalFilename(), propietario);
         } 
         else {
             name = refactorizadorRuta.nombrarArchivo(nombrePersonalizado, propietario);
@@ -85,20 +87,20 @@ public class ImageKitService {
             return imageKit.upload(request);
             
         } catch (Exception e) {
-
             throw new IOException("Error al subir la imagen: " + e);
         }
     }
 
     /**
-     * Metodo para actualizar una imagen en el servidor de imageKit.io
+     * Metodo para actualizar una imagen en el servidor de imageKit.io usando MultipartFile
      * 
-     * @param file
-     * @param folder
+     * @param fileActual Archivo MultipartFile actualizado
+     * @param fileIdAntiguo ID del archivo a actualizar
+     * @param folder Carpeta donde está la imagen
+     * @param propietario Propietario de la imagen
      * @return resultado de la actualización de la imagen
      */
-    public Result actualizarImagen(File fileActual, String fileIdAntiguo, String folder, Imagenable propietario) throws IOException {
-
+    public Result actualizarImagen(MultipartFile fileActual, String fileIdAntiguo, String folder, Imagenable propietario) throws IOException {
         Result archivoExitente = obtenerDatos(fileIdAntiguo);
 
         String nombreAntiguo = archivoExitente.getName();
@@ -108,7 +110,7 @@ public class ImageKitService {
         try {
             subirImagen(fileActual, folder, propietario, true, nombreAntiguo);
 
-            return renombrarImagen(fileIdAntiguo, fileActual.getName(), propietario);
+            return renombrarImagen(fileIdAntiguo, fileActual.getOriginalFilename(), propietario);
 
         } catch (Exception e) {
 

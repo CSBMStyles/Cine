@@ -1,6 +1,7 @@
 package com.unicine.repository;
 
 import com.unicine.entity.PeliculaDisposicion;
+import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enumeration.EstadoPelicula;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PeliculaDisposicionRepo extends JpaRepository<PeliculaDisposicion, Integer> {
+public interface PeliculaDisposicionRepo extends JpaRepository<PeliculaDisposicion, PeliculaDisposicionCompuesta> {
     
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 

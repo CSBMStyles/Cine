@@ -16,11 +16,14 @@ import com.unicine.entity.Funcion;
 import com.unicine.entity.FuncionEsquema;
 import com.unicine.entity.Horario;
 import com.unicine.entity.Pelicula;
+import com.unicine.entity.PeliculaDisposicion;
 import com.unicine.entity.Sala;
+import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enumeration.FormatoPelicula;
 import com.unicine.service.FuncionEsquemaServicio;
 import com.unicine.service.FuncionServicio;
 import com.unicine.service.HorarioServicio;
+import com.unicine.service.PeliculaDisposicionServicio;
 import com.unicine.service.PeliculaServicio;
 import com.unicine.service.SalaServicio;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
@@ -46,6 +49,9 @@ public class FuncionServicioTest {
 
     @Autowired
     private FuncionEsquemaServicio funcionEsquemaServicio;
+
+    @Autowired
+    private PeliculaDisposicionServicio disposicionServicio;
 
     // 🟩
 
@@ -106,6 +112,24 @@ public class FuncionServicioTest {
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
+        // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
+
+        PeliculaDisposicion peliculaDisposicion;
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(sala.getTeatro().getCiudad().getCodigo(), pelicula.getCodigo());
+
+        try {
+            peliculaDisposicion = disposicionServicio.obtener(codigo).orElse(null);
+
+            System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
+
+            Assertions.assertNotNull(peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+
+        // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
+
         Funcion funcion;
         
         try {
@@ -122,6 +146,14 @@ public class FuncionServicioTest {
 
         try {
             
+            disposicionServicio.actualizar(peliculaDisposicion);
+
+            System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        try {
+            
             FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(new FuncionEsquema(funcion));
 
             System.out.println("\n" + "Funcion esquema registrado:" + "\n" + funcionEsquema);
@@ -130,6 +162,7 @@ public class FuncionServicioTest {
 
 
         } catch (Exception e) { throw new RuntimeException(e); }
+
     }
 
     @Test
@@ -208,6 +241,21 @@ public class FuncionServicioTest {
             } catch (Exception e) { throw new RuntimeException(e); }
         }
 
+        // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
+
+        PeliculaDisposicion peliculaDisposicion;
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(funcion.getSala().getTeatro().getCiudad().getCodigo(), funcion.getPelicula().getCodigo());
+
+        try {
+            peliculaDisposicion = disposicionServicio.obtener(codigo).orElse(null);
+
+            System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
+
+            Assertions.assertNotNull(peliculaDisposicion);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
         try {
 
             Funcion actualizado = funcionServicio.actualizar(funcion);
@@ -215,6 +263,14 @@ public class FuncionServicioTest {
             Assertions.assertNotNull(actualizado);
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
+
+        } catch (Exception e) { throw new RuntimeException(e); }
+
+        try {
+            
+            disposicionServicio.actualizar(peliculaDisposicion);
+
+            System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
 
         } catch (Exception e) { throw new RuntimeException(e); }
     }
