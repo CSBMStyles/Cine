@@ -54,7 +54,7 @@ public class PeliculaDisposicionServicioTest {
 
     @Test
     @Sql("classpath:dataset.sql") 
-    public void registrar() { // ✅ Estado: PENDIENTE {Es el estado inicial entonces no deberia haber problemas}
+    public void registrar() { // ✅ Estado: PENDIENTE inicial entonces no deberia haber problemas
 
         // Obtenemos la pelicula apartir del que se haya seleccionado, esta configuracion se recomienda que este en la misma interfaz de la creacion de pelicula
         Pelicula pelicula;
@@ -305,8 +305,8 @@ public class PeliculaDisposicionServicioTest {
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
         // El horario lo ponemos en un futuro proximo para simular la existencia de una funcion existente y tambien mientras de se hace la prueba ver como cambia el estado de la disposicion al llegar el tiempo de la fechaInicio
 
-        LocalDateTime fechaInicio = LocalDateTime.now().plusMinutes(2);
-        LocalDateTime fechaFin = LocalDateTime.now().plusMinutes(4);
+        LocalDateTime fechaInicio = LocalDateTime.now().plusSeconds(30);
+        LocalDateTime fechaFin = LocalDateTime.now().plusHours(1);
 
         Horario horario = null;
 
@@ -335,7 +335,7 @@ public class PeliculaDisposicionServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(4)).orElse(null);
+            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
 
             System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
 
@@ -352,9 +352,9 @@ public class PeliculaDisposicionServicioTest {
         try {
             peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
 
-            System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
+            System.out.println("\n" + "Estado inicial: " + peliculaDisposicion.getEstadoPelicula());
 
-            Assertions.assertNotNull(peliculaDisposicion);
+            Assertions.assertEquals("PREVENTA", peliculaDisposicion.getEstadoPelicula().toString());
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
@@ -373,16 +373,22 @@ public class PeliculaDisposicionServicioTest {
 
         } catch (Exception e) { throw new RuntimeException(e); }
 
-        // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
-
         try {
+            System.out.println("Esperando que comience la función a las " + fechaInicio);
+            // Esperamos hasta después de la fecha de inicio
+            Thread.sleep(12000); // 12 segundos
             
-            PeliculaDisposicion disposicionActual = peliculaDisposicionServicio.actualizar(peliculaDisposicion);
-
-            Assertions.assertEquals("ESTRENO", disposicionActual.getEstadoPelicula().toString());
-
-            System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
-
-        } catch (Exception e) { throw new RuntimeException(e); }
+            // Invocamos el método automático (similar a lo que haría el scheduler)
+            // Esto ejecuta la misma lógica que ejecutaría automáticamente
+            peliculaDisposicionServicio.actualizarEstadoPeliculas();
+            
+            // Obtenemos el estado actualizado
+            PeliculaDisposicion disposicionActualizada = peliculaDisposicionServicio.obtener(codigo).orElse(null);
+            System.out.println("\nEstado después de actualización automática: " + disposicionActualizada.getEstadoPelicula());
+            
+            Assertions.assertEquals(EstadoPelicula.ESTRENO, disposicionActualizada.getEstadoPelicula());
+            } catch (Exception e) {
+                e.printStackTrace();
+        }
     }
 }

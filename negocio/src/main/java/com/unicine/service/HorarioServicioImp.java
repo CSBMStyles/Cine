@@ -63,7 +63,9 @@ public class HorarioServicioImp implements HorarioServicio {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE", Locale.of("es"));
 
         // Formatear la fecha, obtener el día y convertir a mayúsculas
-        return fechaInicio.format(formatter).toUpperCase();
+        String dia = fechaInicio.format(formatter).toUpperCase();
+
+        return dia;
     }
 
     // SECTION: Metodos de soporte

@@ -1,16 +1,17 @@
 package com.unicine.service.extend.state;
 
 import com.unicine.entity.PeliculaDisposicion;
+import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
 import com.unicine.entity.Funcion;
 import com.unicine.enumeration.EstadoPelicula;
 import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.PeliculaDisposicionRepo;
 
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -18,11 +19,14 @@ import java.util.List;
 @Service
 public class EstadoPeliculaService {
 
+    private final TaskScheduler taskScheduler;
+
     private final PeliculaDisposicionRepo disposicionRepo;
 
     private final FuncionRepo funcionRepo;
 
-    public EstadoPeliculaService(PeliculaDisposicionRepo disposicionRepo, FuncionRepo funcionRepo) {
+    public EstadoPeliculaService(TaskScheduler taskScheduler, PeliculaDisposicionRepo disposicionRepo, FuncionRepo funcionRepo) {
+        this.taskScheduler = taskScheduler;
         this.disposicionRepo = disposicionRepo;
         this.funcionRepo = funcionRepo;
     }
@@ -157,9 +161,9 @@ public class EstadoPeliculaService {
             return false;
         }
         
-        Funcion primeraFuncion = funciones.get(0);
-        // Verifica si la fecha de inicio de la primera función es anterior a la fecha actual
+        Funcion primeraFuncion = funciones.stream().findFirst().orElse(null); // Obtenemos el primero
 
+        // Verifica si la fecha de inicio de la primera función es anterior a la fecha actual
         boolean estado = primeraFuncion.getHorario().getFechaInicio().isBefore(ahora);
 
         return estado;
@@ -176,22 +180,91 @@ public class EstadoPeliculaService {
             return false;
         }
         
-        LocalDate fechaLimite = fecha.toLocalDate().plusDays(dias);
+        // Usar plusDays mantiene la hora y minutos exactos
+        LocalDateTime fechaLimite = fecha.plusDays(dias);
+        LocalDateTime ahora = LocalDateTime.now(ZoneId.of("America/Bogota"));
 
-        return LocalDate.now().isAfter(fechaLimite);
+        // Verifica si la fecha actual es posterior a la fecha límite o si son iguales incluso en horas y minutos
+        boolean estado = ahora.isAfter(fechaLimite) || ahora.isEqual(fechaLimite); 
+        // Comparación exacta incluyendo hora y minutos
+        return estado;
+    }
+
+    @Transactional
+    public void programarActualizacionEstado(PeliculaDisposicion disposicion, LocalDateTime fechaEjecucion) {
+        // Programa una tarea específica para esta disposición en la fecha exacta
+        taskScheduler.schedule(
+                () -> actualizarEstadoEspecifico(disposicion),
+                fechaEjecucion.atZone(ZoneId.of("America/Bogota")).toInstant());
+    }
+
+    @Transactional
+    private void actualizarEstadoEspecifico(PeliculaDisposicion disposicion) {
+
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(disposicion.getCiudad().getCodigo(), disposicion.getPelicula().getCodigo());
+
+        // Extraer el código de la disposición
+        disposicionRepo.findById(codigo).ifPresent(this::actualizarEstado);
     }
 
     /**
-     * Tarea programada para actualizar estados automáticamente se ejecuta cada día a medianoche
+     * Tarea programada para actualizar estados automáticamente se ejecuta cada hora
      */
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 * * * * ?") // Ejecutar cada minuto {Presicion >}
     @Transactional
     public void actualizarEstadosAutomaticamente() {
 
-        List<PeliculaDisposicion> todasLasDisposiciones = disposicionRepo.findAll();
+        // Obtenemos la fecha y hora actual
+        LocalDateTime ahora = LocalDateTime.now(ZoneId.of("America/Bogota"));
+
+        // Utilizamos la consulta optimizada para obtener sólo las disposiciones que
+        // pueden requerir cambio
+        List<PeliculaDisposicion> disposicionesCandidatas = disposicionRepo.buscarDisposicionesActualizar(ahora);
+
+        // Log del número de disposiciones que se están procesando
+        System.out.println("Verificando " + disposicionesCandidatas.size()
+                + " disposiciones para actualización de estado a las " + ahora);
+
+        // Procesamos sólo las disposiciones que son candidatas a cambio de estado
+        for (PeliculaDisposicion disposicion : disposicionesCandidatas) {
+            // Obtenemos el estado anterior
+            EstadoPelicula estadoAnterior = disposicion.getEstadoPelicula();
+
+            // Procedemos a actualizar el estado
+            PeliculaDisposicion actualizada = actualizarEstado(disposicion);
+
+            // Logging cuando hay cambios de estado
+            if (estadoAnterior != actualizada.getEstadoPelicula()) {
+                System.out.println("Película " + actualizada.getPelicula().getCodigo() +
+                        " en ciudad " + actualizada.getCiudad().getCodigo() +
+                        " cambió de " + estadoAnterior +
+                        " a " + actualizada.getEstadoPelicula() +
+                        " a las " + ahora);
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // A medianoche
+    @Transactional
+    public void programarActualizacionesDiarias() {
         
-        for (PeliculaDisposicion disposicion : todasLasDisposiciones) {
-            actualizarEstado(disposicion);
+        LocalDateTime inicioHoy = LocalDateTime.now(ZoneId.of("America/Bogota")).withHour(0).withMinute(0).withSecond(0);
+
+        LocalDateTime finHoy = inicioHoy.plusDays(1);
+
+        // Disposiciones con funciones que comienzan hoy
+        List<PeliculaDisposicion> disposicionesHoy = disposicionRepo.buscarDisposicionesFuncionesRango(inicioHoy, finHoy);
+
+        for (PeliculaDisposicion disposicion : disposicionesHoy) {
+            LocalDateTime horaExacta = funcionRepo.buscarHoraInicioFuncion(
+                    disposicion.getPelicula().getCodigo(),
+                    disposicion.getCiudad().getCodigo(),
+                    inicioHoy, finHoy);
+
+            if (horaExacta != null) {
+                // Programa la actualización justo a esa hora
+                programarActualizacionEstado(disposicion, horaExacta);
+            }
         }
     }
 }

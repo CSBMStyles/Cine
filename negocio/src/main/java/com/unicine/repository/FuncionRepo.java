@@ -108,6 +108,23 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
     List<Funcion> buscarPrimeraFuncionDisposicion(Integer peliculaId, Integer ciudadId);
 
     /**
+     * Obtiene la hora exacta de inicio de la primera función para una película en
+     * una ciudad
+     * dentro de un rango de fechas específico
+     * 
+     * @param peliculaId  ID de la película
+     * @param ciudadId    ID de la ciudad
+     * @param fechaInicio Inicio del rango a buscar
+     * @param fechaFin    Fin del rango a buscar
+     * @return La fecha y hora exacta de inicio de la primera función en ese rango
+     */
+    @Query("select min(f.horario.fechaInicio) from Funcion f " +
+            "join f.sala s join s.teatro t " +
+            "where f.pelicula.codigo = :peliculaId and t.ciudad.codigo = :ciudadId " +
+            "and f.horario.fechaInicio between :fechaInicio and :fechaFin")
+    LocalDateTime buscarHoraInicioFuncion(Integer peliculaId, Integer ciudadId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+
+    /**
      * #️⃣ Consulta para obtener las funciones con compras vacias de teatros especificos
      * @param atributos: codigo del teatro
      * @return lista de funciones

@@ -2,6 +2,7 @@ package com.unicine.test.service;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -384,5 +385,38 @@ public class FuncionServicioTest {
             lista.forEach(System.out::println);
 
         } catch (Exception e) { throw new RuntimeException(e); }
+    }
+    
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void obtenerDiasSemana() {
+        // Crear fechas para cada día de la semana en 2025
+        LocalDateTime lunes = LocalDateTime.now(ZoneId.of("America/Bogota"));     // Lunes
+        LocalDateTime martes = lunes.plusDays(1);                                   // Martes
+        LocalDateTime miercoles = martes.plusDays(1);                                // Miércoles
+        LocalDateTime jueves = miercoles.plusDays(1);                                   // Jueves
+        LocalDateTime viernes = jueves.plusDays(1);                                  // Viernes
+        LocalDateTime sabado = viernes.plusDays(1);                                   // Sábado
+        LocalDateTime domingo = sabado.plusDays(1);                                  // Domingo
+        
+        // Mostrar los días y sus descuentos usando un ciclo for
+        String[] diasNombres = {"1", "2", "3", "4", "5", "6", "7"};
+
+        LocalDateTime[] fechas = {lunes, martes, miercoles, jueves, viernes, sabado, domingo};
+        
+        for (int i = 0; i < diasNombres.length; i++) {
+            imprimirDiaDescuento(diasNombres[i], fechas[i]);
+        }
+
+    }
+    
+    private void imprimirDiaDescuento(String nombreDia, LocalDateTime fecha) {
+
+        String codigoDia = horarioServicio.obtenerDia(fecha);
+
+        Double descuento = horarioServicio.obtenerDescuentoDia(fecha);
+
+        System.out.printf("%s: codigo = '%s', descuento = %s%n", 
+                         nombreDia, codigoDia, descuento != null ? descuento * 100 + "%" : "null");
     }
 }

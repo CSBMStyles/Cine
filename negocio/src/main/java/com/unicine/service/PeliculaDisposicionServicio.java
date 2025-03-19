@@ -17,6 +17,8 @@ public interface PeliculaDisposicionServicio {
 
     PeliculaDisposicion actualizar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception;
 
+    void actualizarEstadoPeliculas();
+
     void eliminar(@Valid PeliculaDisposicion peliculaDisposicion, boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Generales
