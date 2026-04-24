@@ -55,7 +55,14 @@ public class HorarioServicioTest {
 
             System.out.println("Sala encontrada: " + sala);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             Respuesta<?> actualizado = horarioServicio.registrar(horario, sala);
@@ -77,7 +84,14 @@ public class HorarioServicioTest {
 
             Assertions.assertTrue(actualizado.isExito());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -95,7 +109,14 @@ public class HorarioServicioTest {
             horario.setFechaInicio(fechaInicio);
             horario.setFechaFin(fechaFin);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
         
         try {
             Respuesta<?> actualizado = horarioServicio.actualizar(horario);
@@ -117,7 +138,14 @@ public class HorarioServicioTest {
 
             Assertions.assertTrue(actualizado.isExito());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -129,12 +157,26 @@ public class HorarioServicioTest {
         try {
             horario = horarioServicio.obtener(1).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             horarioServicio.eliminar(horario, true);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             horarioServicio.obtener(1);
@@ -160,7 +202,14 @@ public class HorarioServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + horario);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -176,7 +225,14 @@ public class HorarioServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     // 🟥
@@ -207,7 +263,14 @@ public class HorarioServicioTest {
 
             System.out.println("Sala encontrada: " + sala);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     
         try {
             // Se registra el horario y se obtiene la respuesta
@@ -233,6 +296,9 @@ public class HorarioServicioTest {
             Assertions.assertFalse(actualizado.isExito());
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
 
             Assertions.fail(e);
 

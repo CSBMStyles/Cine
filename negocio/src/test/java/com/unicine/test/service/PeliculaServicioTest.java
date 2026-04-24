@@ -60,6 +60,9 @@ public class PeliculaServicioTest {
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -76,7 +79,14 @@ public class PeliculaServicioTest {
         try{
             pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Variables que el usuario modifica
         pelicula.setRestriccionEdad(20);
@@ -93,6 +103,9 @@ public class PeliculaServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -110,7 +123,14 @@ public class PeliculaServicioTest {
                 System.out.println("FileId: " + file.getFileId() + "\n" + "Nombre: " + file.getName());
             });
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -126,6 +146,8 @@ public class PeliculaServicioTest {
         try {
             pelicula = peliculaServicio.obtener(validator).orElse(null);
         } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -135,6 +157,9 @@ public class PeliculaServicioTest {
             peliculaServicio.eliminar(pelicula, true);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -143,6 +168,9 @@ public class PeliculaServicioTest {
             peliculaServicio.obtener(validator);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             // Realizamos una validacion de la prueba para aceptar que el pelicula fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -164,6 +192,9 @@ public class PeliculaServicioTest {
             System.out.println("\n" + "Registro encontrado:" + "\n" + pelicula);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -186,6 +217,9 @@ public class PeliculaServicioTest {
             peliculas.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -206,6 +240,9 @@ public class PeliculaServicioTest {
             lista.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);

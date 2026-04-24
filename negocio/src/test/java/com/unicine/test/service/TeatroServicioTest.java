@@ -50,6 +50,9 @@ public class TeatroServicioTest {
             ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -61,6 +64,9 @@ public class TeatroServicioTest {
             administradorTeatro = administradorServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -78,6 +84,9 @@ public class TeatroServicioTest {
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -102,6 +111,9 @@ public class TeatroServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -122,6 +134,9 @@ public class TeatroServicioTest {
             teatro = teatroServicio.obtener(validator).orElse(null);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -131,6 +146,9 @@ public class TeatroServicioTest {
             teatroServicio.eliminar(teatro, true);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -140,6 +158,9 @@ public class TeatroServicioTest {
             teatroServicio.obtener(validator);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             // Realizamos una validacion de la prueba para aceptar que el teatro fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -161,6 +182,9 @@ public class TeatroServicioTest {
             System.out.println("\n" + "Registro encontrado:" + "\n" + teatro);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -181,6 +205,9 @@ public class TeatroServicioTest {
             lista.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -212,6 +239,9 @@ public class TeatroServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());

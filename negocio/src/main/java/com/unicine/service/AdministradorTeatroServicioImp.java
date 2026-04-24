@@ -11,8 +11,12 @@ import org.springframework.validation.annotation.Validated;
 import com.unicine.entity.AdministradorTeatro;
 import com.unicine.repository.AdministradorTeatroRepo;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
+import com.unicine.util.validation.group.OnCreate;
+import com.unicine.util.validation.group.OnUpdate;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 
 @Service
 @Validated
@@ -24,8 +28,11 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
     private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
 
-    public AdministradorTeatroServicioImp(AdministradorTeatroRepo administradorTeatroRepo) {
+    private final Validator validator;
+
+    public AdministradorTeatroServicioImp(AdministradorTeatroRepo administradorTeatroRepo, Validator validator) {
         this.administradorTeatroRepo = administradorTeatroRepo;
+        this.validator = validator;
     }
 
     // SECTION: Metodos de soporte
@@ -131,6 +138,18 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
      */
     private void encriptar(AdministradorTeatro administrador) { administrador.setPassword(encriptador.encryptPassword(administrador.getPassword())); }
 
+    /**
+     * Valida usando el grupo OnCreate para aplicar reglas de password en texto plano.
+     */
+    private void validarParaRegistro(AdministradorTeatro administrador) {
+
+        var violaciones = validator.validate(administrador, OnCreate.class);
+
+        if (!violaciones.isEmpty()) {
+            throw new ConstraintViolationException(violaciones);
+        }
+    }
+
     // SECTION: Metodos del servicio
 
     // 2️⃣ Funion del Administrador Teatro
@@ -146,7 +165,9 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     // 1️⃣ Funciones del Administrador
 
     @Override
-    public AdministradorTeatro registrar(@Valid AdministradorTeatro administrador) throws Exception {
+    public AdministradorTeatro registrar(@Validated(OnCreate.class) AdministradorTeatro administrador) throws Exception {
+
+        validarParaRegistro(administrador);
         
         validarExisteCedula(administrador.getCedula());
         validarExisteCorreo(administrador.getCorreo());
@@ -169,9 +190,27 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     }
 
     @Override
-    public AdministradorTeatro actualizar(@Valid AdministradorTeatro administrador) throws Exception {
+    public AdministradorTeatro actualizar(@Validated(OnUpdate.class) AdministradorTeatro administrador) throws Exception {
 
         validarRepiteCorreo(administrador.getCorreo(), administrador.getCedula());
+
+        return administradorTeatroRepo.save(administrador);
+    }
+
+    @Override
+    public AdministradorTeatro cambiarPassword(@Validated(OnCreate.class) AdministradorTeatro administrador, String passwordActual, String passwordNuevo) throws Exception {
+
+        if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
+            throw new Exception("La contraseña actual es incorrecta");
+        }
+
+        if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
+            throw new Exception("La nueva contraseña no puede ser igual a la actual");
+        }
+
+        administrador.setPassword(passwordNuevo);
+        validarParaRegistro(administrador);
+        encriptar(administrador);
 
         return administradorTeatroRepo.save(administrador);
     }

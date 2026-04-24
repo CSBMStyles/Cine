@@ -9,31 +9,35 @@ import com.unicine.service.ClienteServicioImp;
 import com.unicine.service.PersonaServicio;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AuthenticationService {
+
+    // La autenticacion se intenta en cascada por tipo de usuario.
+    // El orden de esta lista define el orden de evaluacion.
     private final List<PersonaServicio<? extends Persona>> servicios;
 
     public AuthenticationService(
             ClienteServicioImp clienteServicio, 
             AdministradorServicioImp adminServicio,
             AdministradorTeatroServicioImp adminTeatroServicio) {
+
         this.servicios = List.of(clienteServicio, adminServicio, adminTeatroServicio);
     }
 
     public Persona login(String correo, String password) throws Exception {
-        return servicios.stream()
-                .map(servicio -> {
-                    try {
-                        return Optional.of(servicio.login(correo, password));
-                    } catch (Exception e) {
-                        return Optional.<Persona>empty();
-                    }
-                })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
-                .orElseThrow(() -> new Exception("Credenciales inválidas"));
+
+        // Estrategia: un solo formulario (correo + password), sin pedir rol.
+        // Si un servicio autentica correctamente, se retorna esa Persona.
+        for (PersonaServicio<? extends Persona> servicio : servicios) {
+            try {
+                return servicio.login(correo, password);
+
+            } catch (Exception ignored) {
+                // Se ignora para intentar con el siguiente perfil.
+            }
+        }
+
+        throw new Exception("Credenciales inválidas");
     }
 }

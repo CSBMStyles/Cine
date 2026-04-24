@@ -13,8 +13,12 @@ import org.springframework.validation.annotation.Validated;
 import com.unicine.entity.Cliente;
 import com.unicine.repository.ClienteRepo;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
+import com.unicine.util.validation.group.OnCreate;
+import com.unicine.util.validation.group.OnUpdate;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 
 @Service
 @Validated
@@ -26,8 +30,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
     private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
 
-    public ClienteServicioImp(ClienteRepo clienteRepo) {
+    private final Validator validator;
+
+    public ClienteServicioImp(ClienteRepo clienteRepo, Validator validator) {
         this.clienteRepo = clienteRepo;
+        this.validator = validator;
     }
 
     // SECTION: Metodos de soporte
@@ -157,6 +164,18 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
      */
     private void encriptar(Cliente cliente) { cliente.setPassword(encriptador.encryptPassword(cliente.getPassword())); }
 
+    /**
+     * Valida usando OnCreate para asegurar reglas de password en texto plano.
+     */
+    private void validarParaRegistro(Cliente cliente) {
+
+        var violaciones = validator.validate(cliente, OnCreate.class);
+
+        if (!violaciones.isEmpty()) {
+            throw new ConstraintViolationException(violaciones);
+        }
+    }
+
     // SECTION: Implementacion de servicios
 
     @Override
@@ -170,7 +189,9 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Cliente registrar(@Valid Cliente cliente) throws Exception {
+    public Cliente registrar(@Validated(OnCreate.class) Cliente cliente) throws Exception {
+
+        validarParaRegistro(cliente);
 
         validarExisteCedula(cliente.getCedula());
         validarExisteCorreo(cliente.getCorreo());
@@ -194,9 +215,27 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Cliente actualizar(@Valid Cliente cliente) throws Exception { 
+    public Cliente actualizar(@Validated(OnUpdate.class) Cliente cliente) throws Exception {
 
         validarRepiteCorreo(cliente.getCorreo(), cliente.getCedula());
+
+        return clienteRepo.save(cliente);
+    }
+
+    @Override
+    public Cliente cambiarPassword(@Validated(OnCreate.class) Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
+
+        if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
+            throw new Exception("La contraseña actual es incorrecta");
+        }
+
+        if (encriptador.checkPassword(passwordNuevo, cliente.getPassword())) {
+            throw new Exception("La nueva contraseña no puede ser igual a la actual");
+        }
+
+        cliente.setPassword(passwordNuevo);
+        validarParaRegistro(cliente);
+        encriptar(cliente);
 
         return clienteRepo.save(cliente);
     }

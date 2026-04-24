@@ -16,7 +16,7 @@ import java.io.Serializable;
 import com.unicine.entity.interfaced.Imagenable;
 
 @Entity
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Administrador extends Persona implements Serializable, Imagenable {

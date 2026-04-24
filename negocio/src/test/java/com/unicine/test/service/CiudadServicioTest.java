@@ -42,6 +42,9 @@ public class CiudadServicioTest {
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -65,6 +68,9 @@ public class CiudadServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -84,6 +90,8 @@ public class CiudadServicioTest {
         try {
             ciudad = ciudadServicio.obtener(validator).orElse(null);
         } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -93,6 +101,9 @@ public class CiudadServicioTest {
             ciudadServicio.eliminar(ciudad);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -101,6 +112,9 @@ public class CiudadServicioTest {
             ciudadServicio.obtener(validator).orElse(null);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             // Realizamos una validacion de la prueba para aceptar que el ciudad fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -122,6 +136,9 @@ public class CiudadServicioTest {
             System.out.println("\n" + "Registro encontrado:" + "\n" + ciudad);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -144,6 +161,9 @@ public class CiudadServicioTest {
             ciudades.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -164,6 +184,9 @@ public class CiudadServicioTest {
             lista.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -195,6 +218,9 @@ public class CiudadServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -224,6 +250,9 @@ public class CiudadServicioTest {
             ciudades.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());

@@ -4,7 +4,7 @@ package com.unicine.entity;
 
 import jakarta.persistence.Id;
 
-import com.unicine.util.validation.annotation.MultiPattern;
+import com.unicine.util.validation.group.OnCreate;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
@@ -54,10 +54,41 @@ public class Persona {
     private String correo;
 
     @ToString.Exclude
-    @NotBlank(message = "La contraseña no puede estar en blanco")
-    @MultiPattern({
-        @Pattern(regexp = ".{8,}", message = "La contraseña debe tener al menos ocho caracteres"),
-        @Pattern(regexp = ".{1,200}", message = "La contraseña no puede tener más de doscientos caracteres")
+    @NotBlank(
+        message = "La contraseña no puede estar en blanco",
+        groups = OnCreate.class
+    )
+    @Pattern.List({
+        @Pattern(
+            regexp = "^\\s*$|(?s).{8,}",
+            message = "La contraseña debe tener al menos ocho caracteres",
+            groups = OnCreate.class
+        ),
+        @Pattern(
+            regexp = "^\\s*$|(?s).{1,200}",
+            message = "La contraseña no puede tener más de doscientos caracteres",
+            groups = OnCreate.class
+        ),
+        @Pattern(
+            regexp = "^\\s*$|.*[A-Z].*",
+            message = "La contraseña debe contener al menos una letra mayúscula",
+            groups = OnCreate.class
+        ),
+        @Pattern(
+            regexp = "^\\s*$|.*[a-z].*",
+            message = "La contraseña debe contener al menos una letra minúscula",
+            groups = OnCreate.class
+        ),
+        @Pattern(
+            regexp = "^\\s*$|.*\\d.*",
+            message = "La contraseña debe contener al menos un dígito",
+            groups = OnCreate.class
+        ),
+        @Pattern(
+            regexp = "^\\s*$|.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*",
+            message = "La contraseña debe contener al menos un carácter especial",
+            groups = OnCreate.class
+        )
     })
     @Column(nullable = false, length = 200)
     private String password;

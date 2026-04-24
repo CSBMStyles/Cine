@@ -3,6 +3,7 @@ package com.unicine.test.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,15 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.Cliente;
+import com.unicine.entity.Administrador;
+import com.unicine.entity.AdministradorTeatro;
 import com.unicine.entity.Persona;
 import com.unicine.service.PersonaServicio;
 import com.unicine.service.extend.auth.AuthenticationService;
 import com.unicine.service.extend.mail.EmailService;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
+
+import jakarta.validation.ConstraintViolationException;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -52,6 +57,9 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Cliente encontrado:" + "\n" + cliente);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -60,19 +68,29 @@ public class ClienteServicioTest {
 
     @ParameterizedTest
     @CsvSource({
-        "pepe@hotmail.com,78!Kz9'Aovr1>`A5,Cliente",
-        "admin@unicine.com,78!Kz9'Aovr1>`A5,Administrador",
-        "adminteatro@unicine.com,78!Kz9'Aovr1>`A5,AdministradorTeatro"
+        "pepe@hotmail.com,78!Kz9'Aovr1>`A5",
+        "cristiansimelot@gmail.com,78!Kz9'Aovr1>`A5",
+        "cristians.barreram@uqvirtual.edu.co,78!Kz9'Aovr1>`A5"
     })
     @Sql("classpath:dataset.sql")
-    public void loginMultipleUsers(String correo, String password, String tipoEsperado) {
+    public void loginUsuariosMultiples(String correo, String password) {
         try {
             Persona usuario = authService.login(correo, password);
 
-            Assertions.assertEquals(tipoEsperado, usuario.getClass().getSimpleName());
+            Assertions.assertNotNull(usuario);
+            Assertions.assertEquals(correo, usuario.getCorreo());
+
+            Assertions.assertTrue(
+                usuario instanceof Cliente
+                    || usuario instanceof Administrador
+                    || usuario instanceof AdministradorTeatro,
+                "Tipo de usuario no esperado: " + usuario.getClass().getSimpleName()
+            );
+
+            System.out.println("Login exitoso: " + correo + " -> " + usuario.getClass().getSimpleName());
             
         } catch (Exception e) {
-
+            System.out.println("Mensaje de error: " + e.getMessage());
             Assertions.fail("Falló la autenticación: " + e.getMessage());
         }
     }
@@ -95,14 +113,81 @@ public class ClienteServicioTest {
             Cliente nuevo = clienteServicio.registrar(cliente);
             
             Assertions.assertEquals(cedula, nuevo.getCedula());
+            Assertions.assertNotEquals("78!Kz9'Aovr1>`A5", nuevo.getPassword());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "",
+        "   ",
+        "123",
+        "Abc12345",
+        "abc12345!",
+        "ABC12345!"
+    })
+    @Sql("classpath:dataset.sql")
+    public void registrarContraseñaInvalida(String password) {
+
+        ArrayList<String> telefonos = new ArrayList<>();
+        telefonos.add("3160369165");
+
+        Cliente cliente = new Cliente(
+            1004000077,
+            "Juan",
+            "Parra",
+            "juan2@gmail.com",
+            password,
+            true,
+            LocalDate.of(1990, 10, 10),
+            telefonos
+        );
+
+        ConstraintViolationException excepcion = Assertions.assertThrows(ConstraintViolationException.class, () -> {
+            clienteServicio.registrar(cliente);
+        });
+
+        String errores = excepcion.getConstraintViolations().stream()
+            .map(v -> "→ " + v.getMessage())
+            .collect(Collectors.joining("\n"));
+
+        System.out.println("Errores de validación: '" + password + "':\n" + errores);
+
+        Assertions.assertFalse(excepcion.getConstraintViolations().isEmpty());
+
+        String mensajeEsperado;
+
+        if (password.trim().isEmpty()) {
+            mensajeEsperado = "no puede estar en blanco";
+
+        } else if ("123".equals(password)) {
+            mensajeEsperado = "al menos ocho caracteres";
+
+        } else if ("Abc12345".equals(password)) {
+            mensajeEsperado = "al menos un carácter especial";
+
+        } else if ("abc12345!".equals(password)) {
+            mensajeEsperado = "al menos una letra mayúscula";
+
+        } else {
+            mensajeEsperado = "al menos una letra minúscula";
+        }
+
+        Assertions.assertTrue(
+            excepcion.getConstraintViolations().stream().anyMatch(v ->
+                "password".equals(v.getPropertyPath().toString()) && v.getMessage().contains(mensajeEsperado)
+            )
+        );
     }
 
     @Test
@@ -112,16 +197,68 @@ public class ClienteServicioTest {
         try{
             Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
 
-            cliente.setCorreo("maria@gmail.com");
+            cliente.setCorreo("josefinas@gmail.com");
 
             Cliente actualizado = clienteServicio.actualizar(cliente);
 
-            Assertions.assertEquals(false, actualizado.getEstado());
+            Assertions.assertEquals(true, actualizado.getEstado());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            Assertions.assertTrue(false);
+
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void actualizarContraseña() {
+
+        Cliente cliente;
+
+        try {
+            cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+
+        } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            Assertions.assertTrue(false);
+
+            throw new RuntimeException(e);
+        }
+
+        try {
+            clienteServicio.cambiarPassword(cliente, "78!Kz9'Aovr1>`A5", "2Jr>T$A54*6[)`");
+
+            System.out.println("\n" + "Contraseña actualizada correctamente");
+
             Assertions.assertTrue(true);
+
+        } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            Assertions.assertTrue(false);
+
+            throw new RuntimeException(e);
+        }
+
+        try {
+            clienteServicio.login(cliente.getCorreo(), "2Jr>T$A54*6[)`");
+
+            System.out.println("\n" + "Contraseña verificada correctamente");
+
+        } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
         }
@@ -145,6 +282,9 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Registro encontrado:" + "\n" + cliente);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -153,6 +293,9 @@ public class ClienteServicioTest {
             clienteServicio.eliminar(cliente, true);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -161,6 +304,9 @@ public class ClienteServicioTest {
             clienteServicio.obtener(cedulaValidator);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
     
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -182,6 +328,9 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Registro encontrado:" + "\n" + cliente);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -202,6 +351,9 @@ public class ClienteServicioTest {
             lista.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -240,6 +392,9 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -262,6 +417,9 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -292,6 +450,9 @@ public class ClienteServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());

@@ -71,7 +71,14 @@ public class FuncionServicioTest {
 
             Assertions.assertNotNull(sala);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
 
@@ -98,7 +105,14 @@ public class FuncionServicioTest {
 
             Assertions.assertTrue(repuestaHorario.isExito());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
 
@@ -111,7 +125,14 @@ public class FuncionServicioTest {
 
             Assertions.assertNotNull(pelicula);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
 
@@ -126,7 +147,14 @@ public class FuncionServicioTest {
 
             Assertions.assertNotNull(peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
 
         // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
@@ -141,7 +169,14 @@ public class FuncionServicioTest {
 
             Assertions.assertNotNull(funcion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
 
@@ -151,7 +186,14 @@ public class FuncionServicioTest {
 
             System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             
@@ -162,7 +204,17 @@ public class FuncionServicioTest {
             Assertions.assertNotNull(funcionEsquema);
 
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+
+            throw new RuntimeException(e);
+
+
+        }
 
     }
 
@@ -183,7 +235,14 @@ public class FuncionServicioTest {
 
             Assertions.assertEquals(1, funcion.getCodigo());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         boolean modificarSala = true; // Tomamos el codigo de la sala que se desea cambiar.
 
@@ -205,7 +264,14 @@ public class FuncionServicioTest {
 
                 Assertions.assertNotNull(sala);
 
-            } catch (Exception e) { throw new RuntimeException(e); }
+            } catch (Exception e) {
+                System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+                throw new RuntimeException(e);
+
+            }
         }
 
         if (modificaHorario) {
@@ -239,7 +305,14 @@ public class FuncionServicioTest {
     
                 Assertions.assertTrue(repuestaHorario.isExito());
     
-            } catch (Exception e) { throw new RuntimeException(e); }
+            } catch (Exception e) {
+                System.out.println("Mensaje de error: " + e.getMessage());
+
+
+    
+                throw new RuntimeException(e);
+    
+            }
         }
 
         // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
@@ -255,7 +328,14 @@ public class FuncionServicioTest {
 
             Assertions.assertNotNull(peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
 
@@ -265,7 +345,14 @@ public class FuncionServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             
@@ -273,7 +360,14 @@ public class FuncionServicioTest {
 
             System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -301,17 +395,34 @@ public class FuncionServicioTest {
 
             codigoEsquema = funcion.getFuncionEsquema().getCodigo();
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             funcionServicio.eliminar(funcion, true);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             funcionServicio.obtener(codigoFuncion);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
 
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -323,6 +434,9 @@ public class FuncionServicioTest {
 
         } catch (Exception e) {
 
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -332,6 +446,9 @@ public class FuncionServicioTest {
             funcionEsquemaServicio.obtener(codigoEsquema);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
 
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -352,7 +469,14 @@ public class FuncionServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + funcion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -368,7 +492,14 @@ public class FuncionServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -384,7 +515,14 @@ public class FuncionServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
     
     @Test

@@ -93,7 +93,14 @@ public class ImagenServicioTest {
 
             // IMPORTANT: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
         
 
         Cliente cliente;
@@ -101,7 +108,14 @@ public class ImagenServicioTest {
         try {
             cliente = clienteServicio.obtener(new PersonaAtributoValidator("1005000055")).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         Imagen imagen = new Imagen();
         
@@ -113,7 +127,14 @@ public class ImagenServicioTest {
 
             System.out.println("Imagen subida: " + imagen);
             
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            
+            throw new RuntimeException(e);
+            
+        }
     }
 
     @Test
@@ -130,7 +151,14 @@ public class ImagenServicioTest {
 
             file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
         
         Pelicula pelicula;
 
@@ -139,7 +167,14 @@ public class ImagenServicioTest {
             
             Assertions.assertNotNull(pelicula, "La película no debe ser nula");
             
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            
+            throw new RuntimeException(e);
+            
+        }
 
         Imagen imagen = new Imagen();
 
@@ -154,7 +189,14 @@ public class ImagenServicioTest {
 
             System.out.println("Imagen subida: " + resultado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -171,7 +213,14 @@ public class ImagenServicioTest {
 
             file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
             // Obtenemos la imagen a actualizar
             String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
@@ -185,7 +234,14 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagenAntigua);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
 
         try {
@@ -195,7 +251,11 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }    
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -217,7 +277,14 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagenAntigua);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
 
@@ -225,7 +292,14 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro recuperado:" + "\n" + imagenRecuperada);
             
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+            
+            throw new RuntimeException(e);
+            
+        }
     }
     
     @Test
@@ -245,14 +319,28 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagenAntigua);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             Imagen renombrado = imagenServicio.renombrar(imagenAntigua, nuevoNombre, imagenAntigua.getPelicula());
 
             System.out.println("Imagen renombrada: " + renombrado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
 
@@ -271,17 +359,34 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagen);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             imagenServicio.eliminar(imagen, true);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             imagenServicio.obtener(fileIdSeleccionado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             // Realizamos una validacion de la prueba para aceptar que la imagen fue eliminada mediante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -310,13 +415,23 @@ public class ImagenServicioTest {
 
                 System.out.println("\n" + "Registro encontrado:" + "\n" + imagenes.get(posicion));
 
-            } catch (Exception e) { throw new RuntimeException(e); }
+            } catch (Exception e) {
+                System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+                throw new RuntimeException(e);
+
+            }
         }
 
         try {
             imagenServicio.eliminarMultiple(imagenes, true);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             throw new RuntimeException(e);
         }
 
@@ -325,6 +440,9 @@ public class ImagenServicioTest {
                 imagenServicio.obtener(fileId);
     
             } catch (Exception e) {
+    
+                System.out.println("Mensaje de error: " + e.getMessage());
+
                 // Realizamos una validacion de la prueba para aceptar que la imagen fue
                 // eliminada mediante la excepcion del metodo de obtener
                 Assertions.assertThrows(Exception.class, () -> {
@@ -349,7 +467,14 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagen);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -365,7 +490,14 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagen);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -377,7 +509,14 @@ public class ImagenServicioTest {
         try {
             pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         List<String> listaIds;
 
@@ -390,7 +529,14 @@ public class ImagenServicioTest {
 
             listaIds.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // NOTE: Esto se puede eliminar es para obtener los datos de las imagenes de la base de datos, lo digo a causa de que hay metodos que solo necesitan el fileId como el test listar versiones imagen o eliminar diversos
 
@@ -411,7 +557,14 @@ public class ImagenServicioTest {
 
                 System.out.println("\n" + "Registro encontrado:" + "\n" + lista.get(posicion));
 
-            } catch (Exception e) { throw new RuntimeException(e); }
+            } catch (Exception e) {
+                System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+                throw new RuntimeException(e);
+
+            }
         } */
     }
 
@@ -428,7 +581,14 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagenes);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -444,6 +604,13 @@ public class ImagenServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + imagen);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 }

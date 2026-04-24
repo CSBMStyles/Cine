@@ -61,7 +61,14 @@ public class PeliculaDisposicionServicioTest {
         try {
             pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Obtenemos la ciudad apartir de una lista, puede automatizarse para que se seleccione la ciudad por apartir del administrador que lo crea y su ubicacion
         Ciudad ciudad;
@@ -69,7 +76,14 @@ public class PeliculaDisposicionServicioTest {
         try {
             ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(3)).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         PeliculaDisposicion peliculaDisposicion = new PeliculaDisposicion(pelicula, ciudad);
 
@@ -80,7 +94,14 @@ public class PeliculaDisposicionServicioTest {
             
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -101,7 +122,14 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -120,7 +148,14 @@ public class PeliculaDisposicionServicioTest {
                 peliculaDisposicionServicio.obtener(codigo);
             });
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -136,7 +171,14 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -152,7 +194,14 @@ public class PeliculaDisposicionServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -176,7 +225,14 @@ public class PeliculaDisposicionServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -197,7 +253,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(sala);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
 
@@ -224,7 +287,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertTrue(repuestaHorario.isExito());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
 
@@ -237,7 +307,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(pelicula);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
 
@@ -252,7 +329,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
 
         // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
@@ -267,7 +351,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(funcion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
 
@@ -279,7 +370,14 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     /**
@@ -300,7 +398,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(sala);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
         // El horario lo ponemos en un futuro proximo para simular la existencia de una funcion existente y tambien mientras de se hace la prueba ver como cambia el estado de la disposicion al llegar el tiempo de la fechaInicio
@@ -328,7 +433,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertTrue(repuestaHorario.isExito());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
 
@@ -341,7 +453,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(pelicula);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
 
@@ -356,7 +475,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertEquals("PREVENTA", peliculaDisposicion.getEstadoPelicula().toString());
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
 
         // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
@@ -371,7 +497,14 @@ public class PeliculaDisposicionServicioTest {
 
             Assertions.assertNotNull(funcion);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             System.out.println("Esperando que comience la función a las " + fechaInicio);
@@ -388,6 +521,8 @@ public class PeliculaDisposicionServicioTest {
             
             Assertions.assertEquals(EstadoPelicula.ESTRENO, disposicionActualizada.getEstadoPelicula());
             } catch (Exception e) {
+                System.out.println("Mensaje de error: " + e.getMessage());
+
                 e.printStackTrace();
         }
     }

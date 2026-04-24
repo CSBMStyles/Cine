@@ -48,14 +48,28 @@ public class SalaServicioTest {
         try {
             teatro = teatroServicio.obtener(new TeatroAtributoValidator("1")).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         DistribucionSilla distribucionSilla;
         
         try {
             distribucionSilla = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
 
         // Creacion del sala
@@ -69,7 +83,14 @@ public class SalaServicioTest {
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -89,7 +110,14 @@ public class SalaServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -104,17 +132,34 @@ public class SalaServicioTest {
         try {
             sala = salaServicio.obtener(validator).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             salaServicio.eliminar(sala, true);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             salaServicio.obtener(validator);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
 
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -135,7 +180,14 @@ public class SalaServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + sala);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -151,7 +203,14 @@ public class SalaServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
     }
 
@@ -176,6 +235,9 @@ public class SalaServicioTest {
             System.out.println("\n" + "Registros:" + "\n" + salas);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 

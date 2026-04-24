@@ -55,6 +55,9 @@ public class DistribucionSillaServicioTest {
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.fail(e);
 
             throw new RuntimeException(e);
@@ -95,6 +98,9 @@ public class DistribucionSillaServicioTest {
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -115,6 +121,9 @@ public class DistribucionSillaServicioTest {
             distribucion = distribucionServicio.obtener(distribucionCodigo).orElse(null);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -124,6 +133,9 @@ public class DistribucionSillaServicioTest {
             distribucionServicio.eliminar(distribucion, true);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);
@@ -133,6 +145,9 @@ public class DistribucionSillaServicioTest {
             distribucionServicio.obtener(distribucionCodigo);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             // Realizamos una validacion de la prueba para aceptar que el distribucion fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -152,6 +167,9 @@ public class DistribucionSillaServicioTest {
             System.out.println("\n" + "Registro encontrado:" + "\n" + distribucion);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(true);
 
             throw new RuntimeException(e);
@@ -172,6 +190,9 @@ public class DistribucionSillaServicioTest {
             lista.forEach(System.out::println);
 
         } catch (Exception e) {
+
+            System.out.println("Mensaje de error: " + e.getMessage());
+
             Assertions.assertTrue(false);
 
             throw new RuntimeException(e);

@@ -6,20 +6,20 @@
     2. Los datos que se insertan tienen igualmente un orden que debe seguirse segun como esta en la base de datos, eso es en caso de que en la consulta no se tenga declarado los atributos de la tabla a insertar, en este archivo si se encuenta, entonces no nos preocupamos por el orden, pero si hay que tener en cuenta que esten todos los que necesitamos.
 */
 
-insert into administrador (cedula, apellido, nombre, correo, password) values (1001000000, "Barrera", "Cristian", "cristianbarrera100@gmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador (cedula, apellido, nombre, correo, password) values (1001000000, "Barrera", "Cristian", "cristiansimelot@gmail.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
 
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1119000000, "Bello", "Jhon", "jhona.belloc@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1228000000, "Camacho", "Maria", "mariaf.camachog@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1337000000, "Barrera", "Cristian", "cristians.barreram@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1446000000, "Barragan", "Alejandro", "henrya.barraganp@uqvirtual.edu.co", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1557000000, "Restrepo", "Rodolfo", "rodolfo.restrepo@uqvirtual.edu.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1667000800, "Quintero", "Jose", "jose.quintero@uqvirtual.edu.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1119000000, "Bello", "Jhon", "jhona.belloc@uqvirtual.edu.co", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1228000000, "Camacho", "Maria", "mariaf.camachog@uqvirtual.edu.co", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1337000000, "Barrera", "Cristian", "cristians.barreram@uqvirtual.edu.co", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1446000000, "Barragan", "Alejandro", "henrya.barraganp@uqvirtual.edu.co", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1557000000, "Restrepo", "Rodolfo", "rodolfo.restrepo@uqvirtual.edu.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into administrador_teatro (cedula, apellido, nombre, correo, password) values (1667000800, "Quintero", "Jose", "jose.quintero@uqvirtual.edu.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
 
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1009000011, 1, "2001-12-14", "Rodrigez", "Pepe", "pepe@hotmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1008000022, 0, "1993-11-02", "Perez", "Juan", "juan@outlook.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1007000033, 0, "2000-07-18", "Gomez", "Luis", "luis@yahoo.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1006000044, 1, "2002-01-06", "Martinez", "Maria", "maria@gmail.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
-insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1005000055, 0, "1991-12-18", "Lopez", "Luisa", "luisa@google.com", "7CJQQBV0lJS3TyRHOD20EgawSfsCplOLL4LQUmpgya3NZU5v0XTlnGt48FIUGH+D");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1009000011, 1, "2001-12-14", "Rodrigez", "Pepe", "pepe@hotmail.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1008000022, 0, "1993-11-02", "Perez", "Juan", "juan@outlook.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1007000033, 0, "2000-07-18", "Gomez", "Luis", "luis@yahoo.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1006000044, 1, "2002-01-06", "Martinez", "Maria", "maria@gmail.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
+insert into cliente (cedula, estado, fecha_nacimiento, apellido, nombre, correo, password) values (1005000055, 0, "1991-12-18", "Lopez", "Luisa", "luisa@google.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
 
 insert into cliente_telefonos (cliente_cedula, telefonos) values (1009000011, "3146832477");
 insert into cliente_telefonos (cliente_cedula, telefonos) values (1009000011, "3008245984");

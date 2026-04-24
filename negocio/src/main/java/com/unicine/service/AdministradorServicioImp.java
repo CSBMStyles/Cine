@@ -11,8 +11,12 @@ import org.springframework.validation.annotation.Validated;
 import com.unicine.entity.Administrador;
 import com.unicine.repository.AdministradorRepo;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
+import com.unicine.util.validation.group.OnCreate;
+import com.unicine.util.validation.group.OnUpdate;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 
 @Service
 @Validated
@@ -24,8 +28,11 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
     private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
 
-    public AdministradorServicioImp(AdministradorRepo administradorRepo) {
+    private final Validator validator;
+
+    public AdministradorServicioImp(AdministradorRepo administradorRepo, Validator validator) {
         this.administradorRepo = administradorRepo;
+        this.validator = validator;
     }
 
      // SECTION: Metodos de soporte
@@ -130,6 +137,18 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
      */
     private void encriptar(Administrador administrador) { administrador.setPassword(encriptador.encryptPassword(administrador.getPassword())); }
 
+    /**
+     * Valida el administrador usando el grupo OnCreate para aplicar las restricciones de password en texto plano.
+     */
+    private void validarParaRegistro(Administrador administrador) {
+
+        var violaciones = validator.validate(administrador, OnCreate.class);
+
+        if (!violaciones.isEmpty()) {
+            throw new ConstraintViolationException(violaciones);
+        }
+    }
+
     // SECTION: Metodos del servicio
 
     // 1️⃣ Funciones del Administrador
@@ -143,7 +162,9 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Administrador registrar(@Valid Administrador administrador) throws Exception {
+    public Administrador registrar(@Validated(OnCreate.class) Administrador administrador) throws Exception {
+
+        validarParaRegistro(administrador);
         
         validarExisteCedula(administrador.getCedula());
         validarExisteCorreo(administrador.getCorreo());
@@ -166,12 +187,32 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Administrador actualizar(@Valid Administrador administrador) throws Exception {
+    public Administrador actualizar(@Validated(OnUpdate.class) Administrador administrador) throws Exception {
 
         validarRepiteCorreo(administrador.getCorreo(), administrador.getCedula());
         
         return administradorRepo.save(administrador);
     }
+
+    @Override
+    public Administrador cambiarPassword(@Validated(OnCreate.class) Administrador administrador, String passwordActual, String passwordNuevo) throws Exception {
+        
+    // 2. Verificar que el password actual es correcto
+    if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
+        throw new Exception("La contraseña actual es incorrecta");
+    }
+
+    // 3. Verificar que el nuevo password sea diferente al actual
+    if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
+        throw new Exception("La nueva contraseña no puede ser igual a la actual");
+    }
+
+    administrador.setPassword(passwordNuevo);
+    validarParaRegistro(administrador);
+    encriptar(administrador);
+
+    return administradorRepo.save(administrador);
+}
 
     @Override
     public void eliminar(@Valid Administrador administrador, boolean confirmacion) throws Exception {

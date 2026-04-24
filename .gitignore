@@ -43,3 +43,4 @@ bin
 
 # Archivos especificos
 negocio/src/main/resources/application-secrets.properties
+.github/java-upgrade/

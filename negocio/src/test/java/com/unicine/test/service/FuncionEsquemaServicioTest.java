@@ -42,7 +42,14 @@ public class FuncionEsquemaServicioTest {
 
             System.out.println("Funcion encontrada: " + funcion); 
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         FuncionEsquema funcionEsquema = new FuncionEsquema(funcion);
 
@@ -53,7 +60,14 @@ public class FuncionEsquemaServicioTest {
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -76,7 +90,14 @@ public class FuncionEsquemaServicioTest {
 
             funcionEsquema.setEsquemaTemporal(gson.toJson(matriz));
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
         
         try {
 
@@ -84,7 +105,14 @@ public class FuncionEsquemaServicioTest {
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -96,12 +124,26 @@ public class FuncionEsquemaServicioTest {
         try {
             funcionEsquema = funcionEsquemaServicio.obtener(1).orElse(null);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             funcionEsquemaServicio.eliminar(funcionEsquema, true);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
 
         try {
             funcionEsquemaServicio.obtener(1);
@@ -125,7 +167,14 @@ public class FuncionEsquemaServicioTest {
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + funcionEsquema);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 
     @Test
@@ -141,6 +190,13 @@ public class FuncionEsquemaServicioTest {
 
             lista.forEach(System.out::println);
 
-        } catch (Exception e) { throw new RuntimeException(e); }
+        } catch (Exception e) {
+            System.out.println("Mensaje de error: " + e.getMessage());
+
+
+
+            throw new RuntimeException(e);
+
+        }
     }
 }
