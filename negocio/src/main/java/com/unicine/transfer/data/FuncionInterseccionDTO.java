@@ -3,9 +3,9 @@ package com.unicine.transfer.data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.unicine.entity.Imagen;
-import com.unicine.enumeration.FormatoPelicula;
-import com.unicine.enumeration.GeneroPelicula;
+import com.unicine.entity.image.Imagen;
+import com.unicine.enums.movie.FormatoPelicula;
+import com.unicine.enums.movie.GeneroPelicula;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

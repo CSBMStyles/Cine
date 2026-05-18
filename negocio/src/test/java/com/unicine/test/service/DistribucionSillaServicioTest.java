@@ -10,7 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.unicine.entity.DistribucionSilla;
+import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.service.DistribucionSillaServicio;
 import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
 

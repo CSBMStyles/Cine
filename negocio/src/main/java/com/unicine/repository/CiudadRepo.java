@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.Ciudad;
+import com.unicine.entity.theater.Ciudad;
 
 @Repository
 public interface CiudadRepo extends JpaRepository<Ciudad, Integer> {

@@ -3,8 +3,8 @@ package com.unicine.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.Sala;
-import com.unicine.enumeration.TipoSala;
+import com.unicine.entity.theater.Sala;
+import com.unicine.enums.theater.TipoSala;
 import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 import jakarta.validation.Valid;

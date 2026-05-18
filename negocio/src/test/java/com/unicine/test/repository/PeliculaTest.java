@@ -19,9 +19,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.unicine.entity.Pelicula;
-import com.unicine.enumeration.EstadoPelicula;
-import com.unicine.enumeration.GeneroPelicula;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.enums.movie.EstadoPelicula;
+import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.repository.PeliculaRepo;
 import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
 

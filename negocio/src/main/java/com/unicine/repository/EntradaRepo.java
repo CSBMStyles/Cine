@@ -1,6 +1,6 @@
 package com.unicine.repository;
 
-import com.unicine.entity.Entrada;
+import com.unicine.entity.purchase.Entrada;
 import com.unicine.transfer.data.DetalleSillaDTO;
 
 import java.util.List;

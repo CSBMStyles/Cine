@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.Ciudad;
+import com.unicine.entity.theater.Ciudad;
 import com.unicine.service.CiudadServicio;
 import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 

@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.unicine.entity.Funcion;
-import com.unicine.entity.Horario;
-import com.unicine.entity.Pelicula;
-import com.unicine.entity.Sala;
-import com.unicine.enumeration.FormatoPelicula;
+import com.unicine.entity.showing.Funcion;
+import com.unicine.entity.showing.Horario;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.entity.theater.Sala;
+import com.unicine.enums.movie.FormatoPelicula;
 import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.HorarioRepo;
 import com.unicine.repository.PeliculaRepo;

@@ -17,9 +17,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.unicine.entity.Cliente;
-import com.unicine.entity.Imagen;
-import com.unicine.entity.Pelicula;
+import com.unicine.entity.user.Cliente;
+import com.unicine.entity.image.Imagen;
+import com.unicine.entity.movie.Pelicula;
 import com.unicine.service.ImagenServicio;
 import com.unicine.service.PeliculaServicio;
 import com.unicine.service.PersonaServicio;

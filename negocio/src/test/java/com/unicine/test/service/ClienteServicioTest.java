@@ -15,10 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.Cliente;
-import com.unicine.entity.Administrador;
-import com.unicine.entity.AdministradorTeatro;
-import com.unicine.entity.Persona;
+import com.unicine.entity.user.Cliente;
+import com.unicine.entity.user.Administrador;
+import com.unicine.entity.user.AdministradorTeatro;
+import com.unicine.entity.user.Persona;
 import com.unicine.service.PersonaServicio;
 import com.unicine.service.extend.auth.AuthenticationService;
 import com.unicine.service.extend.mail.EmailService;

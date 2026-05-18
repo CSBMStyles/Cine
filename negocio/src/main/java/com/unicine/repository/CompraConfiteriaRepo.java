@@ -3,7 +3,7 @@ package com.unicine.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.CompraConfiteria;
+import com.unicine.entity.purchase.CompraConfiteria;
 
 @Repository
 public interface CompraConfiteriaRepo extends JpaRepository<CompraConfiteria, Integer> {

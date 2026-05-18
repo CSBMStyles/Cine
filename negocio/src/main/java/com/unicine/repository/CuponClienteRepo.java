@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.*;
+import com.unicine.entity.purchase.Compra;
+import com.unicine.entity.purchase.CuponCliente;
 
 @Repository
 public interface CuponClienteRepo extends JpaRepository<CuponCliente, Integer> {

@@ -11,10 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.DistribucionSilla;
-import com.unicine.entity.Sala;
-import com.unicine.entity.Teatro;
-import com.unicine.enumeration.TipoSala;
+import com.unicine.entity.theater.DistribucionSilla;
+import com.unicine.entity.theater.Sala;
+import com.unicine.entity.theater.Teatro;
+import com.unicine.enums.theater.TipoSala;
 import com.unicine.service.DistribucionSillaServicio;
 import com.unicine.service.SalaServicio;
 import com.unicine.service.TeatroServicio;

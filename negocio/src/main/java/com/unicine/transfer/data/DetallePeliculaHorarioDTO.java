@@ -1,8 +1,8 @@
 package com.unicine.transfer.data;
 
-import com.unicine.entity.Horario;
-import com.unicine.entity.Pelicula;
-import com.unicine.entity.Sala;
+import com.unicine.entity.showing.Horario;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.entity.theater.Sala;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

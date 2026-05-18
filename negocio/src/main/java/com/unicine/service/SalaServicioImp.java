@@ -8,8 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Sala;
-import com.unicine.enumeration.TipoSala;
+import com.unicine.entity.theater.Sala;
+import com.unicine.enums.theater.TipoSala;
 import com.unicine.repository.SalaRepo;
 import com.unicine.util.initializer.SalaPrecioInit;
 import com.unicine.util.validation.attributes.SalaAtributoValidator;

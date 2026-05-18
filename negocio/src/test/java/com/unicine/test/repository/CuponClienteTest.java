@@ -12,9 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Cliente;
-import com.unicine.entity.Cupon;
-import com.unicine.entity.CuponCliente;
+import com.unicine.entity.user.Cliente;
+import com.unicine.entity.purchase.Cupon;
+import com.unicine.entity.purchase.CuponCliente;
 import com.unicine.repository.ClienteRepo;
 import com.unicine.repository.CuponClienteRepo;
 import com.unicine.repository.CuponRepo;

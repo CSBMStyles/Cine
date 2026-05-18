@@ -1,7 +1,7 @@
 package com.unicine.repository;
 
-import com.unicine.entity.Pelicula;
-import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
 
 import java.time.LocalDate;

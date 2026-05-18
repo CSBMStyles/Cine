@@ -3,8 +3,8 @@ package com.unicine.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.Coleccion;
-import com.unicine.entity.composed.ColeccionCompuesta;
+import com.unicine.entity.movie.Coleccion;
+import com.unicine.entity.movie.composed.ColeccionCompuesta;
 
 @Repository
 public interface ColeccionRepo extends JpaRepository<Coleccion, ColeccionCompuesta> {

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Teatro;
+import com.unicine.entity.theater.Teatro;
 import com.unicine.repository.TeatroRepo;
 import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 

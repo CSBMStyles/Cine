@@ -9,9 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.PeliculaDisposicion;
-import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
-import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.entity.movie.PeliculaDisposicion;
+import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
+import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.repository.PeliculaDisposicionRepo;
 import com.unicine.service.extend.state.EstadoPeliculaService;
 

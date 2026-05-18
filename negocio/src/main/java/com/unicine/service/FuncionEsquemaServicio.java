@@ -3,7 +3,7 @@ package com.unicine.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.FuncionEsquema;
+import com.unicine.entity.showing.FuncionEsquema;
 
 import jakarta.validation.Valid;
 

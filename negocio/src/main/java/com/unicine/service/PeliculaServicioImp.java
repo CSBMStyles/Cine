@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Pelicula;
+import com.unicine.entity.movie.Pelicula;
 import com.unicine.repository.PeliculaRepo;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 

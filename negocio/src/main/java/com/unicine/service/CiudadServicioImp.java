@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Ciudad;
+import com.unicine.entity.theater.Ciudad;
 import com.unicine.repository.CiudadRepo;
 import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 

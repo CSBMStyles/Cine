@@ -9,9 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Funcion;
-import com.unicine.entity.Horario;
-import com.unicine.entity.Sala;
+import com.unicine.entity.showing.Funcion;
+import com.unicine.entity.showing.Horario;
+import com.unicine.entity.theater.Sala;
 import com.unicine.repository.FuncionRepo;
 
 import jakarta.validation.Valid;

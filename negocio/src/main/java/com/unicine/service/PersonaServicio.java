@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.Persona;
+import com.unicine.entity.user.Persona;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 import com.unicine.util.validation.group.OnCreate;
 import com.unicine.util.validation.group.OnUpdate;

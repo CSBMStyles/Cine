@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Confiteria;
+import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.repository.ConfiteriaRepo;
 
 @DataJpaTest

@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.Pelicula;
-import com.unicine.enumeration.EstadoPelicula;
-import com.unicine.enumeration.GeneroPelicula;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.enums.movie.EstadoPelicula;
+import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.service.PeliculaServicio;
 import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;

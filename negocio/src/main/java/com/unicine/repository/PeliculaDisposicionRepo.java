@@ -1,8 +1,8 @@
 package com.unicine.repository;
 
-import com.unicine.entity.PeliculaDisposicion;
-import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
-import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.entity.movie.PeliculaDisposicion;
+import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
+import com.unicine.enums.movie.EstadoPelicula;
 
 import java.time.LocalDateTime;
 import java.util.List;

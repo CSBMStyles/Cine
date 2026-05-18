@@ -12,10 +12,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.DistribucionSilla;
-import com.unicine.entity.Sala;
-import com.unicine.entity.Teatro;
-import com.unicine.enumeration.TipoSala;
+import com.unicine.entity.theater.DistribucionSilla;
+import com.unicine.entity.theater.Sala;
+import com.unicine.entity.theater.Teatro;
+import com.unicine.enums.theater.TipoSala;
 import com.unicine.repository.DistribucionSillaRepo;
 import com.unicine.repository.SalaRepo;
 import com.unicine.repository.TeatroRepo;

@@ -3,7 +3,7 @@ package com.unicine.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.FuncionEsquema;
+import com.unicine.entity.showing.FuncionEsquema;
 
 @Repository
 public interface FuncionEsquemaRepo extends JpaRepository<FuncionEsquema, Integer> {

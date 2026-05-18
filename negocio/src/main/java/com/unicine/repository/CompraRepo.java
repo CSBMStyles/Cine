@@ -1,6 +1,6 @@
 package com.unicine.repository;
 
-import com.unicine.entity.Compra;
+import com.unicine.entity.purchase.Compra;
 import com.unicine.transfer.data.DetalleCompraDTO;
 
 import org.springframework.data.jpa.repository.JpaRepository;

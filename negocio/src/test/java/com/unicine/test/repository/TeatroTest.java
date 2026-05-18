@@ -12,9 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.AdministradorTeatro;
-import com.unicine.entity.Ciudad;
-import com.unicine.entity.Teatro;
+import com.unicine.entity.user.AdministradorTeatro;
+import com.unicine.entity.theater.Ciudad;
+import com.unicine.entity.theater.Teatro;
 import com.unicine.repository.AdministradorTeatroRepo;
 import com.unicine.repository.CiudadRepo;
 import com.unicine.repository.TeatroRepo;

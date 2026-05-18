@@ -1,9 +1,9 @@
 package com.unicine.service.extend.state;
 
-import com.unicine.entity.PeliculaDisposicion;
-import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
-import com.unicine.entity.Funcion;
-import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.entity.movie.PeliculaDisposicion;
+import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
+import com.unicine.entity.showing.Funcion;
+import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.repository.FuncionRepo;
 import com.unicine.repository.PeliculaDisposicionRepo;
 

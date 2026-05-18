@@ -10,8 +10,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.unicine.entity.Funcion;
-import com.unicine.entity.FuncionEsquema;
+import com.unicine.entity.showing.Funcion;
+import com.unicine.entity.showing.FuncionEsquema;
 import com.unicine.service.FuncionEsquemaServicio;
 import com.unicine.service.FuncionServicio;
 

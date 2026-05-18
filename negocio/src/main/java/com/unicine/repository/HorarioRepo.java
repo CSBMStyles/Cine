@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.Horario;
+import com.unicine.entity.showing.Horario;
 
 @Repository
 public interface HorarioRepo extends JpaRepository<Horario, Integer> {

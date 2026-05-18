@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.DistribucionSilla;
+import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.repository.DistribucionSillaRepo;
 import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
 

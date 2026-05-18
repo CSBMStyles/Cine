@@ -13,9 +13,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.api.response.Respuesta;
-import com.unicine.entity.Funcion;
-import com.unicine.entity.Horario;
-import com.unicine.entity.Sala;
+import com.unicine.entity.showing.Funcion;
+import com.unicine.entity.showing.Horario;
+import com.unicine.entity.theater.Sala;
 import com.unicine.service.HorarioServicio;
 import com.unicine.service.SalaServicio;
 import com.unicine.transfer.data.FuncionInterseccionDTO;

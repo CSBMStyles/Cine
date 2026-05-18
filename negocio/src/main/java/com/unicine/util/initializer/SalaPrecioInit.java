@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.unicine.enumeration.TipoSala;
+import com.unicine.enums.theater.TipoSala;
 
 @Component
 public class SalaPrecioInit {

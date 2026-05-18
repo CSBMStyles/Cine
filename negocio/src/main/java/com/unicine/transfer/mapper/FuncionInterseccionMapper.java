@@ -2,7 +2,7 @@ package com.unicine.transfer.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.unicine.entity.Funcion;
+import com.unicine.entity.showing.Funcion;
 import com.unicine.transfer.data.FuncionInterseccionDTO;
 
 @Component

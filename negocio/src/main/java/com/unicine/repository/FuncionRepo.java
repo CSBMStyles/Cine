@@ -1,7 +1,7 @@
 package com.unicine.repository;
 
-import com.unicine.entity.Funcion;
-import com.unicine.entity.Horario;
+import com.unicine.entity.showing.Funcion;
+import com.unicine.entity.showing.Horario;
 import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 
 import java.time.LocalDateTime;

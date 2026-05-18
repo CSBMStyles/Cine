@@ -3,7 +3,7 @@ package com.unicine.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.Teatro;
+import com.unicine.entity.theater.Teatro;
 import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;

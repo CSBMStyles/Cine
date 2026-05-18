@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Ciudad;
+import com.unicine.entity.theater.Ciudad;
 import com.unicine.repository.CiudadRepo;
 
 @DataJpaTest

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.api.response.Respuesta;
-import com.unicine.entity.Horario;
-import com.unicine.entity.Sala;
+import com.unicine.entity.showing.Horario;
+import com.unicine.entity.theater.Sala;
 
 import jakarta.validation.Valid;
 

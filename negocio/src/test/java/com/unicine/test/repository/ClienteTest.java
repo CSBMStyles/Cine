@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Cliente;
+import com.unicine.entity.user.Cliente;
 import com.unicine.repository.ClienteRepo;
 
 @DataJpaTest

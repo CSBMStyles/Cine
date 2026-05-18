@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.unicine.entity.interfaced.Imagenable;
+import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.util.config.ImageKitConfig;
 import com.unicine.util.funtional.image.ProcesadorImagen;
 import com.unicine.util.funtional.image.RefactorizadorRuta;

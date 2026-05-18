@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.AdministradorTeatro;
+import com.unicine.entity.user.AdministradorTeatro;
 import com.unicine.repository.AdministradorTeatroRepo;
 
 @DataJpaTest

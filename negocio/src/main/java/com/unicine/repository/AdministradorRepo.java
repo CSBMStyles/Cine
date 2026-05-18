@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.Administrador;
+import com.unicine.entity.user.Administrador;
 
 @Repository
 public interface AdministradorRepo extends JpaRepository<Administrador, Integer> {

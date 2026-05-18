@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.google.gson.Gson;
-import com.unicine.entity.DistribucionSilla;
+import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.repository.DistribucionSillaRepo;
 
 @DataJpaTest

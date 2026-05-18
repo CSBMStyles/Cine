@@ -3,7 +3,7 @@ package com.unicine.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.Confiteria;
+import com.unicine.entity.confiteria.Confiteria;
 
 @Repository
 public interface ConfiteriaRepo extends JpaRepository<Confiteria, Integer> {

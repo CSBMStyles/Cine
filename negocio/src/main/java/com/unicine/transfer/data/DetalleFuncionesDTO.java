@@ -7,9 +7,9 @@ import lombok.ToString;
 
 import java.util.List;
 
-import com.unicine.entity.Horario;
-import com.unicine.entity.Imagen;
-import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.entity.showing.Horario;
+import com.unicine.entity.image.Imagen;
+import com.unicine.enums.movie.EstadoPelicula;
 
 @Getter
 @Setter

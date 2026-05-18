@@ -11,8 +11,8 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.Compra;
-import com.unicine.entity.Entrada;
+import com.unicine.entity.purchase.Compra;
+import com.unicine.entity.purchase.Entrada;
 import com.unicine.repository.CompraRepo;
 import com.unicine.repository.EntradaRepo;
 import com.unicine.transfer.data.DetalleSillaDTO;

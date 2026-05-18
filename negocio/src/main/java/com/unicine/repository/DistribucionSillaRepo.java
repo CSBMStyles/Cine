@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.DistribucionSilla;
+import com.unicine.entity.theater.DistribucionSilla;
 
 @Repository
 public interface DistribucionSillaRepo extends JpaRepository<DistribucionSilla, Integer> {

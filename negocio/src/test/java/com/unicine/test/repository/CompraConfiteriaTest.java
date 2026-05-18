@@ -12,9 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Compra;
-import com.unicine.entity.CompraConfiteria;
-import com.unicine.entity.Confiteria;
+import com.unicine.entity.purchase.Compra;
+import com.unicine.entity.purchase.CompraConfiteria;
+import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.repository.CompraConfiteriaRepo;
 import com.unicine.repository.CompraRepo;
 import com.unicine.repository.ConfiteriaRepo;

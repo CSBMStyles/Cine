@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.Administrador;
+import com.unicine.entity.user.Administrador;
 import com.unicine.service.PersonaServicio;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 

@@ -3,9 +3,9 @@ package com.unicine.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.PeliculaDisposicion;
-import com.unicine.entity.composed.PeliculaDisposicionCompuesta;
-import com.unicine.enumeration.EstadoPelicula;
+import com.unicine.entity.movie.PeliculaDisposicion;
+import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
+import com.unicine.enums.movie.EstadoPelicula;
 
 import jakarta.validation.Valid;
 

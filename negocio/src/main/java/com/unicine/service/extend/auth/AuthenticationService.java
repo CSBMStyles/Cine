@@ -2,7 +2,7 @@ package com.unicine.service.extend.auth;
 
 import org.springframework.stereotype.Service;
 
-import com.unicine.entity.Persona;
+import com.unicine.entity.user.Persona;
 import com.unicine.service.AdministradorServicioImp;
 import com.unicine.service.AdministradorTeatroServicioImp;
 import com.unicine.service.ClienteServicioImp;

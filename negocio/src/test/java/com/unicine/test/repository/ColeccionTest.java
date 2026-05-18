@@ -12,11 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Cliente;
-import com.unicine.entity.Coleccion;
-import com.unicine.entity.Pelicula;
-import com.unicine.entity.composed.ColeccionCompuesta;
-import com.unicine.enumeration.EstadoPropio;
+import com.unicine.entity.user.Cliente;
+import com.unicine.entity.movie.Coleccion;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.entity.movie.composed.ColeccionCompuesta;
+import com.unicine.enums.movie.EstadoPropio;
 import com.unicine.repository.ClienteRepo;
 import com.unicine.repository.ColeccionRepo;
 import com.unicine.repository.PeliculaRepo;

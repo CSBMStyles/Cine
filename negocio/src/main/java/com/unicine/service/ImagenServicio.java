@@ -3,8 +3,8 @@ package com.unicine.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.Imagen;
-import com.unicine.entity.interfaced.Imagenable;
+import com.unicine.entity.image.Imagen;
+import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.transfer.record.VersionArchivo;
 
 import jakarta.validation.Valid;

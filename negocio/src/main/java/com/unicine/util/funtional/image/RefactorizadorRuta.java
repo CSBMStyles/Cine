@@ -2,8 +2,8 @@ package com.unicine.util.funtional.image;
 
 import org.springframework.stereotype.Service;
 
-import com.unicine.entity.Persona;
-import com.unicine.entity.interfaced.Imagenable;
+import com.unicine.entity.user.Persona;
+import com.unicine.entity.image.interfaced.Imagenable;
 
 @Service
 public class RefactorizadorRuta {

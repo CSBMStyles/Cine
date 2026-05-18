@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.unicine.entity.Imagen;
-import com.unicine.entity.Persona;
-import com.unicine.entity.interfaced.Imagenable;
+import com.unicine.entity.image.Imagen;
+import com.unicine.entity.user.Persona;
+import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.repository.ImagenRepo;
 import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;

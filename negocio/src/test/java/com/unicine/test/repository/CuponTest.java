@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.unicine.entity.Cupon;
+import com.unicine.entity.purchase.Cupon;
 import com.unicine.repository.CuponRepo;
 
 @DataJpaTest
