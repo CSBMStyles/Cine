@@ -21,3 +21,39 @@ Before modifying any files in this repository, always create a safety backup of 
   - `git stash list` to view backups
   - `git stash pop` to restore the previous state
   - `git checkout stash@{0} -- <file>` to restore a specific file
+
+## skills-configuration
+
+This project uses a hybrid skill setup: global skills for universal tooling and project-local skills for stack-specific tasks.
+
+### Global Skills (in `~/.agents/skills/`)
+
+Available across all projects:
+
+- `find-skills` — Discover and install new skills
+- `documentation-writer` — Technical documentation authoring
+- `docker-expert` — Containerization and deployment
+- `git-workflow` — Branching strategies and collaborative patterns
+- `security-review` — Vulnerability auditing and OWASP checks
+- `grill-me` — Stress-test plans and designs via questioning
+- `napkin` — Visual whiteboard collaboration
+
+### Project-Local Skills (in `.opencode/skills/`)
+
+Available only when working in this repository. Registered via `.opencode/opencode.json` (`skills.paths`).
+
+**Java / Spring Boot:**
+- `java-spring-boot` — Spring Boot REST APIs, Security, Data, Actuator
+
+**Angular Stack:**
+- `angular-component`, `angular-developer`, `angular-di`, `angular-directives`, `angular-forms`, `angular-http`, `angular-routing`, `angular-signals`, `angular-testing`, `angular-tooling`
+
+**HyperFrames Stack:**
+- `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `remotion-to-hyperframes`, `website-to-hyperframes`
+
+**Frontend & Animation:**
+- `animejs`, `css-animations`, `frontend-design`, `gsap`, `lottie`, `tailwind`, `three`, `waapi`
+
+### Compatibility
+
+Global skills are symlinked to `~/.claude/skills/` for Claude Code and OpenClaw compatibility. Project-local skills are resolved by OpenCode via `.opencode/opencode.json`.

@@ -2,5 +2,10 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     ".opencode/plugins/graphify.js"
-  ]
+  ],
+  "skills": {
+    "paths": [
+      "/Users/cristianbarrerameneses/Documents/Proyectos/Codigo/Java/Cine/.opencode/skills"
+    ]
+  }
 }
