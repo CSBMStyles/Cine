@@ -18,8 +18,6 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 
-import com.unicine.util.validation.annotation.MultiPattern;
-
 @Entity
 @Getter
 @Setter
@@ -37,10 +35,19 @@ public class Ciudad implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = "El nombre no puede estar en blanco")
-    @MultiPattern({
-        @Pattern(regexp = ".{2,}", message = "El nombre de la ciudad no debe ser menor a dos caracteres"),
-        @Pattern(regexp = ".{1,100}", message = "El nombre de la ciudad no debe pasar los cien caracteres"),
-        @Pattern(regexp = "^[a-zA-Z ]+$", message = "El nombre de la ciudad solo puede contener letras y espacios")
+    @Pattern.List({
+        @Pattern(
+            regexp = ".{2,}", 
+            message = "El nombre de la ciudad no debe ser menor a dos caracteres"
+        ),
+        @Pattern( 
+            regexp = ".{1,100}", 
+            message = "El nombre de la ciudad no debe pasar los cien caracteres"
+        ),
+        @Pattern(
+            regexp = "^[a-zA-Z ]+$",
+            message = "El nombre de la ciudad solo puede contener letras y espacios"
+        )
     })
     @Column(nullable = false, length = 100)
     private String nombre;

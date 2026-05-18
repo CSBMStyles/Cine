@@ -1,7 +1,5 @@
 package com.unicine.util.validation.attributes;
 
-import com.unicine.util.validation.annotation.MultiPattern;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -16,9 +14,7 @@ public class PeliculaAtributoValidator {
     @Max(value = 1000, message = "El codigo de la pelicula no debe ser mayor a mil")
     private Integer codigo;
 
-    @MultiPattern({
-        @Pattern(regexp = ".{1,100}", message = "El nombre de la pelicula no debe pasar los cien caracteres"),
-    })
+    @Pattern(regexp = ".{1,100}", message = "El nombre de la pelicula no debe pasar los cien caracteres")
     private String nombre;
 
     public PeliculaAtributoValidator(Integer codigo) {

@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.unicine.entity.interfaced.Imagenable;
-import com.unicine.util.validation.annotation.MultiPattern;
 
 @Entity
 @Getter
@@ -44,9 +43,15 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     private LocalDate fechaNacimiento;
 
     @Size(max = 5, message = "El teléfono no puede tener más de cinco telefonos")
-    @MultiPattern({
-        @Pattern(regexp = "^[0-9]+$", message = "El teléfono solo puede contener números"),
-        @Pattern(regexp = "^.{10}$", message = "El teléfono debe tener exactamente diez caracteres")
+    @Pattern.List({
+        @Pattern(
+            regexp = "^[0-9]+$", 
+            message = "El teléfono solo puede contener números"
+        ),
+        @Pattern( 
+            regexp = "^.{10}$", 
+            message = "El teléfono debe tener exactamente diez caracteres"
+        )
     })
     @ElementCollection
     @Column(nullable = true, length = 20)
