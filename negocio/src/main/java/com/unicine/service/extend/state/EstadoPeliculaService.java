@@ -4,8 +4,8 @@ import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.enums.movie.EstadoPelicula;
-import com.unicine.repository.FuncionRepo;
-import com.unicine.repository.PeliculaDisposicionRepo;
+import com.unicine.repository.showing.FuncionRepo;
+import com.unicine.repository.movie.PeliculaDisposicionRepo;
 
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;

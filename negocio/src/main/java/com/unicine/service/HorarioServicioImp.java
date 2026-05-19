@@ -15,8 +15,8 @@ import com.unicine.api.response.Respuesta;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.Horario;
 import com.unicine.entity.theater.Sala;
-import com.unicine.repository.FuncionRepo;
-import com.unicine.repository.HorarioRepo;
+import com.unicine.repository.showing.FuncionRepo;
+import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 
 import jakarta.validation.Valid;

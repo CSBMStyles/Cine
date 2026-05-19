@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.showing;
 
 import java.time.LocalDate;
 import java.util.Optional;

@@ -1,13 +1,12 @@
-package com.unicine.repository;
+package com.unicine.repository.confiteria;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.movie.Coleccion;
-import com.unicine.entity.movie.composed.ColeccionCompuesta;
+import com.unicine.entity.confiteria.Confiteria;
 
 @Repository
-public interface ColeccionRepo extends JpaRepository<Coleccion, ColeccionCompuesta> {
+public interface ConfiteriaRepo extends JpaRepository<Confiteria, Integer> {
     
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 

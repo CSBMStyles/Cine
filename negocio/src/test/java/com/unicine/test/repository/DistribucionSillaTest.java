@@ -14,7 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.google.gson.Gson;
 import com.unicine.entity.theater.DistribucionSilla;
-import com.unicine.repository.DistribucionSillaRepo;
+import com.unicine.repository.theater.DistribucionSillaRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

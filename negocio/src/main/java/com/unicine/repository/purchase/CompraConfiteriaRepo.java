@@ -1,12 +1,12 @@
-package com.unicine.repository;
+package com.unicine.repository.purchase;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.unicine.entity.showing.FuncionEsquema;
+import com.unicine.entity.purchase.CompraConfiteria;
 
 @Repository
-public interface FuncionEsquemaRepo extends JpaRepository<FuncionEsquema, Integer> {
+public interface CompraConfiteriaRepo extends JpaRepository<CompraConfiteria, Integer> {
     
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 

@@ -13,8 +13,8 @@ import org.springframework.validation.annotation.Validated;
 import com.google.gson.Gson;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.FuncionEsquema;
-import com.unicine.repository.DistribucionSillaRepo;
-import com.unicine.repository.FuncionEsquemaRepo;
+import com.unicine.repository.theater.DistribucionSillaRepo;
+import com.unicine.repository.showing.FuncionEsquemaRepo;
 
 import jakarta.validation.Valid;
 

@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.movie;
 
 import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;

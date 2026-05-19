@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.showing;
 
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.Horario;

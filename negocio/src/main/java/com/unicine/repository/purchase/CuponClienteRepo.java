@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.purchase;
 
 import java.util.List;
 import java.util.Optional;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.movie.Pelicula;
-import com.unicine.repository.PeliculaRepo;
+import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;

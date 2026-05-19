@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Cliente;
-import com.unicine.repository.ClienteRepo;
+import com.unicine.repository.user.ClienteRepo;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 import com.unicine.util.validation.group.OnCreate;
 import com.unicine.util.validation.group.OnUpdate;

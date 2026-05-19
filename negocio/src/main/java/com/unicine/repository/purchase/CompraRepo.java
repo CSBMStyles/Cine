@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.purchase;
 
 import com.unicine.entity.purchase.Compra;
 import com.unicine.transfer.data.DetalleCompraDTO;

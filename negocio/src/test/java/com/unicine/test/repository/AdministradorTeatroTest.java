@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.user.AdministradorTeatro;
-import com.unicine.repository.AdministradorTeatroRepo;
+import com.unicine.repository.user.AdministradorTeatroRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

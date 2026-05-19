@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.image;
 
 import java.util.Optional;
 

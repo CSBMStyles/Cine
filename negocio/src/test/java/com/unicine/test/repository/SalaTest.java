@@ -16,9 +16,9 @@ import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.entity.theater.Sala;
 import com.unicine.entity.theater.Teatro;
 import com.unicine.enums.theater.TipoSala;
-import com.unicine.repository.DistribucionSillaRepo;
-import com.unicine.repository.SalaRepo;
-import com.unicine.repository.TeatroRepo;
+import com.unicine.repository.theater.DistribucionSillaRepo;
+import com.unicine.repository.theater.SalaRepo;
+import com.unicine.repository.theater.TeatroRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.purchase.Cupon;
-import com.unicine.repository.CuponRepo;
+import com.unicine.repository.purchase.CuponRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

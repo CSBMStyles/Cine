@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Sala;
 import com.unicine.enums.theater.TipoSala;
-import com.unicine.repository.SalaRepo;
+import com.unicine.repository.theater.SalaRepo;
 import com.unicine.util.initializer.SalaPrecioInit;
 import com.unicine.util.validation.attributes.SalaAtributoValidator;
 

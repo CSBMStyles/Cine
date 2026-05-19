@@ -13,8 +13,8 @@ import java.util.Optional;
 
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.Entrada;
-import com.unicine.repository.CompraRepo;
-import com.unicine.repository.EntradaRepo;
+import com.unicine.repository.purchase.CompraRepo;
+import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.transfer.data.DetalleSillaDTO;
 
 @DataJpaTest

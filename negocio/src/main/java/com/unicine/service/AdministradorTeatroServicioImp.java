@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.AdministradorTeatro;
-import com.unicine.repository.AdministradorTeatroRepo;
+import com.unicine.repository.user.AdministradorTeatroRepo;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 import com.unicine.util.validation.group.OnCreate;
 import com.unicine.util.validation.group.OnUpdate;

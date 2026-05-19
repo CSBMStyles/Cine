@@ -15,9 +15,9 @@ import org.springframework.test.context.jdbc.Sql;
 import com.unicine.entity.user.Cliente;
 import com.unicine.entity.purchase.Cupon;
 import com.unicine.entity.purchase.CuponCliente;
-import com.unicine.repository.ClienteRepo;
-import com.unicine.repository.CuponClienteRepo;
-import com.unicine.repository.CuponRepo;
+import com.unicine.repository.user.ClienteRepo;
+import com.unicine.repository.purchase.CuponClienteRepo;
+import com.unicine.repository.purchase.CuponRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

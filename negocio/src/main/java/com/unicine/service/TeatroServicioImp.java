@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Teatro;
-import com.unicine.repository.TeatroRepo;
+import com.unicine.repository.theater.TeatroRepo;
 import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;

@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enums.movie.EstadoPelicula;
-import com.unicine.repository.PeliculaDisposicionRepo;
+import com.unicine.repository.movie.PeliculaDisposicionRepo;
 import com.unicine.service.extend.state.EstadoPeliculaService;
 
 import jakarta.validation.Valid;

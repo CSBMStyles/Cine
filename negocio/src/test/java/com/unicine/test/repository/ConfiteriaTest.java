@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.confiteria.Confiteria;
-import com.unicine.repository.ConfiteriaRepo;
+import com.unicine.repository.confiteria.ConfiteriaRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

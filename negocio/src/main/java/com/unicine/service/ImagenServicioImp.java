@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unicine.entity.image.Imagen;
 import com.unicine.entity.user.Persona;
 import com.unicine.entity.image.interfaced.Imagenable;
-import com.unicine.repository.ImagenRepo;
+import com.unicine.repository.image.ImagenRepo;
 import com.unicine.service.extend.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;
 import com.unicine.util.funtional.image.RefactorizadorRuta;

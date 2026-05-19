@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Ciudad;
-import com.unicine.repository.CiudadRepo;
+import com.unicine.repository.theater.CiudadRepo;
 import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 
 import jakarta.validation.Valid;

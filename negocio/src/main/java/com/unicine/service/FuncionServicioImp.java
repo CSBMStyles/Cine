@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.Horario;
 import com.unicine.entity.theater.Sala;
-import com.unicine.repository.FuncionRepo;
+import com.unicine.repository.showing.FuncionRepo;
 
 import jakarta.validation.Valid;
 

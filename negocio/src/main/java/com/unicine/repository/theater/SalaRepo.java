@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.theater;
 
 import java.util.List;
 import java.util.Optional;

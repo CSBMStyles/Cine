@@ -15,9 +15,9 @@ import org.springframework.test.context.jdbc.Sql;
 import com.unicine.entity.user.AdministradorTeatro;
 import com.unicine.entity.theater.Ciudad;
 import com.unicine.entity.theater.Teatro;
-import com.unicine.repository.AdministradorTeatroRepo;
-import com.unicine.repository.CiudadRepo;
-import com.unicine.repository.TeatroRepo;
+import com.unicine.repository.user.AdministradorTeatroRepo;
+import com.unicine.repository.theater.CiudadRepo;
+import com.unicine.repository.theater.TeatroRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

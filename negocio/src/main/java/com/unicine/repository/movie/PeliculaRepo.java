@@ -1,4 +1,4 @@
-package com.unicine.repository;
+package com.unicine.repository.movie;
 
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.enums.movie.EstadoPelicula;

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
-import com.unicine.repository.PeliculaRepo;
+import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
 
 @DataJpaTest

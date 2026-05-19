@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.user.Cliente;
-import com.unicine.repository.ClienteRepo;
+import com.unicine.repository.user.ClienteRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

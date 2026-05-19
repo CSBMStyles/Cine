@@ -17,9 +17,9 @@ import com.unicine.entity.movie.Coleccion;
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.movie.composed.ColeccionCompuesta;
 import com.unicine.enums.movie.EstadoPropio;
-import com.unicine.repository.ClienteRepo;
-import com.unicine.repository.ColeccionRepo;
-import com.unicine.repository.PeliculaRepo;
+import com.unicine.repository.user.ClienteRepo;
+import com.unicine.repository.movie.ColeccionRepo;
+import com.unicine.repository.movie.PeliculaRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

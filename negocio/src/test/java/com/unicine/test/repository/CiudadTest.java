@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.theater.Ciudad;
-import com.unicine.repository.CiudadRepo;
+import com.unicine.repository.theater.CiudadRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

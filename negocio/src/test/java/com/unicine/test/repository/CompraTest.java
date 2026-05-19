@@ -18,11 +18,11 @@ import com.unicine.entity.purchase.Cupon;
 import com.unicine.entity.purchase.CuponCliente;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.enums.purchase.MedioPago;
-import com.unicine.repository.ClienteRepo;
-import com.unicine.repository.CompraRepo;
-import com.unicine.repository.CuponClienteRepo;
-import com.unicine.repository.CuponRepo;
-import com.unicine.repository.FuncionRepo;
+import com.unicine.repository.user.ClienteRepo;
+import com.unicine.repository.purchase.CompraRepo;
+import com.unicine.repository.purchase.CuponClienteRepo;
+import com.unicine.repository.purchase.CuponRepo;
+import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.transfer.data.DetalleCompraDTO;
 
 @DataJpaTest

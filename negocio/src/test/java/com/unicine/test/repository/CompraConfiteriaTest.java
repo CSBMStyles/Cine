@@ -15,9 +15,9 @@ import org.springframework.test.context.jdbc.Sql;
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.CompraConfiteria;
 import com.unicine.entity.confiteria.Confiteria;
-import com.unicine.repository.CompraConfiteriaRepo;
-import com.unicine.repository.CompraRepo;
-import com.unicine.repository.ConfiteriaRepo;
+import com.unicine.repository.purchase.CompraConfiteriaRepo;
+import com.unicine.repository.purchase.CompraRepo;
+import com.unicine.repository.confiteria.ConfiteriaRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

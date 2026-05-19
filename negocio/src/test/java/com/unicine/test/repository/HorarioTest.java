@@ -17,7 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.showing.Horario;
-import com.unicine.repository.HorarioRepo;
+import com.unicine.repository.showing.HorarioRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
