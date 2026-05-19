@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.FuncionEsquema;
-import com.unicine.service.FuncionEsquemaServicio;
-import com.unicine.service.FuncionServicio;
+import com.unicine.service.showing.FuncionEsquemaServicio;
+import com.unicine.service.showing.FuncionServicio;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 

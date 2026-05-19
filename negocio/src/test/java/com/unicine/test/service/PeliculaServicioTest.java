@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
-import com.unicine.service.PeliculaServicio;
-import com.unicine.service.extend.image.ImageKitService;
+import com.unicine.service.movie.PeliculaServicio;
+import com.unicine.service.image.ImageKitService;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import io.imagekit.sdk.models.results.ResultList;

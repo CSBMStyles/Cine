@@ -19,9 +19,9 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.user.Administrador;
 import com.unicine.entity.user.AdministradorTeatro;
 import com.unicine.entity.user.Persona;
-import com.unicine.service.PersonaServicio;
-import com.unicine.service.extend.auth.AuthenticationService;
-import com.unicine.service.extend.mail.EmailService;
+import com.unicine.service.user.PersonaServicio;
+import com.unicine.service.user.AuthenticationService;
+import com.unicine.service.notification.EmailService;
 import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import jakarta.validation.ConstraintViolationException;

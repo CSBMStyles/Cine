@@ -21,12 +21,12 @@ import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.theater.Sala;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enums.movie.FormatoPelicula;
-import com.unicine.service.FuncionEsquemaServicio;
-import com.unicine.service.FuncionServicio;
-import com.unicine.service.HorarioServicio;
-import com.unicine.service.PeliculaDisposicionServicio;
-import com.unicine.service.PeliculaServicio;
-import com.unicine.service.SalaServicio;
+import com.unicine.service.showing.FuncionEsquemaServicio;
+import com.unicine.service.showing.FuncionServicio;
+import com.unicine.service.showing.HorarioServicio;
+import com.unicine.service.movie.PeliculaDisposicionServicio;
+import com.unicine.service.movie.PeliculaServicio;
+import com.unicine.service.theater.SalaServicio;
 import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
