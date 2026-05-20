@@ -15,7 +15,6 @@ import com.unicine.entity.image.Imagen;
 import com.unicine.entity.user.Persona;
 import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.repository.image.ImagenRepo;
-import com.unicine.service.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
 

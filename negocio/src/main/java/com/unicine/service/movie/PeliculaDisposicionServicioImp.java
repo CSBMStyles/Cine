@@ -13,7 +13,6 @@ import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
-import com.unicine.service.movie.EstadoPeliculaService;
 
 import jakarta.validation.Valid;
 
