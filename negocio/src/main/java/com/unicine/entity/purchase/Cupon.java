@@ -23,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.util.List;
 import java.time.LocalDateTime;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -41,23 +42,23 @@ public class Cupon implements Serializable {
     private Integer codigo;
 
     @Lob
-    @NotBlank(message = "La descripción no puede estar en blanco")
+    @NotBlank(message = ValidationMessages.COUPON_DESCRIPTION_NOT_BLANK)
     @Column(nullable = false, columnDefinition = "text")
     private String descripcion;
 
-    @NotNull(message = "El descuento no puede estar vacío")
-    @PositiveOrZero(message = "El descuento debe ser un número positivo o cero")
-    @Max(value = 100, message = "El descuento no puede ser mayor al total")
+    @NotNull(message = ValidationMessages.COUPON_DISCOUNT_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.DISCOUNT_POSITIVE_OR_ZERO)
+    @Max(value = 100, message = ValidationMessages.DISCOUNT_MAX_TOTAL)
     @Column(nullable = false)
     private Double descuento;
 
-    @NotBlank(message = "El criterio no puede estar en blanco")
-    @Size(max = 100, message = "El criterio no puede tener más de cien caracteres")
+    @NotBlank(message = ValidationMessages.COUPON_CRITERION_NOT_BLANK)
+    @Size(max = 100, message = ValidationMessages.CRITERION_SIZE_MAX_100)
     @Column(nullable = false, length = 100)
     private String criterio;
 
-    @NotNull(message = "La fecha de vencimiento no puede estar vacía")
-    @FutureOrPresent(message = "La fecha de vencimiento debe estar en el presente o en el futuro")
+    @NotNull(message = ValidationMessages.COUPON_EXPIRY_NOT_NULL)
+    @FutureOrPresent(message = ValidationMessages.COUPON_EXPIRY_FUTURE)
     @Column(nullable = false)
     private LocalDateTime fechaVencimiento;
 

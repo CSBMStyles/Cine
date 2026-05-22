@@ -4,6 +4,7 @@ package com.unicine.entity.user;
 
 import jakarta.persistence.Id;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import com.unicine.util.validation.group.OnCreate;
 
 import jakarta.persistence.Column;
@@ -31,53 +32,53 @@ public class Persona {
     // SECTION: Atributos
 
     @Id
-    @NotNull(message = "La cédula no puede estar vacía")
-    @Positive(message = "La cédula debe ser un número positivo")
+    @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
+    @Positive(message = ValidationMessages.CEDULA_POSITIVE)
     @Column(length = 10)
     @EqualsAndHashCode.Include
     private Integer cedula;
 
-    @NotBlank(message = "El nombre no puede estar en blanco")
-    @Size(max = 50, message = "El nombre no puede tener más de cincuenta caracteres")
+    @NotBlank(message = ValidationMessages.NAME_NOT_BLANK)
+    @Size(max = 50, message = ValidationMessages.NAME_SIZE_MAX_50)
     @Column(nullable = false, length = 50)
     private String nombre;
 
-    @NotBlank(message = "El apellido no puede estar en blanco")
-    @Size(max = 50, message = "El apellido no puede tener más de cincuenta caracteres")
+    @NotBlank(message = ValidationMessages.NAME_NOT_BLANK)
+    @Size(max = 50, message = ValidationMessages.NAME_SIZE_MAX_50)
     @Column(nullable = false, length = 50)
     private String apellido;
 
-    @NotBlank(message = "El correo no puede estar vacío")
-    @Email(message = "El correo no tiene un formato válido")
-    @Size(max = 150, message = "El correo no puede tener más de ciento cincuenta caracteres")
+    @NotBlank(message = ValidationMessages.EMAIL_NOT_NULL)
+    @Email(message = ValidationMessages.EMAIL_INVALID)
+    @Size(max = 150, message = ValidationMessages.EMAIL_SIZE_MAX_150)
     @Column(nullable = false, length = 150)
     private String correo;
 
     @ToString.Exclude
     @NotBlank(
-        message = "La contraseña no puede estar en blanco",
+        message = ValidationMessages.PASSWORD_NOT_BLANK,
         groups = OnCreate.class
     )
-    @Size(min = 8, max = 200, message = "La contraseña debe tener entre ocho y doscientos caracteres", groups = OnCreate.class)
+    @Size(min = 8, max = 200, message = ValidationMessages.PASSWORD_SIZE_MIN_8, groups = OnCreate.class)
     @Pattern.List({
         @Pattern(
             regexp = "^(?=.*[A-Z]).+$",
-            message = "La contraseña debe contener al menos una letra mayúscula",
+            message = ValidationMessages.PASSWORD_UPPERCASE,
             groups = OnCreate.class
         ),
         @Pattern(
             regexp = "^(?=.*[a-z]).+$",
-            message = "La contraseña debe contener al menos una letra minúscula",
+            message = ValidationMessages.PASSWORD_LOWERCASE,
             groups = OnCreate.class
         ),
         @Pattern(
             regexp = "^(?=.*\\d).+$",
-            message = "La contraseña debe contener al menos un dígito",
+            message = ValidationMessages.PASSWORD_DIGIT,
             groups = OnCreate.class
         ),
         @Pattern(
             regexp = "^(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).+$",
-            message = "La contraseña debe contener al menos un carácter especial",
+            message = ValidationMessages.PASSWORD_SPECIAL,
             groups = OnCreate.class
         )
     })

@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.unicine.enums.movie.FormatoPelicula;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -43,12 +44,12 @@ public class Funcion implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El precio no puede estar vacío")
-    @PositiveOrZero(message = "El precio debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SHOWING_PRICE_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SHOWING_PRICE_POSITIVE_OR_ZERO)
     @Column(nullable = false)
     private Double precio;
 
-    @NotNull(message = "El formato no puede estar vacío")
+    @NotNull(message = ValidationMessages.SHOWING_FORMAT_NOT_NULL)
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private FormatoPelicula formato;
@@ -56,15 +57,15 @@ public class Funcion implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
-    @NotNull(message = "La sala no puede estar vacía")
+    @NotNull(message = ValidationMessages.SHOWING_ROOM_NOT_NULL)
     private Sala sala;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @NotNull(message = "El horario no puede estar vacío")
+    @NotNull(message = ValidationMessages.SHOWING_SCHEDULE_NOT_NULL)
     private Horario horario;
 
     @ManyToOne
-    @NotNull(message = "La película no puede estar vacía")
+    @NotNull(message = ValidationMessages.SHOWING_MOVIE_NOT_NULL)
     private Pelicula pelicula;
 
     @ToString.Exclude

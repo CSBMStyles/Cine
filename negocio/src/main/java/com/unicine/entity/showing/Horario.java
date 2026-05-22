@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 import java.time.LocalDateTime;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -34,13 +35,13 @@ public class Horario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "La fecha de inicio no puede estar vacía")
-    @Future(message = "La fecha de inicio debe ser en el futuro")
+    @NotNull(message = ValidationMessages.SCHEDULE_START_NOT_NULL)
+    @Future(message = ValidationMessages.SCHEDULE_START_FUTURE)
     @Column(nullable = false)
     private LocalDateTime fechaInicio;
 
-    @NotNull(message = "La fecha de fin no puede estar vacía")
-    @Future(message = "La fecha de fin debe ser en el futuro")
+    @NotNull(message = ValidationMessages.SCHEDULE_END_NOT_NULL)
+    @Future(message = ValidationMessages.SCHEDULE_END_FUTURE)
     @Column(nullable = false)
     private LocalDateTime fechaFin;
 

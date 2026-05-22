@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.unicine.enums.theater.TipoSala;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -41,12 +42,12 @@ public class Sala implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotBlank(message = "El nombre no puede estar vacío")
-    @Size(max = 100, message = "El nombre no puede tener más de cien caracteres")
+    @NotBlank(message = ValidationMessages.ROOM_NAME_NOT_BLANK)
+    @Size(max = 100, message = ValidationMessages.NAME_SIZE_MAX_100)
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @NotNull(message = "El tipo de sala no puede estar vacío")
+    @NotNull(message = ValidationMessages.ROOM_TYPE_NOT_NULL)
     @Column (nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private TipoSala tipoSala;
@@ -54,11 +55,11 @@ public class Sala implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
-    @NotNull(message = "El teatro no puede estar vacío")
+    @NotNull(message = ValidationMessages.ROOM_THEATER_NOT_NULL)
     private Teatro teatro;
 
     @ManyToOne
-    @NotNull(message = "La distribución de sillas no puede estar vacía")
+    @NotNull(message = ValidationMessages.ROOM_DISTRIBUTION_NOT_NULL)
     private DistribucionSilla distribucionSilla;
 
     @ToString.Exclude

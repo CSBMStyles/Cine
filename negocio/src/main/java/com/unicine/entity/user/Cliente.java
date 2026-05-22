@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -37,24 +38,24 @@ public class Cliente extends Persona implements Serializable, Imagenable {
 
     // SECTION: Atributos
 
-    @NotNull(message = "El estado no puede estar vacío")
+    @NotNull(message = ValidationMessages.CLIENT_STATUS_NOT_NULL)
     @Column(nullable = false)
     private Boolean estado;
 
-    @NotNull(message = "La fecha de nacimiento no puede estar vacía")
-    @Past(message = "La fecha de nacimiento debe estar en el pasado")
+    @NotNull(message = ValidationMessages.BIRTH_DATE_NOT_NULL)
+    @Past(message = ValidationMessages.CLIENT_BIRTH_DATE_PAST)
     @Column(nullable = false)
     private LocalDate fechaNacimiento;
 
-    @Size(max = 5, message = "El teléfono no puede tener más de cinco telefonos")
+    @Size(max = 5, message = ValidationMessages.PHONE_LIST_MAX_5)
     @Pattern.List({
         @Pattern(
-            regexp = "^[0-9]+$", 
-            message = "El teléfono solo puede contener números"
+            regexp = "^[0-9]+$",
+            message = ValidationMessages.PHONE_ONLY_NUMBERS
         ),
-        @Pattern( 
-            regexp = "^.{10}$", 
-            message = "El teléfono debe tener exactamente diez caracteres"
+        @Pattern(
+            regexp = "^.{10}$",
+            message = ValidationMessages.PHONE_SIZE_EXACT_10
         )
     })
     @ElementCollection

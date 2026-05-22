@@ -19,6 +19,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 import java.util.List;
 
@@ -38,23 +39,23 @@ public class Teatro implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotBlank(message = "La dirección no puede estar vacía")
-    @Size(min = 4, max = 100, message = "La dirección debe tener entre cuatro y cien caracteres")
+    @NotBlank(message = ValidationMessages.ADDRESS_NOT_BLANK)
+    @Size(min = 4, max = 100, message = ValidationMessages.ADDRESS_SIZE_MIN_4)
     @Column(nullable = false, length = 100)
     private String direccion;
 
-    @NotBlank(message = "El teléfono no puede estar vacío")
-    @Pattern(regexp = "^.{10}$", message = "El teléfono debe tener exactamente diez caracteres")
+    @NotBlank(message = ValidationMessages.THEATER_PHONE_NOT_BLANK)
+    @Pattern(regexp = "^.{10}$", message = ValidationMessages.PHONE_SIZE_EXACT_10)
     @Column(nullable = false, length = 20)
     private String telefono;
 
     // SECTION: Relaciones
 
-    @NotNull(message = "La ciudad no puede estar vacía")
+    @NotNull(message = ValidationMessages.THEATER_CITY_NOT_NULL)
     @ManyToOne
     private Ciudad ciudad;
 
-    @NotNull(message = "El administrador no puede estar vacío")
+    @NotNull(message = ValidationMessages.THEATER_ADMIN_NOT_NULL)
     @ManyToOne
     private AdministradorTeatro administradorTeatro;
 

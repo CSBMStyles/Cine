@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.unicine.enums.purchase.MedioPago;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -46,22 +47,22 @@ public class Compra implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El medio de pago no puede estar vacío")
+    @NotNull(message = ValidationMessages.PURCHASE_PAYMENT_NOT_NULL)
     @Column (nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private MedioPago medioPago;
 
-    @NotNull(message = "La fecha de compra no puede estar vacía")
+    @NotNull(message = ValidationMessages.PURCHASE_DATE_NOT_NULL)
     @Column(nullable = false)
     private LocalDateTime fechaCompra;
 
-    @NotNull(message = "La fecha de la película no puede estar vacía")
-    @FutureOrPresent(message = "La fecha de la película debe estar en el presente o en el futuro")
+    @NotNull(message = ValidationMessages.PURCHASE_MOVIE_DATE_NOT_NULL)
+    @FutureOrPresent(message = ValidationMessages.PURCHASE_MOVIE_DATE_FUTURE)
     @Column(nullable = false)
     private LocalDateTime fechaPelicula;
 
-    @NotNull(message = "El valor total no puede estar vacío")
-    @PositiveOrZero(message = "El valor total debe ser un número positivo")
+    @NotNull(message = ValidationMessages.PURCHASE_TOTAL_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.PURCHASE_TOTAL_POSITIVE)
     @Column(nullable = false)
     private Double valorTotal;
 
@@ -75,11 +76,11 @@ public class Compra implements Serializable {
     private CuponCliente cuponCliente;
 
     @ManyToOne
-    @NotNull(message = "El cliente no puede estar vacío")
+    @NotNull(message = ValidationMessages.PURCHASE_CLIENT_NOT_NULL)
     private Cliente cliente;
 
     @ManyToOne
-    @NotNull(message = "La función no puede estar vacía")
+    @NotNull(message = ValidationMessages.PURCHASE_SHOWING_NOT_NULL)
     private Funcion funcion;
 
     @ToString.Exclude

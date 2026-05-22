@@ -17,6 +17,7 @@ import lombok.ToString;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 import java.util.List;
 
@@ -36,11 +37,11 @@ public class Ciudad implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotBlank(message = "El nombre no puede estar en blanco")
-    @Size(min = 2, max = 100, message = "El nombre debe tener entre dos y cien caracteres")
+    @NotBlank(message = ValidationMessages.CITY_NAME_NOT_BLANK)
+    @Size(min = 2, max = 100, message = ValidationMessages.CITY_NAME_SIZE_MIN_2)
     @Pattern(
         regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$",
-        message = "El nombre de la ciudad solo puede contener letras y espacios"
+        message = ValidationMessages.CITY_NAME_PATTERN
     )
     @Column(nullable = false, length = 100)
     private String nombre;

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enums.movie.EstadoPelicula;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -30,7 +31,7 @@ public class PeliculaDisposicion implements Serializable {
 
     // SECTION: Atributos
 
-    @NotNull(message = "El estado de la película no puede estar vacío")
+    @NotNull(message = ValidationMessages.FIELD_REQUIRED)
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private EstadoPelicula estadoPelicula;
@@ -42,12 +43,12 @@ public class PeliculaDisposicion implements Serializable {
 
     @Id
     @ManyToOne
-    @NotNull(message = "La película no puede estar vacía")
+    @NotNull(message = ValidationMessages.SHOWING_MOVIE_NOT_NULL)
     private Pelicula pelicula;
 
     @Id
     @ManyToOne
-    @NotNull(message = "La ciudad no puede estar vacía")
+    @NotNull(message = ValidationMessages.THEATER_CITY_NOT_NULL)
     private Ciudad ciudad;
     
     // SECTION: Constructor

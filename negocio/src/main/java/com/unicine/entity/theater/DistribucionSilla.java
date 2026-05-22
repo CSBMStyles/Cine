@@ -16,6 +16,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,22 +36,22 @@ public class DistribucionSilla implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotBlank(message = "El esquema no puede estar en blanco")
+    @NotBlank(message = ValidationMessages.SEAT_SCHEMA_NOT_BLANK)
     @Column(nullable = false, columnDefinition = "json")
     private String esquema;
 
-    @NotNull(message = "El total de sillas no puede estar vacío")
-    @PositiveOrZero(message = "El total de sillas debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SEAT_TOTAL_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SEAT_TOTAL_POSITIVE)
     @Column(nullable = false)
     private Integer totalSillas;
 
-    @NotNull(message = "El número de filas no puede estar vacío")
-    @PositiveOrZero(message = "El número de filas debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SEAT_ROWS_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SEAT_ROWS_POSITIVE)
     @Column(nullable = false)
     private Integer filas;
 
-    @NotNull(message = "El número de columnas no puede estar vacío")
-    @PositiveOrZero(message = "El número de columnas debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SEAT_COLUMNS_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SEAT_COLUMNS_POSITIVE)
     @Column(nullable = false)
     private Integer columnas;
 

@@ -15,6 +15,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 
 @Entity
@@ -33,25 +34,25 @@ public class Entrada implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El precio no puede estar vacío")
-    @PositiveOrZero(message = "El precio debe ser un número positivo")
+    @NotNull(message = ValidationMessages.TICKET_PRICE_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.TICKET_PRICE_POSITIVE)
     @Column(nullable = false)
     private Double precio;
 
-    @NotNull(message = "La fila no puede estar vacía")
-    @Positive(message = "La fila debe ser un número positivo")
+    @NotNull(message = ValidationMessages.TICKET_ROW_NOT_NULL)
+    @Positive(message = ValidationMessages.TICKET_ROW_POSITIVE)
     @Column(nullable = false)
     private Integer fila;
 
-    @NotNull(message = "La columna no puede estar vacía")
-    @Positive(message = "La columna debe ser un número positivo")
+    @NotNull(message = ValidationMessages.TICKET_COLUMN_NOT_NULL)
+    @Positive(message = ValidationMessages.TICKET_COLUMN_POSITIVE)
     @Column(nullable = false)
     private Integer columna;
 
     // SECTION: Relaciones
 
     @ManyToOne
-    @NotNull(message = "La compra no puede estar vacía")
+    @NotNull(message = ValidationMessages.TICKET_PURCHASE_NOT_NULL)
     private Compra compra;
     
     // SECTION: Constructor

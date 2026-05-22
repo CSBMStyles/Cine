@@ -14,6 +14,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 
 @Entity
@@ -35,24 +36,24 @@ public class FuncionEsquema implements Serializable {
     @Column(nullable = true, columnDefinition = "json")
     private String esquemaTemporal;
 
-    @NotNull(message = "El número de sillas ocupadas no puede estar vacío")
-    @PositiveOrZero(message = "El número de sillas ocupadas debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SHOWING_SCHEMA_OCCUPIED_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SHOWING_SCHEMA_OCCUPIED_POSITIVE)
     @Column(nullable = false)
     private Integer ocupadas;
 
-    @NotNull(message = "El número de sillas disponibles no puede estar vacío")
-    @PositiveOrZero(message = "El número de sillas disponibles debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SHOWING_SCHEMA_AVAILABLE_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SHOWING_SCHEMA_AVAILABLE_POSITIVE)
     @Column(nullable = false)
     private Integer disponibles;
 
-    @NotNull(message = "El número de sillas en mantenimiento no puede estar vacío")
-    @PositiveOrZero(message = "El número de sillas en mantenimiento debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.SHOWING_SCHEMA_MAINTENANCE_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.SHOWING_SCHEMA_MAINTENANCE_POSITIVE)
     @Column(nullable = false)
     private Integer mantenimiento;
 
     // SECTION: Relaciones
 
-    @NotNull(message = "La función no puede estar vacía")
+    @NotNull(message = ValidationMessages.SHOWING_SCHEMA_SHOWING_NOT_NULL)
     @OneToOne
     private Funcion funcion;
     

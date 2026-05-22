@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import com.unicine.entity.movie.composed.ColeccionCompuesta;
 import com.unicine.enums.movie.EstadoPropio;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -31,8 +32,8 @@ public class Coleccion implements Serializable {
 
     // SECTION: Atributos
 
-    @Max(value = 5, message = "La puntuación no puede ser mayor a cinco")
-    @Positive(message = "La puntuación debe ser un número positivo")
+    @Max(value = 5, message = ValidationMessages.MOVIE_RATING_MAX_5)
+    @Positive(message = ValidationMessages.MOVIE_RATING_POSITIVE)
     @Column(nullable = true)
     private Double puntuacion;
 
@@ -44,12 +45,12 @@ public class Coleccion implements Serializable {
 
     @Id
     @ManyToOne
-    @NotNull(message = "El cliente no puede estar vacío")
+    @NotNull(message = ValidationMessages.CLIENT_COUPON_CLIENT_NOT_NULL)
     private Cliente cliente;
 
     @Id
     @ManyToOne
-    @NotNull(message = "La película no puede estar vacía")
+    @NotNull(message = ValidationMessages.SHOWING_MOVIE_NOT_NULL)
     private Pelicula pelicula;
 
     // SECTION: Constructor

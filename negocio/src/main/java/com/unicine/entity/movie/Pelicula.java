@@ -35,6 +35,7 @@ import org.hibernate.annotations.FetchMode;
 import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
 @Getter
@@ -52,7 +53,7 @@ public class Pelicula implements Serializable, Imagenable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El estado no puede estar vacío")
+    @NotNull(message = ValidationMessages.FIELD_REQUIRED)
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private EstadoPelicula estado;
@@ -61,33 +62,33 @@ public class Pelicula implements Serializable, Imagenable {
     @Fetch(FetchMode.SELECT)
     private List<GeneroPelicula> generos;
 
-    @NotBlank(message = "El nombre no puede estar en blanco")
-    @Size(max = 100, message = "El nombre no puede tener más de cien caracteres")
+    @NotBlank(message = ValidationMessages.MOVIE_NAME_NOT_BLANK)
+    @Size(max = 100, message = ValidationMessages.MOVIE_NAME_SIZE_MAX_100)
     @Column(nullable = false, length = 100)
     private String nombre;
 
     @ElementCollection
     @Column(nullable = true)
-    private Map<@Size(max = 150, message = "El rol del actor no puede tener mas de ciento cincuenta caracteres") String, 
-                @Size(max = 150, message = "El nombre del actor no puede tener mas de ciento cincuenta caracteres") String> repartos;
+    private Map<@Size(max = 150, message = ValidationMessages.MOVIE_ACTOR_ROLE_SIZE_MAX_150) String,
+                @Size(max = 150, message = ValidationMessages.MOVIE_ACTOR_NAME_SIZE_MAX_150) String> repartos;
 
     @Lob
-    @NotNull(message = "La sinopsis no puede estar vacía")
+    @NotNull(message = ValidationMessages.MOVIE_SYNOPSIS_NOT_BLANK)
     @Column(nullable = false, columnDefinition = "text")
     private String sinopsis;
 
-    @Size(max = 200, message = "La url del trailer no puede tener más de doscientos caracteres")
+    @Size(max = 200, message = ValidationMessages.MOVIE_TRAILER_URL_SIZE_MAX_200)
     @Column(nullable = true, length = 200)
     private String urlTrailer;
 
-    @NotNull(message = "La puntuación no puede estar vacía")
-    @Max(value = 5, message = "La puntuación no puede ser mayor a cinco")
-    @Positive(message = "La puntuación debe ser un número positivo")
+    @NotNull(message = ValidationMessages.VALUE_NOT_NULL)
+    @Max(value = 5, message = ValidationMessages.MOVIE_RATING_MAX_5)
+    @Positive(message = ValidationMessages.MOVIE_RATING_POSITIVE)
     @Column(nullable = false)
     private Double puntuacion;
 
-    @Max(value = 30, message = "La restricción de edad no puede ser mayor a treinta")
-    @Positive(message = "La restricción de edad debe ser un número positivo")
+    @Max(value = 30, message = ValidationMessages.MOVIE_AGE_RESTRICTION_MAX_30)
+    @Positive(message = ValidationMessages.MOVIE_AGE_RESTRICTION_POSITIVE)
     @Column(nullable = true)
     private Integer restriccionEdad;
 

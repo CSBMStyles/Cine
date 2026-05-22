@@ -17,6 +17,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 
 @Entity
@@ -35,19 +36,19 @@ public class CuponCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El estado no puede estar vacío")
+    @NotNull(message = ValidationMessages.CLIENT_COUPON_STATUS_NOT_NULL)
     @Column(nullable = false)
     private Boolean estado;
 
     // SECTION: Relaciones
 
     @ManyToOne
-    @NotNull(message = "El cupón no puede estar vacío")
+    @NotNull(message = ValidationMessages.CLIENT_COUPON_COUPON_NOT_NULL)
     @JoinColumn(nullable = false)
     private Cupon cupon;
 
     @ManyToOne
-    @NotNull(message = "El cliente no puede estar vacío")
+    @NotNull(message = ValidationMessages.CLIENT_COUPON_CLIENT_NOT_NULL)
     @JoinColumn(nullable = false)
     private Cliente cliente;
 

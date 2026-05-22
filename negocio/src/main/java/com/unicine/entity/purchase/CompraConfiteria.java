@@ -16,6 +16,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 
 @Entity
@@ -34,25 +35,26 @@ public class CompraConfiteria implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El precio no puede estar vacío")
-    @PositiveOrZero(message = "El precio debe ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.PRICE_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.PRICE_POSITIVE_OR_ZERO)
     @Column(nullable = false)
     private Double precio;
 
-    @NotNull(message = "Las unidades no pueden estar vacías")
-    @PositiveOrZero(message = "Las unidades deben ser un número positivo o cero")
+    @NotNull(message = ValidationMessages.UNITS_NOT_NULL)
+    @PositiveOrZero(message = ValidationMessages.UNITS_POSITIVE_OR_ZERO)
     @Column(nullable = false)
     private Integer unidades;
 
     // SECTION: Relaciones
 
     @ManyToOne
-    @NotNull(message = "La compra no puede estar vacía")
+    // TODO: No hay constante específica para ValidationMessages.TICKET_PURCHASE_NOT_NULL en CompraConfiteria
+    @NotNull(message = ValidationMessages.TICKET_PURCHASE_NOT_NULL)
     @JoinColumn(nullable = false)
     private Compra compra;
 
     @ManyToOne
-    @NotNull(message = "La confitería no puede estar vacía")
+    @NotNull(message = ValidationMessages.FIELD_REQUIRED)
     @JoinColumn(nullable = false)
     private Confiteria confiteria;
     
