@@ -3,7 +3,7 @@
 > **Fase 1 - Excepciones Centralizadas**
 > **Tareas:** 1.1 (Auditoria), 1.1.1 (Refactor entidades), 1.2 (Catalogo centralizado)
 > **Fecha:** Mayo 2026
-> **Estado:** En progreso (Tarea 1.2 en curso)
+> **Estado:** Completado (Tarea 1.2 + Catalogo de Exitos)
 
 ---
 
@@ -25,14 +25,20 @@
   - Actualizados 15 archivos de test
   - Constructor `DistribucionSilla` ahora requiere `totalSillas`, `filas`, `columnas`
 
-### Parte C - Catalogo Centralizado (Completado)
-- **Commit:** `0340c5e` (entidades), commit siguiente (servicios)
+### Parte C - Catalogo Centralizado Errores (Completado)
+- **Commits:** `0340c5e`, `5e5f65d`
 - **Cambios:**
   - Creada clase `ValidationMessages` con constantes `static final String` para anotaciones Bean Validation
   - Creado enum `ErrorCatalog` con codigos por dominio (VAL###, ENT###, DUP###, AUTH###, REG###, etc.)
   - Migradas todas las entidades a usar `ValidationMessages` (18 archivos)
   - Migrados todos los servicios para usar `ErrorCatalog` en excepciones (14 archivos)
   - HTTP status desacoplado del enum (se asignara en `@ControllerAdvice`)
+
+### Parte D - Catalogo Centralizado Exitos (Completado)
+- **Cambios:**
+  - Creado enum `SuccessCatalog` con codigos por dominio (SUC###)
+  - 40+ mensajes de exito organizados por categoria (Creacion, Actualizacion, Eliminacion, Auth, Compras, etc.)
+  - Soporta formateo parametrizado `{0}`, `{1}` para mensajes dinamicos
 
 ---
 
@@ -300,6 +306,106 @@ Errores de comunicacion con servicios externos (ImageKit).
 
 ---
 
+## 8. Catalogo de Exitos (SuccessCatalog)
+
+Mensajes de exito para operaciones de negocio, organizados por categoria.
+
+### 8.1 Creacion / Registro (SUC001-SUC015)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC001 | `Registro creado correctamente` | Generico para cualquier entidad |
+| SUC002 | `Administrador registrado correctamente` | AdministradorServicio |
+| SUC003 | `Cliente registrado correctamente` | ClienteServicio |
+| SUC004 | `Administrador de teatro registrado correctamente` | AdministradorTeatroServicio |
+| SUC005 | `Pelicula registrada correctamente` | PeliculaServicio |
+| SUC006 | `Teatro registrado correctamente` | TeatroServicio |
+| SUC007 | `Sala registrada correctamente` | SalaServicio |
+| SUC008 | `Ciudad registrada correctamente` | CiudadServicio |
+| SUC009 | `Funcion registrada correctamente` | FuncionServicio |
+| SUC010 | `Horario registrado correctamente` | HorarioServicio |
+| SUC011 | `Esquema de funcion registrado correctamente` | FuncionEsquemaServicio |
+| SUC012 | `Cupon registrado correctamente` | CuponServicio |
+| SUC013 | `Confiteria registrada correctamente` | ConfiteriaServicio |
+| SUC014 | `Distribucion de sillas registrada correctamente` | DistribucionSillaServicio |
+| SUC015 | `Imagen subida correctamente` | ImagenServicio |
+
+### 8.2 Actualizacion (SUC101-SUC109)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC101 | `Registro actualizado correctamente` | Generico |
+| SUC102 | `Administrador actualizado correctamente` | AdministradorServicio |
+| SUC103 | `Cliente actualizado correctamente` | ClienteServicio |
+| SUC104 | `Contrasena actualizada correctamente` | PersonaServicio |
+| SUC105 | `Pelicula actualizada correctamente` | PeliculaServicio |
+| SUC106 | `Teatro actualizado correctamente` | TeatroServicio |
+| SUC107 | `Sala actualizada correctamente` | SalaServicio |
+| SUC108 | `Imagen actualizada correctamente` | ImagenServicio |
+| SUC109 | `Estado de la pelicula actualizado correctamente` | EstadoPeliculaServicio |
+
+### 8.3 Eliminacion (SUC201-SUC207)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC201 | `Registro eliminado correctamente` | Generico |
+| SUC202 | `Administrador eliminado correctamente` | AdministradorServicio |
+| SUC203 | `Cliente eliminado correctamente` | ClienteServicio |
+| SUC204 | `Pelicula eliminada correctamente` | PeliculaServicio |
+| SUC205 | `Teatro eliminado correctamente` | TeatroServicio |
+| SUC206 | `Sala eliminada correctamente` | SalaServicio |
+| SUC207 | `Imagen eliminada correctamente` | ImagenServicio |
+
+### 8.4 Autenticacion / Autorizacion (SUC301-SUC306)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC301 | `Inicio de sesion exitoso` | AuthenticationService |
+| SUC302 | `Cierre de sesion exitoso` | AuthenticationService |
+| SUC303 | `Token refrescado correctamente` | AuthenticationService |
+| SUC304 | `Cuenta activada correctamente` | ClienteServicio |
+| SUC305 | `Correo de recuperacion enviado correctamente` | EmailService |
+| SUC306 | `Contrasena restablecida correctamente` | PersonaServicio |
+
+### 8.5 Compras / Transacciones (SUC401-SUC405)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC401 | `Compra realizada con exito` | CompraServicio |
+| SUC402 | `Pago procesado correctamente` | CompraServicio |
+| SUC403 | `Entradas generadas correctamente` | EntradaServicio |
+| SUC404 | `Cupon aplicado correctamente` | CuponServicio |
+| SUC405 | `Descuento aplicado correctamente` | CuponServicio |
+
+### 8.6 Notificaciones / Email (SUC501-SUC503)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC501 | `Correo enviado correctamente` | EmailService |
+| SUC502 | `Notificacion enviada correctamente` | EmailService |
+| SUC503 | `Recordatorio programado correctamente` | EmailService |
+
+### 8.7 Operaciones Especificas (SUC601-SUC606)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC601 | `Pelicula agregada a la coleccion correctamente` | ColeccionServicio |
+| SUC602 | `Pelicula removida de la coleccion correctamente` | ColeccionServicio |
+| SUC603 | `Funcion asignada a la sala correctamente` | FuncionServicio |
+| SUC604 | `Disposicion de pelicula configurada correctamente` | PeliculaDisposicionServicio |
+| SUC605 | `Imagen restaurada a version anterior correctamente` | ImageKitService |
+| SUC606 | `Archivo renombrado correctamente` | ImageKitService |
+
+### 8.8 Generales (SUC901-SUC903)
+
+| Codigo | Mensaje | Uso tipico |
+|--------|---------|-----------|
+| SUC901 | `Operacion completada con exito` | Cualquier servicio |
+| SUC902 | `Solicitud procesada correctamente` | Cualquier servicio |
+| SUC903 | `Datos recuperados correctamente` | Consultas / listados |
+
+---
+
 ## Mapeo Provisional a Codigos HTTP
 
 > **Nota:** Este mapeo se implementara formalmente en la Fase 3 (Controladores REST) mediante un `@ControllerAdvice`. Ahora es solo una guia de diseno.
@@ -376,12 +482,24 @@ Excepcion lanzada
 
 6. **Validacion de contrasena fragmentada**: La contrasena tiene 5 anotaciones `@Pattern` separadas. Deberia consolidarse en un solo mensaje o usar una anotacion custom.
 
-### Recomendaciones para la Tarea 1.2 (Catalogo centralizado)
+### Recomendaciones para la Tarea 1.2 (Catalogo centralizado) ✅ IMPLEMENTADO
 
-1. Crear un enum `ErrorMessage` con codigos unicos: `ERR_ENTITY_NOT_FOUND`, `ERR_EMAIL_EXISTS`, etc.
-2. Reemplazar todos los `message = "..."` hardcodeados por referencias al enum.
-3. Cada mensaje debe tener: codigo unico, mensaje humano, categoria, y codigo HTTP provisional.
-4. Considerar soporte de i18n desde el inicio (aunque sea solo espanol por ahora).
+1. ✅ **ErrorCatalog** - Enum con codigos por dominio: `VAL###`, `ENT###`, `DUP###`, `AUTH###`, `REG###`, `EXT###`, `GEN###`
+2. ✅ **SuccessCatalog** - Enum con codigos por dominio: `SUC###` (Creacion, Actualizacion, Eliminacion, Auth, Compras, etc.)
+3. ✅ **ValidationMessages** - Constantes `static final String` para anotaciones Bean Validation
+4. ✅ Todos los mensajes hardcodeados han sido reemplazados por referencias a los catalogos
+5. ✅ HTTP status desacoplado de los catalogos (se asignara en `@ControllerAdvice`)
+6. ✅ Soporte de formateo parametrizado `{0}`, `{1}` en ambos catalogos
+7. ⏳ Soporte i18n (messages.properties) - planificado para Fase 2
+
+### Estructura final de catalogos
+
+```
+com.unicine.util.validation.catalog/
+├── ValidationMessages.java    (Constantes para @NotBlank, @Size, etc.)
+├── ErrorCatalog.java          (Enum: errores de negocio)
+└── SuccessCatalog.java        (Enum: mensajes de exito)
+```
 
 ---
 
