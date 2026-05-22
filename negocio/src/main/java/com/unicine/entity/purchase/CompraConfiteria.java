@@ -47,10 +47,12 @@ public class CompraConfiteria implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
+    @NotNull(message = "La compra no puede estar vacía")
     @JoinColumn(nullable = false)
     private Compra compra;
 
     @ManyToOne
+    @NotNull(message = "La confitería no puede estar vacía")
     @JoinColumn(nullable = false)
     private Confiteria confiteria;
     

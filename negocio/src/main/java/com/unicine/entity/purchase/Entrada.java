@@ -51,6 +51,7 @@ public class Entrada implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
+    @NotNull(message = "La compra no puede estar vacía")
     private Compra compra;
     
     // SECTION: Constructor

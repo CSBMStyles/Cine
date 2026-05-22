@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -60,7 +61,7 @@ public class Pelicula implements Serializable, Imagenable {
     @Fetch(FetchMode.SELECT)
     private List<GeneroPelicula> generos;
 
-    @NotNull(message = "El nombre no puede estar vacío")
+    @NotBlank(message = "El nombre no puede estar en blanco")
     @Size(max = 100, message = "El nombre no puede tener más de cien caracteres")
     @Column(nullable = false, length = 100)
     private String nombre;
@@ -79,6 +80,7 @@ public class Pelicula implements Serializable, Imagenable {
     @Column(nullable = true, length = 200)
     private String urlTrailer;
 
+    @NotNull(message = "La puntuación no puede estar vacía")
     @Max(value = 5, message = "La puntuación no puede ser mayor a cinco")
     @Positive(message = "La puntuación debe ser un número positivo")
     @Column(nullable = false)

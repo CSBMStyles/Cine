@@ -43,13 +43,13 @@ public class Persona {
     private String nombre;
 
     @NotBlank(message = "El apellido no puede estar en blanco")
-    @Size(max = 50, message = "El nombre no puede tener más de cincuenta caracteres")
+    @Size(max = 50, message = "El apellido no puede tener más de cincuenta caracteres")
     @Column(nullable = false, length = 50)
     private String apellido;
 
-    @NotBlank(message = "El correo no puede estar vacio")
+    @NotBlank(message = "El correo no puede estar vacío")
     @Email(message = "El correo no tiene un formato válido")
-    @Size(max = 150, message = "El correo no puede tener más de cincuenta caracteres")
+    @Size(max = 150, message = "El correo no puede tener más de ciento cincuenta caracteres")
     @Column(nullable = false, length = 150)
     private String correo;
 
@@ -58,34 +58,25 @@ public class Persona {
         message = "La contraseña no puede estar en blanco",
         groups = OnCreate.class
     )
+    @Size(min = 8, max = 200, message = "La contraseña debe tener entre ocho y doscientos caracteres", groups = OnCreate.class)
     @Pattern.List({
         @Pattern(
-            regexp = "^\\s*$|(?s).{8,}",
-            message = "La contraseña debe tener al menos ocho caracteres",
-            groups = OnCreate.class
-        ),
-        @Pattern(
-            regexp = "^\\s*$|(?s).{1,200}",
-            message = "La contraseña no puede tener más de doscientos caracteres",
-            groups = OnCreate.class
-        ),
-        @Pattern(
-            regexp = "^\\s*$|.*[A-Z].*",
+            regexp = "^(?=.*[A-Z]).+$",
             message = "La contraseña debe contener al menos una letra mayúscula",
             groups = OnCreate.class
         ),
         @Pattern(
-            regexp = "^\\s*$|.*[a-z].*",
+            regexp = "^(?=.*[a-z]).+$",
             message = "La contraseña debe contener al menos una letra minúscula",
             groups = OnCreate.class
         ),
         @Pattern(
-            regexp = "^\\s*$|.*\\d.*",
+            regexp = "^(?=.*\\d).+$",
             message = "La contraseña debe contener al menos un dígito",
             groups = OnCreate.class
         ),
         @Pattern(
-            regexp = "^\\s*$|.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*",
+            regexp = "^(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).+$",
             message = "La contraseña debe contener al menos un carácter especial",
             groups = OnCreate.class
         )

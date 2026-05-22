@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,6 +30,7 @@ public class PeliculaDisposicion implements Serializable {
 
     // SECTION: Atributos
 
+    @NotNull(message = "El estado de la película no puede estar vacío")
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private EstadoPelicula estadoPelicula;
@@ -40,10 +42,12 @@ public class PeliculaDisposicion implements Serializable {
 
     @Id
     @ManyToOne
+    @NotNull(message = "La película no puede estar vacía")
     private Pelicula pelicula;
 
     @Id
     @ManyToOne
+    @NotNull(message = "La ciudad no puede estar vacía")
     private Ciudad ciudad;
     
     // SECTION: Constructor

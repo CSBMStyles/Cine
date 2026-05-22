@@ -42,10 +42,12 @@ public class CuponCliente implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
+    @NotNull(message = "El cupón no puede estar vacío")
     @JoinColumn(nullable = false)
     private Cupon cupon;
 
     @ManyToOne
+    @NotNull(message = "El cliente no puede estar vacío")
     @JoinColumn(nullable = false)
     private Cliente cliente;
 

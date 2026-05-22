@@ -75,9 +75,11 @@ public class Compra implements Serializable {
     private CuponCliente cuponCliente;
 
     @ManyToOne
+    @NotNull(message = "El cliente no puede estar vacío")
     private Cliente cliente;
 
     @ManyToOne
+    @NotNull(message = "La función no puede estar vacía")
     private Funcion funcion;
 
     @ToString.Exclude

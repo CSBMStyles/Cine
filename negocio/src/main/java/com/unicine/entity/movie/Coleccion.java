@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,10 +44,12 @@ public class Coleccion implements Serializable {
 
     @Id
     @ManyToOne
+    @NotNull(message = "El cliente no puede estar vacío")
     private Cliente cliente;
 
     @Id
     @ManyToOne
+    @NotNull(message = "La película no puede estar vacía")
     private Pelicula pelicula;
 
     // SECTION: Constructor

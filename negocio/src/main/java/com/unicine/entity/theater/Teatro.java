@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,16 +39,7 @@ public class Teatro implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = "La dirección no puede estar vacía")
-    @Pattern.List({
-        @Pattern(
-            regexp = ".{4,}", 
-            message = "La dirección debe tener al menos cuatro caracteres"
-        ),
-        @Pattern( 
-            regexp = ".{1,100}", 
-            message = "La dirección no puede tener más de cien caracteres"
-        )
-    })
+    @Size(min = 4, max = 100, message = "La dirección debe tener entre cuatro y cien caracteres")
     @Column(nullable = false, length = 100)
     private String direccion;
 

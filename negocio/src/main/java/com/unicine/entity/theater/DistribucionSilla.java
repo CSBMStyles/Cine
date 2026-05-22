@@ -2,6 +2,7 @@ package com.unicine.entity.theater;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.persistence.CascadeType;
@@ -34,19 +35,22 @@ public class DistribucionSilla implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @NotNull(message = "El esquema no puede estar vacio")
+    @NotBlank(message = "El esquema no puede estar en blanco")
     @Column(nullable = false, columnDefinition = "json")
     private String esquema;
 
-    @PositiveOrZero(message = "El total de sillas debe ser un número positivo")
+    @NotNull(message = "El total de sillas no puede estar vacío")
+    @PositiveOrZero(message = "El total de sillas debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer totalSillas;
 
-    @PositiveOrZero(message = "El número de filas debe ser un número positivo")
+    @NotNull(message = "El número de filas no puede estar vacío")
+    @PositiveOrZero(message = "El número de filas debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer filas;
 
-    @PositiveOrZero(message = "El número de columnas debe ser un número positivo")
+    @NotNull(message = "El número de columnas no puede estar vacío")
+    @PositiveOrZero(message = "El número de columnas debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer columnas;
 

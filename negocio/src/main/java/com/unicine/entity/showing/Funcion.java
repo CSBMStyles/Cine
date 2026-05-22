@@ -43,7 +43,8 @@ public class Funcion implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
-    @PositiveOrZero(message = "El precio debe ser un número positivo")
+    @NotNull(message = "El precio no puede estar vacío")
+    @PositiveOrZero(message = "El precio debe ser un número positivo o cero")
     @Column(nullable = false)
     private Double precio;
 

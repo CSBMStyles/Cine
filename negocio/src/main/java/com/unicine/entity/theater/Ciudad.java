@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,20 +37,11 @@ public class Ciudad implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = "El nombre no puede estar en blanco")
-    @Pattern.List({
-        @Pattern(
-            regexp = ".{2,}", 
-            message = "El nombre de la ciudad no debe ser menor a dos caracteres"
-        ),
-        @Pattern( 
-            regexp = ".{1,100}", 
-            message = "El nombre de la ciudad no debe pasar los cien caracteres"
-        ),
-        @Pattern(
-            regexp = "^[a-zA-Z ]+$",
-            message = "El nombre de la ciudad solo puede contener letras y espacios"
-        )
-    })
+    @Size(min = 2, max = 100, message = "El nombre debe tener entre dos y cien caracteres")
+    @Pattern(
+        regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$",
+        message = "El nombre de la ciudad solo puede contener letras y espacios"
+    )
     @Column(nullable = false, length = 100)
     private String nombre;
 

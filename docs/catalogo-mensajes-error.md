@@ -373,4 +373,69 @@ Excepcion lanzada
 
 ---
 
+## Hallazgos Adicionales (Post-Analisis Profundo)
+
+> Este analisis adicional fue realizado tras una revision exhaustiva del codigo fuente por un agente especializado.
+
+### Problemas de Jerarquia / Solapamiento
+
+| Entidad | Campo | Problema | Detalle |
+|---------|-------|----------|---------|
+| **Persona** | `password` | `@NotBlank` + `@Pattern(^\s*$\|...)` | Los `@Pattern` usan alternancia que **permite explicitamente strings vacios o solo espacios**, por lo que `@NotBlank` es el unico que realmente los rechaza. Los patterns de longitud permiten espacios en blanco (ej: `"        "` pasa `(?s).{8,}`). |
+| **Ciudad** | `nombre` | `@NotBlank` + `Pattern.{2,}` | `@NotBlank` ya rechaza vacio; el primer `Pattern` verifica longitud minima 2, pero no garantiza letras (eso lo hace el 3er pattern). Los dos primeros patterns podrian reemplazarse por `@Size(min=2, max=100)`. |
+| **Teatro** | `direccion` | `@NotBlank` + `Pattern.{4,}` | Similar al anterior: `@NotBlank` cubre el vacio; `.{4,}` permite `"    "` (4 espacios). Deberia usarse `@Size(min=4, max=100)`. |
+
+### Inconsistencias de Mensajes vs Validaciones
+
+| Entidad | Campo | Anotacion | Mensaje Actual | Problema |
+|---------|-------|-----------|----------------|----------|
+| **Persona** | `apellido` | `@Size(max=50)` | `"El nombre no puede tener mas de cincuenta caracteres"` | **Mensaje copiado del campo `nombre`**; deberia decir "apellido". |
+| **Persona** | `correo` | `@Size(max=150)` | `"El correo no puede tener mas de cincuenta caracteres"` | `@Size` permite 150, pero mensaje dice **cincuenta**; ademas `@Column(length=150)`. |
+| **Cliente** | `fechaNacimiento` | `@NotNull` | `"El apellido no puede estar vacio"` | **Mensaje copiado de `apellido`**; deberia referirse a la **fecha de nacimiento**. |
+| **FuncionEsquema** | `funcion` | `@NotNull` | `"La funcion no estar vacia"` | **Falta el verbo "puede"**. |
+
+### Validaciones Insuficientes (Falta @NotNull/@NotBlank)
+
+| Entidad | Campo | Falta | Impacto |
+|---------|-------|-------|---------|
+| **Pelicula** | `nombre` | `@NotBlank` | `@NotNull` permite `""` (string vacio). |
+| **Pelicula** | `puntuacion` | `@NotNull` | `@Positive` no rechaza `null`. |
+| **DistribucionSilla** | `totalSillas`, `numeroFilas`, `numeroColumnas` | `@NotNull` | `@PositiveOrZero` acepta `null`. |
+| **Funcion** | `precio` | `@NotNull` | `@PositiveOrZero` acepta `null`. |
+| **FuncionEsquema** | `sillasOcupadas`, `sillasDisponibles`, `sillasMantenimiento` | `@NotNull` | `@PositiveOrZero` acepta `null`. |
+| **Coleccion** | `cliente`, `pelicula` | `@NotNull` | Parte de `@IdClass`; falta nulabilidad en BV. |
+| **PeliculaDisposicion** | `estadoPelicula`, `pelicula`, `ciudad` | `@NotNull` | `@Column(nullable=false)` sin BV. |
+| **CuponCliente** | `cupon`, `cliente` | `@NotNull` | `@JoinColumn(nullable=false)` sin BV. |
+| **Compra** | `cliente`, `funcion` | `@NotNull` | Relacion obligatoria sin BV. |
+| **Entrada** | `compra` | `@NotNull` | Relacion obligatoria sin BV. |
+| **CompraConfiteria** | `compra`, `confiteria` | `@NotNull` | `@JoinColumn(nullable=false)` sin BV. |
+| **Imagen** | `codigo`, `url` | `@NotBlank` | Clave primaria String sin validacion de nulidad; `@Column(nullable=false)` sin BV. |
+
+### Errores en Patterns / RegExp
+
+| Entidad | Campo | Pattern | Problema |
+|---------|-------|---------|----------|
+| **Persona** | `password` | `^\s*$\|(?s).{8,}` | Permite cadenas de 8 espacios en blanco como "contrasena valida". |
+| **Persona** | `cedula` | `@Positive` (entidad) vs `@Pattern("^[1-9]\\d*$")` (validator) | La entidad acepta `0` (`@Positive` es > 0), pero el validator rechaza `0`. **Divergencia entre entidad y servicio**. |
+| **Cliente** | `telefonos` | `^[0-9]+$` + `^.{10}$` | La entidad no tiene `@NotNull` sobre la lista, por lo que `null` es valido. |
+
+### Problemas con *AtributoValidator
+
+| Validator | Problema |
+|-----------|----------|
+| **SalaAtributoValidator** | **Copy-paste de Ciudad**: mensajes dicen "El codigo de la **ciudad**..." y "El nombre de la **ciudad**..." en vez de **sala**. |
+| **TeatroAtributoValidator** | Solo `@Pattern`; falta `@NotBlank` en `String codigo`. |
+| **DistribucionAtributoValidator** | Solo `@Pattern`; falta `@NotBlank` en `String codigo`. |
+| **PersonaAtributoValidator** | `cedula` es `String`, pero en entidad es `Integer` (divergencia). |
+| **PeliculaAtributoValidator** | `codigo` sin `@NotNull`, `nombre` sin `@NotBlank`. |
+
+### Normalizacion de Mensajes (Inconsistencias Textuales)
+
+- **Tildes inconsistentes**: `"El correo no puede estar vacio"` (sin tilde) vs `"La contrasena no puede estar en blanco"` (con tilde).
+- **Mayusculas inconsistentes**: `"El nombre no puede estar en blanco"` vs `"La direccion no puede estar vacia"`.
+- **Numeros escritos alternados**: Unos mensajes usan numeros (`50`, `100`) y otros letras (`cincuenta`, `cien`, `doscientos`). Ej: `@Size(max=150)` con mensaje `"mas de cincuenta"` (no coincide con la anotacion).
+
+---
+
 *Documento generado automaticamente como parte de la Tarea 1.1 del Proyecto UniCine.*
+*Actualizado con hallazgos adicionales del analisis profundo.*

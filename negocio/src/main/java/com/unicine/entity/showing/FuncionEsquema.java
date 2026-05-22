@@ -35,21 +35,24 @@ public class FuncionEsquema implements Serializable {
     @Column(nullable = true, columnDefinition = "json")
     private String esquemaTemporal;
 
+    @NotNull(message = "El número de sillas ocupadas no puede estar vacío")
     @PositiveOrZero(message = "El número de sillas ocupadas debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer ocupadas;
 
+    @NotNull(message = "El número de sillas disponibles no puede estar vacío")
     @PositiveOrZero(message = "El número de sillas disponibles debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer disponibles;
 
+    @NotNull(message = "El número de sillas en mantenimiento no puede estar vacío")
     @PositiveOrZero(message = "El número de sillas en mantenimiento debe ser un número positivo o cero")
     @Column(nullable = false)
     private Integer mantenimiento;
 
     // SECTION: Relaciones
 
-    @NotNull(message = "La función no estar vacía")
+    @NotNull(message = "La función no puede estar vacía")
     @OneToOne
     private Funcion funcion;
     

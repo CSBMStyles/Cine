@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,10 +29,12 @@ public class Imagen implements Serializable {
     // SECTION: Atributos
 
     @Id
+    @NotBlank(message = "El código no puede estar en blanco")
     @Column(name = "id", length = 50)
     @EqualsAndHashCode.Include
     private String codigo;
 
+    @NotBlank(message = "La URL no puede estar en blanco")
     @Column(nullable = false, length = 200)
     private String url;
 

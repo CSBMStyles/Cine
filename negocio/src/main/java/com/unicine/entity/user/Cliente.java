@@ -41,7 +41,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     @Column(nullable = false)
     private Boolean estado;
 
-    @NotNull(message = "El apellido no puede estar vacío")
+    @NotNull(message = "La fecha de nacimiento no puede estar vacía")
     @Past(message = "La fecha de nacimiento debe estar en el pasado")
     @Column(nullable = false)
     private LocalDate fechaNacimiento;
