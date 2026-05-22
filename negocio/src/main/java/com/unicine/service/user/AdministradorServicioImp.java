@@ -16,6 +16,7 @@ import com.unicine.util.validation.group.OnUpdate;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -46,11 +47,11 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> administrador = administradorRepo.findByCorreo(correo);
 
         if (administrador.isEmpty()) {
-            throw new Exception("El correo no existe");
+            throw new Exception(ErrorCatalog.AUTH002.getMessage());
         }
 
         if (!encriptador.checkPassword(password, administrador.get().getPassword())) {
-            throw new Exception("Los datos de autenticación son incorrectos");
+            throw new Exception(ErrorCatalog.AUTH003.getMessage());
         }
 
         return administrador.get();
@@ -64,7 +65,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     private void validarExiste(Optional<Administrador> administrador) throws Exception {
 
         if (administrador.isEmpty()) {
-            throw new Exception("El administrador no existe");
+            throw new Exception(ErrorCatalog.ENT001.getMessage());
         }
     }
 
@@ -78,7 +79,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new Exception("Esta cedula ya esta registrada");
+            throw new Exception(ErrorCatalog.DUP001.getMessage());
         }
     }
 
@@ -92,7 +93,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException("Este correo ya esta registrado");
+            throw new RuntimeException(ErrorCatalog.DUP002.getMessage());
         }
     }
 
@@ -107,7 +108,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException("Este correo ya esta registrado");
+            throw new RuntimeException(ErrorCatalog.DUP002.getMessage());
         }
     }
 
@@ -191,12 +192,12 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         
     // 2. Verificar que el password actual es correcto
     if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
-        throw new Exception("La contraseña actual es incorrecta");
+        throw new Exception(ErrorCatalog.AUTH004.getMessage());
     }
 
     // 3. Verificar que el nuevo password sea diferente al actual
     if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
-        throw new Exception("La nueva contraseña no puede ser igual a la actual");
+        throw new Exception(ErrorCatalog.AUTH005.getMessage());
     }
 
     administrador.setPassword(passwordNuevo);

@@ -14,6 +14,7 @@ import com.unicine.repository.theater.SalaRepo;
 import com.unicine.util.initializer.SalaPrecioInit;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -49,7 +50,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(Optional<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new Exception("El sala no existe");
+            throw new Exception(ErrorCatalog.ENT007.getMessage());
         }
     }
 
@@ -61,7 +62,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(List<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new Exception("No existe salas con ese nombre");
+            throw new Exception(ErrorCatalog.ENT008.getMessage());
         }
     }
 

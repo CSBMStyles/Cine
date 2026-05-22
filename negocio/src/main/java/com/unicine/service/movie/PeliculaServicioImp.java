@@ -12,6 +12,7 @@ import com.unicine.entity.movie.Pelicula;
 import com.unicine.repository.movie.PeliculaRepo;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -34,7 +35,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private void validarExiste(Optional<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
-            throw new Exception("La pelicula no existe");
+            throw new Exception(ErrorCatalog.ENT009.getMessage());
         }
     }
 
@@ -45,7 +46,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private void validarExiste(List<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
-            throw new Exception("No existe peliculas con ese nombre");
+            throw new Exception(ErrorCatalog.ENT010.getMessage());
         }
     }
 
@@ -58,7 +59,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         Optional<Pelicula> existe = peliculaRepo.obtenerPeliculaNombre(pelicula.getNombre());
        
         if (existe.isPresent()) {
-            throw new RuntimeException("La pelicula ya existe");
+            throw new RuntimeException(ErrorCatalog.DUP003.getMessage());
         }
     }
 
@@ -71,7 +72,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         Optional<Pelicula> existe = peliculaRepo.obtenerNombreExcluido(pelicula.getNombre(), pelicula.getCodigo());
        
         if (existe.isPresent()) {
-            throw new RuntimeException("El nombre que esta ingresando ya existe");
+            throw new RuntimeException(ErrorCatalog.DUP004.getMessage());
         }
     }
 

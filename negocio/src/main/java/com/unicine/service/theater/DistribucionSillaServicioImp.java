@@ -14,6 +14,7 @@ import com.unicine.repository.theater.DistribucionSillaRepo;
 
 import jakarta.validation.Valid;
 import com.google.gson.Gson;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -36,7 +37,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     private void validarExiste(Optional<DistribucionSilla> distribucion) throws Exception {
 
         if (distribucion.isEmpty()) {
-            throw new Exception("La distribucion de sillas no existe");
+            throw new Exception(ErrorCatalog.ENT012.getMessage());
         }
     }
 

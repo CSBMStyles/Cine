@@ -18,6 +18,7 @@ import com.unicine.util.validation.group.OnUpdate;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -48,11 +49,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> cliente = clienteRepo.findByCorreo(correo);
 
         if (cliente.isEmpty()) {
-            throw new Exception("El correo no existe");
+            throw new Exception(ErrorCatalog.AUTH002.getMessage());
         }
 
         if (!encriptador.checkPassword(password, cliente.get().getPassword())) {
-            throw new Exception("Los datos de autenticación son incorrectos");
+            throw new Exception(ErrorCatalog.AUTH003.getMessage());
         }
 
         return cliente.get();
@@ -66,7 +67,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     private void validarExiste(Optional<Cliente> cliente) throws Exception {
 
         if (cliente.isEmpty()) {
-            throw new Exception("El cliente no existe");
+            throw new Exception(ErrorCatalog.ENT003.getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new Exception("Esta cedula ya esta registrada");
+            throw new Exception(ErrorCatalog.DUP001.getMessage());
         }
     }
 
@@ -94,7 +95,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException("Este correo ya esta registrado");
+            throw new RuntimeException(ErrorCatalog.DUP002.getMessage());
         }
     }
 
@@ -108,7 +109,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException("Este correo ya esta registrado");
+            throw new RuntimeException(ErrorCatalog.DUP002.getMessage());
         }
     }
 
@@ -123,7 +124,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         int edad = Period.between(fechaNacimiento, fechaActual).getYears();
 
         if (edad <= 18) {
-            throw new Exception("El cliente debe ser mayor de edad para registrarse");
+            throw new Exception(ErrorCatalog.REG001.getMessage());
         }
     }
 
@@ -134,7 +135,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     public void validarEstado(Cliente cliente) throws Exception {
 
         if (!cliente.getEstado()) {
-            throw new Exception("El cliente no esta activo, debe activarla con el enlace que fue enviado a su correo");
+            throw new Exception(ErrorCatalog.AUTH006.getMessage());
         }
     }
 
@@ -218,11 +219,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     public Cliente cambiarPassword(@Validated(OnCreate.class) Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
 
         if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
-            throw new Exception("La contraseña actual es incorrecta");
+            throw new Exception(ErrorCatalog.AUTH004.getMessage());
         }
 
         if (encriptador.checkPassword(passwordNuevo, cliente.getPassword())) {
-            throw new Exception("La nueva contraseña no puede ser igual a la actual");
+            throw new Exception(ErrorCatalog.AUTH005.getMessage());
         }
 
         cliente.setPassword(passwordNuevo);

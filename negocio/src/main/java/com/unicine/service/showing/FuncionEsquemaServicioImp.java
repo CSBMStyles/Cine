@@ -17,6 +17,7 @@ import com.unicine.repository.theater.DistribucionSillaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -44,7 +45,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     private void validarExiste(Optional<FuncionEsquema> funcionEsquema) throws Exception {
 
         if (funcionEsquema.isEmpty()) {
-            throw new Exception("El esquema de la funcion no existe");
+            throw new Exception(ErrorCatalog.ENT014.getMessage());
         }
     }
 

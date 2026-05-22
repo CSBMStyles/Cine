@@ -23,6 +23,7 @@ import io.imagekit.sdk.models.results.ResultFileVersionDetails;
 import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -51,7 +52,7 @@ public class ImagenServicioImp implements ImagenServicio {
     private void validarExiste(Optional<Imagen> imagen) throws Exception {
 
         if (imagen.isEmpty()) {
-            throw new Exception("La imagen no existe");
+            throw new Exception(ErrorCatalog.ENT020.getMessage());
         }
     }
 
@@ -64,7 +65,7 @@ public class ImagenServicioImp implements ImagenServicio {
             Optional<Imagen> imagenRelacion = imagenRepo.findByPersona(persona.getCedula());
             
             if (imagenRelacion.isPresent()) {
-                throw new Exception("La persona ya tiene una imagen, deberia utilizar el metodo actualizar");
+                throw new Exception(ErrorCatalog.DUP007.getMessage());
             }
         }  
     }

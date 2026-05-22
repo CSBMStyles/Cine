@@ -20,6 +20,7 @@ import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -78,7 +79,7 @@ public class HorarioServicioImp implements HorarioServicio {
     private void validarExiste(Optional<Horario> horario) throws Exception {
 
         if (horario.isEmpty()) {
-            throw new Exception("El horario no existe");
+            throw new Exception(ErrorCatalog.ENT015.getMessage());
         }
     }
 

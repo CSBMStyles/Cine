@@ -17,6 +17,7 @@ import com.unicine.entity.theater.Sala;
 import com.unicine.repository.showing.FuncionRepo;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -69,7 +70,7 @@ public class FuncionServicioImp implements FuncionServicio {
     private void validarExiste(Optional<Funcion> funcion) throws Exception {
 
         if (funcion.isEmpty()) {
-            throw new Exception("La funcion no existe");
+            throw new Exception(ErrorCatalog.ENT013.getMessage());
         }
     }
 

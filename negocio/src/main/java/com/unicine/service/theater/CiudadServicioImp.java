@@ -12,6 +12,7 @@ import com.unicine.entity.theater.Ciudad;
 import com.unicine.repository.theater.CiudadRepo;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -34,7 +35,7 @@ public class CiudadServicioImp implements CiudadServicio {
     private void validarExiste(Optional<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
-            throw new Exception("No existe ciudad con el codigo proporcionado");
+            throw new Exception(ErrorCatalog.ENT004.getMessage());
         }
     }
 
@@ -46,7 +47,7 @@ public class CiudadServicioImp implements CiudadServicio {
     private void validarExiste(List<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
-            throw new Exception("No existe ciudades con ese nombre");
+            throw new Exception(ErrorCatalog.ENT005.getMessage());
         }
     }
 

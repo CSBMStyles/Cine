@@ -12,6 +12,7 @@ import com.unicine.entity.theater.Teatro;
 import com.unicine.repository.theater.TeatroRepo;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -34,7 +35,7 @@ public class TeatroServicioImp implements TeatroServicio {
     private void validarExiste(Optional<Teatro> teatro) throws Exception {
 
         if (teatro.isEmpty()) {
-            throw new Exception("El teatro no existe");
+            throw new Exception(ErrorCatalog.ENT006.getMessage());
         }
     }
 

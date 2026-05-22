@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.unicine.entity.user.Persona;
 
 import java.util.List;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 public class AuthenticationService {
@@ -34,6 +35,6 @@ public class AuthenticationService {
             }
         }
 
-        throw new Exception("Credenciales inválidas");
+        throw new Exception(ErrorCatalog.AUTH001.getMessage());
     }
 }

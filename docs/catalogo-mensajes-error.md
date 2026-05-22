@@ -25,11 +25,13 @@
   - Actualizados 15 archivos de test
   - Constructor `DistribucionSilla` ahora requiere `totalSillas`, `filas`, `columnas`
 
-### Parte C - Catalogo Centralizado (En Progreso)
-- **Cambios actuales:**
+### Parte C - Catalogo Centralizado (Completado)
+- **Commit:** `0340c5e` (entidades), commit siguiente (servicios)
+- **Cambios:**
   - Creada clase `ValidationMessages` con constantes `static final String` para anotaciones Bean Validation
-  - Creado enum `ErrorCatalog` con codigos por dominio (VAL###, ENT###, DUP###, AUTH###, etc.)
+  - Creado enum `ErrorCatalog` con codigos por dominio (VAL###, ENT###, DUP###, AUTH###, REG###, etc.)
   - Migradas todas las entidades a usar `ValidationMessages` (18 archivos)
+  - Migrados todos los servicios para usar `ErrorCatalog` en excepciones (14 archivos)
   - HTTP status desacoplado del enum (se asignara en `@ControllerAdvice`)
 
 ---

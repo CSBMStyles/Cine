@@ -15,6 +15,7 @@ import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
 
 import jakarta.validation.Valid;
+import com.unicine.util.validation.catalog.ErrorCatalog;
 
 @Service
 @Validated
@@ -54,7 +55,7 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
     private void validarExiste(Optional<PeliculaDisposicion> peliculaDisposicion) throws Exception {
 
         if (peliculaDisposicion.isEmpty()) {
-            throw new Exception("La disposicion de pelicula no existe");
+            throw new Exception(ErrorCatalog.ENT011.getMessage());
         }
     }
 
