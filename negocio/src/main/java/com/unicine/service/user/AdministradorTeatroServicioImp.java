@@ -17,6 +17,9 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
+import com.unicine.exception.ValidationException;
+import com.unicine.exception.AuthenticationException;
 
 @Service
 @Validated
@@ -47,11 +50,11 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
         Optional<AdministradorTeatro> administrador = administradorTeatroRepo.findByCorreo(correo);
 
         if (administrador.isEmpty()) {
-            throw new Exception(ErrorCatalog.AUTH002.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH002);
         }
 
         if (!encriptador.checkPassword(password, administrador.get().getPassword())) {
-            throw new Exception(ErrorCatalog.AUTH003.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH003);
         }
 
         return administrador.get();
@@ -65,7 +68,7 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     private void validarExiste(Optional<AdministradorTeatro> administrador) throws Exception {
 
         if (administrador.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT001.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT001);
         }
     }
 
@@ -79,7 +82,7 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
         Optional<AdministradorTeatro> existe = administradorTeatroRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new Exception(ErrorCatalog.DUP001.getMessage());
+            throw new ValidationException(ErrorCatalog.DUP001);
         }
     }
 
@@ -194,11 +197,11 @@ public class AdministradorTeatroServicioImp implements PersonaServicio<Administr
     public AdministradorTeatro cambiarPassword(@Validated(OnCreate.class) AdministradorTeatro administrador, String passwordActual, String passwordNuevo) throws Exception {
 
         if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
-            throw new Exception(ErrorCatalog.AUTH004.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH004);
         }
 
         if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
-            throw new Exception(ErrorCatalog.AUTH005.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH005);
         }
 
         administrador.setPassword(passwordNuevo);

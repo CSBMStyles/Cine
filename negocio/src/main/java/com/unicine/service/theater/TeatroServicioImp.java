@@ -13,6 +13,7 @@ import com.unicine.repository.theater.TeatroRepo;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
 
 @Service
 @Validated
@@ -35,7 +36,7 @@ public class TeatroServicioImp implements TeatroServicio {
     private void validarExiste(Optional<Teatro> teatro) throws Exception {
 
         if (teatro.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT006.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT006);
         }
     }
 

@@ -21,6 +21,7 @@ import com.unicine.util.initializer.HorarioDescuentoInit;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
 
 @Service
 @Validated
@@ -79,7 +80,7 @@ public class HorarioServicioImp implements HorarioServicio {
     private void validarExiste(Optional<Horario> horario) throws Exception {
 
         if (horario.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT015.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT015);
         }
     }
 

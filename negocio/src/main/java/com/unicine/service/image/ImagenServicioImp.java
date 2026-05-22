@@ -24,6 +24,8 @@ import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
+import com.unicine.exception.ValidationException;
 
 @Service
 @Validated
@@ -52,7 +54,7 @@ public class ImagenServicioImp implements ImagenServicio {
     private void validarExiste(Optional<Imagen> imagen) throws Exception {
 
         if (imagen.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT020.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT020);
         }
     }
 
@@ -65,7 +67,7 @@ public class ImagenServicioImp implements ImagenServicio {
             Optional<Imagen> imagenRelacion = imagenRepo.findByPersona(persona.getCedula());
             
             if (imagenRelacion.isPresent()) {
-                throw new Exception(ErrorCatalog.DUP007.getMessage());
+                throw new ValidationException(ErrorCatalog.DUP007);
             }
         }  
     }

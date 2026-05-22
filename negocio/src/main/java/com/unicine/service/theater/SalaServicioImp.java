@@ -15,6 +15,7 @@ import com.unicine.util.initializer.SalaPrecioInit;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
 
 @Service
 @Validated
@@ -50,7 +51,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(Optional<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT007.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT007);
         }
     }
 
@@ -62,7 +63,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(List<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT008.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT008);
         }
     }
 

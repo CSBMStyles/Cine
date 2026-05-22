@@ -13,6 +13,7 @@ import com.unicine.repository.theater.CiudadRepo;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
 
 @Service
 @Validated
@@ -35,7 +36,7 @@ public class CiudadServicioImp implements CiudadServicio {
     private void validarExiste(Optional<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT004.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT004);
         }
     }
 
@@ -47,7 +48,7 @@ public class CiudadServicioImp implements CiudadServicio {
     private void validarExiste(List<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT005.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT005);
         }
     }
 

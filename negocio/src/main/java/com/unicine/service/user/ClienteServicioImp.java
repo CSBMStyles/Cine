@@ -19,6 +19,10 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
+import com.unicine.exception.ValidationException;
+import com.unicine.exception.BusinessRuleException;
+import com.unicine.exception.AuthenticationException;
 
 @Service
 @Validated
@@ -49,11 +53,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> cliente = clienteRepo.findByCorreo(correo);
 
         if (cliente.isEmpty()) {
-            throw new Exception(ErrorCatalog.AUTH002.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH002);
         }
 
         if (!encriptador.checkPassword(password, cliente.get().getPassword())) {
-            throw new Exception(ErrorCatalog.AUTH003.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH003);
         }
 
         return cliente.get();
@@ -67,7 +71,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     private void validarExiste(Optional<Cliente> cliente) throws Exception {
 
         if (cliente.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT003.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT003);
         }
     }
 
@@ -81,7 +85,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new Exception(ErrorCatalog.DUP001.getMessage());
+            throw new ValidationException(ErrorCatalog.DUP001);
         }
     }
 
@@ -124,7 +128,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         int edad = Period.between(fechaNacimiento, fechaActual).getYears();
 
         if (edad <= 18) {
-            throw new Exception(ErrorCatalog.REG001.getMessage());
+            throw new BusinessRuleException(ErrorCatalog.REG001);
         }
     }
 
@@ -135,7 +139,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     public void validarEstado(Cliente cliente) throws Exception {
 
         if (!cliente.getEstado()) {
-            throw new Exception(ErrorCatalog.AUTH006.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH006);
         }
     }
 
@@ -219,11 +223,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     public Cliente cambiarPassword(@Validated(OnCreate.class) Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
 
         if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
-            throw new Exception(ErrorCatalog.AUTH004.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH004);
         }
 
         if (encriptador.checkPassword(passwordNuevo, cliente.getPassword())) {
-            throw new Exception(ErrorCatalog.AUTH005.getMessage());
+            throw new AuthenticationException(ErrorCatalog.AUTH005);
         }
 
         cliente.setPassword(passwordNuevo);

@@ -18,6 +18,7 @@ import com.unicine.repository.showing.FuncionEsquemaRepo;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.exception.ResourceNotFoundException;
 
 @Service
 @Validated
@@ -45,7 +46,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     private void validarExiste(Optional<FuncionEsquema> funcionEsquema) throws Exception {
 
         if (funcionEsquema.isEmpty()) {
-            throw new Exception(ErrorCatalog.ENT014.getMessage());
+            throw new ResourceNotFoundException(ErrorCatalog.ENT014);
         }
     }
 

@@ -40,6 +40,19 @@
   - 40+ mensajes de exito organizados por categoria (Creacion, Actualizacion, Eliminacion, Auth, Compras, etc.)
   - Soporta formateo parametrizado `{0}`, `{1}` para mensajes dinamicos
 
+### Parte E - Excepciones de Negocio Personalizadas (Completado)
+- **Cambios:**
+  - Creada clase base abstracta `UnicineException` con soporte para `ErrorCatalog` y formateo
+  - 6 excepciones especificas:
+    - `ResourceNotFoundException` (404) - Recurso no existe
+    - `ValidationException` (400) - Datos invalidos / duplicados
+    - `BusinessRuleException` (400) - Reglas de negocio violadas
+    - `AuthenticationException` (401) - Fallo de autenticacion
+    - `AuthorizationException` (403) - Sin permisos
+    - `ExternalServiceException` (502) - Fallo en servicio externo
+  - Migrados todos los servicios para lanzar excepciones tipadas en lugar de `Exception` generica
+  - Cada excepcion integra con `ErrorCatalog` para codigos y mensajes centralizados
+
 ---
 
 ## Historial de Cambios
