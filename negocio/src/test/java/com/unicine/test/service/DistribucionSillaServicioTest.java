@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.gson.Gson;
 import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.service.theater.DistribucionSillaServicio;
-import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -45,7 +44,7 @@ public class DistribucionSillaServicioTest {
         Gson gson = new Gson();
         String esquema = gson.toJson(matriz);
 
-        DistribucionSilla distribucion = new DistribucionSilla(esquema);
+        DistribucionSilla distribucion = new DistribucionSilla(esquema, 100, 10, 10);
 
         try {
             DistribucionSilla nuevo = distribucionServicio.registrar(distribucion);
@@ -85,7 +84,7 @@ public class DistribucionSillaServicioTest {
         String esquema = gson.toJson(matriz);
 
         try{
-            DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
+            DistribucionSilla distribucion = distribucionServicio.obtener(1).orElse(null);
 
             System.out.println("\n" + "Registro antigüo:" + "\n" + distribucion);
 
@@ -115,10 +114,8 @@ public class DistribucionSillaServicioTest {
 
         DistribucionSilla distribucion;
 
-        DistribucionAtributoValidator distribucionCodigo = new DistribucionAtributoValidator(codigo.toString());
-
         try {
-            distribucion = distribucionServicio.obtener(distribucionCodigo).orElse(null);
+            distribucion = distribucionServicio.obtener(codigo).orElse(null);
 
         } catch (Exception e) {
 
@@ -142,7 +139,7 @@ public class DistribucionSillaServicioTest {
         }
 
         try {
-            distribucionServicio.obtener(distribucionCodigo);
+            distribucionServicio.obtener(codigo);
 
         } catch (Exception e) {
 
@@ -160,7 +157,7 @@ public class DistribucionSillaServicioTest {
     public void obtener() {
 
         try {
-            DistribucionSilla distribucion = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
+            DistribucionSilla distribucion = distribucionServicio.obtener(1).orElse(null);
 
             Assertions.assertEquals(5, distribucion.getCodigo());
 

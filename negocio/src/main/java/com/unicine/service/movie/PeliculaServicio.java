@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.movie.Pelicula;
-import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface PeliculaServicio {
 
@@ -20,9 +22,9 @@ public interface PeliculaServicio {
 
     // *️⃣ Funciones Generales
 
-    Optional<Pelicula> obtener(@Valid PeliculaAtributoValidator codigo) throws Exception;
+    Optional<Pelicula> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
 
-    List<Pelicula> obtenerNombrePeliculas(@Valid PeliculaAtributoValidator nombre) throws Exception;
+    List<Pelicula> obtenerNombrePeliculas(@NotBlank(message = "El nombre no puede estar en blanco") String nombre) throws Exception;
 
     List<Pelicula> listar();
 

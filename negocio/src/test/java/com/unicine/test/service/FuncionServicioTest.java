@@ -27,8 +27,6 @@ import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.theater.SalaServicio;
-import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
-import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -65,7 +63,7 @@ public class FuncionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(new SalaAtributoValidator(5)).orElse(null);
+            sala = salaServicio.obtener(5).orElse(null);
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -119,7 +117,7 @@ public class FuncionServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+            pelicula = peliculaServicio.obtener(1).orElse(null);
 
             System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
 
@@ -256,7 +254,7 @@ public class FuncionServicioTest {
 
             try {
                 
-                Sala sala = salaServicio.obtener(new SalaAtributoValidator(3)).orElse(null);
+                Sala sala = salaServicio.obtener(3).orElse(null);
 
                 funcion.setSala(sala);
 

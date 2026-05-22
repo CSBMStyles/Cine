@@ -63,7 +63,10 @@ public class DistribucionSilla implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public DistribucionSilla(String esquema) {
+    public DistribucionSilla(String esquema, Integer totalSillas, Integer filas, Integer columnas) {
         this.esquema = esquema;
+        this.totalSillas = totalSillas;
+        this.filas = filas;
+        this.columnas = columnas;
     }
 }

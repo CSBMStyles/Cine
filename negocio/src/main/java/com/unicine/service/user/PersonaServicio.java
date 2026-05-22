@@ -6,11 +6,12 @@ import java.util.Optional;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Persona;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 import com.unicine.util.validation.group.OnCreate;
 import com.unicine.util.validation.group.OnUpdate;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface PersonaServicio<T extends Persona> {
     // SECTION: Metodos propios
@@ -25,7 +26,7 @@ public interface PersonaServicio<T extends Persona> {
 
     void eliminar(@Valid T persona, boolean confirmacion) throws Exception;
 
-    Optional<T> obtener(@Valid PersonaAtributoValidator cedula) throws Exception;
+    Optional<T> obtener(@NotNull(message = "La cédula no puede estar vacía") @Positive(message = "La cédula debe ser un número positivo") Integer cedula) throws Exception;
 
     List<T> listar();
 }

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.user.Administrador;
 import com.unicine.service.user.PersonaServicio;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -145,7 +144,7 @@ public class AdministradorServicioTest {
     public void actualizar() {
 
         try{
-            Administrador administrador = administradorServicio.obtener(new PersonaAtributoValidator("1001000000")).orElse(null);
+            Administrador administrador = administradorServicio.obtener(1001000000).orElse(null);
 
             administrador.setNombre("Roberto");
 
@@ -174,7 +173,7 @@ public class AdministradorServicioTest {
         Administrador administrador;
 
         try{
-            administrador = administradorServicio.obtener(new PersonaAtributoValidator("1001000000")).orElse(null);
+            administrador = administradorServicio.obtener(1001000000).orElse(null);
 
         } catch (Exception e) {
 
@@ -222,10 +221,8 @@ public class AdministradorServicioTest {
 
         Administrador administrador;
 
-        PersonaAtributoValidator cedulaValidator = new PersonaAtributoValidator(cedula.toString());
-
         try {
-            administrador = administradorServicio.obtener(cedulaValidator).orElse(null);
+            administrador = administradorServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, administrador.getCedula());
 
@@ -249,7 +246,7 @@ public class AdministradorServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            administradorServicio.obtener(cedulaValidator);
+            administradorServicio.obtener(cedula);
 
         } catch (Exception e) {
 
@@ -267,7 +264,7 @@ public class AdministradorServicioTest {
     public void obtener() {
 
         try {
-            Administrador administrador = administradorServicio.obtener(new PersonaAtributoValidator("1001000000")).orElse(null);
+            Administrador administrador = administradorServicio.obtener(1001000000).orElse(null);
 
             Assertions.assertEquals(1001000000, administrador.getCedula());
 

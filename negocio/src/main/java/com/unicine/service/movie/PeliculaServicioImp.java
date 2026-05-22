@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.repository.movie.PeliculaRepo;
-import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -118,9 +117,9 @@ public class PeliculaServicioImp implements PeliculaServicio {
     // *️⃣ Funciones Generales
 
     @Override
-    public Optional<Pelicula> obtener(@Valid PeliculaAtributoValidator validator) throws Exception {
+    public Optional<Pelicula> obtener(Integer codigo) throws Exception {
 
-        Optional<Pelicula> buscado = peliculaRepo.findById(validator.getCodigo());
+        Optional<Pelicula> buscado = peliculaRepo.findById(codigo);
 
         validarExiste(buscado);
 
@@ -128,9 +127,9 @@ public class PeliculaServicioImp implements PeliculaServicio {
     }
 
     @Override
-    public List<Pelicula> obtenerNombrePeliculas(@Valid PeliculaAtributoValidator validator) throws Exception {
+    public List<Pelicula> obtenerNombrePeliculas(String nombre) throws Exception {
 
-        List<Pelicula> peliculas = peliculaRepo.buscarNombres(validator.getNombre());
+        List<Pelicula> peliculas = peliculaRepo.buscarNombres(nombre);
 
         validarExiste(peliculas);
 

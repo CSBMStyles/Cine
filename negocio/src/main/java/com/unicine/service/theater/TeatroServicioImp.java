@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Teatro;
 import com.unicine.repository.theater.TeatroRepo;
-import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -79,14 +78,7 @@ public class TeatroServicioImp implements TeatroServicio {
         }
    }
 
-   /**
-    * Metodo para transformar un String a un Integer
-    * @param codigo
-    * @return
-    */
-   private Integer transformar(String codigo) { return Integer.parseInt(codigo); }
-
-    // SECTION: Implementacion de servicios
+     // SECTION: Implementacion de servicios
 
     // 2️⃣ Funciones del Administrador de Teatro
 
@@ -115,9 +107,9 @@ public class TeatroServicioImp implements TeatroServicio {
     }
 
     @Override
-    public Optional<Teatro> obtener(@Valid TeatroAtributoValidator validator) throws Exception {
+    public Optional<Teatro> obtener(Integer codigo) throws Exception {
 
-        Optional<Teatro> buscado = teatroRepo.findById(transformar(validator.getCodigo()));
+        Optional<Teatro> buscado = teatroRepo.findById(codigo);
 
         validarExiste(buscado);
 

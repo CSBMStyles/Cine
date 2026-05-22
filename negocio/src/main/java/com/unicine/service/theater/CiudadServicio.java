@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.theater.Ciudad;
-import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface CiudadServicio {
 
@@ -20,9 +22,9 @@ public interface CiudadServicio {
 
     // *️⃣ Funciones Generales
 
-    Optional<Ciudad> obtener(@Valid CiudadAtributoValidator codigo) throws Exception;
+    Optional<Ciudad> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
 
-    List<Ciudad> obtenerNombre(@Valid CiudadAtributoValidator nombre) throws Exception;
+    List<Ciudad> obtenerNombre(@NotBlank(message = "El nombre no puede estar en blanco") String nombre) throws Exception;
 
     List<Ciudad> listar();
 

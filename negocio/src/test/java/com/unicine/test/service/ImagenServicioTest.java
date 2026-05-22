@@ -25,8 +25,6 @@ import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.user.PersonaServicio;
 import com.unicine.service.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;
-import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import io.imagekit.sdk.models.results.Result;
 import io.imagekit.sdk.models.results.ResultList;
@@ -106,7 +104,7 @@ public class ImagenServicioTest {
         Cliente cliente;
 
         try {
-            cliente = clienteServicio.obtener(new PersonaAtributoValidator("1005000055")).orElse(null);
+            cliente = clienteServicio.obtener(1005000055).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -163,7 +161,7 @@ public class ImagenServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
+            pelicula = peliculaServicio.obtener(5).orElse(null);
             
             Assertions.assertNotNull(pelicula, "La película no debe ser nula");
             
@@ -507,7 +505,7 @@ public class ImagenServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
+            pelicula = peliculaServicio.obtener(5).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());

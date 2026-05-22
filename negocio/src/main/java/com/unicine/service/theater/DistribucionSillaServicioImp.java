@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.repository.theater.DistribucionSillaRepo;
-import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
 
 import jakarta.validation.Valid;
 import com.google.gson.Gson;
@@ -80,14 +79,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
         distribucion.setTotalSillas(totalSillas);
     }
 
-   /**
-    * Metodo para transformar un String a un Integer
-    * @param codigo
-    * @return
-    */
-   private Integer transformar(String codigo) { return Integer.parseInt(codigo); }
-
-    // SECTION: Implementacion de servicios
+     // SECTION: Implementacion de servicios
 
     // 1️⃣2️⃣ Funciones del Administradores
 
@@ -118,9 +110,9 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la distribucion usando las anotaciones para validar
 
     @Override
-    public Optional<DistribucionSilla> obtener(@Valid DistribucionAtributoValidator validacion) throws Exception {
+    public Optional<DistribucionSilla> obtener(Integer codigo) throws Exception {
 
-        Optional<DistribucionSilla> buscado = distribucionRepo.findById(transformar(validacion.getCodigo()));
+        Optional<DistribucionSilla> buscado = distribucionRepo.findById(codigo);
 
         validarExiste(buscado);
 

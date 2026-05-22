@@ -18,9 +18,6 @@ import com.unicine.enums.theater.TipoSala;
 import com.unicine.service.theater.DistribucionSillaServicio;
 import com.unicine.service.theater.SalaServicio;
 import com.unicine.service.theater.TeatroServicio;
-import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
-import com.unicine.util.validation.attributes.SalaAtributoValidator;
-import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -46,7 +43,7 @@ public class SalaServicioTest {
         Teatro teatro;
 
         try {
-            teatro = teatroServicio.obtener(new TeatroAtributoValidator("1")).orElse(null);
+            teatro = teatroServicio.obtener(1).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -60,7 +57,7 @@ public class SalaServicioTest {
         DistribucionSilla distribucionSilla;
         
         try {
-            distribucionSilla = distribucionServicio.obtener(new DistribucionAtributoValidator("1")).orElse(null);
+            distribucionSilla = distribucionServicio.obtener(1).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -100,7 +97,7 @@ public class SalaServicioTest {
         String nombre = "P-01: Premier Dorada";
 
         try{
-            Sala sala = salaServicio.obtener(new SalaAtributoValidator(1)).orElse(null);
+            Sala sala = salaServicio.obtener(1).orElse(null);
 
             sala.setNombre(nombre);
 
@@ -125,12 +122,10 @@ public class SalaServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        SalaAtributoValidator validator = new SalaAtributoValidator(1);
-
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(validator).orElse(null);
+            sala = salaServicio.obtener(1).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -154,7 +149,7 @@ public class SalaServicioTest {
         }
 
         try {
-            salaServicio.obtener(validator);
+            salaServicio.obtener(1);
 
         } catch (Exception e) {
 
@@ -174,7 +169,7 @@ public class SalaServicioTest {
         Integer codigo = 1;
 
         try {
-            Sala sala = salaServicio.obtener(new SalaAtributoValidator(codigo)).orElse(null);
+            Sala sala = salaServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, sala.getCodigo());
 
@@ -228,7 +223,7 @@ public class SalaServicioTest {
 
         System.out.println("\n" + nombre);
         try{
-            List<Sala> salas = salaServicio.obtenerNombresTeatro(new SalaAtributoValidator(nombre), 5);
+            List<Sala> salas = salaServicio.obtenerNombresTeatro(nombre, 5);
 
             Assertions.assertEquals(1, salas.size());
 

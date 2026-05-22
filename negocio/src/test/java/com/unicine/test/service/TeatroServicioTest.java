@@ -17,9 +17,6 @@ import com.unicine.entity.theater.Teatro;
 import com.unicine.service.theater.CiudadServicio;
 import com.unicine.service.user.PersonaServicio;
 import com.unicine.service.theater.TeatroServicio;
-import com.unicine.util.validation.attributes.CiudadAtributoValidator;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
-import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -47,7 +44,7 @@ public class TeatroServicioTest {
         Ciudad ciudad;
 
         try {
-            ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
+            ciudad = ciudadServicio.obtener(1).orElse(null);
 
         } catch (Exception e) {
 
@@ -61,7 +58,7 @@ public class TeatroServicioTest {
         AdministradorTeatro administradorTeatro;
         
         try {
-            administradorTeatro = administradorServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
+            administradorTeatro = administradorServicio.obtener(1119000000).orElse(null);
 
         } catch (Exception e) {
 
@@ -100,7 +97,7 @@ public class TeatroServicioTest {
         String telefono = "3125867145";
 
         try{
-            Teatro teatro = teatroServicio.obtener(new TeatroAtributoValidator("1")).orElse(null);
+            Teatro teatro = teatroServicio.obtener(1).orElse(null);
 
             teatro.setTelefono(telefono);
 
@@ -126,12 +123,10 @@ public class TeatroServicioTest {
 
         Integer codigo = 1;
 
-        TeatroAtributoValidator validator = new TeatroAtributoValidator(codigo.toString());
-
         Teatro teatro;
 
         try {
-            teatro = teatroServicio.obtener(validator).orElse(null);
+            teatro = teatroServicio.obtener(codigo).orElse(null);
 
         } catch (Exception e) {
 
@@ -155,7 +150,7 @@ public class TeatroServicioTest {
         }
 
         try {
-            teatroServicio.obtener(validator);
+            teatroServicio.obtener(codigo);
 
         } catch (Exception e) {
 
@@ -175,7 +170,7 @@ public class TeatroServicioTest {
         Integer codigo = 1;
 
         try {
-            Teatro teatro = teatroServicio.obtener(new TeatroAtributoValidator(codigo.toString())).orElse(null);
+            Teatro teatro = teatroServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, teatro.getCodigo());
 
@@ -228,7 +223,7 @@ public class TeatroServicioTest {
 
         System.out.println("\n" + direcion);
         try{
-            Teatro teatro = teatroServicio.obtener(new TeatroAtributoValidator("3")).orElse(null);
+            Teatro teatro = teatroServicio.obtener(3).orElse(null);
 
             teatro.setDireccion(direcion);
 

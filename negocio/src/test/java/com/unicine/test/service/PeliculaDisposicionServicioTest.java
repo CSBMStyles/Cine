@@ -23,9 +23,6 @@ import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.theater.SalaServicio;
-import com.unicine.util.validation.attributes.CiudadAtributoValidator;
-import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
-import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,7 +56,7 @@ public class PeliculaDisposicionServicioTest {
         // Obtenemos la pelicula apartir del que se haya seleccionado, esta configuracion se recomienda que este en la misma interfaz de la creacion de pelicula
         Pelicula pelicula;
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(5)).orElse(null);
+            pelicula = peliculaServicio.obtener(5).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -74,7 +71,7 @@ public class PeliculaDisposicionServicioTest {
         Ciudad ciudad;
 
         try {
-            ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(3)).orElse(null);
+            ciudad = ciudadServicio.obtener(3).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -247,7 +244,7 @@ public class PeliculaDisposicionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(new SalaAtributoValidator(4)).orElse(null); // Esta sala pertenece a la ciudad {1}
+            sala = salaServicio.obtener(4).orElse(null); // Esta sala pertenece a la ciudad {1}
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -301,7 +298,7 @@ public class PeliculaDisposicionServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(4)).orElse(null);
+            pelicula = peliculaServicio.obtener(4).orElse(null);
 
             System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
 
@@ -392,7 +389,7 @@ public class PeliculaDisposicionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(new SalaAtributoValidator(4)).orElse(null); // Esta sala pertenece a la ciudad {1}
+            sala = salaServicio.obtener(4).orElse(null); // Esta sala pertenece a la ciudad {1}
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -447,7 +444,7 @@ public class PeliculaDisposicionServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+            pelicula = peliculaServicio.obtener(1).orElse(null);
 
             System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
 

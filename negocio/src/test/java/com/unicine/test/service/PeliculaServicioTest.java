@@ -17,7 +17,6 @@ import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.image.ImageKitService;
-import com.unicine.util.validation.attributes.PeliculaAtributoValidator;
 
 import io.imagekit.sdk.models.results.ResultList;
 
@@ -77,7 +76,7 @@ public class PeliculaServicioTest {
         Pelicula pelicula;
 
         try{
-            pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(1)).orElse(null);
+            pelicula = peliculaServicio.obtener(1).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -141,10 +140,8 @@ public class PeliculaServicioTest {
 
         Pelicula pelicula;
 
-        PeliculaAtributoValidator validator = new PeliculaAtributoValidator(codigo);
-
         try {
-            pelicula = peliculaServicio.obtener(validator).orElse(null);
+            pelicula = peliculaServicio.obtener(codigo).orElse(null);
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
@@ -165,7 +162,7 @@ public class PeliculaServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            peliculaServicio.obtener(validator);
+            peliculaServicio.obtener(codigo);
 
         } catch (Exception e) {
 
@@ -185,7 +182,7 @@ public class PeliculaServicioTest {
         Integer codigo = 1;
 
         try {
-            Pelicula pelicula = peliculaServicio.obtener(new PeliculaAtributoValidator(codigo)).orElse(null);
+            Pelicula pelicula = peliculaServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, pelicula.getCodigo());
 
@@ -208,7 +205,7 @@ public class PeliculaServicioTest {
         String nombre = "P";
 
         try {
-            List<Pelicula> peliculas = peliculaServicio.obtenerNombrePeliculas(new PeliculaAtributoValidator(nombre));
+            List<Pelicula> peliculas = peliculaServicio.obtenerNombrePeliculas(nombre);
 
             Assertions.assertEquals(2, peliculas.size());
 

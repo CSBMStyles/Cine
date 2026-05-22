@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.theater.DistribucionSilla;
-import com.unicine.util.validation.attributes.DistribucionAtributoValidator;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface DistribucionSillaServicio {
 
@@ -18,7 +19,7 @@ public interface DistribucionSillaServicio {
 
     void eliminar(@Valid DistribucionSilla distribucion, boolean confirmacion) throws Exception;
 
-    Optional<DistribucionSilla> obtener(@Valid DistribucionAtributoValidator validacion) throws Exception;
+    Optional<DistribucionSilla> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
 
     List<DistribucionSilla> listar();
 

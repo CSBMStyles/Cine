@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Cliente;
 import com.unicine.repository.user.ClienteRepo;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 import com.unicine.util.validation.group.OnCreate;
 import com.unicine.util.validation.group.OnUpdate;
 
@@ -152,14 +151,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
    }
 
     /**
-    * Metodo para transformar un String a un Integer
-    * @param cedula
-    * @return
-    */
-    private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
-
-    /**
-     * Metodo para encriptar la contraseña de un cliente
+      * Metodo para encriptar la contraseña de un cliente
      * @param cliente
      */
     private void encriptar(Cliente cliente) { cliente.setPassword(encriptador.encryptPassword(cliente.getPassword())); }
@@ -249,9 +241,9 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Optional<Cliente> obtener(@Valid PersonaAtributoValidator cedula) throws Exception {
+    public Optional<Cliente> obtener(Integer cedula) throws Exception {
 
-        Optional<Cliente> buscado = clienteRepo.findById(transformar(cedula.getCedula()));
+        Optional<Cliente> buscado = clienteRepo.findById(cedula);
 
         validarExiste(buscado);
 

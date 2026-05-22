@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Ciudad;
 import com.unicine.repository.theater.CiudadRepo;
-import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -63,9 +62,9 @@ public class CiudadServicioImp implements CiudadServicio {
     public void eliminar(@Valid Ciudad eliminado) throws Exception { ciudadRepo.delete(eliminado); }
 
     @Override
-    public Optional<Ciudad> obtener(@Valid CiudadAtributoValidator validator) throws Exception {
+    public Optional<Ciudad> obtener(Integer codigo) throws Exception {
 
-        Optional<Ciudad> buscado = ciudadRepo.findById(validator.getCodigo());
+        Optional<Ciudad> buscado = ciudadRepo.findById(codigo);
 
         validarExiste(buscado);
 
@@ -73,9 +72,9 @@ public class CiudadServicioImp implements CiudadServicio {
     }
 
     @Override
-    public List<Ciudad> obtenerNombre(@Valid CiudadAtributoValidator validator) throws Exception { 
+    public List<Ciudad> obtenerNombre(String nombre) throws Exception { 
 
-        List<Ciudad> ciudades = ciudadRepo.findByNombre(validator.getNombre());
+        List<Ciudad> ciudades = ciudadRepo.findByNombre(nombre);
 
         validarExiste(ciudades);
 

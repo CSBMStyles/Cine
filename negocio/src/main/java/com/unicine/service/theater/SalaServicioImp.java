@@ -12,7 +12,6 @@ import com.unicine.entity.theater.Sala;
 import com.unicine.enums.theater.TipoSala;
 import com.unicine.repository.theater.SalaRepo;
 import com.unicine.util.initializer.SalaPrecioInit;
-import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 import jakarta.validation.Valid;
 
@@ -135,9 +134,9 @@ public class SalaServicioImp implements SalaServicio {
     }
 
     @Override
-    public Optional<Sala> obtener(@Valid SalaAtributoValidator validator) throws Exception {
+    public Optional<Sala> obtener(Integer codigo) throws Exception {
 
-        Optional<Sala> buscado = salaRepo.findById(validator.getCodigo());
+        Optional<Sala> buscado = salaRepo.findById(codigo);
 
         validarExiste(buscado);
 
@@ -145,9 +144,9 @@ public class SalaServicioImp implements SalaServicio {
     }
 
     @Override
-    public List<Sala> obtenerNombre(@Valid SalaAtributoValidator validator) throws Exception { 
+    public List<Sala> obtenerNombre(String nombre) throws Exception { 
 
-        List<Sala> salas = salaRepo.buscarNombre(validator.getNombre());
+        List<Sala> salas = salaRepo.buscarNombre(nombre);
 
         validarExiste(salas);
 
@@ -155,9 +154,9 @@ public class SalaServicioImp implements SalaServicio {
     }
 
     @Override
-    public Optional<Sala> obtenerIdTeatro(@Valid SalaAtributoValidator validator, Integer teatroElegido) throws Exception { 
+    public Optional<Sala> obtenerIdTeatro(Integer codigo, Integer teatroElegido) throws Exception { 
 
-        Optional<Sala> sala = salaRepo.buscarIdTeatro(validator.getCodigo(), teatroElegido);
+        Optional<Sala> sala = salaRepo.buscarIdTeatro(codigo, teatroElegido);
 
         validarExiste(sala);
 
@@ -165,9 +164,9 @@ public class SalaServicioImp implements SalaServicio {
     }
 
     @Override
-    public List<Sala> obtenerNombresTeatro(@Valid SalaAtributoValidator validator, Integer teatroElegido) throws Exception { 
+    public List<Sala> obtenerNombresTeatro(String nombre, Integer teatroElegido) throws Exception { 
 
-        List<Sala> salas = salaRepo.buscarNombreTeatro(validator.getNombre(), teatroElegido);
+        List<Sala> salas = salaRepo.buscarNombreTeatro(nombre, teatroElegido);
 
         validarExiste(salas);
 

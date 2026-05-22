@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.theater.Teatro;
-import com.unicine.util.validation.attributes.TeatroAtributoValidator;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface TeatroServicio {
 
@@ -18,7 +19,7 @@ public interface TeatroServicio {
 
     void eliminar(@Valid Teatro teatro, boolean confirmacion) throws Exception;
 
-    Optional<Teatro> obtener(@Valid TeatroAtributoValidator codigo) throws Exception;
+    Optional<Teatro> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
 
     List<Teatro> listar();
 

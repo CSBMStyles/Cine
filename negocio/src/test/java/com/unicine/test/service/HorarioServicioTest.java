@@ -20,7 +20,6 @@ import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.theater.SalaServicio;
 import com.unicine.transfer.data.FuncionInterseccionDTO;
 import com.unicine.transfer.mapper.FuncionInterseccionMapper;
-import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -51,7 +50,7 @@ public class HorarioServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(new SalaAtributoValidator(2)).orElse(null);
+            sala = salaServicio.obtener(2).orElse(null);
 
             System.out.println("Sala encontrada: " + sala);
 
@@ -259,7 +258,7 @@ public class HorarioServicioTest {
         Sala sala;
         try {
             // Se obtiene la sala usando el validator en este caso se usa el id 2 para ejemplificar
-            sala = salaServicio.obtener(new SalaAtributoValidator(2)).orElse(null);
+            sala = salaServicio.obtener(2).orElse(null);
 
             System.out.println("Sala encontrada: " + sala);
 

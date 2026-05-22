@@ -22,7 +22,6 @@ import com.unicine.entity.user.Persona;
 import com.unicine.service.user.PersonaServicio;
 import com.unicine.service.user.AuthenticationService;
 import com.unicine.service.notification.EmailService;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -195,7 +194,7 @@ public class ClienteServicioTest {
     public void actualizar() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
 
             cliente.setCorreo("josefinas@gmail.com");
 
@@ -222,7 +221,7 @@ public class ClienteServicioTest {
         Cliente cliente;
 
         try {
-            cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+            cliente = clienteServicio.obtener(1009000011).orElse(null);
 
         } catch (Exception e) {
 
@@ -272,10 +271,8 @@ public class ClienteServicioTest {
 
         Cliente cliente;
 
-        PersonaAtributoValidator cedulaValidator = new PersonaAtributoValidator(cedula.toString());
-
         try {
-            cliente = clienteServicio.obtener(cedulaValidator).orElse(null);
+            cliente = clienteServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, cliente.getCedula());
 
@@ -301,7 +298,7 @@ public class ClienteServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            clienteServicio.obtener(cedulaValidator);
+            clienteServicio.obtener(cedula);
 
         } catch (Exception e) {
 
@@ -321,7 +318,7 @@ public class ClienteServicioTest {
         Integer cedula = 1009000011;
 
         try {
-            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator(cedula.toString())).orElse(null);
+            Cliente cliente = clienteServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, cliente.getCedula());
 
@@ -381,7 +378,7 @@ public class ClienteServicioTest {
         System.out.println("Correo: " + correo);
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
 
             cliente.setCorreo(correo);
 
@@ -406,7 +403,7 @@ public class ClienteServicioTest {
     public void validacionEstado() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
 
             cliente.setEstado(null);
 
@@ -439,7 +436,7 @@ public class ClienteServicioTest {
         telefonos.add(telefono);
 
         try{
-            Cliente cliente = clienteServicio.obtener(new PersonaAtributoValidator("1009000011")).orElse(null);
+            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
 
             cliente.setTelefonos(telefonos);
 

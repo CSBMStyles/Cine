@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import com.unicine.entity.theater.Sala;
 import com.unicine.enums.theater.TipoSala;
-import com.unicine.util.validation.attributes.SalaAtributoValidator;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface SalaServicio {
 
@@ -25,13 +27,13 @@ public interface SalaServicio {
 
     // *️⃣ Funciones Globales
 
-    Optional<Sala> obtener(@Valid SalaAtributoValidator codigo) throws Exception;
+    Optional<Sala> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
 
-    List<Sala> obtenerNombre(@Valid SalaAtributoValidator nombre) throws Exception;
+    List<Sala> obtenerNombre(@NotBlank(message = "El nombre no puede estar en blanco") String nombre) throws Exception;
 
-    Optional<Sala> obtenerIdTeatro(@Valid SalaAtributoValidator codigo, Integer teatro) throws Exception;
+    Optional<Sala> obtenerIdTeatro(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo, @NotNull(message = "El código de teatro no puede estar vacío") @Positive(message = "El código de teatro debe ser un número positivo") Integer teatro) throws Exception;
 
-    List<Sala> obtenerNombresTeatro(@Valid SalaAtributoValidator nombre, Integer teatro) throws Exception;
+    List<Sala> obtenerNombresTeatro(@NotBlank(message = "El nombre no puede estar en blanco") String nombre, @NotNull(message = "El código de teatro no puede estar vacío") @Positive(message = "El código de teatro debe ser un número positivo") Integer teatro) throws Exception;
 
     List<Sala> listar();
 

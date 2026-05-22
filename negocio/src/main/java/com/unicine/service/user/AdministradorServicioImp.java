@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Administrador;
 import com.unicine.repository.user.AdministradorRepo;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 import com.unicine.util.validation.group.OnCreate;
 import com.unicine.util.validation.group.OnUpdate;
 
@@ -125,14 +124,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
    }
 
     /**
-    * Metodo para transformar un String a un Integer
-    * @param cedula
-    * @return
-    */
-    private Integer transformar(String cedula) { return Integer.parseInt(cedula); }
-
-    /**
-     * Metodo para encriptar la contraseña de un administrador
+      * Metodo para encriptar la contraseña de un administrador
      * @param administrador
      */
     private void encriptar(Administrador administrador) { administrador.setPassword(encriptador.encryptPassword(administrador.getPassword())); }
@@ -223,9 +215,9 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Optional<Administrador> obtener(@Valid PersonaAtributoValidator cedula) throws Exception {
+    public Optional<Administrador> obtener(Integer cedula) throws Exception {
 
-        Optional<Administrador> buscado = administradorRepo.findById(transformar(cedula.getCedula()));
+        Optional<Administrador> buscado = administradorRepo.findById(cedula);
 
         validarExiste(buscado);
 

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.user.AdministradorTeatro;
 import com.unicine.service.user.PersonaServicio;
-import com.unicine.util.validation.attributes.PersonaAtributoValidator;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -128,7 +127,7 @@ public class AdministradorTeatroServicioTest {
     public void actualizar() {
 
         try{
-            AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
+            AdministradorTeatro administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
 
             administrador.setNombre("Daniela");
 
@@ -155,7 +154,7 @@ public class AdministradorTeatroServicioTest {
         AdministradorTeatro administrador;
 
         try {
-            administrador = administradorTeatroServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
+            administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
 
         } catch (Exception e) {
 
@@ -205,10 +204,8 @@ public class AdministradorTeatroServicioTest {
 
         AdministradorTeatro administrador;
 
-        PersonaAtributoValidator cedulaValidator = new PersonaAtributoValidator(cedula.toString());
-
         try {
-            administrador = administradorTeatroServicio.obtener(cedulaValidator).orElse(null);
+            administrador = administradorTeatroServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, administrador.getCedula());
 
@@ -233,7 +230,7 @@ public class AdministradorTeatroServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            administradorTeatroServicio.obtener(cedulaValidator);
+            administradorTeatroServicio.obtener(cedula);
 
         } catch (Exception e) {
 
@@ -253,7 +250,7 @@ public class AdministradorTeatroServicioTest {
     public void obtener() {
 
         try {
-            AdministradorTeatro administrador = administradorTeatroServicio.obtener(new PersonaAtributoValidator("1119000000")).orElse(null);
+            AdministradorTeatro administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
 
             Assertions.assertEquals(1119000000, administrador.getCedula());
 

@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.theater.Ciudad;
 import com.unicine.service.theater.CiudadServicio;
-import com.unicine.util.validation.attributes.CiudadAtributoValidator;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -58,7 +57,7 @@ public class CiudadServicioTest {
         String nombre = "Cundinamarca";
 
         try{
-            Ciudad ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
+            Ciudad ciudad = ciudadServicio.obtener(1).orElse(null);
 
             ciudad.setNombre(nombre);
 
@@ -85,10 +84,8 @@ public class CiudadServicioTest {
 
         Ciudad ciudad;
 
-        CiudadAtributoValidator validator = new CiudadAtributoValidator(codigo);
-
         try {
-            ciudad = ciudadServicio.obtener(validator).orElse(null);
+            ciudad = ciudadServicio.obtener(codigo).orElse(null);
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
@@ -109,7 +106,7 @@ public class CiudadServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            ciudadServicio.obtener(validator).orElse(null);
+            ciudadServicio.obtener(codigo).orElse(null);
 
         } catch (Exception e) {
 
@@ -129,7 +126,7 @@ public class CiudadServicioTest {
         Integer codigo = 1;
 
         try {
-            Ciudad ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(codigo)).orElse(null);
+            Ciudad ciudad = ciudadServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, ciudad.getCodigo());
 
@@ -152,7 +149,7 @@ public class CiudadServicioTest {
         String nombre = "Bogota";
 
         try {
-            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(new CiudadAtributoValidator(nombre));
+            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(nombre);
 
             Assertions.assertEquals(1, ciudades.size());
 
@@ -207,7 +204,7 @@ public class CiudadServicioTest {
     public void validacionNombre(String nombre) {
 
         try{
-            Ciudad ciudad = ciudadServicio.obtener(new CiudadAtributoValidator(1)).orElse(null);
+            Ciudad ciudad = ciudadServicio.obtener(1).orElse(null);
 
             ciudad.setNombre(nombre);
 
@@ -241,7 +238,7 @@ public class CiudadServicioTest {
         System.out.println("\n" + nombre);
 
         try {
-            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(new CiudadAtributoValidator(nombre));
+            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(nombre);
 
             Assertions.assertEquals(1, ciudades.size());
 
