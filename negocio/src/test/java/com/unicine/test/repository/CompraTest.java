@@ -71,7 +71,7 @@ public class CompraTest {
         CuponCliente cuponClienteSave = cuponClienteRepo.save(cuponCliente);
 
         // SECTION: Se construye la compra
-        Compra compra = new Compra(pago, cuponClienteSave, cliente, funcion);
+        Compra compra = new Compra(true, pago, cuponClienteSave, cliente, funcion);
 
         compra.setFechaPelicula(funcion.getHorario().getFechaInicio());
         compra.setValorTotal(20000.0);
