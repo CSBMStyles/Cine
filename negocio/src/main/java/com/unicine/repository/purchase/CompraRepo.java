@@ -1,11 +1,13 @@
 package com.unicine.repository.purchase;
 
 import com.unicine.entity.purchase.Compra;
+import com.unicine.enums.purchase.MedioPago;
 import com.unicine.transfer.data.DetalleCompraDTO;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -91,4 +93,51 @@ public interface CompraRepo extends JpaRepository<Compra, Integer> {
      */
     @Query("select cl.correo, c from Cliente cl join cl.compras c where c.valorTotal = (select max(c.valorTotal) from Compra c)")
     List<Object[]> obtenerCompraCostosa();
+
+    // SECTION: Consultas adicionales de negocio
+
+    /**
+     * Consulta para obtener las compras asociadas a una funcion especifica.
+     * Util para reportes de ocupacion y ventas por funcion.
+     * @param codigoFuncion codigo de la funcion
+     * @return lista de compras de la funcion
+     */
+    @Query("select c from Compra c where c.funcion.codigo = :codigoFuncion")
+    List<Compra> obtenerComprasFuncion(Integer codigoFuncion);
+
+    /**
+     * Consulta para obtener las compras realizadas dentro de un rango de fechas.
+     * Util para reportes de ventas por periodo.
+     * @param inicio fecha inicial del rango
+     * @param fin fecha final del rango
+     * @return lista de compras en el rango
+     */
+    @Query("select c from Compra c where c.fechaCompra between :inicio and :fin")
+    List<Compra> obtenerComprasRangoFecha(LocalDateTime inicio, LocalDateTime fin);
+
+    /**
+     * Consulta para obtener las compras filtradas por medio de pago.
+     * Util para reportes financieros por metodo de pago.
+     * @param medioPago medio de pago utilizado
+     * @return lista de compras con ese medio de pago
+     */
+    @Query("select c from Compra c where c.medioPago = :medioPago")
+    List<Compra> obtenerComprasMedioPago(MedioPago medioPago);
+
+    /**
+     * Consulta para contar cuantas compras ha realizado un cliente.
+     * Util para metricas de fidelizacion.
+     * @param cedula cedula del cliente
+     * @return cantidad de compras del cliente
+     */
+    @Query("select count(c) from Compra c where c.cliente.cedula = :cedula")
+    Long contarComprasCliente(Integer cedula);
+
+    /**
+     * Consulta para obtener las compras filtradas por estado (procesadas o no).
+     * @param estado estado de la compra
+     * @return lista de compras con el estado indicado
+     */
+    @Query("select c from Compra c where c.estado = :estado")
+    List<Compra> obtenerComprasEstado(Boolean estado);
 }

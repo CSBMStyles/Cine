@@ -36,4 +36,16 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      */
     @Query("select new " + direccion + ".DetalleSillaDTO(e.codigo, e.fila, e.columna ) from Compra comp join comp.entradas e join comp.funcion f where f.codigo = :codigoFuncion")
     List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion);
+
+    /**
+     * Consulta para verificar si una silla especifica ya esta ocupada
+     * en una funcion determinada.
+     * Util para validar disponibilidad antes de registrar una entrada.
+     * @param fila fila de la silla
+     * @param columna columna de la silla
+     * @param codigoFuncion codigo de la funcion
+     * @return true si la silla esta ocupada, false en caso contrario
+     */
+    @Query("select count(e) > 0 from Entrada e where e.fila = :fila and e.columna = :columna and e.compra.funcion.codigo = :codigoFuncion")
+    Boolean sillaOcupadaFuncion(Integer fila, Integer columna, Integer codigoFuncion);
 }
