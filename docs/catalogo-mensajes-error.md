@@ -649,5 +649,120 @@ com.unicine.util.validation.catalog/
 
 ---
 
+---
+
+## Diagrama de Arquitectura
+
+### Jerarquia de Excepciones y Flujo de Error
+
+**Diagrama Lucidchart:** [Ver en Lucidchart](https://lucid.app/lucidchart/5dc2e2fe-5575-4ab0-92c5-3999f3e9317a/view)
+
+**Editar diagrama:** [Editar en Lucidchart](https://lucid.app/lucidchart/5dc2e2fe-5575-4ab0-92c5-3999f3e9317a/edit)
+
+#### Descripcion del Diagrama
+
+El diagrama muestra la arquitectura completa del sistema de excepciones y manejo de errores de UniCine:
+
+**1. Jerarquia de Excepciones (Lado izquierdo)**
+- Clase base abstracta: `UnicineException` (azul)
+  - Almacena: `errorCatalog`, `errorCode`, `formattedMessage`
+  - Metodos: `getErrorCatalog()`, `getErrorCode()`, `format(args...)`
+  
+- 6 excepciones concretas que heredan de `UnicineException`:
+  | Excepcion | Color | HTTP Status | Uso |
+  |-----------|-------|-------------|-----|
+  | `ResourceNotFoundException` | Rojo | 404 | Recurso no existe |
+  | `ValidationException` | Naranja | 400 | Datos invalidos |
+  | `BusinessRuleException` | Purpura | 400 | Regla de negocio |
+  | `AuthenticationException` | Verde | 401 | Fallo autenticacion |
+  | `AuthorizationException` | Cyan | 403 | Sin permisos |
+  | `ExternalServiceException` | Gris | 502 | Fallo servicio externo |
+
+**2. Catalogos Centralizados (Lado derecho)**
+- `ErrorCatalog` (amarillo): Enum con 50+ codigos de error por dominio
+- `SuccessCatalog` (verde): Enum con 40+ codigos de exito por dominio
+- Ambos soportan formateo parametrizado: `{0}`, `{1}`, etc.
+
+**3. Manejador Global (Parte inferior)**
+- `GlobalExceptionHandler` (@RestControllerAdvice) indigo
+  - Captura todas las excepciones del dominio
+  - Crea respuestas `ApiError` estandarizadas
+  - Mapea a HTTP status segun tipo de excepcion
+  
+- `ApiError` (rosa): DTO de respuesta JSON uniforme
+  ```json
+  {
+    "timestamp": "2026-05-23T10:15:30",
+    "status": 404,
+    "error": "Not Found",
+    "code": "ENT001",
+    "message": "El administrador no existe",
+    "path": "/api/administradores/123"
+  }
+  ```
+
+**Flujo de Error:**
+```
+Servicio lanza excepcion → GlobalExceptionHandler la captura → 
+Crea ApiError con codigo HTTP → Devuelve JSON al cliente
+```
+
+---
+
+## Estructura de Paquetes
+
+```
+com.unicine/
+├── exception/                          # Jerarquia de excepciones
+│   ├── UnicineException.java           # Clase base abstracta
+│   ├── ResourceNotFoundException.java  # 404 Not Found
+│   ├── ValidationException.java        # 400 Bad Request
+│   ├── BusinessRuleException.java        # 400 Bad Request
+│   ├── AuthenticationException.java     # 401 Unauthorized
+│   ├── AuthorizationException.java       # 403 Forbidden
+│   ├── ExternalServiceException.java     # 502 Bad Gateway
+│   └── handler/
+│       ├── ApiError.java               # DTO respuesta error
+│       └── GlobalExceptionHandler.java # @ControllerAdvice
+│
+├── util.validation.catalog/            # Catalogos centralizados
+│   ├── ValidationMessages.java         # Constantes para @NotBlank, @Size
+│   ├── ErrorCatalog.java               # Enum: 50+ codigos error
+│   └── SuccessCatalog.java             # Enum: 40+ codigos exito
+│
+├── entity/                              # 18 entidades con validacion
+│   └── ...                              # Usando ValidationMessages
+│
+├── service/                             # 14 servicios
+│   └── ...                              # Usando excepciones tipadas
+│
+└── repository/                          # Repositorios JPA
+    └── ...
+```
+
+### Resumen de Archivos Creados/Modificados
+
+| Fase | Archivos | Tipo | Descripcion |
+|------|----------|------|-------------|
+| **Catalogo** | `ValidationMessages.java` | Nuevo | 80+ constantes para validacion |
+| | `ErrorCatalog.java` | Nuevo | Enum con 50+ codigos error |
+| | `SuccessCatalog.java` | Nuevo | Enum con 40+ codigos exito |
+| **Excepciones** | `UnicineException.java` | Nuevo | Clase base abstracta |
+| | `ResourceNotFoundException.java` | Nuevo | 404 Not Found |
+| | `ValidationException.java` | Nuevo | 400 Bad Request |
+| | `BusinessRuleException.java` | Nuevo | 400 Business Rule |
+| | `AuthenticationException.java` | Nuevo | 401 Unauthorized |
+| | `AuthorizationException.java` | Nuevo | 403 Forbidden |
+| | `ExternalServiceException.java` | Nuevo | 502 Bad Gateway |
+| **Handler** | `ApiError.java` | Nuevo | DTO respuesta estandarizada |
+| | `GlobalExceptionHandler.java` | Nuevo | @ControllerAdvice |
+| **Entidades** | 18 archivos | Modificado | Migrados a ValidationMessages |
+| **Servicios** | 14 archivos | Modificado | Migrados a excepciones tipadas |
+| **Tests** | 15 archivos | Modificado | Adaptados a nueva API |
+| **Docs** | `catalogo-mensajes-error.md` | Modificado | Documentacion completa |
+
+---
+
 *Documento generado automaticamente como parte de la Tarea 1.1 del Proyecto UniCine.*
 *Actualizado con hallazgos adicionales del analisis profundo.*
+*Fase 1 completada: Excepciones Centralizadas.*
