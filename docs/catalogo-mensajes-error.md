@@ -53,6 +53,25 @@
   - Migrados todos los servicios para lanzar excepciones tipadas en lugar de `Exception` generica
   - Cada excepcion integra con `ErrorCatalog` para codigos y mensajes centralizados
 
+### Parte F - Mapeo a Codigos HTTP para API REST (Completado)
+- **Cambios:**
+  - Creado `ApiError` DTO para respuestas de error estandarizadas (timestamp, status, code, message, path)
+  - Creado `GlobalExceptionHandler` con `@RestControllerAdvice`
+  - Mapeo de excepciones a HTTP status:
+    | Excepcion | HTTP Status |
+    |-----------|-------------|
+    | ResourceNotFoundException | 404 Not Found |
+    | ValidationException | 400 Bad Request |
+    | BusinessRuleException | 400 Bad Request |
+    | AuthenticationException | 401 Unauthorized |
+    | AuthorizationException | 403 Forbidden |
+    | ExternalServiceException | 502 Bad Gateway |
+    | MethodArgumentNotValidException | 400 Bad Request |
+    | ConstraintViolationException | 400 Bad Request |
+    | Exception (generica) | 500 Internal Server Error |
+  - Respuesta JSON uniforme para todos los errores
+  - Logging diferenciado: WARN para errores de cliente, ERROR para errores de servidor
+
 ---
 
 ## Historial de Cambios
