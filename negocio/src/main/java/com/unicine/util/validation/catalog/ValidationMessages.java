@@ -188,6 +188,7 @@ public final class ValidationMessages {
     // COMPRA Y CUPON
     // ============================================================
     
+    public static final String PURCHASE_STATUS_NOT_NULL = "El estado de la compra no puede estar vacio";
     public static final String PURCHASE_DATE_NOT_NULL = "La fecha de compra no puede estar vacia";
     public static final String PURCHASE_MOVIE_DATE_NOT_NULL = "La fecha de la pelicula no puede estar vacia";
     public static final String PURCHASE_MOVIE_DATE_FUTURE = "La fecha de la pelicula debe estar en el presente o en el futuro";

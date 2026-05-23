@@ -298,11 +298,11 @@ insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67ccc3e2432c47641609d9e1", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
 
 
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI");
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1007000033, 2, 5, 2, 59800, "2024-12-15T14:47:41", "2024-12-15T20:00:00", "VISA");
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1006000044, 3, 4, 3, 24000, "2024-12-16T19:12:04", "2024-12-20T20:00:00", "NEQUI");
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1005000055, 4, 3, 4, 54800, "2024-12-17T15:32:07", "2024-12-25T20:00:00", "MASTERCARD");
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago) values (1008000022, 5, 2, 5, 72000, "2024-12-16T20:30:12", "2024-12-29T20:00:00", "DAVIPLATA");
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1007000033, 2, 5, 2, 59800, "2024-12-15T14:47:41", "2024-12-15T20:00:00", "VISA", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1006000044, 3, 4, 3, 24000, "2024-12-16T19:12:04", "2024-12-20T20:00:00", "NEQUI", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1005000055, 4, 3, 4, 54800, "2024-12-17T15:32:07", "2024-12-25T20:00:00", "MASTERCARD", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 5, 2, 5, 72000, "2024-12-16T20:30:12", "2024-12-29T20:00:00", "DAVIPLATA", false);
 
 insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (1, 5, 1, 6000, 2);
 insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (1, 4, 2, 15000, 1);

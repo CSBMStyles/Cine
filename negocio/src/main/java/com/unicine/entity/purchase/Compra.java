@@ -47,6 +47,10 @@ public class Compra implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
 
+    @NotNull(message = ValidationMessages.PURCHASE_STATUS_NOT_NULL)
+    @Column(nullable = false)
+    private Boolean estado;
+
     @NotNull(message = ValidationMessages.PURCHASE_PAYMENT_NOT_NULL)
     @Column (nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
@@ -90,7 +94,8 @@ public class Compra implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public Compra(MedioPago medioPago, CuponCliente cuponCliente, Cliente cliente, Funcion funcion) {
+    public Compra(Boolean estado, MedioPago medioPago, CuponCliente cuponCliente, Cliente cliente, Funcion funcion) {
+        this.estado = estado;
         this.medioPago = medioPago;
         this.fechaCompra = LocalDateTime.now(ZoneId.of("America/Bogota"));
         this.cuponCliente = cuponCliente;
