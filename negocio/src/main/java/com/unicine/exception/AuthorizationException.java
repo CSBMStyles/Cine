@@ -1,6 +1,6 @@
 package com.unicine.exception;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 /**
  * Excepcion lanzada cuando un usuario autenticado no tiene permisos
@@ -15,23 +15,23 @@ import com.unicine.util.validation.catalog.ErrorCatalog;
  * 
  * @author UniCine
  * @version 1.0
- * @see ErrorCatalog#AUTH007
+ * @see ErrorCode#AUTH007
  */
 public class AuthorizationException extends UnicineException {
 
-    public AuthorizationException(ErrorCatalog errorCatalog) {
+    public AuthorizationException(ErrorCode errorCatalog) {
         super(errorCatalog);
     }
 
-    public AuthorizationException(ErrorCatalog errorCatalog, Object... args) {
+    public AuthorizationException(ErrorCode errorCatalog, Object... args) {
         super(errorCatalog, args);
     }
 
-    public AuthorizationException(ErrorCatalog errorCatalog, Throwable cause) {
+    public AuthorizationException(ErrorCode errorCatalog, Throwable cause) {
         super(errorCatalog, cause);
     }
 
-    public AuthorizationException(ErrorCatalog errorCatalog, Throwable cause, Object... args) {
+    public AuthorizationException(ErrorCode errorCatalog, Throwable cause, Object... args) {
         super(errorCatalog, cause, args);
     }
 }

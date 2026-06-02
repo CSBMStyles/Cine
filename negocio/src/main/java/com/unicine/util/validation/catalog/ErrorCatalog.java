@@ -2,19 +2,28 @@ package com.unicine.util.validation.catalog;
 
 /**
  * Catalogo centralizado de errores de negocio.
- * 
- * Cada error tiene:
- * - Codigo unico por dominio (formato: DOM###)
- * - Mensaje humano-legible
- * - Categoria funcional
- * 
- * NOTA: El HTTP status se define en el {@link ErrorResponse} / {@code @ControllerAdvice},
- * no en este enum, para mantener la capa de negocio desacoplada de HTTP.
- * 
+ *
+ * <p><strong>DEPRECATED:</strong> Este catalogo monolitico se mantiene temporalmente
+ * por compatibilidad. Los nuevos servicios deben usar los catalogos de dominio en
+ * {@link com.unicine.util.validation.catalog.domain}:
+ * <ul>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.UserErrorCatalog}</li>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.MovieErrorCatalog}</li>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.TheaterErrorCatalog}</li>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.ShowingErrorCatalog}</li>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog}</li>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.ImageErrorCatalog}</li>
+ *   <li>{@link com.unicine.util.validation.catalog.domain.SystemErrorCatalog}</li>
+ * </ul>
+ *
+ * @deprecated Usar catalogos de dominio en {@code com.unicine.util.validation.catalog.domain}.
+ *     Este archivo sera eliminado en una version futura cuando todos los servicios
+ *     esten migrados.
  * @author UniCine
- * @version 1.0
+ * @version 1.1
  */
-public enum ErrorCatalog {
+@Deprecated(since = "1.1", forRemoval = true)
+public enum ErrorCatalog implements ErrorCode {
 
     // ============================================================
     // VAL - VALIDACION DE PARAMETROS (400 Bad Request)

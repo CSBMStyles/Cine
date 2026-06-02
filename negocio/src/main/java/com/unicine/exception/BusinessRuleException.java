@@ -1,6 +1,6 @@
 package com.unicine.exception;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 /**
  * Excepcion lanzada cuando se viola una regla de negocio.
@@ -16,23 +16,23 @@ import com.unicine.util.validation.catalog.ErrorCatalog;
  * 
  * @author UniCine
  * @version 1.0
- * @see ErrorCatalog#REG001 through REG009
+ * @see ErrorCode#REG001 through REG009
  */
 public class BusinessRuleException extends UnicineException {
 
-    public BusinessRuleException(ErrorCatalog errorCatalog) {
+    public BusinessRuleException(ErrorCode errorCatalog) {
         super(errorCatalog);
     }
 
-    public BusinessRuleException(ErrorCatalog errorCatalog, Object... args) {
+    public BusinessRuleException(ErrorCode errorCatalog, Object... args) {
         super(errorCatalog, args);
     }
 
-    public BusinessRuleException(ErrorCatalog errorCatalog, Throwable cause) {
+    public BusinessRuleException(ErrorCode errorCatalog, Throwable cause) {
         super(errorCatalog, cause);
     }
 
-    public BusinessRuleException(ErrorCatalog errorCatalog, Throwable cause, Object... args) {
+    public BusinessRuleException(ErrorCode errorCatalog, Throwable cause, Object... args) {
         super(errorCatalog, cause, args);
     }
 }

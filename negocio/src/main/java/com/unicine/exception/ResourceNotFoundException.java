@@ -1,6 +1,6 @@
 package com.unicine.exception;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 /**
  * Excepcion lanzada cuando un recurso solicitado no existe en la base de datos.
@@ -14,23 +14,23 @@ import com.unicine.util.validation.catalog.ErrorCatalog;
  * 
  * @author UniCine
  * @version 1.0
- * @see ErrorCatalog#ENT001 through ENT022
+ * @see ErrorCode#ENT001 through ENT022
  */
 public class ResourceNotFoundException extends UnicineException {
 
-    public ResourceNotFoundException(ErrorCatalog errorCatalog) {
+    public ResourceNotFoundException(ErrorCode errorCatalog) {
         super(errorCatalog);
     }
 
-    public ResourceNotFoundException(ErrorCatalog errorCatalog, Object... args) {
+    public ResourceNotFoundException(ErrorCode errorCatalog, Object... args) {
         super(errorCatalog, args);
     }
 
-    public ResourceNotFoundException(ErrorCatalog errorCatalog, Throwable cause) {
+    public ResourceNotFoundException(ErrorCode errorCatalog, Throwable cause) {
         super(errorCatalog, cause);
     }
 
-    public ResourceNotFoundException(ErrorCatalog errorCatalog, Throwable cause, Object... args) {
+    public ResourceNotFoundException(ErrorCode errorCatalog, Throwable cause, Object... args) {
         super(errorCatalog, cause, args);
     }
 }

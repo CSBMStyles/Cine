@@ -1,6 +1,6 @@
 package com.unicine.exception;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 /**
  * Excepcion lanzada cuando falla la autenticacion de un usuario.
@@ -16,23 +16,23 @@ import com.unicine.util.validation.catalog.ErrorCatalog;
  * 
  * @author UniCine
  * @version 1.0
- * @see ErrorCatalog#AUTH001 through AUTH006
+ * @see ErrorCode#AUTH001 through AUTH006
  */
 public class AuthenticationException extends UnicineException {
 
-    public AuthenticationException(ErrorCatalog errorCatalog) {
+    public AuthenticationException(ErrorCode errorCatalog) {
         super(errorCatalog);
     }
 
-    public AuthenticationException(ErrorCatalog errorCatalog, Object... args) {
+    public AuthenticationException(ErrorCode errorCatalog, Object... args) {
         super(errorCatalog, args);
     }
 
-    public AuthenticationException(ErrorCatalog errorCatalog, Throwable cause) {
+    public AuthenticationException(ErrorCode errorCatalog, Throwable cause) {
         super(errorCatalog, cause);
     }
 
-    public AuthenticationException(ErrorCatalog errorCatalog, Throwable cause, Object... args) {
+    public AuthenticationException(ErrorCode errorCatalog, Throwable cause, Object... args) {
         super(errorCatalog, cause, args);
     }
 }

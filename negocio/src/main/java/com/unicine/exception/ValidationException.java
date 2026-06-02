@@ -1,6 +1,6 @@
 package com.unicine.exception;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 /**
  * Excepcion lanzada cuando falla la validacion de datos de entrada.
@@ -14,23 +14,23 @@ import com.unicine.util.validation.catalog.ErrorCatalog;
  * 
  * @author UniCine
  * @version 1.0
- * @see ErrorCatalog#VAL001 through VAL008
+ * @see ErrorCode#VAL001 through VAL008
  */
 public class ValidationException extends UnicineException {
 
-    public ValidationException(ErrorCatalog errorCatalog) {
+    public ValidationException(ErrorCode errorCatalog) {
         super(errorCatalog);
     }
 
-    public ValidationException(ErrorCatalog errorCatalog, Object... args) {
+    public ValidationException(ErrorCode errorCatalog, Object... args) {
         super(errorCatalog, args);
     }
 
-    public ValidationException(ErrorCatalog errorCatalog, Throwable cause) {
+    public ValidationException(ErrorCode errorCatalog, Throwable cause) {
         super(errorCatalog, cause);
     }
 
-    public ValidationException(ErrorCatalog errorCatalog, Throwable cause, Object... args) {
+    public ValidationException(ErrorCode errorCatalog, Throwable cause, Object... args) {
         super(errorCatalog, cause, args);
     }
 }

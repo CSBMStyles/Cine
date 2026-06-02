@@ -2,7 +2,7 @@ package com.unicine.exception.handler;
 
 import java.time.LocalDateTime;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -83,7 +83,7 @@ public class ApiError {
     }
 
     /**
-     * Crea una instancia desde un ErrorCatalog.
+     * Crea una instancia desde un ErrorCode.
      * 
      * @param status Codigo HTTP
      * @param error Nombre del error HTTP
@@ -91,7 +91,7 @@ public class ApiError {
      * @param path Ruta del endpoint
      * @return ApiError construido
      */
-    public static ApiError fromCatalog(int status, String error, ErrorCatalog errorCatalog, String path) {
+    public static ApiError fromCatalog(int status, String error, ErrorCode errorCatalog, String path) {
         return ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status)

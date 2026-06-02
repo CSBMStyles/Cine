@@ -1,6 +1,6 @@
 package com.unicine.exception;
 
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 /**
  * Excepcion base abstracta para el dominio UniCine.
@@ -16,7 +16,7 @@ import com.unicine.util.validation.catalog.ErrorCatalog;
  */
 public abstract class UnicineException extends RuntimeException {
 
-    private final ErrorCatalog errorCatalog;
+    private final ErrorCode errorCatalog;
     private final String formattedMessage;
     private final String errorCode;
 
@@ -25,7 +25,7 @@ public abstract class UnicineException extends RuntimeException {
      * 
      * @param errorCatalog Catalogo de error con codigo y mensaje base
      */
-    protected UnicineException(ErrorCatalog errorCatalog) {
+    protected UnicineException(ErrorCode errorCatalog) {
         super(errorCatalog.getMessage());
         this.errorCatalog = errorCatalog;
         this.formattedMessage = errorCatalog.getMessage();
@@ -38,7 +38,7 @@ public abstract class UnicineException extends RuntimeException {
      * @param errorCatalog Catalogo de error con codigo y mensaje base
      * @param args Argumentos para reemplazar en el mensaje ({0}, {1}, etc.)
      */
-    protected UnicineException(ErrorCatalog errorCatalog, Object... args) {
+    protected UnicineException(ErrorCode errorCatalog, Object... args) {
         super(errorCatalog.format(args));
         this.errorCatalog = errorCatalog;
         this.formattedMessage = errorCatalog.format(args);
@@ -51,7 +51,7 @@ public abstract class UnicineException extends RuntimeException {
      * @param errorCatalog Catalogo de error con codigo y mensaje base
      * @param cause Excepcion original que causó el error
      */
-    protected UnicineException(ErrorCatalog errorCatalog, Throwable cause) {
+    protected UnicineException(ErrorCode errorCatalog, Throwable cause) {
         super(errorCatalog.getMessage(), cause);
         this.errorCatalog = errorCatalog;
         this.formattedMessage = errorCatalog.getMessage();
@@ -65,14 +65,14 @@ public abstract class UnicineException extends RuntimeException {
      * @param cause Excepcion original que causó el error
      * @param args Argumentos para reemplazar en el mensaje ({0}, {1}, etc.)
      */
-    protected UnicineException(ErrorCatalog errorCatalog, Throwable cause, Object... args) {
+    protected UnicineException(ErrorCode errorCatalog, Throwable cause, Object... args) {
         super(errorCatalog.format(args), cause);
         this.errorCatalog = errorCatalog;
         this.formattedMessage = errorCatalog.format(args);
         this.errorCode = errorCatalog.getCode();
     }
 
-    public ErrorCatalog getErrorCatalog() {
+    public ErrorCode getErrorCatalog() {
         return errorCatalog;
     }
 
