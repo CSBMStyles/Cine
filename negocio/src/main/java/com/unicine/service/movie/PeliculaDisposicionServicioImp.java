@@ -15,7 +15,7 @@ import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
 
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.MovieErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -56,7 +56,7 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
     private void validarExiste(Optional<PeliculaDisposicion> peliculaDisposicion) throws Exception {
 
         if (peliculaDisposicion.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT011);
+            throw new ResourceNotFoundException(MovieErrorCatalog.ENT011);
         }
     }
 

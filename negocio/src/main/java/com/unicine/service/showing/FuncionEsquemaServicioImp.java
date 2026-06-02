@@ -17,7 +17,7 @@ import com.unicine.repository.theater.DistribucionSillaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
 
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -46,7 +46,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     private void validarExiste(Optional<FuncionEsquema> funcionEsquema) throws Exception {
 
         if (funcionEsquema.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT014);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT014);
         }
     }
 

@@ -22,8 +22,8 @@ import com.unicine.enums.purchase.MedioPago;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CompraServicio;
-import com.unicine.util.validation.catalog.ErrorCatalog;
 import com.unicine.util.validation.catalog.SuccessCatalog;
+import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
  * Tests unitarios para CompraServicioImp.
@@ -201,7 +201,7 @@ public class CompraServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(ErrorCatalog.ENT018.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.ENT018.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             System.out.println("Mensaje de error inesperado: " + e.getMessage());
@@ -244,7 +244,7 @@ public class CompraServicioTest {
 
         } catch (BusinessRuleException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(ErrorCatalog.REG007.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.REG007.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,7 +287,7 @@ public class CompraServicioTest {
 
         } catch (BusinessRuleException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(ErrorCatalog.REG006.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.REG006.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -314,7 +314,7 @@ public class CompraServicioTest {
 
         } catch (BusinessRuleException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(ErrorCatalog.REG009.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.REG009.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();

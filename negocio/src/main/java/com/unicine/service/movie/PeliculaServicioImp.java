@@ -12,7 +12,7 @@ import com.unicine.entity.movie.Pelicula;
 import com.unicine.repository.movie.PeliculaRepo;
 
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.MovieErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -36,7 +36,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private void validarExiste(Optional<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT009);
+            throw new ResourceNotFoundException(MovieErrorCatalog.ENT009);
         }
     }
 
@@ -47,7 +47,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private void validarExiste(List<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT010);
+            throw new ResourceNotFoundException(MovieErrorCatalog.ENT010);
         }
     }
 
@@ -60,7 +60,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         Optional<Pelicula> existe = peliculaRepo.obtenerPeliculaNombre(pelicula.getNombre());
        
         if (existe.isPresent()) {
-            throw new RuntimeException(ErrorCatalog.DUP003.getMessage());
+            throw new RuntimeException(MovieErrorCatalog.DUP003.getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         Optional<Pelicula> existe = peliculaRepo.obtenerNombreExcluido(pelicula.getNombre(), pelicula.getCodigo());
        
         if (existe.isPresent()) {
-            throw new RuntimeException(ErrorCatalog.DUP004.getMessage());
+            throw new RuntimeException(MovieErrorCatalog.DUP004.getMessage());
         }
     }
 

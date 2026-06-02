@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.unicine.entity.user.Persona;
 
 import java.util.List;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
 import com.unicine.exception.AuthenticationException;
 
 @Service
@@ -36,6 +36,6 @@ public class AuthenticationService {
             }
         }
 
-        throw new AuthenticationException(ErrorCatalog.AUTH001);
+        throw new AuthenticationException(UserErrorCatalog.AUTH001);
     }
 }

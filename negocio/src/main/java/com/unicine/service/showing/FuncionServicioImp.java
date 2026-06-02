@@ -17,7 +17,7 @@ import com.unicine.entity.theater.Sala;
 import com.unicine.repository.showing.FuncionRepo;
 
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -71,7 +71,7 @@ public class FuncionServicioImp implements FuncionServicio {
     private void validarExiste(Optional<Funcion> funcion) throws Exception {
 
         if (funcion.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT013);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT013);
         }
     }
 

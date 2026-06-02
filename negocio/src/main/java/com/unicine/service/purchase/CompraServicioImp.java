@@ -23,7 +23,9 @@ import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.user.ClienteRepo;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
+import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
 
 import jakarta.validation.Valid;
 
@@ -63,7 +65,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarExiste(Optional<Compra> compra) {
         if (compra.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
         }
     }
 
@@ -73,7 +75,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarExiste(List<Compra> compras) {
         if (compras.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
         }
     }
 
@@ -83,7 +85,7 @@ public class CompraServicioImp implements CompraServicio {
     private void validarClienteExiste(Integer cedula) {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT003);
+            throw new ResourceNotFoundException(UserErrorCatalog.ENT003);
         }
     }
 
@@ -93,7 +95,7 @@ public class CompraServicioImp implements CompraServicio {
     private void validarFuncionExiste(Integer codigo) {
         Optional<Funcion> funcion = funcionRepo.findById(codigo);
         if (funcion.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT013);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT013);
         }
     }
 
@@ -107,11 +109,11 @@ public class CompraServicioImp implements CompraServicio {
         }
 
         if (!cuponCliente.getEstado()) {
-            throw new BusinessRuleException(ErrorCatalog.REG006);
+            throw new BusinessRuleException(PurchaseErrorCatalog.REG006);
         }
 
         if (cuponCliente.getCupon().getFechaVencimiento().isBefore(LocalDateTime.now())) {
-            throw new BusinessRuleException(ErrorCatalog.REG007);
+            throw new BusinessRuleException(PurchaseErrorCatalog.REG007);
         }
     }
 
@@ -120,7 +122,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarDescuentoNoMayorTotal(Double descuento, Double total) {
         if (descuento > total) {
-            throw new BusinessRuleException(ErrorCatalog.REG008);
+            throw new BusinessRuleException(PurchaseErrorCatalog.REG008);
         }
     }
 
@@ -130,7 +132,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarCompraNoProcesada(Compra compra) {
         if (!compra.getEstado()) {
-            throw new BusinessRuleException(ErrorCatalog.REG009);
+            throw new BusinessRuleException(PurchaseErrorCatalog.REG009);
         }
     }
 
@@ -143,7 +145,7 @@ public class CompraServicioImp implements CompraServicio {
             Boolean ocupada = entradaRepo.sillaOcupadaFuncion(
                     entrada.getFila(), entrada.getColumna(), codigoFuncion);
             if (Boolean.TRUE.equals(ocupada)) {
-                throw new BusinessRuleException(ErrorCatalog.REG005);
+                throw new BusinessRuleException(PurchaseErrorCatalog.REG005);
             }
         }
     }
@@ -225,7 +227,7 @@ public class CompraServicioImp implements CompraServicio {
         if (cuponCliente != null) {
             Optional<CuponCliente> cc = cuponClienteRepo.findById(cuponCliente.getCodigo());
             if (cc.isEmpty()) {
-                throw new ResourceNotFoundException(ErrorCatalog.ENT016);
+                throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
             }
             cuponCliente = cc.get();
             validarCuponDisponible(cuponCliente);
@@ -268,7 +270,7 @@ public class CompraServicioImp implements CompraServicio {
     public Double obtenerTotalComprasCliente(Integer cedula) {
         Double total = compraRepo.obtenerTotalCompras(cedula);
         if (total == null) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
         }
         return total;
     }

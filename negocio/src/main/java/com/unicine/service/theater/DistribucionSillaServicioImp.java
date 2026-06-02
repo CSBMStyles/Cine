@@ -14,7 +14,7 @@ import com.unicine.repository.theater.DistribucionSillaRepo;
 
 import jakarta.validation.Valid;
 import com.google.gson.Gson;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.TheaterErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -38,7 +38,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     private void validarExiste(Optional<DistribucionSilla> distribucion) throws Exception {
 
         if (distribucion.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT012);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT012);
         }
     }
 

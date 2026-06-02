@@ -20,7 +20,7 @@ import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -80,7 +80,7 @@ public class HorarioServicioImp implements HorarioServicio {
     private void validarExiste(Optional<Horario> horario) throws Exception {
 
         if (horario.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT015);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT015);
         }
     }
 

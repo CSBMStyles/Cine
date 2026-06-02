@@ -16,7 +16,7 @@ import com.unicine.util.validation.group.OnUpdate;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.exception.ValidationException;
 import com.unicine.exception.AuthenticationException;
@@ -50,11 +50,11 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> administrador = administradorRepo.findByCorreo(correo);
 
         if (administrador.isEmpty()) {
-            throw new AuthenticationException(ErrorCatalog.AUTH002);
+            throw new AuthenticationException(UserErrorCatalog.AUTH002);
         }
 
         if (!encriptador.checkPassword(password, administrador.get().getPassword())) {
-            throw new AuthenticationException(ErrorCatalog.AUTH003);
+            throw new AuthenticationException(UserErrorCatalog.AUTH003);
         }
 
         return administrador.get();
@@ -68,7 +68,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     private void validarExiste(Optional<Administrador> administrador) throws Exception {
 
         if (administrador.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT001);
+            throw new ResourceNotFoundException(UserErrorCatalog.ENT001);
         }
     }
 
@@ -82,7 +82,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new ValidationException(ErrorCatalog.DUP001);
+            throw new ValidationException(UserErrorCatalog.DUP001);
         }
     }
 
@@ -96,7 +96,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(ErrorCatalog.DUP002.getMessage());
+            throw new RuntimeException(UserErrorCatalog.DUP002.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(ErrorCatalog.DUP002.getMessage());
+            throw new RuntimeException(UserErrorCatalog.DUP002.getMessage());
         }
     }
 
@@ -195,12 +195,12 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         
     // 2. Verificar que el password actual es correcto
     if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
-        throw new AuthenticationException(ErrorCatalog.AUTH004);
+        throw new AuthenticationException(UserErrorCatalog.AUTH004);
     }
 
     // 3. Verificar que el nuevo password sea diferente al actual
     if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
-        throw new AuthenticationException(ErrorCatalog.AUTH005);
+        throw new AuthenticationException(UserErrorCatalog.AUTH005);
     }
 
     administrador.setPassword(passwordNuevo);

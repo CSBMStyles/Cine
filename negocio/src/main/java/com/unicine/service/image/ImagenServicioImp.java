@@ -23,7 +23,7 @@ import io.imagekit.sdk.models.results.ResultFileVersionDetails;
 import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.ImageErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.exception.ValidationException;
 
@@ -54,7 +54,7 @@ public class ImagenServicioImp implements ImagenServicio {
     private void validarExiste(Optional<Imagen> imagen) throws Exception {
 
         if (imagen.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT020);
+            throw new ResourceNotFoundException(ImageErrorCatalog.ENT020);
         }
     }
 
@@ -67,7 +67,7 @@ public class ImagenServicioImp implements ImagenServicio {
             Optional<Imagen> imagenRelacion = imagenRepo.findByPersona(persona.getCedula());
             
             if (imagenRelacion.isPresent()) {
-                throw new ValidationException(ErrorCatalog.DUP007);
+                throw new ValidationException(ImageErrorCatalog.DUP007);
             }
         }  
     }

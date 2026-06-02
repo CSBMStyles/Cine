@@ -14,7 +14,7 @@ import com.unicine.repository.theater.SalaRepo;
 import com.unicine.util.initializer.SalaPrecioInit;
 
 import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.ErrorCatalog;
+import com.unicine.util.validation.catalog.domain.TheaterErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -51,7 +51,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(Optional<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT007);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT007);
         }
     }
 
@@ -63,7 +63,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(List<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new ResourceNotFoundException(ErrorCatalog.ENT008);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT008);
         }
     }
 
