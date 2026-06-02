@@ -66,7 +66,16 @@ Orden recomendado dentro de una clase de servicio:
 ## 4. Manejo de Excepciones
 
 - Usar exclusivamente las excepciones del paquete `com.unicine.exception`.
-- Usar los catalogos `ErrorCatalog` y `SuccessCatalog` para mensajes.
+- Usar los catalogos de dominio en `com.unicine.util.validation.catalog.domain`:
+  - `UserErrorCatalog` (usuarios, autenticacion)
+  - `MovieErrorCatalog` (peliculas)
+  - `TheaterErrorCatalog` (teatros, salas, ciudades)
+  - `ShowingErrorCatalog` (funciones, horarios)
+  - `PurchaseErrorCatalog` (compras, entradas, cupones)
+  - `ImageErrorCatalog` (imagenes, servicios externos)
+  - `SystemErrorCatalog` (validacion, errores generales)
+- El `ErrorCatalog` legacy esta `@Deprecated` y se mantendra temporalmente por compatibilidad.
+- Todos los catalogos de error implementan `ErrorCode`.
 - No lanzar `RuntimeException` ni `Exception` genericos con mensajes hardcodeados.
 
 ---
