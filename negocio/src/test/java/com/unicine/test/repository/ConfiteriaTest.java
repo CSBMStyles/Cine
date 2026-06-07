@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.enums.confiteria.CategoriaConfiteria;
 import com.unicine.repository.confiteria.ConfiteriaRepo;
 
 @DataJpaTest
@@ -28,8 +29,8 @@ public class ConfiteriaTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        Confiteria confiteria = new Confiteria("Papas Fritas", 5000.00);
-        confiteria.setCodigo(6);
+        Confiteria confiteria = new Confiteria("Papas Fritas", 5000.00, CategoriaConfiteria.SNACK);
+        confiteria.setCodigo(15);
 
         Confiteria guardado = confiteriaRepo.save(confiteria);
 
@@ -97,7 +98,7 @@ public class ConfiteriaTest {
 
         List<Confiteria> confiterias = confiteriaRepo.findAll();
 
-        Assertions.assertEquals(5, confiterias.size());
+        Assertions.assertEquals(14, confiterias.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -127,7 +128,7 @@ public class ConfiteriaTest {
 
         List<Confiteria> confiterias = confiteriaRepo.findAll(Sort.by("nombre"));
 
-        Assertions.assertEquals(5, confiterias.size());
+        Assertions.assertEquals(14, confiterias.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 

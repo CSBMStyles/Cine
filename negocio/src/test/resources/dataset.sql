@@ -267,11 +267,20 @@ insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1007000033, 2, 1, 4);
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1008000022, 1, 0, 5);
 
-insert into confiteria (id, precio, nombre) values (1, 15000, "Combo para Niños");
-insert into confiteria (id, precio, nombre) values (2, 49900, "Combo para Pareja");
-insert into confiteria (id, precio, nombre) values (3, 29800, "Crispeta + Dos Gaseosas");
-insert into confiteria (id, precio, nombre) values (4, 19900, "Gaseosa + Perro Caliente + Crispeta + KitKat");
-insert into confiteria (id, precio, nombre) values (5, 6000, "Nevado de Arequipe");
+insert into confiteria (id, precio, nombre, categoria) values (1, 32000, "Combo Mega", "COMBO");
+insert into confiteria (id, precio, nombre, categoria) values (2, 18000, "Combo Sencillo", "COMBO");
+insert into confiteria (id, precio, nombre, categoria) values (3, 28000, "Combo Pareja", "COMBO");
+insert into confiteria (id, precio, nombre, categoria) values (4, 15000, "Crispeta Grande", "SNACK");
+insert into confiteria (id, precio, nombre, categoria) values (5, 10000, "Crispeta Mediana", "SNACK");
+insert into confiteria (id, precio, nombre, categoria) values (6, 8000, "Gaseosa 600ml", "BEBIDA");
+insert into confiteria (id, precio, nombre, categoria) values (7, 5000, "Agua sin gas", "BEBIDA");
+insert into confiteria (id, precio, nombre, categoria) values (8, 12000, "Perro Caliente", "SNACK");
+insert into confiteria (id, precio, nombre, categoria) values (9, 14000, "Nachos con Queso", "SNACK");
+insert into confiteria (id, precio, nombre, categoria) values (10, 3500, "Chocorramo", "DULCE");
+insert into confiteria (id, precio, nombre, categoria) values (11, 2500, "Supercoco", "DULCE");
+insert into confiteria (id, precio, nombre, categoria) values (12, 3000, "Jet", "DULCE");
+insert into confiteria (id, precio, nombre, categoria) values (13, 7000, "Helado de Arequipe", "OTROS");
+insert into confiteria (id, precio, nombre, categoria) values (14, 6000, "Cafe", "OTROS");
 
 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c243ec432c4764163416e0", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Pepe-Rodrigez", null, null, 1009000011, null, null);
@@ -296,6 +305,12 @@ insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf9570432c476416bac374", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-1", null, null, null, 5, null);
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67bf95db432c476416bd3216", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/Encanto-2", null, null, null, 5, null);
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67ccc3e2432c47641609d9e1", "https://ik.imagekit.io/vfreipue8w/unicine/peliculas/Encanto/DSC-3672-M", null, null, null, 5, null);
+
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d111111111111111111111", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/combo-mega", null, null, null, null, 1);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d222222222222222222222", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/combo-sencillo", null, null, null, null, 2);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d333333333333333333333", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/crispeta-grande", null, null, null, null, 4);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d444444444444444444444", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/gaseosa", null, null, null, null, 6);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d555555555555555555555", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/chocorramo", null, null, null, null, 10);
 
 
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI", true);
