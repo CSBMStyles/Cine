@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Size;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
@@ -23,6 +25,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.enums.confiteria.CategoriaConfiteria;
 import com.unicine.util.validation.catalog.ValidationMessages;
 
 @Entity
@@ -51,6 +54,11 @@ public class Confiteria implements Serializable, Imagenable {
     @Column(nullable = false)
     private Double precio;
 
+    @NotNull(message = ValidationMessages.CONFECTIONERY_CATEGORY_NOT_NULL)
+    @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private CategoriaConfiteria categoria;
+
     // SECTION: Relaciones
 
     @ToString.Exclude
@@ -64,9 +72,10 @@ public class Confiteria implements Serializable, Imagenable {
     // SECTION: Constructor
 
     @Builder
-    public Confiteria(String nombre, Double precio) {
+    public Confiteria(String nombre, Double precio, CategoriaConfiteria categoria) {
         this.nombre = nombre;
         this.precio = precio;
+        this.categoria = categoria;
     }
 
     @Override

@@ -228,6 +228,7 @@ public final class ValidationMessages {
     public static final String CONFECTIONERY_NAME_SIZE_MAX_100 = "El nombre no puede tener mas de cien caracteres";
     public static final String CONFECTIONERY_PRICE_NOT_NULL = "El precio no puede estar vacio";
     public static final String CONFECTIONERY_PRICE_POSITIVE_OR_ZERO = "El precio debe ser un numero positivo o cero";
+    public static final String CONFECTIONERY_CATEGORY_NOT_NULL = "La categoria no puede estar vacia";
     
     // ============================================================
     // IMAGEN
