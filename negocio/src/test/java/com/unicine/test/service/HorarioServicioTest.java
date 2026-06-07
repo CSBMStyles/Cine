@@ -42,8 +42,8 @@ public class HorarioServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2025, 12, 30, 20, 00);
-        LocalDateTime fechaFin = LocalDateTime.of(2025, 12, 30, 22, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 22, 00);
 
         Horario horario = new Horario(fechaInicio, fechaFin);
 
@@ -97,8 +97,8 @@ public class HorarioServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2025, 12, 24, 15, 00);
-        LocalDateTime fechaFin = LocalDateTime.of(2025, 12, 24, 16, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 24, 15, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 24, 16, 00);
 
         Horario horario;
 
@@ -218,7 +218,7 @@ public class HorarioServicioTest {
         try {
             List<Horario> lista = horarioServicio.listar();
 
-            Assertions.assertEquals(7, lista.size());
+            Assertions.assertEquals(8, lista.size());
 
             System.out.println("\n" + "Listado de registros:");
 
@@ -239,11 +239,11 @@ public class HorarioServicioTest {
     @ParameterizedTest
     @CsvSource({
         // Caso 1: Intervalo completamente dentro del horario existente {17:00 - 18:00}
-        "'2025-12-22T17:30:00','2025-12-22T17:59:00'",
+        "'2026-12-22T17:30:00','2026-12-22T17:59:00'",
         // Caso 2: La hora de inicio es anterior, pero el final se cruza {final en 17:30]
-        "'2025-12-22T16:30:00','2025-12-22T17:30:00'",
+        "'2026-12-22T16:30:00','2026-12-22T17:30:00'",
         // Caso 3: La hora de inicio se cruza, pero el final es posterior {inicia a 17:30 y final posterior a 18:00}
-        "'2025-12-22T17:30:00','2025-12-22T18:30:00'"
+        "'2026-12-22T17:30:00','2026-12-22T18:30:00'"
     })
     @Sql("classpath:dataset.sql")
     public void registrarSolapado(String inicioStr, String finStr) {

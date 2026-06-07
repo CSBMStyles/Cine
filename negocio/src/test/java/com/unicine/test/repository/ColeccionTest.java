@@ -44,7 +44,7 @@ public class ColeccionTest {
 
         Pelicula pelicula = peliculaRepo.findById(1).orElse(null);
         
-        Coleccion coleccion = new Coleccion(2.0, EstadoPropio.FAVORITO, cliente, pelicula);
+        Coleccion coleccion = new Coleccion(2.0, EstadoPropio.FAVORITO, true, cliente, pelicula);
 
         Coleccion guardado = coleccionRepo.save(coleccion);
 

@@ -143,7 +143,7 @@ public class AdministradorTest {
     @Sql("classpath:dataset.sql")
     public void findByCorreo() {
             
-        Optional<Administrador> buscado = administradorRepo.findByCorreo("cristianbarrera100@gmail.com");
+        Optional<Administrador> buscado = administradorRepo.findByCorreo("cristiansimelot@gmail.com");
 
         Assertions.assertTrue(buscado.isPresent());
 
@@ -156,7 +156,7 @@ public class AdministradorTest {
     @Sql("classpath:dataset.sql")
     public void comprobarAutenticacion() {
             
-        Optional<Administrador> buscado = administradorRepo.comprobarAutenticacion("cristianbarrera100@gmail.com", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+        Optional<Administrador> buscado = administradorRepo.comprobarAutenticacion("cristiansimelot@gmail.com", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
 
         Assertions.assertTrue(buscado.isPresent());
 

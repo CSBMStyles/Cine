@@ -210,7 +210,7 @@ public class CompraServicioTest {
     }
 
     @Test
-    @Sql("classpath:dataset.sql")
+    @Sql({"classpath:dataset.sql", "classpath:expired-cupon.sql"})
     public void registrarCuponExpirado() {
 
         Integer cedula = 1005000055;
@@ -220,7 +220,7 @@ public class CompraServicioTest {
         Funcion funcion = new Funcion();
         funcion.setCodigo(codigoFuncion);
         CuponCliente cuponCliente = new CuponCliente();
-        cuponCliente.setCodigo(1);
+        cuponCliente.setCodigo(6);
 
         Compra compra = Compra.builder()
                 .estado(true)

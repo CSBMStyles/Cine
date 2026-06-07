@@ -80,8 +80,8 @@ public class FuncionServicioTest {
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2025, 12, 30, 20, 00);
-        LocalDateTime fechaFin = LocalDateTime.of(2025, 12, 30, 22, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 22, 00);
 
         Horario horario = null;
 
@@ -280,7 +280,7 @@ public class FuncionServicioTest {
 
             try {
 
-                LocalDateTime fechaInicio = LocalDateTime.of(2025, 12, 14, 05, 30);
+                LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 14, 05, 30);
 
                 horario.setFechaInicio(fechaInicio);
 
@@ -484,7 +484,7 @@ public class FuncionServicioTest {
         try {
             List<Funcion> lista = funcionServicio.listar();
 
-            Assertions.assertEquals(7, lista.size());
+            Assertions.assertEquals(8, lista.size());
 
             System.out.println("\n" + "Listado de registros:");
 

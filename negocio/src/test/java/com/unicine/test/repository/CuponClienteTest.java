@@ -47,7 +47,6 @@ public class CuponClienteTest {
         Cliente cliente = clienteRepo.findById(1009000011).orElse(null);
 
         CuponCliente cuponCliente = new CuponCliente(false, cupon, cliente);
-        cuponCliente.setCodigo(6);
 
         CuponCliente guardado = cuponClienteRepo.save(cuponCliente);
 

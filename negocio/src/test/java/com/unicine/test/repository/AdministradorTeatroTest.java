@@ -155,7 +155,7 @@ public class AdministradorTeatroTest {
     @Sql("classpath:dataset.sql")
     public void comprobarAutenticacion() {
             
-        Optional<AdministradorTeatro> buscado = administradorTeatroRepo.comprobarAutenticacion("jhona.belloc@uqvirtual.edu.co", "fe5i/PFsjWU0/+4VjImKacbXbnsiQ07+L49lGB5bq4fQ5u5lMiNXljo0s+oSV73N");
+        Optional<AdministradorTeatro> buscado = administradorTeatroRepo.comprobarAutenticacion("jhona.belloc@uqvirtual.edu.co", "2yQDxc1BvJs5J/S2LYLAlv5J3hM2ebZfXLucsoK7BQQIJCQPBlTn9sFL+oOOX/D5");
 
         Assertions.assertTrue(buscado.isPresent());
 

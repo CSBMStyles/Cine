@@ -106,13 +106,13 @@ public class AdministradorTeatroServicioTest {
             mensajeEsperado = "al menos ocho caracteres";
 
         } else if ("Abc12345".equals(password)) {
-            mensajeEsperado = "al menos un carácter especial";
+            mensajeEsperado = "al menos un caracter especial";
 
         } else if ("abc12345!".equals(password)) {
-            mensajeEsperado = "al menos una letra mayúscula";
+            mensajeEsperado = "al menos una letra mayuscula";
 
         } else {
-            mensajeEsperado = "al menos una letra minúscula";
+            mensajeEsperado = "al menos una letra minuscula";
         }
 
         Assertions.assertTrue(

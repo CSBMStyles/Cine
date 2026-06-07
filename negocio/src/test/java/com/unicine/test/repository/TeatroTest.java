@@ -40,10 +40,9 @@ public class TeatroTest {
 
         Ciudad ciudad = ciudadRepo.findById(1).orElse(null);
 
-        AdministradorTeatro admin = adminRepo.findById(1).orElse(null);
+        AdministradorTeatro admin = adminRepo.findById(1119000000).orElse(null);
         
         Teatro teatro = new Teatro("Carrera 15 # 1-2 Centro", "3162594316", ciudad, admin);
-        teatro.setCodigo(7);
 
         Teatro guardado = teatroRepo.save(teatro);
 

@@ -45,7 +45,6 @@ public class CompraConfiteriaTest {
         Confiteria confiteria = confiteriaRepo.findById(1).orElse(null);
 
         CompraConfiteria compraConfiteria = new CompraConfiteria(16000.00, 2, compra, confiteria);
-        compraConfiteria.setCodigo(7);
 
         CompraConfiteria guardado = compraConfiteriaRepo.save(compraConfiteria);
 

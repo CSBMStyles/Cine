@@ -33,7 +33,6 @@ public class CiudadTest {
     public void registrar() {
 
         Ciudad ciudad = new Ciudad("Cartagena");
-        ciudad.setCodigo(6);
 
         Ciudad guardado = ciudadRepo.save(ciudad);
 

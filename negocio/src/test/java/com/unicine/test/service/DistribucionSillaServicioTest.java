@@ -159,7 +159,7 @@ public class DistribucionSillaServicioTest {
         try {
             DistribucionSilla distribucion = distribucionServicio.obtener(1).orElse(null);
 
-            Assertions.assertEquals(5, distribucion.getCodigo());
+            Assertions.assertEquals(1, distribucion.getCodigo());
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + distribucion);
 

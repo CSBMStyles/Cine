@@ -4,9 +4,11 @@ import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.enums.movie.EstadoPelicula;
+import com.unicine.event.movie.PeliculaStateChangeEvent;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,16 @@ public class EstadoPeliculaService {
 
     private final FuncionRepo funcionRepo;
 
-    public EstadoPeliculaService(TaskScheduler taskScheduler, PeliculaDisposicionRepo disposicionRepo, FuncionRepo funcionRepo) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    private final HistorialEstadoPeliculaServicio historialServicio;
+
+    public EstadoPeliculaService(TaskScheduler taskScheduler, PeliculaDisposicionRepo disposicionRepo, FuncionRepo funcionRepo, ApplicationEventPublisher eventPublisher, HistorialEstadoPeliculaServicio historialServicio) {
         this.taskScheduler = taskScheduler;
         this.disposicionRepo = disposicionRepo;
         this.funcionRepo = funcionRepo;
+        this.eventPublisher = eventPublisher;
+        this.historialServicio = historialServicio;
     }
 
     /**
@@ -52,7 +60,28 @@ public class EstadoPeliculaService {
                 disposicion.setFechaFuncionInicial(LocalDateTime.now(ZoneId.of("America/Bogota")));
             }
 
-            return disposicionRepo.save(disposicion);
+            PeliculaDisposicion actualizada = disposicionRepo.save(disposicion);
+
+            // Emitir evento de cambio de estado
+            PeliculaStateChangeEvent evento = new PeliculaStateChangeEvent(
+                actualizada.getPelicula().getCodigo() + actualizada.getCiudad().getCodigo(), // id compuesto simple
+                actualizada.getPelicula().getCodigo(),
+                actualizada.getCiudad().getCodigo(),
+                estadoActual,
+                nuevoEstado,
+                LocalDateTime.now(ZoneId.of("America/Bogota"))
+            );
+            eventPublisher.publishEvent(evento);
+
+            // Registrar en historial
+            historialServicio.registrar(
+                actualizada.getPelicula().getCodigo(),
+                actualizada.getCiudad().getCodigo(),
+                estadoActual,
+                nuevoEstado
+            );
+
+            return actualizada;
         }
         
         return disposicion;

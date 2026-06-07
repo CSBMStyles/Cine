@@ -66,7 +66,6 @@ public class CompraTest {
         Funcion funcion = funcionRepo.findById(1).orElse(null);
 
         CuponCliente cuponCliente = new CuponCliente(true, cupon, cliente);
-        cuponCliente.setCodigo(6);
 
         CuponCliente cuponClienteSave = cuponClienteRepo.save(cuponCliente);
 
@@ -75,7 +74,6 @@ public class CompraTest {
 
         compra.setFechaPelicula(funcion.getHorario().getFechaInicio());
         compra.setValorTotal(20000.0);
-        compra.setCodigo(6);
 
         Compra guardado = compraRepo.save(compra);
 

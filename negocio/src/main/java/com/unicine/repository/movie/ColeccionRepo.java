@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.unicine.entity.movie.Coleccion;
+import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.movie.composed.ColeccionCompuesta;
 
 @Repository
@@ -49,4 +50,13 @@ public interface ColeccionRepo extends JpaRepository<Coleccion, ColeccionCompues
      */
     @Query("SELECT COUNT(c) FROM Coleccion c WHERE c.cliente.cedula = :cedula")
     Long contarPorCliente(Integer cedula);
+
+    /**
+     * Obtiene las colecciones de una pelicula donde el cliente tiene activadas las notificaciones.
+     *
+     * @param pelicula Pelicula a buscar
+     * @param notificacionActiva Estado de la notificacion
+     * @return Lista de colecciones con notificaciones activas
+     */
+    List<Coleccion> findByPeliculaAndNotificacionActiva(Pelicula pelicula, Boolean notificacionActiva);
 }

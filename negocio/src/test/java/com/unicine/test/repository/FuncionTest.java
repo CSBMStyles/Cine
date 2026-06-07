@@ -60,12 +60,13 @@ public class FuncionTest {
 
         Sala sala = salaRepo.findById(1).orElse(null);
 
-        Horario horario = horarioRepo.findById(1).orElse(null);
+        Horario horario = new Horario(LocalDateTime.of(2026, 12, 30, 20, 0), LocalDateTime.of(2026, 12, 30, 22, 0));
+        horario = horarioRepo.save(horario);
 
         Pelicula pelicula = peliculaRepo.findById(1).orElse(null);
 
         Funcion funcion = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
-        funcion.setCodigo(8);
+        funcion.setPrecio(10000.0);
 
         Funcion guardado = funcionRepo.save(funcion);
 
@@ -133,7 +134,7 @@ public class FuncionTest {
 
         List<Funcion> funciones = funcionRepo.findAll();
 
-        Assertions.assertEquals(7, funciones.size());
+        Assertions.assertEquals(8, funciones.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -163,7 +164,7 @@ public class FuncionTest {
 
         List<Funcion> funciones = funcionRepo.findAll(Sort.by("codigo").ascending());
 
-        Assertions.assertEquals(7, funciones.size());
+        Assertions.assertEquals(8, funciones.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 
@@ -197,7 +198,7 @@ public class FuncionTest {
 
         List<Funcion> funciones = funcionRepo.listarFuncionesSala(1);
 
-        Assertions.assertEquals(1, funciones.size());
+        Assertions.assertEquals(3, funciones.size());
 
         System.out.println("\n" + "Listado de funciones por sala:");
 
@@ -210,7 +211,7 @@ public class FuncionTest {
     @Sql("classpath:dataset.sql")
     public void listarFuncionesTeatro() {
 
-        List<Funcion> funciones = funcionRepo.listarFuncionesTeatro(1);
+        List<Funcion> funciones = funcionRepo.listarFuncionesTeatro(2);
 
         Assertions.assertEquals(1, funciones.size());
 
@@ -256,7 +257,7 @@ public class FuncionTest {
     public void listarDetallesFunciones() {
         List<DetalleFuncionesProjection> detalle = funcionRepo.listarDetallesFunciones(1);
 
-        Assertions.assertEquals(1, detalle.size());
+        Assertions.assertEquals(2, detalle.size());
 
         // Mapeamos manualmente cada proyección a nuestro DTO
         List<DetalleFuncionesDTO> dtos = detalle.stream().map(funcionMapper::convertirDTO).collect(Collectors.toList());
@@ -270,7 +271,7 @@ public class FuncionTest {
     @Sql("classpath:dataset.sql")
     public void funcionesComprasVaciasTeatro() {
 
-        List<Funcion> funciones = funcionRepo.funcionesComprasVaciasTeatro(1);
+        List<Funcion> funciones = funcionRepo.funcionesComprasVaciasTeatro(2);
 
         Assertions.assertEquals(1, funciones.size());
 
@@ -285,11 +286,11 @@ public class FuncionTest {
     @Sql("classpath:dataset.sql")
     public void listarFuncionesTeatroFecha() {
 
-        LocalDate fechaRecibida = LocalDate.of(2024, 12, 15);
+        LocalDate fechaRecibida = LocalDate.of(2026, 12, 15);
 
         LocalDateTime fechaFin = fechaRecibida.atStartOfDay().plusDays(1);
 
-        List<Funcion> funciones = funcionRepo.listarFuncionesTeatroFecha(1, LocalDateTime.now(ZoneId.of("America/Bogota")), fechaFin);
+        List<Funcion> funciones = funcionRepo.listarFuncionesTeatroFecha(2, LocalDateTime.now(ZoneId.of("America/Bogota")), fechaFin);
 
         Assertions.assertEquals(1, funciones.size());
 

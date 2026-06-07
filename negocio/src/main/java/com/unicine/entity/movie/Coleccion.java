@@ -41,6 +41,9 @@ public class Coleccion implements Serializable {
     @Enumerated(EnumType.STRING)
     private EstadoPropio estadoPeliculaPropio;
 
+    @Column(nullable = false)
+    private Boolean notificacionActiva = true;
+
     // SECTION: Relaciones
 
     @Id
@@ -56,9 +59,10 @@ public class Coleccion implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public Coleccion(Double puntuacion, EstadoPropio estadoPeliculaPropio, Cliente cliente, Pelicula pelicula) {
+    public Coleccion(Double puntuacion, EstadoPropio estadoPeliculaPropio, Boolean notificacionActiva, Cliente cliente, Pelicula pelicula) {
         this.puntuacion = puntuacion;
         this.estadoPeliculaPropio = estadoPeliculaPropio;
+        this.notificacionActiva = notificacionActiva != null ? notificacionActiva : true;
         this.cliente = cliente;
         this.pelicula = pelicula;
     }

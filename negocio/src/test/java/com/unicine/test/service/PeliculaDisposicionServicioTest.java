@@ -106,16 +106,16 @@ public class PeliculaDisposicionServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(1, 1);
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(1, 3);
 
         try {
             PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
 
-            peliculaDisposicion.setEstadoPelicula(EstadoPelicula.PREVENTA);
+            peliculaDisposicion.setEstadoPelicula(EstadoPelicula.ESTRENO);
 
             PeliculaDisposicion actualizado = peliculaDisposicionServicio.actualizar(peliculaDisposicion);
 
-            Assertions.assertEquals(EstadoPelicula.PREVENTA, actualizado.getEstadoPelicula());
+            Assertions.assertEquals(EstadoPelicula.ESTRENO, actualizado.getEstadoPelicula());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
@@ -164,7 +164,8 @@ public class PeliculaDisposicionServicioTest {
         try {
             PeliculaDisposicion peliculaDisposicion = peliculaDisposicionServicio.obtener(codigo).orElse(null);
 
-            Assertions.assertEquals(codigo, peliculaDisposicion.getCiudad().getCodigo() + peliculaDisposicion.getPelicula().getCodigo());
+            Assertions.assertEquals(codigo.getCiudad(), peliculaDisposicion.getCiudad().getCodigo());
+            Assertions.assertEquals(codigo.getPelicula(), peliculaDisposicion.getPelicula().getCodigo());
 
             System.out.println("\n" + "Registro encontrado:" + "\n" + peliculaDisposicion);
 
@@ -261,8 +262,8 @@ public class PeliculaDisposicionServicioTest {
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2025, 03, 20, 15, 00);
-        LocalDateTime fechaFin = LocalDateTime.of(2025, 03, 20, 17, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 03, 20, 15, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2026, 03, 20, 17, 00);
 
         Horario horario = null;
 
@@ -407,7 +408,7 @@ public class PeliculaDisposicionServicioTest {
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
         // El horario lo ponemos en un futuro proximo para simular la existencia de una funcion existente y tambien mientras de se hace la prueba ver como cambia el estado de la disposicion al llegar el tiempo de la fechaInicio
 
-        LocalDateTime fechaInicio = LocalDateTime.now().plusSeconds(30);
+        LocalDateTime fechaInicio = LocalDateTime.now().plusSeconds(2);
         LocalDateTime fechaFin = LocalDateTime.now().plusHours(1);
 
         Horario horario = null;
@@ -506,7 +507,7 @@ public class PeliculaDisposicionServicioTest {
         try {
             System.out.println("Esperando que comience la función a las " + fechaInicio);
             // Esperamos hasta después de la fecha de inicio
-            Thread.sleep(12000); // 12 segundos
+            Thread.sleep(5000); // 5 segundos
             
             // Invocamos el método automático (similar a lo que haría el scheduler)
             // Esto ejecuta la misma lógica que ejecutaría automáticamente

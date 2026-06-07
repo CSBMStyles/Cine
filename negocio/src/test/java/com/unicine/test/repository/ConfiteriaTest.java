@@ -30,7 +30,6 @@ public class ConfiteriaTest {
     public void registrar() {
 
         Confiteria confiteria = new Confiteria("Papas Fritas", 5000.00, CategoriaConfiteria.SNACK);
-        confiteria.setCodigo(15);
 
         Confiteria guardado = confiteriaRepo.save(confiteria);
 

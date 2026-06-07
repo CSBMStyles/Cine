@@ -32,11 +32,10 @@ public class HorarioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2024, 12, 30, 20, 00);
-        LocalDateTime fechaFin = LocalDateTime.of(2024, 12, 30, 22, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 22, 00);
 
         Horario horario = new Horario(fechaInicio, fechaFin);
-        horario.setCodigo(7);
 
         Horario guardado = horarioRepo.save(horario);
 
@@ -55,12 +54,12 @@ public class HorarioTest {
 
         System.out.println(guardado);
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2024, 12, 10, 16, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 10, 16, 00);
         guardado.setFechaInicio(fechaInicio);
 
         Horario actualizado = horarioRepo.save(guardado);
 
-        Assertions.assertEquals("2024-12-10T16:00", actualizado.getFechaInicio().toString());
+        Assertions.assertEquals("2026-12-10T16:00", actualizado.getFechaInicio().toString());
 
         System.out.println("\n" + "Registro actualizado:");
 
@@ -103,7 +102,7 @@ public class HorarioTest {
     @Sql("classpath:dataset.sql")
     public void obtenerDiaHora() {
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2024, 12, 30, 20, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
 
         // Crear un formateador con tres letras para el día
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE", Locale.of("es"));
@@ -124,7 +123,7 @@ public class HorarioTest {
 
         List<Horario> horarios = horarioRepo.findAll();
 
-        Assertions.assertEquals(6, horarios.size());
+        Assertions.assertEquals(8, horarios.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -152,9 +151,9 @@ public class HorarioTest {
     @Sql("classpath:dataset.sql")
     public void listarOrdenado() {
 
-        List<Horario> horarios = horarioRepo.findAll(Sort.by("criterio"));
+        List<Horario> horarios = horarioRepo.findAll(Sort.by("codigo"));
 
-        Assertions.assertEquals(6, horarios.size());
+        Assertions.assertEquals(8, horarios.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 

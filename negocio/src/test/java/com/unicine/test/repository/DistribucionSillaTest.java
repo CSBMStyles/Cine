@@ -46,7 +46,6 @@ public class DistribucionSillaTest {
         String esquema = gson.toJson(matriz);
 
         DistribucionSilla distribucionSilla = new DistribucionSilla(esquema, 100, 10, 10);
-        distribucionSilla.setCodigo(6);
 
         DistribucionSilla guardado = distribucionSillaRepo.save(distribucionSilla);
 

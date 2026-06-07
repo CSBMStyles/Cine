@@ -192,7 +192,7 @@ public class SalaServicioTest {
         try {
             List<Sala> lista = salaServicio.listar();
 
-            Assertions.assertEquals(6, lista.size());
+            Assertions.assertEquals(8, lista.size());
 
             System.out.println("\n" + "Listado de registros:");
 

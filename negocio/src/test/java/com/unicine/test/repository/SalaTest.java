@@ -44,7 +44,6 @@ public class SalaTest {
         DistribucionSilla distribucionSilla = distribucionSillaRepo.findById(1).orElse(null);
 
         Sala sala = new Sala("Patacol", TipoSala.valueOf("XD"), teatro, distribucionSilla);
-        sala.setCodigo(9);
 
         Sala guardado = salaRepo.save(sala);
 

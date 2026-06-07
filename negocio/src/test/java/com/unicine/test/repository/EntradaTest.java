@@ -36,7 +36,6 @@ public class EntradaTest {
         Compra compra = compraRepo.findById(1).orElse(null);
 
         Entrada entrada = new Entrada(5000.00, 5, 2, compra);
-        entrada.setCodigo(7);
 
         Entrada guardado = entradaRepo.save(entrada);
 

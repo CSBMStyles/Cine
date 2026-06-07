@@ -52,7 +52,6 @@ public class PeliculaTest {
 
         EstadoPelicula estado = EstadoPelicula.CARTELERA;
         Pelicula pelicula = new Pelicula(estado, generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
-        pelicula.setCodigo(6);
 
         Pelicula guardado = peliculaRepo.save(pelicula);
 
@@ -207,7 +206,7 @@ public class PeliculaTest {
     @Sql("classpath:dataset.sql")
     public void obtenerPeliculaFecha() {
 
-        List<Object[]> peliculas = peliculaRepo.obtenerPeliculaFecha(1, LocalDate.of(2024, 12, 14));
+        List<Object[]> peliculas = peliculaRepo.obtenerPeliculaFecha(1, LocalDate.of(2026, 12, 14));
 
         Assertions.assertEquals(1, peliculas.size());
 

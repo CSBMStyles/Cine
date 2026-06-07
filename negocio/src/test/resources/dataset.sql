@@ -107,14 +107,14 @@ insert into sala (distribucion_silla_id, id, teatro_id, nombre, tipo_sala) value
 insert into sala (distribucion_silla_id, id, teatro_id, nombre, tipo_sala) values (5, 7, 1, "Plaza Imperial", "DX4");
 insert into sala (distribucion_silla_id, id, teatro_id, nombre, tipo_sala) values (1, 8, 1, "Colon", "IMAX");
 
-insert into horario (id, fecha_fin, fecha_inicio) values (1, "2025-12-14T06:00:00", "2025-12-14T05:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (2, "2025-12-15T09:00:00", "2025-12-15T08:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (3, "2025-12-16T12:00:00", "2025-12-16T11:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (4, "2025-12-17T15:00:00", "2025-12-17T14:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (5, "2025-12-22T18:00:00", "2025-12-22T17:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (6, "2025-12-24T15:00:00", "2025-12-24T14:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (7, "2025-12-24T21:00:00", "2025-12-24T20:00:00");
-insert into horario (id, fecha_fin, fecha_inicio) values (8, "2025-12-24T23:00:00", "2025-12-24T22:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (1, "2026-12-14T06:00:00", "2026-12-14T05:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (2, "2026-12-15T09:00:00", "2026-12-15T08:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (3, "2026-12-16T12:00:00", "2026-12-16T11:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (4, "2026-12-17T15:00:00", "2026-12-17T14:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (5, "2026-12-22T18:00:00", "2026-12-22T17:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (6, "2026-12-24T15:00:00", "2026-12-24T14:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (7, "2026-12-24T21:00:00", "2026-12-24T20:00:00");
+insert into horario (id, fecha_fin, fecha_inicio) values (8, "2026-12-24T23:00:00", "2026-12-24T22:00:00");
 
 insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (1, 4.2, 18, "Pinocho", "https://www.youtube.com/embed/TITv1TNi5mI", "PREVENTA", "En un pueblo italiano, el títere de madera Pinocho cobra vida gracias al Hada Azul. Pinocho se esfuerza por comportarse como un niño de carne y hueso, pero su vida da un giro al abandonar a su padre para unirse a un circo.");
 insert into pelicula (id, puntuacion, restriccion_edad, nombre, url_trailer, estado, sinopsis) values (2, 3.5, null, "Dragon Ball: Super Hero", "https://www.youtube.com/embed/lXLPVQ-WrU4", "CARTELERA", "La malvada organización Red Ribbon Army se reforma con nuevos y más poderosos androides, Gamma {1} y Gamma {2} para buscar venganza.");
@@ -154,13 +154,13 @@ insert into pelicula_generos (generos, pelicula_id) values (10, 5);
 insert into pelicula_generos (generos, pelicula_id) values (12, 5);
 
 -- Registros que tienen funciones
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 3, "ESTRENO", "2025-12-16T11:00:00");
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 3, "CARTELERA", "2025-12-24T20:00:00");
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 4, "CARTELERA", "2025-12-24T14:00:00");
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 5, "CARTELERA", "2025-12-22T17:00:00");
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (3, 4, "ESTRENO", "2025-12-17T14:00:00");
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (4, 1, "ESTRENO", "2025-12-14T05:00:00");
-insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (4, 2, "ESTRENO", "2025-12-15T08:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 3, "ESTRENO", "2026-12-16T11:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 3, "CARTELERA", "2026-12-24T20:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 4, "CARTELERA", "2026-12-24T14:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (2, 5, "CARTELERA", "2026-12-22T17:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (3, 4, "ESTRENO", "2026-12-17T14:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (4, 1, "ESTRENO", "2026-12-14T05:00:00");
+insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (4, 2, "ESTRENO", "2026-12-15T08:00:00");
 
 -- Registros sin funciones activas
 insert into pelicula_disposicion (ciudad_id, pelicula_id, estado_pelicula, fecha_funcion_inicial) values (1, 1, "PREVENTA", null);
@@ -258,8 +258,8 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
             ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"]
         ]', 112, 0, 0, 7);
 
-insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.15, 1, "2022-12-25T20:00:00", "Primer registro", "Cupon del 15% de descuento por registrarse por primera vez en nuestra plataforma");
-insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.1, 2, "2022-12-19T15:45:00", "Primera compra", "Cupon del 10% de descuento por realizar una primera compra por medio de nuestra plataforma");
+insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.15, 1, "2026-12-25T20:00:00", "Primer registro", "Cupon del 15% de descuento por registrarse por primera vez en nuestra plataforma");
+insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.1, 2, "2026-12-19T15:45:00", "Primera compra", "Cupon del 10% de descuento por realizar una primera compra por medio de nuestra plataforma");
 
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1005000055, 1, 1, 1);
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000044, 2, 0, 2);
@@ -313,11 +313,11 @@ insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d555555555555555555555", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/chocorramo", null, null, null, null, 10);
 
 
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 1, 6, 1, 17000, "2024-12-20T18:32:25", "2024-12-21T20:00:00", "NEQUI", true);
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1007000033, 2, 5, 2, 59800, "2024-12-15T14:47:41", "2024-12-15T20:00:00", "VISA", true);
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1006000044, 3, 4, 3, 24000, "2024-12-16T19:12:04", "2024-12-20T20:00:00", "NEQUI", true);
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1005000055, 4, 3, 4, 54800, "2024-12-17T15:32:07", "2024-12-25T20:00:00", "MASTERCARD", true);
-insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 5, 2, 5, 72000, "2024-12-16T20:30:12", "2024-12-29T20:00:00", "DAVIPLATA", false);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 1, 6, 1, 17000, "2026-12-20T18:32:25", "2026-12-21T20:00:00", "NEQUI", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1007000033, 2, 5, 2, 59800, "2026-12-15T14:47:41", "2026-12-15T20:00:00", "VISA", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1006000044, 3, 4, 3, 24000, "2026-12-16T19:12:04", "2026-12-20T20:00:00", "NEQUI", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1005000055, 4, 3, 4, 54800, "2026-12-17T15:32:07", "2026-12-25T20:00:00", "MASTERCARD", true);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 5, 2, 5, 72000, "2026-12-16T20:30:12", "2026-12-29T20:00:00", "DAVIPLATA", false);
 
 insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (1, 5, 1, 6000, 2);
 insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (1, 4, 2, 15000, 1);
@@ -333,8 +333,8 @@ insert into entrada (columna, compra_id, fila, id, precio) values (4, 4, 2, 4, 5
 insert into entrada (columna, compra_id, fila, id, precio) values (5, 4, 2, 5, 54800);
 insert into entrada (columna, compra_id, fila, id, precio) values (5, 5, 3, 6, 72000);
 
-insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio) values (1009000011, 1, 4.0, "VISTO");
-insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio) values (1008000022, 1, 3.0, "EN_ESPERA");
-insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio) values (1008000022, 2, 5.0, "VISTO");
-insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio) values (1007000033, 3, 4.0, "FAVORITO");
-insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio) values (1006000044, 3, 1.0, "VISTO");
+insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1009000011, 1, 4.0, "VISTO", true);
+insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1008000022, 1, 3.0, "EN_ESPERA", false);
+insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1008000022, 2, 5.0, "VISTO", true);
+insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1007000033, 3, 4.0, "FAVORITO", true);
+insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1006000044, 3, 1.0, "VISTO", true);

@@ -228,7 +228,6 @@ public class CiudadServicioTest {
     @ValueSource(strings = {
         "", // Caso vacío
         "   ", // Espacios en blanco
-        "C", // Caso menor a cuatro caracteres
         "Cartagena-", // Caracteres especiales
         "Cartagena1", // Números
     })

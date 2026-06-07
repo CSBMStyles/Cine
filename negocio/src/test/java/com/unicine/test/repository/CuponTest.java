@@ -29,10 +29,9 @@ public class CuponTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        LocalDateTime fechaVencimiento = LocalDateTime.of(2024, 12, 31, 23, 59);
+        LocalDateTime fechaVencimiento = LocalDateTime.of(2026, 12, 31, 23, 59);
 
         Cupon cupon = new Cupon("Cupon del 15% de descuento por aniversario", 0.15, "Aniversario uno", fechaVencimiento);
-        cupon.setCodigo(3);
 
         Cupon guardado = cuponRepo.save(cupon);
 
