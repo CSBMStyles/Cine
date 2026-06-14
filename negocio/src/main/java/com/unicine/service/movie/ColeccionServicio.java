@@ -1,5 +1,6 @@
 package com.unicine.service.movie;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,11 +34,11 @@ public interface ColeccionServicio {
     void eliminar(@Valid Coleccion coleccion, boolean confirmacion) throws Exception;
 
     Optional<Coleccion> obtener(
-            @NotNull(message = "La cedula no puede estar vacia")
-            @Positive(message = "La cedula debe ser un numero positivo")
+            @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
+            @Positive(message = ValidationMessages.CEDULA_POSITIVE)
             Integer cedula,
-            @NotNull(message = "El codigo de pelicula no puede estar vacio")
-            @Positive(message = "El codigo debe ser un numero positivo")
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigoPelicula) throws Exception;
 
     List<Coleccion> listar();

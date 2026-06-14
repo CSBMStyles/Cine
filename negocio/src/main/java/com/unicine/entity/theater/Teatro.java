@@ -40,12 +40,12 @@ public class Teatro implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = ValidationMessages.ADDRESS_NOT_BLANK)
-    @Size(min = 4, max = 100, message = ValidationMessages.ADDRESS_SIZE_MIN_4)
+    @Size(min = 4, max = 100, message = ValidationMessages.ADDRESS_SIZE_MIN_FOUR)
     @Column(nullable = false, length = 100)
     private String direccion;
 
     @NotBlank(message = ValidationMessages.THEATER_PHONE_NOT_BLANK)
-    @Pattern(regexp = "^.{10}$", message = ValidationMessages.PHONE_SIZE_EXACT_10)
+    @Pattern(regexp = "^.{10}$", message = ValidationMessages.PHONE_SIZE_EXACT_TEN)
     @Column(nullable = false, length = 20)
     private String telefono;
 

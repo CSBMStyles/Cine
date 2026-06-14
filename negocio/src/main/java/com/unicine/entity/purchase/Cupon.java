@@ -53,7 +53,7 @@ public class Cupon implements Serializable {
     private Double descuento;
 
     @NotBlank(message = ValidationMessages.COUPON_CRITERION_NOT_BLANK)
-    @Size(max = 100, message = ValidationMessages.CRITERION_SIZE_MAX_100)
+    @Size(max = 100, message = ValidationMessages.CRITERION_SIZE_MAX_HUNDRED)
     @Column(nullable = false, length = 100)
     private String criterio;
 

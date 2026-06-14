@@ -32,7 +32,7 @@ public class Coleccion implements Serializable {
 
     // SECTION: Atributos
 
-    @Max(value = 5, message = ValidationMessages.MOVIE_RATING_MAX_5)
+    @Max(value = 5, message = ValidationMessages.MOVIE_RATING_MAX_FIVE)
     @Positive(message = ValidationMessages.MOVIE_RATING_POSITIVE)
     @Column(nullable = true)
     private Double puntuacion;

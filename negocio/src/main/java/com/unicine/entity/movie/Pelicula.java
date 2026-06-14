@@ -55,31 +55,31 @@ public class Pelicula implements Serializable, Imagenable {
     private List<GeneroPelicula> generos;
 
     @NotBlank(message = ValidationMessages.MOVIE_NAME_NOT_BLANK)
-    @Size(max = 100, message = ValidationMessages.MOVIE_NAME_SIZE_MAX_100)
+    @Size(max = 100, message = ValidationMessages.MOVIE_NAME_SIZE_MAX_HUNDRED)
     @Column(nullable = false, length = 100)
     private String nombre;
 
     @ElementCollection
     @Column(nullable = true)
-    private Map<@Size(max = 150, message = ValidationMessages.MOVIE_ACTOR_ROLE_SIZE_MAX_150) String,
-                @Size(max = 150, message = ValidationMessages.MOVIE_ACTOR_NAME_SIZE_MAX_150) String> repartos;
+    private Map<@Size(max = 150, message = ValidationMessages.MOVIE_ACTOR_ROLE_SIZE_MAX_ONE_HUNDRED_FIFTY) String,
+                @Size(max = 150, message = ValidationMessages.MOVIE_ACTOR_NAME_SIZE_MAX_ONE_HUNDRED_FIFTY) String> repartos;
 
     @Lob
     @NotNull(message = ValidationMessages.MOVIE_SYNOPSIS_NOT_BLANK)
     @Column(nullable = false, columnDefinition = "text")
     private String sinopsis;
 
-    @Size(max = 200, message = ValidationMessages.MOVIE_TRAILER_URL_SIZE_MAX_200)
+    @Size(max = 200, message = ValidationMessages.MOVIE_TRAILER_URL_SIZE_MAX_TWO_HUNDRED)
     @Column(nullable = true, length = 200)
     private String urlTrailer;
 
     @NotNull(message = ValidationMessages.VALUE_NOT_NULL)
-    @Max(value = 5, message = ValidationMessages.MOVIE_RATING_MAX_5)
+    @Max(value = 5, message = ValidationMessages.MOVIE_RATING_MAX_FIVE)
     @Positive(message = ValidationMessages.MOVIE_RATING_POSITIVE)
     @Column(nullable = false)
     private Double puntuacion;
 
-    @Max(value = 30, message = ValidationMessages.MOVIE_AGE_RESTRICTION_MAX_30)
+    @Max(value = 30, message = ValidationMessages.MOVIE_AGE_RESTRICTION_MAX_THIRTY)
     @Positive(message = ValidationMessages.MOVIE_AGE_RESTRICTION_POSITIVE)
     @Column(nullable = true)
     private Integer restriccionEdad;

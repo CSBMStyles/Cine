@@ -43,7 +43,7 @@ public class Sala implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = ValidationMessages.ROOM_NAME_NOT_BLANK)
-    @Size(max = 100, message = ValidationMessages.NAME_SIZE_MAX_100)
+    @Size(max = 100, message = ValidationMessages.NAME_SIZE_MAX_HUNDRED)
     @Column(nullable = false, length = 100)
     private String nombre;
 

@@ -1,5 +1,6 @@
 package com.unicine.service.theater;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,13 +28,13 @@ public interface SalaServicio {
 
     // *️⃣ Funciones Globales
 
-    Optional<Sala> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
+    Optional<Sala> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Sala> obtenerNombre(@NotBlank(message = "El nombre no puede estar en blanco") String nombre) throws Exception;
+    List<Sala> obtenerNombre(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
 
-    Optional<Sala> obtenerIdTeatro(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo, @NotNull(message = "El código de teatro no puede estar vacío") @Positive(message = "El código de teatro debe ser un número positivo") Integer teatro) throws Exception;
+    Optional<Sala> obtenerIdTeatro(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
 
-    List<Sala> obtenerNombresTeatro(@NotBlank(message = "El nombre no puede estar en blanco") String nombre, @NotNull(message = "El código de teatro no puede estar vacío") @Positive(message = "El código de teatro debe ser un número positivo") Integer teatro) throws Exception;
+    List<Sala> obtenerNombresTeatro(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
 
     List<Sala> listar();
 

@@ -45,7 +45,7 @@ public class Confiteria implements Serializable, Imagenable {
     private Integer codigo;
 
     @NotBlank(message = ValidationMessages.CONFECTIONERY_NAME_NOT_BLANK)
-    @Size(max = 100, message = ValidationMessages.CONFECTIONERY_NAME_SIZE_MAX_100)
+    @Size(max = 100, message = ValidationMessages.CONFECTIONERY_NAME_SIZE_MAX_HUNDRED)
     @Column(nullable = false, length = 100)
     private String nombre;
 

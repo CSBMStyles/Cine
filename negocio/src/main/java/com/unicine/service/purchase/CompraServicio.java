@@ -1,5 +1,6 @@
 package com.unicine.service.purchase;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public interface CompraServicio {
 
     void eliminar(@Valid Compra compra) throws Exception;
 
-    Optional<Compra> obtener(@NotNull(message = "El codigo no puede estar vacio") @Positive(message = "El codigo debe ser un numero positivo") Integer codigo) throws Exception;
+    Optional<Compra> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
     List<Compra> listar();
 
@@ -31,7 +32,7 @@ public interface CompraServicio {
 
     Compra registrarCompraCompleta(Compra compra, List<Entrada> entradas, List<CompraConfiteria> confiterias) throws Exception;
 
-    List<Compra> obtenerComprasCliente(@NotNull(message = "La cedula no puede estar vacia") @Positive(message = "La cedula debe ser un numero positivo") Integer cedula) throws Exception;
+    List<Compra> obtenerComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
 
-    Double obtenerTotalComprasCliente(@NotNull(message = "La cedula no puede estar vacia") @Positive(message = "La cedula debe ser un numero positivo") Integer cedula) throws Exception;
+    Double obtenerTotalComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
 }

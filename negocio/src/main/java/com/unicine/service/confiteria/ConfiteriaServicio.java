@@ -1,5 +1,6 @@
 package com.unicine.service.confiteria;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +30,8 @@ public interface ConfiteriaServicio {
     void eliminar(@Valid Confiteria confiteria, boolean confirmacion) throws Exception;
 
     Optional<Confiteria> obtener(
-            @NotNull(message = "El codigo no puede estar vacio")
-            @Positive(message = "El codigo debe ser un numero positivo")
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
 
     List<Confiteria> listar();

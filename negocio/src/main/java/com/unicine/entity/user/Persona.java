@@ -39,18 +39,18 @@ public class Persona {
     private Integer cedula;
 
     @NotBlank(message = ValidationMessages.NAME_NOT_BLANK)
-    @Size(max = 50, message = ValidationMessages.NAME_SIZE_MAX_50)
+    @Size(max = 50, message = ValidationMessages.NAME_SIZE_MAX_FIFTY)
     @Column(nullable = false, length = 50)
     private String nombre;
 
     @NotBlank(message = ValidationMessages.NAME_NOT_BLANK)
-    @Size(max = 50, message = ValidationMessages.NAME_SIZE_MAX_50)
+    @Size(max = 50, message = ValidationMessages.NAME_SIZE_MAX_FIFTY)
     @Column(nullable = false, length = 50)
     private String apellido;
 
     @NotBlank(message = ValidationMessages.EMAIL_NOT_NULL)
     @Email(message = ValidationMessages.EMAIL_INVALID)
-    @Size(max = 150, message = ValidationMessages.EMAIL_SIZE_MAX_150)
+    @Size(max = 150, message = ValidationMessages.EMAIL_SIZE_MAX_ONE_HUNDRED_FIFTY)
     @Column(nullable = false, length = 150)
     private String correo;
 
@@ -59,7 +59,7 @@ public class Persona {
         message = ValidationMessages.PASSWORD_NOT_BLANK,
         groups = OnCreate.class
     )
-    @Size(min = 8, max = 200, message = ValidationMessages.PASSWORD_SIZE_MIN_8, groups = OnCreate.class)
+    @Size(min = 8, max = 200, message = ValidationMessages.PASSWORD_SIZE_MIN_EIGHT, groups = OnCreate.class)
     @Pattern.List({
         @Pattern(
             regexp = "^(?=.*[A-Z]).+$",

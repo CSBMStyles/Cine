@@ -38,7 +38,7 @@ public class Ciudad implements Serializable {
     private Integer codigo;
 
     @NotBlank(message = ValidationMessages.CITY_NAME_NOT_BLANK)
-    @Size(min = 2, max = 100, message = ValidationMessages.CITY_NAME_SIZE_MIN_2)
+    @Size(min = 2, max = 100, message = ValidationMessages.CITY_NAME_SIZE_MIN_TWO)
     @Pattern(
         regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$",
         message = ValidationMessages.CITY_NAME_PATTERN

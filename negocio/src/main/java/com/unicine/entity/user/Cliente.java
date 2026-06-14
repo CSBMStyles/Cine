@@ -47,7 +47,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     @Column(nullable = false)
     private LocalDate fechaNacimiento;
 
-    @Size(max = 5, message = ValidationMessages.PHONE_LIST_MAX_5)
+    @Size(max = 5, message = ValidationMessages.PHONE_LIST_MAX_FIVE)
     @Pattern.List({
         @Pattern(
             regexp = "^[0-9]+$",
@@ -55,7 +55,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
         ),
         @Pattern(
             regexp = "^.{10}$",
-            message = ValidationMessages.PHONE_SIZE_EXACT_10
+            message = ValidationMessages.PHONE_SIZE_EXACT_TEN
         )
     })
     @ElementCollection

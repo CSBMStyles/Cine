@@ -1,5 +1,6 @@
 package com.unicine.service.user;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public interface PersonaServicio<T extends Persona> {
 
     void eliminar(@Valid T persona, boolean confirmacion) throws Exception;
 
-    Optional<T> obtener(@NotNull(message = "La cédula no puede estar vacía") @Positive(message = "La cédula debe ser un número positivo") Integer cedula) throws Exception;
+    Optional<T> obtener(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
 
     List<T> listar();
 }

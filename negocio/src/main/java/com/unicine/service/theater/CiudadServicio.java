@@ -1,5 +1,6 @@
 package com.unicine.service.theater;
 
+import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +23,9 @@ public interface CiudadServicio {
 
     // *️⃣ Funciones Generales
 
-    Optional<Ciudad> obtener(@NotNull(message = "El código no puede estar vacío") @Positive(message = "El código debe ser un número positivo") Integer codigo) throws Exception;
+    Optional<Ciudad> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Ciudad> obtenerNombre(@NotBlank(message = "El nombre no puede estar en blanco") String nombre) throws Exception;
+    List<Ciudad> obtenerNombre(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
 
     List<Ciudad> listar();
 
