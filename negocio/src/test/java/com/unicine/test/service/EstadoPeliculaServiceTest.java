@@ -53,7 +53,7 @@ public class EstadoPeliculaServiceTest {
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void cambioEstadoPreventaAEstrenoEnTiempoReal() throws InterruptedException {
+    public void cambioEstadoPreventaEstrenoTiempoReal() throws InterruptedException {
 
         // Arrange: usar disposicion existente en ciudad 4 (Bogota), pelicula 1
         // La sala 6 pertenece al teatro 2 que esta en ciudad 4
@@ -82,24 +82,36 @@ public class EstadoPeliculaServiceTest {
         funcion.setPelicula(disposicion.getPelicula());
         funcionRepo.save(funcion);
 
-        // Act 1: verificar estado antes de que pase el tiempo
-        PeliculaDisposicion antes = estadoPeliculaService.actualizarEstado(disposicion);
-        EstadoPelicula estadoAntes = antes.getEstadoPelicula();
+        // Act 1: verificar estado inicial antes de que pase el tiempo
+        PeliculaDisposicion estadoInicial = estadoPeliculaService.actualizarEstado(disposicion);
+        EstadoPelicula estadoAntes = estadoInicial.getEstadoPelicula();
 
         // Assert 1: deberia estar en PREVENTA (funcion no ha empezado)
         Assertions.assertEquals(EstadoPelicula.PREVENTA, estadoAntes,
             "Antes de la fecha de inicio, la pelicula deberia estar en PREVENTA");
 
-        // Esperar 6 segundos para que la funcion empiece
-        Thread.sleep(6000);
+        // Esperar 5 segundos para llegar al segundo 5
+        Thread.sleep(5000);
 
-        // Act 2: re-evaluar estado despues de que paso el tiempo
-        PeliculaDisposicion despues = estadoPeliculaService.actualizarEstado(antes);
-        EstadoPelicula estadoDespues = despues.getEstadoPelicula();
+        // Act 2: verificar estado al segundo 5
+        PeliculaDisposicion estadoSegundo5 = estadoPeliculaService.actualizarEstado(estadoInicial);
+        EstadoPelicula estadoEn5 = estadoSegundo5.getEstadoPelicula();
+        System.out.println("Estado al segundo 5: " + estadoEn5);
 
-        // Assert 2: deberia estar en ESTRENO (funcion ya comenzo)
-        Assertions.assertEquals(EstadoPelicula.ESTRENO, estadoDespues,
+        // Esperar 5 segundos para llegar al segundo 10
+        Thread.sleep(5000);
+
+        // Act 3: verificar estado al segundo 10
+        PeliculaDisposicion estadoSegundo10 = estadoPeliculaService.actualizarEstado(estadoSegundo5);
+        EstadoPelicula estadoEn10 = estadoSegundo10.getEstadoPelicula();
+        System.out.println("Estado al segundo 10: " + estadoEn10);
+
+        // Assert 2: al segundo 10 deberia estar en ESTRENO (funcion ya comenzo)
+        Assertions.assertEquals(EstadoPelicula.ESTRENO, estadoEn10,
             "Despues de la fecha de inicio, la pelicula deberia estar en ESTRENO");
+
+        // Esperar 5 segundos para completar los 15 segundos totales
+        Thread.sleep(5000);
 
         // Assert 3: verificar que se registro en historial
         List<HistorialEstadoPelicula> historial = historialServicio.obtenerPorPelicula(
@@ -108,9 +120,5 @@ public class EstadoPeliculaServiceTest {
         );
         Assertions.assertFalse(historial.isEmpty(),
             "Deberia existir al menos un registro en el historial de cambios");
-
-        System.out.println("Test de cambio de estado en tiempo real completado exitosamente");
-        System.out.println("Estado antes: " + estadoAntes);
-        System.out.println("Estado despues: " + estadoDespues);
     }
 }
