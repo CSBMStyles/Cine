@@ -281,6 +281,7 @@ insert into confiteria (id, precio, nombre, categoria) values (11, 2500, "Superc
 insert into confiteria (id, precio, nombre, categoria) values (12, 3000, "Jet", "DULCE");
 insert into confiteria (id, precio, nombre, categoria) values (13, 7000, "Helado de Arequipe", "OTROS");
 insert into confiteria (id, precio, nombre, categoria) values (14, 6000, "Cafe", "OTROS");
+insert into confiteria (id, precio, nombre, categoria) values (15, 3000, "De Toditos Rojo", "SNACK");
 
 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c243ec432c4764163416e0", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Pepe-Rodrigez", null, null, 1009000011, null, null);
