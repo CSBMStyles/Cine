@@ -65,9 +65,9 @@ public class EstadoPeliculaServiceTest {
         disposicion.setEstadoPelicula(EstadoPelicula.PREVENTA);
         disposicion = disposicionRepo.save(disposicion);
 
-        // Crear horario que empieza en 5 segundos
+        // Crear horario que empieza en 8 segundos (para que al segundo 5 siga en PREVENTA)
         LocalDateTime ahora = LocalDateTime.now(ZoneId.of("America/Bogota"));
-        Horario horario = new Horario(ahora.plusSeconds(5), ahora.plusHours(2));
+        Horario horario = new Horario(ahora.plusSeconds(8), ahora.plusHours(2));
         horario = horarioRepo.save(horario);
 
         // Obtener sala 6 (teatro 2 -> ciudad 4, coincide con disposicion)
