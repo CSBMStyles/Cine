@@ -7,7 +7,8 @@ Rules:
 - Before touching ANY file, create a backup point:
   - `git status --short`
   - `git diff --stat`
-  - `git stash push -m "pre-opencode-backup: <timestamp> - <context>" --include-untracked`
+  - Check for untracked files (e.g., image folders, data files). Do NOT use `--include-untracked` by default, as it will remove them from the working tree and stash them. Only use `--include-untracked` if the user explicitly requests it or if the untracked files are safe to stash.
+  - `git stash push -m "pre-opencode-backup: <timestamp> - <context>"`
   - If the stash fails because there are no changes, note that no backup was needed.
 - If there is a previous stash from an earlier backup in this session, do NOT overwrite it — create a new stash instead.
 - After stashing, verify the working tree is clean:
