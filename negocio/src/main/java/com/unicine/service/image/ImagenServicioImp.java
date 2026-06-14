@@ -83,6 +83,13 @@ public class ImagenServicioImp implements ImagenServicio {
         } else {
 
             String nombreEntidad = refactorizadorRuta.remplazarDenominacion(propietario.getNombre());
+
+            String subCarpeta = propietario.getSubCarpeta();
+
+            if (subCarpeta != null) {
+
+                return propietario.getCarpetaPrefijo() + "/" + subCarpeta + "/" + nombreEntidad;
+            }
     
             return propietario.getCarpetaPrefijo() + "/" + nombreEntidad;
         }
@@ -166,7 +173,7 @@ public class ImagenServicioImp implements ImagenServicio {
     // 1️⃣ Funcion del Administrador
 
     @Override
-    public Imagen registrar(@Valid Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
+    public Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
 
         validarExisteImagen(propietario);
 
@@ -182,7 +189,7 @@ public class ImagenServicioImp implements ImagenServicio {
     }
 
     @Override
-    public Imagen actualizar(@Valid Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
+    public Imagen actualizar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
         
         validarTamanoImagen(file);
         

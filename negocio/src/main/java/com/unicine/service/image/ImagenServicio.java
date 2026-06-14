@@ -14,9 +14,9 @@ public interface ImagenServicio {
 
     // *️⃣ Funciones Generales
 
-    Imagen registrar(@Valid Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception;
+    Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception;
 
-    Imagen actualizar(@Valid Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception;
+    Imagen actualizar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception;
 
     Imagen restaurar(@Valid Imagen imagen, String versionId) throws Exception;
 

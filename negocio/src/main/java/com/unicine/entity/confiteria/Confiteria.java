@@ -78,8 +78,17 @@ public class Confiteria implements Serializable, Imagenable {
         this.categoria = categoria;
     }
 
+    // SECTION: Implementacion de Imagenable
+
     @Override
     public String getCarpetaPrefijo() {
         return "confiterias";
     }
+
+    @Override
+    public String getSubCarpeta() {
+        return categoria.name().toLowerCase();
+    }
+
+    // !SECTION
 }
