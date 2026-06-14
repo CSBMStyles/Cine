@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -33,15 +32,13 @@ public class ImagenServicioImp implements ImagenServicio {
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final ImagenRepo imagenRepo;
+    private final ImageKitService imageKitService;
+    private final RefactorizadorRuta refactorizadorRuta;
 
-    @Autowired
-    private ImageKitService imageKitService;
-
-    @Autowired
-    private RefactorizadorRuta refactorizadorRuta;
-
-    public ImagenServicioImp(ImagenRepo imagenRepo) {
+    public ImagenServicioImp(ImagenRepo imagenRepo, ImageKitService imageKitService, RefactorizadorRuta refactorizadorRuta) {
         this.imagenRepo = imagenRepo;
+        this.imageKitService = imageKitService;
+        this.refactorizadorRuta = refactorizadorRuta;
     }
 
     // SECTION: Metodos de soporte

@@ -3,7 +3,6 @@ package com.unicine.service.movie;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,12 +23,11 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final PeliculaDisposicionRepo peliculaDisposicionRepo;
+    private final EstadoPeliculaService estadoPeliculaServicio;
 
-    @Autowired
-    private EstadoPeliculaService estadoPeliculaServicio; // Se inyecta el servicio de estado de pelicula para poder cambiar el estado de la disposicion de pelicula
-
-    public PeliculaDisposicionServicioImp(PeliculaDisposicionRepo peliculaDisposicionRepo) {
+    public PeliculaDisposicionServicioImp(PeliculaDisposicionRepo peliculaDisposicionRepo, EstadoPeliculaService estadoPeliculaServicio) {
         this.peliculaDisposicionRepo = peliculaDisposicionRepo;
+        this.estadoPeliculaServicio = estadoPeliculaServicio;
     }
 
     // SECTION: Metodos de soporte

@@ -3,7 +3,6 @@ package com.unicine.service.image;
 import java.util.List;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,16 +25,16 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class ImageKitService {
 
-    @Autowired
-    private ImageKitConfig imageKitConfig;
-
-    @Autowired
-    private ProcesadorImagen procesadorImagen;
-
-    @Autowired
-    private RefactorizadorRuta refactorizadorRuta;
-
+    private final ImageKitConfig imageKitConfig;
+    private final ProcesadorImagen procesadorImagen;
+    private final RefactorizadorRuta refactorizadorRuta;
     private ImageKit imageKit;
+
+    public ImageKitService(ImageKitConfig imageKitConfig, ProcesadorImagen procesadorImagen, RefactorizadorRuta refactorizadorRuta) {
+        this.imageKitConfig = imageKitConfig;
+        this.procesadorImagen = procesadorImagen;
+        this.refactorizadorRuta = refactorizadorRuta;
+    }
 
     @PostConstruct
     public void init() {

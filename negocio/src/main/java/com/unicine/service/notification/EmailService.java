@@ -1,6 +1,5 @@
 package com.unicine.service.notification;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -10,8 +9,11 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
+
+    public EmailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     /**
      * Método para enviar un correo electrónico.

@@ -5,7 +5,6 @@ import com.unicine.service.theater.SalaServicio;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,15 +25,13 @@ public class FuncionServicioImp implements FuncionServicio {
 
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final FuncionRepo funcionRepo;
+    private final SalaServicio salaServicio;
+    private final HorarioServicio horarioServicio;
 
-    @Autowired
-    private SalaServicio salaServicio;
-
-    @Autowired
-    private HorarioServicio horarioServicio;
-
-    public FuncionServicioImp(FuncionRepo funcionRepo) {
+    public FuncionServicioImp(FuncionRepo funcionRepo, SalaServicio salaServicio, HorarioServicio horarioServicio) {
         this.funcionRepo = funcionRepo;
+        this.salaServicio = salaServicio;
+        this.horarioServicio = horarioServicio;
     }
 
     // SECTION: Metodos de soporte
