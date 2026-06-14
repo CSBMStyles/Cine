@@ -82,6 +82,9 @@ public class ProcesadorImagen {
             // Retornar los bytes de la imagen convertida
             return outputStream.toByteArray();
 
+        } catch (UnsatisfiedLinkError e) {
+            // Fallback: libreria nativa webp no disponible en esta arquitectura
+            return java.nio.file.Files.readAllBytes(file.toPath());
         } catch (Exception e) {
 
             throw new IOException("Error al convertir la imagen: " + e.getMessage());
@@ -113,6 +116,9 @@ public class ProcesadorImagen {
             // Retornar los bytes de la imagen convertida
             return outputStream.toByteArray();
 
+        } catch (UnsatisfiedLinkError e) {
+            // Fallback: libreria nativa webp no disponible en esta arquitectura
+            return file.getBytes();
         } catch (Exception e) {
             throw new IOException("Error al convertir la imagen: " + e.getMessage());
         }
