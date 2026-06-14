@@ -16,7 +16,7 @@ Before modifying any files in this repository, always create a safety backup of 
 - If there are uncommitted changes (staged, unstaged, or untracked), stash them with:
   `git stash push -m "pre-opencode-backup: <timestamp>"`
   - **WARNING:** Do NOT use `--include-untracked` by default, as it stashes untracked files (like image folders, data directories) and removes them from the working tree. Only use `--include-untracked` if the user explicitly requests it or if the untracked files are safe to stash.
-  - **ALWAYS** update the agent's internal todo or task tracking when working on image-related tasks, either during or after completing the work. Ensure image upload progress and folder status are documented in the working context.
+  - **ALWAYS** update the agent's todo (using `todowrite` tool) when working on image-related tasks, either during or after completing the work. Ensure image upload progress and folder status are documented in the task tracking.
 - If a stash from an earlier backup in this session already exists, create a new one instead of overwriting
 - Verify the working tree is clean before proceeding with any modifications
 - After completing the requested changes, summarize what was modified and remind the user how to revert:
