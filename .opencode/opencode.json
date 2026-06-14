@@ -7,5 +7,12 @@
     "paths": [
       "/Users/cristianbarrerameneses/Documents/Proyectos/Codigo/Java/Cine/.opencode/skills"
     ]
+  },
+  "mcp": {
+    "ImageKit": {
+      "type": "remote",
+      "url": "https://api-mcp.imagekit.in/sse",
+      "oauth": {}
+    }
   }
 }
