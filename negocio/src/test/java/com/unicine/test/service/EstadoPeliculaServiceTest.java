@@ -8,7 +8,6 @@ import com.unicine.entity.showing.Horario;
 import com.unicine.entity.theater.Sala;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.FormatoPelicula;
-import com.unicine.repository.movie.HistorialEstadoPeliculaRepo;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.showing.HorarioRepo;
@@ -48,77 +47,103 @@ public class EstadoPeliculaServiceTest {
     @Autowired
     private SalaRepo salaRepo;
 
-    @Autowired
-    private HistorialEstadoPeliculaRepo historialRepo;
+    // SECTION: Metodos de soporte
 
-    @Test
-    @Sql("classpath:dataset.sql")
-    public void cambioEstadoPreventaEstrenoTiempoReal() throws InterruptedException {
-
-        // Arrange: usar disposicion existente en ciudad 4 (Bogota), pelicula 1
-        // La sala 6 pertenece al teatro 2 que esta en ciudad 4
+    // Metodo para obtener una disposicion del dataset y forzar un estado
+    private PeliculaDisposicion obtenerDisposicionConEstado(Integer ciudadId, Integer peliculaId, EstadoPelicula estado) {
         PeliculaDisposicion disposicion = disposicionRepo.findById(
-            new PeliculaDisposicionCompuesta(4, 1)
-        ).orElseThrow(() -> new RuntimeException("Disposicion (ciudad=4, pelicula=1) no encontrada"));
+            new PeliculaDisposicionCompuesta(ciudadId, peliculaId)
+        ).orElseThrow(() -> new RuntimeException("Disposicion (ciudad=" + ciudadId + ", pelicula=" + peliculaId + ") no encontrada"));
 
-        // Forzar estado PREVENTA para el test
-        disposicion.setEstadoPelicula(EstadoPelicula.PREVENTA);
-        disposicion = disposicionRepo.save(disposicion);
+        disposicion.setEstadoPelicula(estado);
+        return disposicionRepo.save(disposicion);
+    }
 
-        // Crear horario que empieza en 8 segundos (para que al segundo 5 siga en PREVENTA)
+    // Metodo para crear un horario vivo que comienza en N segundos
+    private Horario crearHorarioVivo(Integer segundosInicio) {
         LocalDateTime ahora = LocalDateTime.now(ZoneId.of("America/Bogota"));
-        Horario horario = new Horario(ahora.plusSeconds(8), ahora.plusHours(2));
-        horario = horarioRepo.save(horario);
+        Horario horario = new Horario(ahora.plusSeconds(segundosInicio), ahora.plusHours(2));
+        return horarioRepo.save(horario);
+    }
 
-        // Obtener sala 6 (teatro 2 -> ciudad 4, coincide con disposicion)
-        Sala sala = salaRepo.findById(6).orElseThrow(() -> new RuntimeException("Sala 6 no encontrada"));
+    // Metodo para obtener sala del dataset
+    private Sala obtenerSala(Integer codigoSala) {
+        return salaRepo.findById(codigoSala)
+            .orElseThrow(() -> new RuntimeException("Sala " + codigoSala + " no encontrada"));
+    }
 
-        // Crear funcion asociada a la pelicula de la disposicion
+    // Metodo para crear una funcion asociada a una disposicion y sala
+    private Funcion crearFuncionConDisposicion(PeliculaDisposicion disposicion, Horario horario, Sala sala) {
         Funcion funcion = new Funcion();
         funcion.setHorario(horario);
         funcion.setSala(sala);
         funcion.setPrecio(10000.0);
         funcion.setFormato(FormatoPelicula.DOBLADO);
         funcion.setPelicula(disposicion.getPelicula());
-        funcionRepo.save(funcion);
+        return funcionRepo.save(funcion);
+    }
 
-        // Act 1: verificar estado inicial antes de que pase el tiempo
-        PeliculaDisposicion estadoInicial = estadoPeliculaService.actualizarEstado(disposicion);
-        EstadoPelicula estadoAntes = estadoInicial.getEstadoPelicula();
+    // Metodo para verificar estado y pausar
+    private PeliculaDisposicion verificarEstado(PeliculaDisposicion disposicion, EstadoPelicula esperado, String mensaje, Integer pausaMs) throws InterruptedException {
+        PeliculaDisposicion actualizado = estadoPeliculaService.actualizarEstado(disposicion);
+        Assertions.assertEquals(esperado, actualizado.getEstadoPelicula(), mensaje);
+        Thread.sleep(pausaMs);
+        return actualizado;
+    }
 
-        // Assert 1: deberia estar en PREVENTA (funcion no ha empezado)
-        Assertions.assertEquals(EstadoPelicula.PREVENTA, estadoAntes,
-            "Antes de la fecha de inicio, la pelicula deberia estar en PREVENTA");
+    // Metodo para verificar estado sin pausar
+    private PeliculaDisposicion verificarEstado(PeliculaDisposicion disposicion, EstadoPelicula esperado, String mensaje) {
+        PeliculaDisposicion actualizado = estadoPeliculaService.actualizarEstado(disposicion);
+        Assertions.assertEquals(esperado, actualizado.getEstadoPelicula(), mensaje);
+        return actualizado;
+    }
 
-        // Esperar 5 segundos para llegar al segundo 5
-        Thread.sleep(5000);
-
-        // Act 2: verificar estado al segundo 5
-        PeliculaDisposicion estadoSegundo5 = estadoPeliculaService.actualizarEstado(estadoInicial);
-        EstadoPelicula estadoEn5 = estadoSegundo5.getEstadoPelicula();
-        System.out.println("Estado al segundo 5: " + estadoEn5);
-
-        // Esperar 5 segundos para llegar al segundo 10
-        Thread.sleep(5000);
-
-        // Act 3: verificar estado al segundo 10
-        PeliculaDisposicion estadoSegundo10 = estadoPeliculaService.actualizarEstado(estadoSegundo5);
-        EstadoPelicula estadoEn10 = estadoSegundo10.getEstadoPelicula();
-        System.out.println("Estado al segundo 10: " + estadoEn10);
-
-        // Assert 2: al segundo 10 deberia estar en ESTRENO (funcion ya comenzo)
-        Assertions.assertEquals(EstadoPelicula.ESTRENO, estadoEn10,
-            "Despues de la fecha de inicio, la pelicula deberia estar en ESTRENO");
-
-        // Esperar 5 segundos para completar los 15 segundos totales
-        Thread.sleep(5000);
-
-        // Assert 3: verificar que se registro en historial
+    // Metodo para verificar que existe historial de cambios
+    private void assertHistorialExiste(PeliculaDisposicion disposicion) {
         List<HistorialEstadoPelicula> historial = historialServicio.obtenerPorPelicula(
             disposicion.getPelicula().getCodigo(),
             disposicion.getCiudad().getCodigo()
         );
         Assertions.assertFalse(historial.isEmpty(),
             "Deberia existir al menos un registro en el historial de cambios");
+    }
+
+    // !SECTION
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void cambioEstadoPreventaEstrenoTiempoReal() throws InterruptedException {
+
+        // Arrange: disposicion en ciudad 4 (Bogota), pelicula 1
+        PeliculaDisposicion disposicion = obtenerDisposicionConEstado(4, 1, EstadoPelicula.PREVENTA);
+
+        // Horario que empieza en 8 segundos
+        Horario horario = crearHorarioVivo(8);
+
+        // Sala 6 (teatro 2 -> ciudad 4)
+        Sala sala = obtenerSala(6);
+
+        // Crear funcion asociada
+        crearFuncionConDisposicion(disposicion, horario, sala);
+
+        // Act & Assert: PREVENTA inicial, esperar 5 segundos
+        PeliculaDisposicion estadoInicial = verificarEstado(disposicion, EstadoPelicula.PREVENTA,
+            "Antes de la fecha de inicio, la pelicula deberia estar en PREVENTA", 5000);
+
+        // Act & Assert: PREVENTA al segundo 5, esperar 5 segundos
+        System.out.println("Estado al segundo 5: " + estadoInicial.getEstadoPelicula());
+        PeliculaDisposicion estadoSegundoCinco = verificarEstado(estadoInicial, EstadoPelicula.PREVENTA,
+            "Aun en PREVENTA, la funcion no ha iniciado", 5000);
+
+        // Act & Assert: ESTRENO al segundo 10
+        System.out.println("Estado al segundo 10: " + estadoSegundoCinco.getEstadoPelicula());
+        PeliculaDisposicion estadoSegundoDiez = verificarEstado(estadoSegundoCinco, EstadoPelicula.ESTRENO,
+            "Despues de la fecha de inicio, la pelicula deberia estar en ESTRENO");
+
+        // Esperar 5 segundos finales
+        Thread.sleep(5000);
+
+        // Assert: historial de cambios
+        assertHistorialExiste(disposicion);
     }
 }
