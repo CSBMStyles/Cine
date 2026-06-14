@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.unicine.entity.showing.Horario;
 import com.unicine.entity.image.Imagen;
-import com.unicine.enums.movie.EstadoPelicula;
 
 @Getter
 @Setter
@@ -18,8 +17,6 @@ import com.unicine.enums.movie.EstadoPelicula;
 public class DetalleFuncionesDTO {
 
     private String nombrePelicula;
-
-    private EstadoPelicula estadoPelicula;
 
     private List<Imagen> imagenes;
 

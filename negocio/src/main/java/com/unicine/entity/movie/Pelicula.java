@@ -14,8 +14,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
@@ -33,7 +31,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.unicine.entity.image.interfaced.Imagenable;
-import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.util.validation.catalog.ValidationMessages;
 
@@ -52,11 +49,6 @@ public class Pelicula implements Serializable, Imagenable {
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
-
-    @NotNull(message = ValidationMessages.FIELD_REQUIRED)
-    @Column(nullable = false, length = 10)
-    @Enumerated(EnumType.STRING)
-    private EstadoPelicula estado;
 
     @ElementCollection
     @Fetch(FetchMode.SELECT)
@@ -113,8 +105,7 @@ public class Pelicula implements Serializable, Imagenable {
     // SECTION: Constructor
 
     @Builder
-    public Pelicula(EstadoPelicula estado, List<GeneroPelicula> generos, String nombre, Map<String, String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
-        this.estado = estado;
+    public Pelicula(List<GeneroPelicula> generos, String nombre, Map<String, String> repartos, String sinopsis, String urlTrailer, Double puntuacion, Integer restriccionEdad) {
         this.generos = generos;
         this.nombre = nombre;
         this.repartos = repartos;

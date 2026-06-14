@@ -13,7 +13,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.movie.Pelicula;
-import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.image.ImageKitService;
@@ -48,8 +47,7 @@ public class PeliculaServicioTest {
         repartos.put("Terrifier", "David Howard");
         repartos.put("Tara", "Jenna Kanell");
         
-        EstadoPelicula estado = EstadoPelicula.CARTELERA;
-        Pelicula pelicula = new Pelicula(estado, generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
+        Pelicula pelicula = new Pelicula(generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
 
         try {
             Pelicula nuevo = peliculaServicio.registrar(pelicula);

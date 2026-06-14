@@ -13,8 +13,6 @@ public class DetalleFuncionMapper {
 
             projection.getNombrePelicula(),
 
-            projection.getEstadoPelicula(),
-
             projection.getImagenes(),
 
             projection.getCodigoSala(),

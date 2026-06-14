@@ -82,7 +82,6 @@ public interface FuncionRepo extends JpaRepository<Funcion, Integer> {
      * @return lista de detalles de funciones
      */
     @Query("select f.pelicula.nombre as nombrePelicula, " +
-       "f.pelicula.estado as estadoPelicula, " +
        "f.pelicula.imagenes as imagenes, " +
        "f.sala.codigo as codigoSala, " +
        "f.sala.teatro.direccion as direccionTeatro, " +

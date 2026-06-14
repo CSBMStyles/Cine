@@ -50,8 +50,7 @@ public class PeliculaTest {
         repartos.put("Terrifier", "David Howard");
         repartos.put("Tara", "Jenna Kanell");
 
-        EstadoPelicula estado = EstadoPelicula.CARTELERA;
-        Pelicula pelicula = new Pelicula(estado, generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
+        Pelicula pelicula = new Pelicula(generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
 
         Pelicula guardado = peliculaRepo.save(pelicula);
 
@@ -221,9 +220,9 @@ public class PeliculaTest {
     @Sql("classpath:dataset.sql")
     public void listarPeliculasCuidadEstado() {
 
-        List<Pelicula> peliculas = peliculaRepo.listarPeliculasCuidadEstado(1, EstadoPelicula.CARTELERA);
+        List<Pelicula> peliculas = peliculaRepo.listarPeliculasCuidadEstado(2, EstadoPelicula.CARTELERA);
 
-        Assertions.assertEquals(1, peliculas.size());
+        Assertions.assertEquals(3, peliculas.size());
 
         System.out.println("\n" + "Listado de registros obtenidos por ciudad y estado:");
 

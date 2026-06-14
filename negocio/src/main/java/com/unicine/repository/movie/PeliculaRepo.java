@@ -73,7 +73,7 @@ public interface PeliculaRepo extends JpaRepository<Pelicula, Integer> {
      * @param atributo: codigo de la ciudad, estado de la pelicula
      * @return lista de peliculas
      */
-    @Query("select distinct f.pelicula from Funcion f where f.sala.teatro.ciudad.codigo = :codigoCiudad and f.pelicula.estado = :estadoPelicula")
+    @Query("select distinct pd.pelicula from PeliculaDisposicion pd where pd.ciudad.codigo = :codigoCiudad and pd.estadoPelicula = :estadoPelicula")
     List<Pelicula> listarPeliculasCuidadEstado(Integer codigoCiudad, EstadoPelicula estadoPelicula);
 
     /**
@@ -89,7 +89,7 @@ public interface PeliculaRepo extends JpaRepository<Pelicula, Integer> {
      * @param atributo: estado de la pelicula
      * @return lista de peliculas
      */
-    @Query("select distinct f.pelicula from Funcion f where f.pelicula.estado = :estadoPelicula")
+    @Query("select distinct pd.pelicula from PeliculaDisposicion pd where pd.estadoPelicula = :estadoPelicula")
     List<Pelicula> listarPeliculasEstado(EstadoPelicula estadoPelicula);
 
     /**
