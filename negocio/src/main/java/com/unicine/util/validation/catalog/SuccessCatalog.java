@@ -13,7 +13,7 @@ package com.unicine.util.validation.catalog;
  * 
  * @author UniCine
  * @version 1.0
- * @see ErrorCatalog
+
  */
 public enum SuccessCatalog {
 

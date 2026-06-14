@@ -4,8 +4,7 @@ package com.unicine.util.validation.catalog;
  * Interfaz comun para todos los catalogos de error del sistema.
  * 
  * Permite que las excepciones de negocio ({@link com.unicine.exception.UnicineException})
- * acepten tanto el {@link ErrorCatalog} legacy como los nuevos catalogos de dominio
- * sin acoplamiento a un tipo concreto.
+ * acepten cualquier catalogo de error sin acoplamiento a un tipo concreto.
  * 
  * @author UniCine
  * @version 1.1

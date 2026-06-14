@@ -21,6 +21,17 @@
 - Tests: `XxxServicioTest`
 - Repositorios: `XxxRepo`
 
+### Variables y funciones
+- **Sin guion bajo (underscore)** en nombres de variables, funciones o metodos.
+- Ejemplo correcto: `findByPeliculaDisposicionPeliculaCodigo`, `calcularPrecioBase`
+- Ejemplo incorrecto: `findByPeliculaDisposicion_Pelicula_Codigo`, `calcular_precio_base`
+- En repositorios Spring Data JPA, navegar propiedades usando camelCase en lugar de underscore (`_`).
+
+### Constantes
+- **Todo mayusculas con underscore** (`UPPER_SNAKE_CASE`).
+- Ejemplo correcto: `CONSTANTE_PELICULA`, `MAX_INTENTOS_LOGIN`, `PRECIO_BASE_ENTRADA`
+- Ejemplo incorrecto: `constantePelicula`, `maxIntentosLogin`, `PrecioBaseEntrada`
+
 ---
 
 ## 2. Comentarios y Documentacion
@@ -74,7 +85,6 @@ Orden recomendado dentro de una clase de servicio:
   - `PurchaseErrorCatalog` (compras, entradas, cupones)
   - `ImageErrorCatalog` (imagenes, servicios externos)
   - `SystemErrorCatalog` (validacion, errores generales)
-- El `ErrorCatalog` legacy esta `@Deprecated` y se mantendra temporalmente por compatibilidad.
 - Todos los catalogos de error implementan `ErrorCode`.
 - No lanzar `RuntimeException` ni `Exception` genericos con mensajes hardcodeados.
 
@@ -84,7 +94,19 @@ Orden recomendado dentro de una clase de servicio:
 
 - Lombok: usar `@Builder`, `@Getter`, `@Setter`, `@EqualsAndHashCode(onlyExplicitlyIncluded = true)`
 - Validaciones: usar `ValidationMessages` para mensajes de Bean Validation.
+  - Constantes en `UPPER_SNAKE_CASE` con números en palabras (`MAX_FIFTY`, `MIN_EIGHT`, `EXACT_TEN`).
+  - Sin mensajes hardcodeados en español en interfaces de servicio.
 - Repositorios: extender `JpaRepository`; consultas custom con `@Query`.
+  - Palabras clave SQL en **minusculas** (`select`, `from`, `where`, `join`, `and`, `or`, `group by`, `order by`, `count`, `avg`, `sum`).
+  - Entidades y atributos en JPQL con **mayuscula inicial** tal cual se declaran en Java.
+  - Ejemplo correcto:
+    ```java
+    @Query("select c from Coleccion c where c.cliente.cedula = :cedula and c.puntuacion is not null")
+    ```
+  - Ejemplo incorrecto:
+    ```java
+    @Query("SELECT c FROM Coleccion c WHERE c.cliente.cedula = :cedula AND c.puntuacion IS NOT NULL")
+    ```
 - Servicios: anotar con `@Service` y `@Validated`.
 
 ---
@@ -94,4 +116,4 @@ Orden recomendado dentro de una clase de servicio:
 - `@SpringBootTest` + `@Transactional`
 - Dataset SQL: `@Sql("classpath:dataset.sql")`
 - Nomenclatura sin conectores: `registrarCuponExpirado`, `obtenerInexistente`
-- Validar mensajes de `ErrorCatalog` y `SuccessCatalog` en assertions.
+- Validar mensajes de `SuccessCatalog` y catálogos de dominio en assertions.
