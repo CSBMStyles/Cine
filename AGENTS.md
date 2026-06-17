@@ -19,6 +19,7 @@ Before modifying any files in this repository, always create a safety backup of 
   - **ALWAYS** update the agent's todo (using `todowrite` tool) when working on image-related tasks, either during or after completing the work. Ensure image upload progress and folder status are documented in the task tracking.
 - If a stash from an earlier backup in this session already exists, create a new one instead of overwriting
 - Verify the working tree is clean before proceeding with any modifications
+- **NEVER** delete or remove user files without explicit permission. Do not assume a file is "temporary" or "disposable" just because it was created during a test or session. Always ask the user before deleting any file they own.
 - After completing the requested changes, summarize what was modified and remind the user how to revert:
   - `git stash list` to view backups
   - `git stash pop` to restore the previous state
