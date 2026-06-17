@@ -277,10 +277,10 @@ insert into confiteria (id, precio, nombre, categoria) values (7, 5000, "Agua si
 insert into confiteria (id, precio, nombre, categoria) values (8, 12000, "Perro Caliente", "SNACK");
 insert into confiteria (id, precio, nombre, categoria) values (9, 14000, "Nachos con Queso", "SNACK");
 insert into confiteria (id, precio, nombre, categoria) values (10, 3500, "Chocorramo", "DULCE");
-insert into confiteria (id, precio, nombre, categoria) values (11, 2500, "Supercoco", "DULCE");
-insert into confiteria (id, precio, nombre, categoria) values (12, 3000, "Jet", "DULCE");
+insert into confiteria (id, precio, nombre, categoria) values (11, 2000, "Supercoco", "DULCE");
+insert into confiteria (id, precio, nombre, categoria) values (12, 2000, "Jet", "DULCE");
 insert into confiteria (id, precio, nombre, categoria) values (13, 7000, "Helado de Arequipe", "OTROS");
-insert into confiteria (id, precio, nombre, categoria) values (14, 6000, "Cafe", "OTROS");
+insert into confiteria (id, precio, nombre, categoria) values (14, 6000, "Cafe", "BEBIDA");
 insert into confiteria (id, precio, nombre, categoria) values (15, 3000, "De Toditos Rojo", "SNACK");
 
 
@@ -312,6 +312,7 @@ insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d333333333333333333333", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/crispeta-grande", null, null, null, null, 4);
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d444444444444444444444", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/gaseosa", null, null, null, null, 6);
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67d555555555555555555555", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/chocorramo", null, null, null, null, 10);
+insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("6a2f2a135c7cd75eb849c75f", "https://ik.imagekit.io/vfreipue8w/unicine/confiterias/snack/De-Toditos-Rojo/DE-TODITOS-ROJO-45G", null, null, null, null, 15);
 
 
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 1, 6, 1, 17000, "2026-12-20T18:32:25", "2026-12-21T20:00:00", "NEQUI", true);
