@@ -195,6 +195,7 @@ public final class ValidationMessages {
     public static final String TICKET_COLUMN_NOT_NULL = "La columna no puede estar vacia";
     public static final String TICKET_COLUMN_POSITIVE = "La columna debe ser un numero positivo";
     public static final String TICKET_PURCHASE_NOT_NULL = "La compra no puede estar vacia";
+    public static final String TICKET_SHOWING_NOT_NULL = "La funcion no puede estar vacia";
 
     // SECTION: CONFITERIA
 

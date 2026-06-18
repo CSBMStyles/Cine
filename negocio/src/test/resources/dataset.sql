@@ -329,15 +329,22 @@ insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) v
 insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (4, 3, 5, 54800, 1);
 insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (5, 1, 6, 24000, 3);
 
-insert into entrada (columna, compra_id, fila, id, precio) values (5, 1, 2, 1, 17000);
-insert into entrada (columna, compra_id, fila, id, precio) values (4, 2, 4, 2, 59800);
-insert into entrada (columna, compra_id, fila, id, precio) values (3, 3, 5, 3, 24000);
-insert into entrada (columna, compra_id, fila, id, precio) values (4, 4, 2, 4, 54800);
-insert into entrada (columna, compra_id, fila, id, precio) values (5, 4, 2, 5, 54800);
-insert into entrada (columna, compra_id, fila, id, precio) values (5, 5, 3, 6, 72000);
+insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (5, 1, 2, 6, 1, 17000);
+insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (4, 2, 4, 5, 2, 59800);
+insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (3, 3, 5, 4, 3, 24000);
+insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (4, 4, 2, 3, 4, 54800);
+insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (5, 4, 2, 3, 5, 54800);
+insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (5, 5, 3, 2, 6, 72000);
 
 insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1009000011, 1, 4.0, "VISTO", true);
 insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1008000022, 1, 3.0, "EN_ESPERA", false);
 insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1008000022, 2, 5.0, "VISTO", true);
 insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1007000033, 3, 4.0, "FAVORITO", true);
 insert into coleccion (cliente_cedula, pelicula_id, puntuacion, estado_pelicula_propio, notificacion_activa) values (1006000044, 3, 1.0, "VISTO", true);
+
+-- Actualizar funcion_esquema con las entradas precargadas del dataset
+update funcion_esquema set ocupadas = 1, disponibles = disponibles - 1 where funcion_id = 2;
+update funcion_esquema set ocupadas = 2, disponibles = disponibles - 2 where funcion_id = 3;
+update funcion_esquema set ocupadas = 1, disponibles = disponibles - 1 where funcion_id = 4;
+update funcion_esquema set ocupadas = 1, disponibles = disponibles - 1 where funcion_id = 5;
+update funcion_esquema set ocupadas = 1, disponibles = disponibles - 1 where funcion_id = 6;

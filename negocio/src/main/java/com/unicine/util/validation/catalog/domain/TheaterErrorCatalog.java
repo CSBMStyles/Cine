@@ -24,6 +24,8 @@ public enum TheaterErrorCatalog implements ErrorCode {
     ENT007("ENT007", "La sala no existe"),
     ENT008("ENT008", "No existe salas con ese nombre"),
     ENT012("ENT012", "La distribucion de sillas no existe"),
+    ENT017("ENT017", "El esquema de sillas no existe"),
+    ENT018("ENT018", "El esquema de sillas es invalido"),
 
     // DUP - CONFLICTO / DUPLICADO (409 Conflict)
     DUP005("DUP005", "El nombre de la sala ya existe en el teatro"),

@@ -15,6 +15,7 @@ import lombok.ToString;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import com.unicine.entity.showing.Funcion;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 
@@ -54,14 +55,19 @@ public class Entrada implements Serializable {
     @ManyToOne
     @NotNull(message = ValidationMessages.TICKET_PURCHASE_NOT_NULL)
     private Compra compra;
-    
+
+    @ManyToOne
+    @NotNull(message = ValidationMessages.TICKET_SHOWING_NOT_NULL)
+    private Funcion funcion;
+
     // SECTION: Constructor
 
     @Builder
-    public Entrada(Double precio, Integer fila, Integer columna, Compra compra) {
+    public Entrada(Double precio, Integer fila, Integer columna, Compra compra, Funcion funcion) {
         this.precio = precio;
         this.fila = fila;
         this.columna = columna;
         this.compra = compra;
+        this.funcion = funcion;
     }
 }

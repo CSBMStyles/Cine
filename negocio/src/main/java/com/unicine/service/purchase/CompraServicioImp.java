@@ -22,6 +22,7 @@ import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
+import com.unicine.service.purchase.EntradaServicio;
 import com.unicine.repository.user.ClienteRepo;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
@@ -45,16 +46,19 @@ public class CompraServicioImp implements CompraServicio {
     private final CuponClienteRepo cuponClienteRepo;
     private final ClienteRepo clienteRepo;
     private final FuncionRepo funcionRepo;
+    private final EntradaServicio entradaServicio;
 
     public CompraServicioImp(CompraRepo compraRepo, EntradaRepo entradaRepo,
                              CompraConfiteriaRepo compraConfiteriaRepo, CuponClienteRepo cuponClienteRepo,
-                             ClienteRepo clienteRepo, FuncionRepo funcionRepo) {
+                             ClienteRepo clienteRepo, FuncionRepo funcionRepo,
+                             EntradaServicio entradaServicio) {
         this.compraRepo = compraRepo;
         this.entradaRepo = entradaRepo;
         this.compraConfiteriaRepo = compraConfiteriaRepo;
         this.cuponClienteRepo = cuponClienteRepo;
         this.clienteRepo = clienteRepo;
         this.funcionRepo = funcionRepo;
+        this.entradaServicio = entradaServicio;
     }
 
     // SECTION: Metodos de soporte
@@ -142,9 +146,9 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarSillasDisponibles(List<Entrada> entradas, Integer codigoFuncion) {
         for (Entrada entrada : entradas) {
-            Boolean ocupada = entradaRepo.sillaOcupadaFuncion(
+            boolean ocupada = entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(
                     entrada.getFila(), entrada.getColumna(), codigoFuncion);
-            if (Boolean.TRUE.equals(ocupada)) {
+            if (ocupada) {
                 throw new BusinessRuleException(PurchaseErrorCatalog.REG005);
             }
         }
@@ -218,7 +222,7 @@ public class CompraServicioImp implements CompraServicio {
     @Override
     public Compra registrarCompraCompleta(Compra compra,
                                            List<Entrada> entradas,
-                                           List<CompraConfiteria> confiterias) {
+                                           List<CompraConfiteria> confiterias) throws Exception {
         validarClienteExiste(compra.getCliente().getCedula());
         validarFuncionExiste(compra.getFuncion().getCodigo());
         validarSillasDisponibles(entradas, compra.getFuncion().getCodigo());
@@ -243,7 +247,8 @@ public class CompraServicioImp implements CompraServicio {
 
         for (Entrada entrada : entradas) {
             entrada.setCompra(guardada);
-            entradaRepo.save(entrada);
+            entrada.setFuncion(guardada.getFuncion());
+            entradaServicio.registrar(entrada);
         }
 
         for (CompraConfiteria cc : confiterias) {

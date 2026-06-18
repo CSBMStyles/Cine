@@ -30,6 +30,9 @@ public enum PurchaseErrorCatalog implements ErrorCode {
     REG007("REG007", "El cupon ha expirado"),
     REG008("REG008", "El descuento no puede ser mayor al total de la compra"),
     REG009("REG009", "La compra no puede modificarse porque ya fue procesada"),
+    REG010("REG010", "La silla seleccionada ya esta ocupada"),
+    REG011("REG011", "La silla no existe en la distribucion de la sala"),
+    REG012("REG012", "La funcion de la entrada no coincide con la funcion de la compra"),
 
     // DEL - ELIMINACION NO CONFIRMADA (409 Conflict)
     DEL001("DEL001", "La eliminacion no fue confirmada");

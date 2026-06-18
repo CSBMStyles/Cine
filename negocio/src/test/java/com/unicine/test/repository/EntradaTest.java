@@ -13,8 +13,10 @@ import java.util.Optional;
 
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.Entrada;
+import com.unicine.entity.showing.Funcion;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.EntradaRepo;
+import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.transfer.data.DetalleSillaDTO;
 
 @DataJpaTest
@@ -29,13 +31,23 @@ public class EntradaTest {
     @Autowired
     private CompraRepo compraRepo;
 
+    @Autowired
+    private FuncionRepo funcionRepo;
+
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
         Compra compra = compraRepo.findById(1).orElse(null);
+        Funcion funcion = funcionRepo.findById(1).orElse(null);
 
-        Entrada entrada = new Entrada(5000.00, 5, 2, compra);
+        Entrada entrada = Entrada.builder()
+                .precio(5000.00)
+                .fila(5)
+                .columna(2)
+                .compra(compra)
+                .funcion(funcion)
+                .build();
 
         Entrada guardado = entradaRepo.save(entrada);
 
@@ -147,9 +159,21 @@ public class EntradaTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void obtenerEntradasCompra() {
-        List<Entrada> entradas = entradaRepo.obtenerEntradasCompra(1);
+        List<Entrada> entradas = entradaRepo.findByCompraCodigo(1);
 
         Assertions.assertEquals(1, entradas.size());
+
+        System.out.println("Resultado: \n");
+
+        entradas.forEach(System.out::println);
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void obtenerEntradasFuncion() {
+        List<Entrada> entradas = entradaRepo.findByFuncionCodigo(3);
+
+        Assertions.assertEquals(2, entradas.size());
 
         System.out.println("Resultado: \n");
 

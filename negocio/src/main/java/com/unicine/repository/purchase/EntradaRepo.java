@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
-    
+
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
@@ -21,20 +21,26 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
 
     /**
      * Consulta para obtener las entradas de una compra
-     * @param atributos: codigo de la compra
+     * @param codigoCompra codigo de la compra
      * @return lista de entradas
      */
-    @Query("select e from Compra c join c.entradas e where c.codigo = :codigoCompra")
-    List<Entrada> obtenerEntradasCompra(Integer codigoCompra);
+    List<Entrada> findByCompraCodigo(Integer codigoCompra);
 
     // SECTION: Relacion con funcion
 
     /**
+     * Consulta para obtener las entradas de una funcion
+     * @param codigoFuncion codigo de la funcion
+     * @return lista de entradas
+     */
+    List<Entrada> findByFuncionCodigo(Integer codigoFuncion);
+
+    /**
      * Consulta para obtener las sillas ocupadas de una funcion
-     * @param atributos: codigo de la funcion
+     * @param codigoFuncion codigo de la funcion
      * @return codigo, fila y columna de las entradas
      */
-    @Query("select new " + direccion + ".DetalleSillaDTO(e.codigo, e.fila, e.columna ) from Compra comp join comp.entradas e join comp.funcion f where f.codigo = :codigoFuncion")
+    @Query("select new " + direccion + ".DetalleSillaDTO(e.codigo, e.fila, e.columna) from Entrada e where e.funcion.codigo = :codigoFuncion")
     List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion);
 
     /**
@@ -46,6 +52,5 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      * @param codigoFuncion codigo de la funcion
      * @return true si la silla esta ocupada, false en caso contrario
      */
-    @Query("select count(e) > 0 from Entrada e where e.fila = :fila and e.columna = :columna and e.compra.funcion.codigo = :codigoFuncion")
-    Boolean sillaOcupadaFuncion(Integer fila, Integer columna, Integer codigoFuncion);
+    boolean existsByFilaAndColumnaAndFuncionCodigo(Integer fila, Integer columna, Integer codigoFuncion);
 }
