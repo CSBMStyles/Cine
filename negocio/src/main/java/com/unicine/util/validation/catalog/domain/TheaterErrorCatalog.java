@@ -29,6 +29,7 @@ public enum TheaterErrorCatalog implements ErrorCode {
 
     // REG - REGLAS DE NEGOCIO (400 Bad Request)
     REG007("REG007", "La silla no existe en la distribucion de la sala"),
+    REG008("REG008", "La silla no esta disponible para esta funcion"),
 
     // DUP - CONFLICTO / DUPLICADO (409 Conflict)
     DUP005("DUP005", "El nombre de la sala ya existe en el teatro"),

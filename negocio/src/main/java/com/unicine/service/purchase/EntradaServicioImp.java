@@ -100,6 +100,29 @@ public class EntradaServicioImp implements EntradaServicio {
     }
 
     private void validarSillaDisponible(Entrada entrada) {
+        Optional<FuncionEsquema> esquemaFuncion = funcionEsquemaRepo.findByFuncionCodigo(entrada.getFuncion().getCodigo());
+
+        if (esquemaFuncion.isPresent() && esquemaFuncion.get().getEsquemaTemporal() != null) {
+            validarSillaEnEsquemaTemporal(entrada, esquemaFuncion.get());
+            return;
+        }
+
+        validarSillaEnDistribucionBase(entrada);
+    }
+
+    private void validarSillaEnEsquemaTemporal(Entrada entrada, FuncionEsquema esquemaFuncion) {
+        String[][] esquema = distribucionSillaParser.parse(esquemaFuncion.getEsquemaTemporal());
+
+        if (!distribucionSillaParser.existeSilla(esquema, entrada.getFila(), entrada.getColumna())) {
+            throw new BusinessRuleException(TheaterErrorCatalog.REG007);
+        }
+
+        if (!distribucionSillaParser.esSillaDisponible(esquema, entrada.getFila(), entrada.getColumna())) {
+            throw new BusinessRuleException(TheaterErrorCatalog.REG008);
+        }
+    }
+
+    private void validarSillaEnDistribucionBase(Entrada entrada) {
         Funcion funcion = entrada.getFuncion();
         DistribucionSilla distribucion = funcion.getSala().getDistribucionSilla();
         String[][] esquema = distribucionSillaParser.parse(distribucion);
