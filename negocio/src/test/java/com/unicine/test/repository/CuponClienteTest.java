@@ -159,7 +159,7 @@ public class CuponClienteTest {
     @Sql("classpath:dataset.sql")
     public void obtenerCuponCliente() {
         
-        Optional<CuponCliente> cuponesClientes = cuponClienteRepo.obtenerCuponCliente(1, 1005000055);
+        Optional<CuponCliente> cuponesClientes = cuponClienteRepo.findByCuponCodigoAndClienteCedula(1, 1005000055);
 
         Assertions.assertTrue(cuponesClientes.isPresent());
 
@@ -172,7 +172,7 @@ public class CuponClienteTest {
     @Sql("classpath:dataset.sql")
     public void listarCuponesCliente() {
         
-        List<CuponCliente> cuponesClientes = cuponClienteRepo.listarCuponesCliente(1006000044);
+        List<CuponCliente> cuponesClientes = cuponClienteRepo.findByClienteCedula(1006000044);
 
         Assertions.assertEquals(2, cuponesClientes.size());
 
