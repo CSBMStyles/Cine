@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class DistribucionSillaParser {
 
     private static final String CELDA_DISPONIBLE = "D";
+    private static final String CELDA_OCUPADA = "O";
 
     private final Gson gson;
 
@@ -23,8 +24,16 @@ public class DistribucionSillaParser {
             throw new ResourceNotFoundException(TheaterErrorCatalog.ENT017);
         }
 
+        return parse(distribucionSilla.getEsquema());
+    }
+
+    public String[][] parse(String esquemaJson) {
+        if (esquemaJson == null) {
+            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT017);
+        }
+
         try {
-            return gson.fromJson(distribucionSilla.getEsquema(), String[][].class);
+            return gson.fromJson(esquemaJson, String[][].class);
         } catch (JsonSyntaxException e) {
             throw new ValidationException(TheaterErrorCatalog.ENT018);
         }
@@ -48,5 +57,27 @@ public class DistribucionSillaParser {
         }
 
         return CELDA_DISPONIBLE.equals(esquema[fila - 1][columna - 1]);
+    }
+
+    public String[][] marcarSillaOcupada(String[][] esquema, Integer fila, Integer columna) {
+        if (!existeSilla(esquema, fila, columna)) {
+            throw new ResourceNotFoundException(TheaterErrorCatalog.REG007);
+        }
+
+        esquema[fila - 1][columna - 1] = CELDA_OCUPADA;
+        return esquema;
+    }
+
+    public String[][] marcarSillaDisponible(String[][] esquema, Integer fila, Integer columna) {
+        if (!existeSilla(esquema, fila, columna)) {
+            throw new ResourceNotFoundException(TheaterErrorCatalog.REG007);
+        }
+
+        esquema[fila - 1][columna - 1] = CELDA_DISPONIBLE;
+        return esquema;
+    }
+
+    public String toJson(String[][] esquema) {
+        return gson.toJson(esquema);
     }
 }

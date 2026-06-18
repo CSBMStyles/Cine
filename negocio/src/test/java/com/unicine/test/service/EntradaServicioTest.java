@@ -14,12 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.Entrada;
 import com.unicine.entity.showing.Funcion;
+import com.unicine.entity.showing.FuncionEsquema;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.repository.purchase.CompraRepo;
-import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.purchase.EntradaRepo;
+import com.unicine.repository.showing.FuncionEsquemaRepo;
+import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.service.purchase.EntradaServicio;
 import com.unicine.transfer.data.DetalleSillaDTO;
+import com.unicine.util.parser.DistribucionSillaParser;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -37,6 +40,12 @@ public class EntradaServicioTest {
 
     @Autowired
     private EntradaRepo entradaRepo;
+
+    @Autowired
+    private FuncionEsquemaRepo funcionEsquemaRepo;
+
+    @Autowired
+    private DistribucionSillaParser distribucionSillaParser;
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -195,5 +204,27 @@ public class EntradaServicioTest {
 
         System.out.println("\nSillas ocupadas:");
         sillas.forEach(System.out::println);
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void esquemaTemporalSincronizadoAlRegistrar() throws Exception {
+        Compra compra = compraRepo.findById(1).orElse(null);
+        Funcion funcion = funcionRepo.findById(6).orElse(null);
+
+        Entrada entrada = Entrada.builder()
+                .precio(7000.0)
+                .fila(1)
+                .columna(1)
+                .compra(compra)
+                .funcion(funcion)
+                .build();
+
+        entradaServicio.registrar(entrada);
+
+        FuncionEsquema esquema = funcionEsquemaRepo.findByFuncionCodigo(6).orElse(null);
+        String[][] matriz = distribucionSillaParser.parse(esquema.getEsquemaTemporal());
+
+        Assertions.assertEquals("O", matriz[0][0]);
     }
 }

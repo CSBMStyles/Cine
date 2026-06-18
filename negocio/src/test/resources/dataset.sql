@@ -195,7 +195,7 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
             ["D", "D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D", "D"],
             ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
             ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
-            ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
+            ["D", "D", "D", " ", "O", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
             ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
             ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
             ["D", "D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D", "D"],
@@ -203,7 +203,7 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
         ]', 96, 0, 0, 2);
 insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (3, '[ 
             [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
-            [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
+            [" ", "D", "D", "O", "O", "D", "D", "D", "D", " "],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
@@ -218,7 +218,7 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
             [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "O", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
@@ -229,7 +229,7 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
             [" ", " ", "D", "D", "D", "D", "D", "D", " ", " "],
             [" ", "D", "D", "D", "D", "D", "D", "D", "D", " "],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
-            ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
+            ["D", "D", "D", "O", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
             ["D", "D", "D", "D", "D", "D", "D", "D", "D", "D"],
@@ -239,7 +239,7 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
         ]', 112, 0, 0, 5);
 insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, ocupadas, funcion_id) values (6, '[ 
             ["D", "D", " ", " ", "D", "D", "D", "D", " ", " ", "D", "D"],
-            ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
+            ["D", "D", " ", "D", "O", "D", "D", "D", "D", " ", "D", "D"],
             ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
             ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],
             ["D", "D", " ", "D", "D", "D", "D", "D", "D", " ", "D", "D"],

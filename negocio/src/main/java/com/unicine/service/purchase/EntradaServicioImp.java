@@ -22,6 +22,7 @@ import com.unicine.transfer.data.DetalleSillaDTO;
 import com.unicine.util.parser.DistribucionSillaParser;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
+import com.unicine.util.validation.catalog.domain.TheaterErrorCatalog;
 
 import jakarta.validation.Valid;
 
@@ -104,11 +105,11 @@ public class EntradaServicioImp implements EntradaServicio {
         String[][] esquema = distribucionSillaParser.parse(distribucion);
 
         if (!distribucionSillaParser.existeSilla(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG011);
+            throw new BusinessRuleException(TheaterErrorCatalog.REG007);
         }
 
         if (!distribucionSillaParser.esSillaDisponible(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG011);
+            throw new BusinessRuleException(TheaterErrorCatalog.REG007);
         }
     }
 
@@ -120,16 +121,32 @@ public class EntradaServicioImp implements EntradaServicio {
         }
     }
 
-    private void ocuparSilla(FuncionEsquema esquema) {
+    private void ocuparSilla(FuncionEsquema esquema, Entrada entrada) {
         esquema.setOcupadas(esquema.getOcupadas() + 1);
         esquema.setDisponibles(esquema.getDisponibles() - 1);
+        actualizarEsquemaTemporal(esquema, entrada, true);
         funcionEsquemaRepo.save(esquema);
     }
 
-    private void liberarSilla(FuncionEsquema esquema) {
+    private void liberarSilla(FuncionEsquema esquema, Entrada entrada) {
         esquema.setOcupadas(esquema.getOcupadas() - 1);
         esquema.setDisponibles(esquema.getDisponibles() + 1);
+        actualizarEsquemaTemporal(esquema, entrada, false);
         funcionEsquemaRepo.save(esquema);
+    }
+
+    private void actualizarEsquemaTemporal(FuncionEsquema esquema, Entrada entrada, boolean ocupar) {
+        if (esquema.getEsquemaTemporal() == null) {
+            return;
+        }
+
+        String[][] matriz = distribucionSillaParser.parse(esquema.getEsquemaTemporal());
+        if (ocupar) {
+            distribucionSillaParser.marcarSillaOcupada(matriz, entrada.getFila(), entrada.getColumna());
+        } else {
+            distribucionSillaParser.marcarSillaDisponible(matriz, entrada.getFila(), entrada.getColumna());
+        }
+        esquema.setEsquemaTemporal(distribucionSillaParser.toJson(matriz));
     }
 
     private void validarRegistro(Entrada entrada) throws Exception {
@@ -148,7 +165,7 @@ public class EntradaServicioImp implements EntradaServicio {
     public Entrada registrar(@Valid Entrada entrada) throws Exception {
         validarRegistro(entrada);
         Entrada guardada = entradaRepo.save(entrada);
-        ocuparSilla(obtenerFuncionEsquema(guardada.getFuncion().getCodigo()));
+        ocuparSilla(obtenerFuncionEsquema(guardada.getFuncion().getCodigo()), guardada);
         return guardada;
     }
 
@@ -169,7 +186,7 @@ public class EntradaServicioImp implements EntradaServicio {
         Optional<Entrada> buscado = entradaRepo.findById(entrada.getCodigo());
         validarExiste(buscado);
         entradaRepo.delete(entrada);
-        liberarSilla(obtenerFuncionEsquema(entrada.getFuncion().getCodigo()));
+        liberarSilla(obtenerFuncionEsquema(entrada.getFuncion().getCodigo()), entrada);
     }
 
     @Override
