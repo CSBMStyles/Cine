@@ -25,6 +25,19 @@ Before modifying any files in this repository, always create a safety backup of 
   - `git stash pop` to restore the previous state
   - `git checkout stash@{0} -- <file>` to restore a specific file
 
+## git-commits
+
+All commit messages must be written in English, following the convention defined in `SPEC.md` section 7.
+
+- Format: `<type>(<optional scope>): <imperative description>`
+- Allowed types: `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `style`, `perf`, `build`, `ci`
+- Do not mix Spanish and English in commit messages.
+
+Example:
+```
+feat(coupon): add CuponServicio with extended queries and tests
+```
+
 ## skills-configuration
 
 This project uses a hybrid skill setup: global skills for universal tooling and project-local skills for stack-specific tasks.

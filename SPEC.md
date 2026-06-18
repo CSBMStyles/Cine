@@ -1,7 +1,7 @@
 # SPEC - Especificaciones de Estilo de Codigo UniCine
 
 > Documento vivo con convenciones de estilo para mantener consistencia en el proyecto.
-> Actualizacion: Mayo 2026
+> Actualizacion: Junio 2026
 
 ---
 
@@ -117,3 +117,22 @@ Orden recomendado dentro de una clase de servicio:
 - Dataset SQL: `@Sql("classpath:dataset.sql")`
 - Nomenclatura sin conectores: `registrarCuponExpirado`, `obtenerInexistente`
 - Validar mensajes de `SuccessCatalog` y catálogos de dominio en assertions.
+
+---
+
+## 7. Convenciones de Commits
+
+- **Todos los mensajes de commit deben estar en inglés**.
+- Formato: `<tipo>(<alcance opcional>): <descripción en imperativo>`.
+- Tipos permitidos: `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `style`, `perf`, `build`, `ci`.
+- Descripción breve, en imperativo y sin punto final.
+
+Ejemplo correcto:
+```
+feat(coupon): add CuponServicio with extended queries and tests
+```
+
+Ejemplo incorrecto:
+```
+feat(cupon): agregar servicio de cupones con consultas adicionales
+```
