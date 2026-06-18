@@ -99,7 +99,7 @@ public class CuponTest {
 
         List<Cupon> cupones = cuponRepo.findAll();
 
-        Assertions.assertEquals(2, cupones.size());
+        Assertions.assertEquals(3, cupones.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -114,7 +114,7 @@ public class CuponTest {
 
         List<Cupon> cupones = cuponRepo.findAll(PageRequest.of(0, 3)).toList();
 
-        Assertions.assertEquals(2, cupones.size());
+        Assertions.assertEquals(3, cupones.size());
 
         System.out.println("\n" + "Listado de registros paginado:");
 
@@ -129,7 +129,7 @@ public class CuponTest {
 
         List<Cupon> cupones = cuponRepo.findAll(Sort.by("criterio"));
 
-        Assertions.assertEquals(2, cupones.size());
+        Assertions.assertEquals(3, cupones.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 

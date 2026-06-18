@@ -260,6 +260,7 @@ insert into funcion_esquema (id, esquema_temporal, disponibles, mantenimiento, o
 
 insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.15, 1, "2026-12-25T20:00:00", "Primer registro", "Cupon del 15% de descuento por registrarse por primera vez en nuestra plataforma");
 insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.1, 2, "2026-12-19T15:45:00", "Primera compra", "Cupon del 10% de descuento por realizar una primera compra por medio de nuestra plataforma");
+insert into cupon (descuento, id, fecha_vencimiento, criterio, descripcion) values (0.25, 4, "2026-11-30T10:00:00", "Sin asignaciones", "Cupon del 25% de descuento sin asignaciones a clientes");
 
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1005000055, 1, 1, 1);
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000044, 2, 0, 2);

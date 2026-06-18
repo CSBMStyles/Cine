@@ -97,7 +97,7 @@ public class ConfiteriaTest {
 
         List<Confiteria> confiterias = confiteriaRepo.findAll();
 
-        Assertions.assertEquals(14, confiterias.size());
+        Assertions.assertEquals(15, confiterias.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -127,7 +127,7 @@ public class ConfiteriaTest {
 
         List<Confiteria> confiterias = confiteriaRepo.findAll(Sort.by("nombre"));
 
-        Assertions.assertEquals(14, confiterias.size());
+        Assertions.assertEquals(15, confiterias.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 

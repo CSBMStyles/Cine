@@ -103,7 +103,7 @@ public class ConfiteriaServicioTest {
         try {
             List<Confiteria> confiterias = confiteriaServicio.listar();
 
-            Assertions.assertEquals(14, confiterias.size());
+            Assertions.assertEquals(15, confiterias.size());
 
             System.out.println("\nListado de confiterias:\n" + confiterias);
 
