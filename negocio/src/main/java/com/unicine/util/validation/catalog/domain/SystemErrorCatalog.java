@@ -6,8 +6,8 @@ import com.unicine.util.validation.catalog.ErrorCode;
  * Catalogo de errores del sistema (validacion de parametros, errores generales).
  * 
  * Contiene codigos para:
- * - Validacion de parametros (VAL001-VAL008)
- * - Errores internos del servidor (GEN001-GEN004)
+ * - Validacion de parametros (DOMAIN_SYSTEM_VALIDATION_*)
+ * - Errores internos del servidor (DOMAIN_SYSTEM_GENERAL_*)
  * 
  * NOTA: El HTTP status se define en el {@code @ControllerAdvice},
  * no en este enum, para mantener la capa de negocio desacoplada de HTTP.
@@ -17,21 +17,21 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum SystemErrorCatalog implements ErrorCode {
 
-    // VAL - VALIDACION DE PARAMETROS (400 Bad Request)
-    VAL001("VAL001", "El parametro no puede estar vacio"),
-    VAL002("VAL002", "El parametro debe ser un numero positivo"),
-    VAL003("VAL003", "El parametro no puede estar en blanco"),
-    VAL004("VAL004", "El codigo no puede estar vacio"),
-    VAL005("VAL005", "El codigo debe ser un numero positivo"),
-    VAL006("VAL006", "El nombre no puede estar en blanco"),
-    VAL007("VAL007", "El codigo de teatro no puede estar vacio"),
-    VAL008("VAL008", "El codigo de teatro debe ser un numero positivo"),
+    // VALIDATION - VALIDACION DE PARAMETROS (400 Bad Request)
+    DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_EMPTY("DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_EMPTY", "El parametro no puede estar vacio"),
+    DOMAIN_SYSTEM_VALIDATION_PARAMETER_MUST_BE_POSITIVE_NUMBER("DOMAIN_SYSTEM_VALIDATION_PARAMETER_MUST_BE_POSITIVE_NUMBER", "El parametro debe ser un numero positivo"),
+    DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_BLANK("DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_BLANK", "El parametro no puede estar en blanco"),
+    DOMAIN_SYSTEM_VALIDATION_CODE_CANNOT_BE_EMPTY("DOMAIN_SYSTEM_VALIDATION_CODE_CANNOT_BE_EMPTY", "El codigo no puede estar vacio"),
+    DOMAIN_SYSTEM_VALIDATION_CODE_MUST_BE_POSITIVE_NUMBER("DOMAIN_SYSTEM_VALIDATION_CODE_MUST_BE_POSITIVE_NUMBER", "El codigo debe ser un numero positivo"),
+    DOMAIN_SYSTEM_VALIDATION_NAME_CANNOT_BE_BLANK("DOMAIN_SYSTEM_VALIDATION_NAME_CANNOT_BE_BLANK", "El nombre no puede estar en blanco"),
+    DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_CANNOT_BE_EMPTY("DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_CANNOT_BE_EMPTY", "El codigo de teatro no puede estar vacio"),
+    DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_MUST_BE_POSITIVE_NUMBER("DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_MUST_BE_POSITIVE_NUMBER", "El codigo de teatro debe ser un numero positivo"),
 
-    // GEN - GENERALES / INTERNOS (500 Internal Server Error)
-    GEN001("GEN001", "Error inesperado del servidor: {0}"),
-    GEN002("GEN002", "Operacion no soportada"),
-    GEN003("GEN003", "Error al procesar la solicitud"),
-    GEN004("GEN004", "Servicio no disponible temporalmente");
+    // GENERAL - GENERALES / INTERNOS (500 Internal Server Error)
+    DOMAIN_SYSTEM_GENERAL_UNEXPECTED_SERVER_ERROR("DOMAIN_SYSTEM_GENERAL_UNEXPECTED_SERVER_ERROR", "Error inesperado del servidor: {0}"),
+    DOMAIN_SYSTEM_GENERAL_OPERATION_NOT_SUPPORTED("DOMAIN_SYSTEM_GENERAL_OPERATION_NOT_SUPPORTED", "Operacion no soportada"),
+    DOMAIN_SYSTEM_GENERAL_REQUEST_PROCESSING_ERROR("DOMAIN_SYSTEM_GENERAL_REQUEST_PROCESSING_ERROR", "Error al procesar la solicitud"),
+    DOMAIN_SYSTEM_GENERAL_SERVICE_TEMPORARILY_UNAVAILABLE("DOMAIN_SYSTEM_GENERAL_SERVICE_TEMPORARILY_UNAVAILABLE", "Servicio no disponible temporalmente");
 
     private final String code;
     private final String message;

@@ -6,10 +6,10 @@ import com.unicine.util.validation.catalog.ErrorCode;
  * Catalogo de errores del dominio de Usuarios (clientes, administradores, autenticacion).
  * 
  * Contiene codigos para:
- * - Entidades no encontradas (ENT001-ENT003)
- * - Duplicados (DUP001-DUP002)
- * - Autenticacion (AUTH001-AUTH007)
- * - Reglas de negocio de usuario (REG001)
+ * - Entidades no encontradas (DOMAIN_USER_ENTITY_*)
+ * - Duplicados (DOMAIN_USER_DUPLICATE_*)
+ * - Autenticacion (DOMAIN_USER_AUTH_*)
+ * - Reglas de negocio de usuario (DOMAIN_USER_BUSINESS_RULE_*)
  * 
  * NOTA: El HTTP status se define en el {@code @ControllerAdvice},
  * no en este enum, para mantener la capa de negocio desacoplada de HTTP.
@@ -19,26 +19,26 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum UserErrorCatalog implements ErrorCode {
 
-    // ENT - ENTIDAD NO ENCONTRADA (404 Not Found)
-    ENT001("ENT001", "El administrador no existe"),
-    ENT002("ENT002", "El administrador de teatro no existe"),
-    ENT003("ENT003", "El cliente no existe"),
+    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND("DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND", "El administrador no existe"),
+    DOMAIN_USER_ENTITY_THEATER_ADMIN_NOT_FOUND("DOMAIN_USER_ENTITY_THEATER_ADMIN_NOT_FOUND", "El administrador de teatro no existe"),
+    DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND("DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND", "El cliente no existe"),
 
-    // DUP - CONFLICTO / DUPLICADO (409 Conflict)
-    DUP001("DUP001", "La cedula ya esta registrada"),
-    DUP002("DUP002", "Este correo ya esta registrado"),
+    // DUPLICATE - CONFLICTO / DUPLICADO (409 Conflict)
+    DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED("DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED", "La cedula ya esta registrada"),
+    DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED("DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED", "Este correo ya esta registrado"),
 
     // AUTH - AUTENTICACION (401 Unauthorized)
-    AUTH001("AUTH001", "Credenciales invalidas"),
-    AUTH002("AUTH002", "El correo no existe"),
-    AUTH003("AUTH003", "Los datos de autenticacion son incorrectos"),
-    AUTH004("AUTH004", "La contrasena actual es incorrecta"),
-    AUTH005("AUTH005", "La nueva contrasena no puede ser igual a la actual"),
-    AUTH006("AUTH006", "El cliente no esta activo, debe activarla con el enlace que fue enviado a su correo"),
-    AUTH007("AUTH007", "El usuario no tiene permisos para realizar esta accion"),
+    DOMAIN_USER_AUTH_INVALID_CREDENTIALS("DOMAIN_USER_AUTH_INVALID_CREDENTIALS", "Credenciales invalidas"),
+    DOMAIN_USER_AUTH_EMAIL_NOT_FOUND("DOMAIN_USER_AUTH_EMAIL_NOT_FOUND", "El correo no existe"),
+    DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT("DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT", "Los datos de autenticacion son incorrectos"),
+    DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT("DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT", "La contrasena actual es incorrecta"),
+    DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT("DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT", "La nueva contrasena no puede ser igual a la actual"),
+    DOMAIN_USER_AUTH_CLIENT_INACTIVE("DOMAIN_USER_AUTH_CLIENT_INACTIVE", "El cliente no esta activo, debe activarla con el enlace que fue enviado a su correo"),
+    DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED("DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED", "El usuario no tiene permisos para realizar esta accion"),
 
-    // REG - REGLAS DE NEGOCIO (400 Bad Request)
-    REG001("REG001", "El cliente debe ser mayor de edad para registrarse");
+    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE("DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE", "El cliente debe ser mayor de edad para registrarse");
 
     private final String code;
     private final String message;

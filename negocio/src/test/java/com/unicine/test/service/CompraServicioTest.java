@@ -201,7 +201,7 @@ public class CompraServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.ENT018.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             System.out.println("Mensaje de error inesperado: " + e.getMessage());
@@ -244,7 +244,7 @@ public class CompraServicioTest {
 
         } catch (BusinessRuleException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.REG007.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_EXPIRED.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,7 +287,7 @@ public class CompraServicioTest {
 
         } catch (BusinessRuleException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.REG006.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_ALREADY_USED.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -314,7 +314,7 @@ public class CompraServicioTest {
 
         } catch (BusinessRuleException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.REG009.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_PURCHASE_ALREADY_PROCESSED.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -43,7 +43,7 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
      */
     private void validarExiste(Optional<CuponCliente> cuponCliente) throws Exception {
         if (cuponCliente.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
         }
     }
 
@@ -53,7 +53,7 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
      */
     private void validarExiste(List<CuponCliente> cuponesClientes) throws Exception {
         if (cuponesClientes.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
         }
     }
 
@@ -63,7 +63,7 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
     private void validarClienteExiste(Integer cedula) throws Exception {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
-            throw new ResourceNotFoundException(UserErrorCatalog.ENT003);
+            throw new ResourceNotFoundException(UserErrorCatalog.DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND);
         }
     }
 
@@ -151,7 +151,7 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
         validarClienteExiste(cedula);
         Long cantidad = cuponClienteRepo.contarRedimidosPorCliente(cedula);
         if (cantidad == null || cantidad == 0) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
         }
         return cantidad;
     }

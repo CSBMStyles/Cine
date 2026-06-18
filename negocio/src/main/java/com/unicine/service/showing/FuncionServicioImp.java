@@ -68,7 +68,7 @@ public class FuncionServicioImp implements FuncionServicio {
     private void validarExiste(Optional<Funcion> funcion) throws Exception {
 
         if (funcion.isEmpty()) {
-            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT013);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND);
         }
     }
 

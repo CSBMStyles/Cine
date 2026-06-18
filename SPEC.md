@@ -86,6 +86,11 @@ Orden recomendado dentro de una clase de servicio:
   - `ImageErrorCatalog` (imagenes, servicios externos)
   - `SystemErrorCatalog` (validacion, errores generales)
 - Todos los catalogos de error implementan `ErrorCode`.
+- Los codigos de error siguen el formato `DOMAIN_<DOMINIO>_<TIPO>_<DESCRIPCION>`:
+  - `DOMAIN_<DOMINIO>_`: prefijo del dominio (`DOMAIN_MOVIE_`, `DOMAIN_PURCHASE_`, `DOMAIN_SHOWING_`, `DOMAIN_THEATER_`, `DOMAIN_USER_`, `DOMAIN_IMAGE_`, `DOMAIN_SYSTEM_`).
+  - `_<TIPO>_`: categoria del error (`ENTITY`, `DUPLICATE`, `BUSINESS_RULE`, `AUTH`, `EXTERNAL`, `VALIDATION`, `GENERAL`, `DELETE`).
+  - `_<DESCRIPCION>`: descripcion legible del error.
+  - Ejemplo: `DOMAIN_MOVIE_ENTITY_MOVIE_NOT_FOUND`, `DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_ALREADY_USED`.
 - No lanzar `RuntimeException` ni `Exception` genericos con mensajes hardcodeados.
 
 ---
@@ -116,7 +121,7 @@ Orden recomendado dentro de una clase de servicio:
 - `@SpringBootTest` + `@Transactional`
 - Dataset SQL: `@Sql("classpath:dataset.sql")`
 - Nomenclatura sin conectores: `registrarCuponExpirado`, `obtenerInexistente`
-- Validar mensajes de `SuccessCatalog` y catálogos de dominio en assertions.
+- Validar mensajes de `SuccessCatalog` y codigos descriptivos de dominio (`DOMAIN_*`) en assertions.
 
 ---
 

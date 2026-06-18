@@ -6,8 +6,8 @@ import com.unicine.util.validation.catalog.ErrorCode;
  * Catalogo de errores del dominio de Funciones (funciones, horarios, esquemas).
  * 
  * Contiene codigos para:
- * - Entidades no encontradas (ENT013-ENT015)
- * - Reglas de negocio de programacion (REG003-REG004)
+ * - Entidades no encontradas (DOMAIN_SHOWING_ENTITY_*)
+ * - Reglas de negocio de programacion (DOMAIN_SHOWING_BUSINESS_RULE_*)
  * 
  * NOTA: El HTTP status se define en el {@code @ControllerAdvice},
  * no en este enum, para mantener la capa de negocio desacoplada de HTTP.
@@ -17,14 +17,14 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum ShowingErrorCatalog implements ErrorCode {
 
-    // ENT - ENTIDAD NO ENCONTRADA (404 Not Found)
-    ENT013("ENT013", "La funcion no existe"),
-    ENT014("ENT014", "El esquema de la funcion no existe"),
-    ENT015("ENT015", "El horario no existe"),
+    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND("DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND", "La funcion no existe"),
+    DOMAIN_SHOWING_ENTITY_FUNCTION_SCHEMA_NOT_FOUND("DOMAIN_SHOWING_ENTITY_FUNCTION_SCHEMA_NOT_FOUND", "El esquema de la funcion no existe"),
+    DOMAIN_SHOWING_ENTITY_SCHEDULE_NOT_FOUND("DOMAIN_SHOWING_ENTITY_SCHEDULE_NOT_FOUND", "El horario no existe"),
 
-    // REG - REGLAS DE NEGOCIO (400 Bad Request)
-    REG003("REG003", "El horario se solapa con uno existente"),
-    REG004("REG004", "La funcion no tiene horarios disponibles");
+    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP("DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP", "El horario se solapa con uno existente"),
+    DOMAIN_SHOWING_BUSINESS_RULE_FUNCTION_NO_SCHEDULES_AVAILABLE("DOMAIN_SHOWING_BUSINESS_RULE_FUNCTION_NO_SCHEDULES_AVAILABLE", "La funcion no tiene horarios disponibles");
 
     private final String code;
     private final String message;

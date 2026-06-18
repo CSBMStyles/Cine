@@ -6,8 +6,8 @@ import com.unicine.util.validation.catalog.ErrorCode;
  * Catalogo de errores del dominio de Teatros (teatros, salas, ciudades, distribucion de sillas).
  * 
  * Contiene codigos para:
- * - Entidades no encontradas (ENT004-ENT008, ENT012)
- * - Duplicados (DUP005-DUP006)
+ * - Entidades no encontradas (DOMAIN_THEATER_ENTITY_*)
+ * - Duplicados (DOMAIN_THEATER_DUPLICATE_*)
  * 
  * NOTA: El HTTP status se define en el {@code @ControllerAdvice},
  * no en este enum, para mantener la capa de negocio desacoplada de HTTP.
@@ -17,23 +17,23 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum TheaterErrorCatalog implements ErrorCode {
 
-    // ENT - ENTIDAD NO ENCONTRADA (404 Not Found)
-    ENT004("ENT004", "La ciudad no existe"),
-    ENT005("ENT005", "No existe ciudad con ese nombre"),
-    ENT006("ENT006", "El teatro no existe"),
-    ENT007("ENT007", "La sala no existe"),
-    ENT008("ENT008", "No existe salas con ese nombre"),
-    ENT012("ENT012", "La distribucion de sillas no existe"),
-    ENT017("ENT017", "El esquema de sillas no existe"),
-    ENT018("ENT018", "El esquema de sillas es invalido"),
+    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND("DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND", "La ciudad no existe"),
+    DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND_BY_NAME("DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND_BY_NAME", "No existe ciudad con ese nombre"),
+    DOMAIN_THEATER_ENTITY_THEATER_NOT_FOUND("DOMAIN_THEATER_ENTITY_THEATER_NOT_FOUND", "El teatro no existe"),
+    DOMAIN_THEATER_ENTITY_ROOM_NOT_FOUND("DOMAIN_THEATER_ENTITY_ROOM_NOT_FOUND", "La sala no existe"),
+    DOMAIN_THEATER_ENTITY_ROOMS_NOT_FOUND_BY_NAME("DOMAIN_THEATER_ENTITY_ROOMS_NOT_FOUND_BY_NAME", "No existe salas con ese nombre"),
+    DOMAIN_THEATER_ENTITY_SEAT_DISTRIBUTION_NOT_FOUND("DOMAIN_THEATER_ENTITY_SEAT_DISTRIBUTION_NOT_FOUND", "La distribucion de sillas no existe"),
+    DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_NOT_FOUND("DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_NOT_FOUND", "El esquema de sillas no existe"),
+    DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_INVALID("DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_INVALID", "El esquema de sillas es invalido"),
 
-    // REG - REGLAS DE NEGOCIO (400 Bad Request)
-    REG007("REG007", "La silla no existe en la distribucion de la sala"),
-    REG008("REG008", "La silla no esta disponible para esta funcion"),
+    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION("DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION", "La silla no existe en la distribucion de la sala"),
+    DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_AVAILABLE_FOR_FUNCTION("DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_AVAILABLE_FOR_FUNCTION", "La silla no esta disponible para esta funcion"),
 
-    // DUP - CONFLICTO / DUPLICADO (409 Conflict)
-    DUP005("DUP005", "El nombre de la sala ya existe en el teatro"),
-    DUP006("DUP006", "La direccion del teatro ya existe en la ciudad");
+    // DUPLICATE - CONFLICTO / DUPLICADO (409 Conflict)
+    DOMAIN_THEATER_DUPLICATE_ROOM_NAME_ALREADY_EXISTS_IN_THEATER("DOMAIN_THEATER_DUPLICATE_ROOM_NAME_ALREADY_EXISTS_IN_THEATER", "El nombre de la sala ya existe en el teatro"),
+    DOMAIN_THEATER_DUPLICATE_THEATER_ADDRESS_ALREADY_EXISTS_IN_CITY("DOMAIN_THEATER_DUPLICATE_THEATER_ADDRESS_ALREADY_EXISTS_IN_CITY", "La direccion del teatro ya existe en la ciudad");
 
     private final String code;
     private final String message;

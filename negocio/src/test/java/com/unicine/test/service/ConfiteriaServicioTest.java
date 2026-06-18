@@ -202,7 +202,7 @@ public class ConfiteriaServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.ENT019.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,7 +261,7 @@ public class ConfiteriaServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.ENT019.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();

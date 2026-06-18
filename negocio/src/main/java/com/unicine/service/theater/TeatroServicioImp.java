@@ -36,7 +36,7 @@ public class TeatroServicioImp implements TeatroServicio {
     private void validarExiste(Optional<Teatro> teatro) throws Exception {
 
         if (teatro.isEmpty()) {
-            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT006);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.DOMAIN_THEATER_ENTITY_THEATER_NOT_FOUND);
         }
     }
 

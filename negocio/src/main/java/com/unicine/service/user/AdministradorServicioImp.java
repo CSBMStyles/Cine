@@ -50,11 +50,11 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> administrador = administradorRepo.findByCorreo(correo);
 
         if (administrador.isEmpty()) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH002);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_EMAIL_NOT_FOUND);
         }
 
         if (!encriptador.checkPassword(password, administrador.get().getPassword())) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH003);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT);
         }
 
         return administrador.get();
@@ -68,7 +68,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     private void validarExiste(Optional<Administrador> administrador) throws Exception {
 
         if (administrador.isEmpty()) {
-            throw new ResourceNotFoundException(UserErrorCatalog.ENT001);
+            throw new ResourceNotFoundException(UserErrorCatalog.DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND);
         }
     }
 
@@ -82,7 +82,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new ValidationException(UserErrorCatalog.DUP001);
+            throw new ValidationException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED);
         }
     }
 
@@ -96,7 +96,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DUP002.getMessage());
+            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DUP002.getMessage());
+            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
         }
     }
 
@@ -195,12 +195,12 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         
     // 2. Verificar que el password actual es correcto
     if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
-        throw new AuthenticationException(UserErrorCatalog.AUTH004);
+        throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
     }
 
     // 3. Verificar que el nuevo password sea diferente al actual
     if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
-        throw new AuthenticationException(UserErrorCatalog.AUTH005);
+        throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT);
     }
 
     administrador.setPassword(passwordNuevo);

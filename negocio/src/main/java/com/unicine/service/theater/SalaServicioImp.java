@@ -51,7 +51,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(Optional<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT007);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.DOMAIN_THEATER_ENTITY_ROOM_NOT_FOUND);
         }
     }
 
@@ -63,7 +63,7 @@ public class SalaServicioImp implements SalaServicio {
     private void validarExiste(List<Sala> sala) throws Exception {
 
         if (sala.isEmpty()) {
-            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT008);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.DOMAIN_THEATER_ENTITY_ROOMS_NOT_FOUND_BY_NAME);
         }
     }
 

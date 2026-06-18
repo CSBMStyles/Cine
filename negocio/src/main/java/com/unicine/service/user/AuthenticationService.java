@@ -36,6 +36,6 @@ public class AuthenticationService {
             }
         }
 
-        throw new AuthenticationException(UserErrorCatalog.AUTH001);
+        throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_INVALID_CREDENTIALS);
     }
 }

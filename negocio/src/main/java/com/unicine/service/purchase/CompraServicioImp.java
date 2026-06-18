@@ -69,7 +69,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarExiste(Optional<Compra> compra) {
         if (compra.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
     }
 
@@ -79,7 +79,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarExiste(List<Compra> compras) {
         if (compras.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
     }
 
@@ -89,7 +89,7 @@ public class CompraServicioImp implements CompraServicio {
     private void validarClienteExiste(Integer cedula) {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
-            throw new ResourceNotFoundException(UserErrorCatalog.ENT003);
+            throw new ResourceNotFoundException(UserErrorCatalog.DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND);
         }
     }
 
@@ -99,7 +99,7 @@ public class CompraServicioImp implements CompraServicio {
     private void validarFuncionExiste(Integer codigo) {
         Optional<Funcion> funcion = funcionRepo.findById(codigo);
         if (funcion.isEmpty()) {
-            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT013);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND);
         }
     }
 
@@ -113,11 +113,11 @@ public class CompraServicioImp implements CompraServicio {
         }
 
         if (!cuponCliente.getEstado()) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG006);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_ALREADY_USED);
         }
 
         if (cuponCliente.getCupon().getFechaVencimiento().isBefore(LocalDateTime.now())) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG007);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_EXPIRED);
         }
     }
 
@@ -126,7 +126,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarDescuentoNoMayorTotal(Double descuento, Double total) {
         if (descuento > total) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG008);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_DISCOUNT_GREATER_THAN_TOTAL);
         }
     }
 
@@ -136,7 +136,7 @@ public class CompraServicioImp implements CompraServicio {
      */
     private void validarCompraNoProcesada(Compra compra) {
         if (!compra.getEstado()) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG009);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_PURCHASE_ALREADY_PROCESSED);
         }
     }
 
@@ -149,7 +149,7 @@ public class CompraServicioImp implements CompraServicio {
             boolean ocupada = entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(
                     entrada.getFila(), entrada.getColumna(), codigoFuncion);
             if (ocupada) {
-                throw new BusinessRuleException(PurchaseErrorCatalog.REG005);
+                throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_ROOM_NOT_ENOUGH_AVAILABLE_SEATS);
             }
         }
     }
@@ -231,7 +231,7 @@ public class CompraServicioImp implements CompraServicio {
         if (cuponCliente != null) {
             Optional<CuponCliente> cc = cuponClienteRepo.findById(cuponCliente.getCodigo());
             if (cc.isEmpty()) {
-                throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
+                throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
             }
             cuponCliente = cc.get();
             validarCuponDisponible(cuponCliente);
@@ -275,7 +275,7 @@ public class CompraServicioImp implements CompraServicio {
     public Double obtenerTotalComprasCliente(Integer cedula) {
         Double total = compraRepo.obtenerTotalCompras(cedula);
         if (total == null) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
         return total;
     }

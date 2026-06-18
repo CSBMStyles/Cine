@@ -36,7 +36,7 @@ public class CiudadServicioImp implements CiudadServicio {
     private void validarExiste(Optional<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
-            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT004);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND);
         }
     }
 
@@ -48,7 +48,7 @@ public class CiudadServicioImp implements CiudadServicio {
     private void validarExiste(List<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
-            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT005);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND_BY_NAME);
         }
     }
 

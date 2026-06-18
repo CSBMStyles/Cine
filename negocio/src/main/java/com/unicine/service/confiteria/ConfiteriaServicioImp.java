@@ -39,7 +39,7 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
      */
     private void validarExiste(Optional<Confiteria> confiteria) throws Exception {
         if (confiteria.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT019);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_NOT_FOUND);
         }
     }
 
@@ -49,7 +49,7 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
      */
     private void validarExiste(List<Confiteria> confiterias) throws Exception {
         if (confiterias.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT019);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_NOT_FOUND);
         }
     }
 

@@ -53,20 +53,20 @@ public class EntradaServicioImp implements EntradaServicio {
 
     private void validarExiste(Optional<Entrada> entrada) throws Exception {
         if (entrada.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT017);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_TICKET_NOT_FOUND);
         }
     }
 
     private void validarExiste(List<Entrada> entradas) throws Exception {
         if (entradas.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT017);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_TICKET_NOT_FOUND);
         }
     }
 
     private Compra obtenerCompra(Integer codigo) throws Exception {
         Optional<Compra> compra = compraRepo.findById(codigo);
         if (compra.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT018);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
         return compra.get();
     }
@@ -74,7 +74,7 @@ public class EntradaServicioImp implements EntradaServicio {
     private Funcion obtenerFuncion(Integer codigo) throws Exception {
         Optional<Funcion> funcion = funcionRepo.findById(codigo);
         if (funcion.isEmpty()) {
-            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT013);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND);
         }
         return funcion.get();
     }
@@ -82,20 +82,20 @@ public class EntradaServicioImp implements EntradaServicio {
     private FuncionEsquema obtenerFuncionEsquema(Integer codigoFuncion) throws Exception {
         Optional<FuncionEsquema> esquema = funcionEsquemaRepo.findByFuncionCodigo(codigoFuncion);
         if (esquema.isEmpty()) {
-            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT014);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_SCHEMA_NOT_FOUND);
         }
         return esquema.get();
     }
 
     private void comprobarConfirmacion(boolean confirmacion) throws Exception {
         if (!confirmacion) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.DEL001);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_DELETE_DELETE_NOT_CONFIRMED);
         }
     }
 
     private void validarFuncionCoincideConCompra(Entrada entrada) {
         if (!entrada.getCompra().getFuncion().getCodigo().equals(entrada.getFuncion().getCodigo())) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG012);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_TICKET_FUNCTION_MISMATCH);
         }
     }
 
@@ -114,11 +114,11 @@ public class EntradaServicioImp implements EntradaServicio {
         String[][] esquema = distribucionSillaParser.parse(esquemaFuncion.getEsquemaTemporal());
 
         if (!distribucionSillaParser.existeSilla(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(TheaterErrorCatalog.REG007);
+            throw new BusinessRuleException(TheaterErrorCatalog.DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION);
         }
 
         if (!distribucionSillaParser.esSillaDisponible(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(TheaterErrorCatalog.REG008);
+            throw new BusinessRuleException(TheaterErrorCatalog.DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_AVAILABLE_FOR_FUNCTION);
         }
     }
 
@@ -128,11 +128,11 @@ public class EntradaServicioImp implements EntradaServicio {
         String[][] esquema = distribucionSillaParser.parse(distribucion);
 
         if (!distribucionSillaParser.existeSilla(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(TheaterErrorCatalog.REG007);
+            throw new BusinessRuleException(TheaterErrorCatalog.DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION);
         }
 
         if (!distribucionSillaParser.esSillaDisponible(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(TheaterErrorCatalog.REG007);
+            throw new BusinessRuleException(TheaterErrorCatalog.DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION);
         }
     }
 
@@ -140,7 +140,7 @@ public class EntradaServicioImp implements EntradaServicio {
         boolean ocupada = entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(
                 entrada.getFila(), entrada.getColumna(), entrada.getFuncion().getCodigo());
         if (ocupada) {
-            throw new BusinessRuleException(PurchaseErrorCatalog.REG010);
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED);
         }
     }
 

@@ -259,7 +259,7 @@ public class CuponClienteServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.ENT016.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -300,7 +300,7 @@ public class CuponClienteServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(PurchaseErrorCatalog.ENT016.getCode(), e.getErrorCode());
+            Assertions.assertEquals(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();

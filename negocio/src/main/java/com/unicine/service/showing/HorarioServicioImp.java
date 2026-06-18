@@ -80,7 +80,7 @@ public class HorarioServicioImp implements HorarioServicio {
     private void validarExiste(Optional<Horario> horario) throws Exception {
 
         if (horario.isEmpty()) {
-            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT015);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_SCHEDULE_NOT_FOUND);
         }
     }
 

@@ -51,7 +51,7 @@ public class ImagenServicioImp implements ImagenServicio {
     private void validarExiste(Optional<Imagen> imagen) throws Exception {
 
         if (imagen.isEmpty()) {
-            throw new ResourceNotFoundException(ImageErrorCatalog.ENT020);
+            throw new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND);
         }
     }
 
@@ -64,7 +64,7 @@ public class ImagenServicioImp implements ImagenServicio {
             Optional<Imagen> imagenRelacion = imagenRepo.findByPersona(persona.getCedula());
             
             if (imagenRelacion.isPresent()) {
-                throw new ValidationException(ImageErrorCatalog.DUP007);
+                throw new ValidationException(ImageErrorCatalog.DOMAIN_IMAGE_DUPLICATE_PERSON_ALREADY_HAS_IMAGE);
             }
         }  
     }

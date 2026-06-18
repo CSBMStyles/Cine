@@ -49,7 +49,7 @@ public class ColeccionServicioImp implements ColeccionServicio {
      */
     private void validarExiste(Optional<Coleccion> coleccion) throws Exception {
         if (coleccion.isEmpty()) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT022);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND);
         }
     }
 
@@ -59,7 +59,7 @@ public class ColeccionServicioImp implements ColeccionServicio {
      */
     private void validarExiste(List<Coleccion> colecciones) throws Exception {
         if (colecciones.isEmpty()) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT022);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND);
         }
     }
 
@@ -69,7 +69,7 @@ public class ColeccionServicioImp implements ColeccionServicio {
     private void validarClienteExiste(Integer cedula) throws Exception {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
-            throw new ResourceNotFoundException(UserErrorCatalog.ENT003);
+            throw new ResourceNotFoundException(UserErrorCatalog.DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND);
         }
     }
 
@@ -79,7 +79,7 @@ public class ColeccionServicioImp implements ColeccionServicio {
     private void validarPeliculaExiste(Integer codigo) throws Exception {
         Optional<Pelicula> pelicula = peliculaRepo.findById(codigo);
         if (pelicula.isEmpty()) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT009);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_MOVIE_NOT_FOUND);
         }
     }
 
@@ -158,7 +158,7 @@ public class ColeccionServicioImp implements ColeccionServicio {
         validarPeliculaExiste(codigoPelicula);
         Double promedio = coleccionRepo.obtenerPuntuacionPromedio(codigoPelicula);
         if (promedio == null) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT022);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND);
         }
         return promedio;
     }

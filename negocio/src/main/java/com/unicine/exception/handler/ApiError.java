@@ -18,7 +18,7 @@ import lombok.Getter;
  *   "timestamp": "2026-05-23T10:15:30",
  *   "status": 404,
  *   "error": "Not Found",
- *   "code": "ENT001",
+ *   "code": "DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND",
  *   "message": "El administrador no existe",
  *   "path": "/api/administradores/123"
  * }
@@ -46,7 +46,7 @@ public class ApiError {
     private String error;
 
     /**
-     * Codigo de error del catalogo UniCine (ej: "ENT001", "DUP002").
+     * Codigo de error del catalogo UniCine (ej: "DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND", "DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED").
      * Null si el error no esta catalogado.
      */
     private String code;

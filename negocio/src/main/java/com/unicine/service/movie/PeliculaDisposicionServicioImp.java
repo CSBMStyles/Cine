@@ -54,7 +54,7 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
     private void validarExiste(Optional<PeliculaDisposicion> peliculaDisposicion) throws Exception {
 
         if (peliculaDisposicion.isEmpty()) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT011);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_MOVIE_DISPOSITION_NOT_FOUND);
         }
     }
 

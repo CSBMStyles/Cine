@@ -313,7 +313,7 @@ public class ColeccionServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(MovieErrorCatalog.ENT022.getCode(), e.getErrorCode());
+            Assertions.assertEquals(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -359,7 +359,7 @@ public class ColeccionServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(UserErrorCatalog.ENT003.getCode(), e.getErrorCode());
+            Assertions.assertEquals(UserErrorCatalog.DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -380,7 +380,7 @@ public class ColeccionServicioTest {
 
         } catch (ResourceNotFoundException e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertEquals(MovieErrorCatalog.ENT022.getCode(), e.getErrorCode());
+            Assertions.assertEquals(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND.getCode(), e.getErrorCode());
 
         } catch (Exception e) {
             e.printStackTrace();

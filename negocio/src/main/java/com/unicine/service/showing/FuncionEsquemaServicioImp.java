@@ -46,7 +46,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     private void validarExiste(Optional<FuncionEsquema> funcionEsquema) throws Exception {
 
         if (funcionEsquema.isEmpty()) {
-            throw new ResourceNotFoundException(ShowingErrorCatalog.ENT014);
+            throw new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_SCHEMA_NOT_FOUND);
         }
     }
 

@@ -53,11 +53,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> cliente = clienteRepo.findByCorreo(correo);
 
         if (cliente.isEmpty()) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH002);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_EMAIL_NOT_FOUND);
         }
 
         if (!encriptador.checkPassword(password, cliente.get().getPassword())) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH003);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT);
         }
 
         return cliente.get();
@@ -71,7 +71,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     private void validarExiste(Optional<Cliente> cliente) throws Exception {
 
         if (cliente.isEmpty()) {
-            throw new ResourceNotFoundException(UserErrorCatalog.ENT003);
+            throw new ResourceNotFoundException(UserErrorCatalog.DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND);
         }
     }
 
@@ -85,7 +85,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.findById(numero);
         
         if (existe.isPresent()) {
-            throw new ValidationException(UserErrorCatalog.DUP001);
+            throw new ValidationException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED);
         }
     }
 
@@ -99,7 +99,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DUP002.getMessage());
+            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
         }
     }
 
@@ -113,7 +113,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DUP002.getMessage());
+            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         int edad = Period.between(fechaNacimiento, fechaActual).getYears();
 
         if (edad <= 18) {
-            throw new BusinessRuleException(UserErrorCatalog.REG001);
+            throw new BusinessRuleException(UserErrorCatalog.DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE);
         }
     }
 
@@ -139,7 +139,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     public void validarEstado(Cliente cliente) throws Exception {
 
         if (!cliente.getEstado()) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH006);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CLIENT_INACTIVE);
         }
     }
 
@@ -223,11 +223,11 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     public Cliente cambiarPassword(@Validated(OnCreate.class) Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
 
         if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH004);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
         }
 
         if (encriptador.checkPassword(passwordNuevo, cliente.getPassword())) {
-            throw new AuthenticationException(UserErrorCatalog.AUTH005);
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT);
         }
 
         cliente.setPassword(passwordNuevo);

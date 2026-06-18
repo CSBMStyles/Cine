@@ -38,7 +38,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
     private void validarExiste(Optional<DistribucionSilla> distribucion) throws Exception {
 
         if (distribucion.isEmpty()) {
-            throw new ResourceNotFoundException(TheaterErrorCatalog.ENT012);
+            throw new ResourceNotFoundException(TheaterErrorCatalog.DOMAIN_THEATER_ENTITY_SEAT_DISTRIBUTION_NOT_FOUND);
         }
     }
 

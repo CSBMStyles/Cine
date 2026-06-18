@@ -36,7 +36,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private void validarExiste(Optional<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT009);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_MOVIE_NOT_FOUND);
         }
     }
 
@@ -47,7 +47,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
     private void validarExiste(List<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
-            throw new ResourceNotFoundException(MovieErrorCatalog.ENT010);
+            throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_MOVIES_NOT_FOUND_BY_NAME);
         }
     }
 
@@ -60,7 +60,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         Optional<Pelicula> existe = peliculaRepo.obtenerPeliculaNombre(pelicula.getNombre());
        
         if (existe.isPresent()) {
-            throw new RuntimeException(MovieErrorCatalog.DUP003.getMessage());
+            throw new RuntimeException(MovieErrorCatalog.DOMAIN_MOVIE_DUPLICATE_MOVIE_ALREADY_EXISTS.getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         Optional<Pelicula> existe = peliculaRepo.obtenerNombreExcluido(pelicula.getNombre(), pelicula.getCodigo());
        
         if (existe.isPresent()) {
-            throw new RuntimeException(MovieErrorCatalog.DUP004.getMessage());
+            throw new RuntimeException(MovieErrorCatalog.DOMAIN_MOVIE_DUPLICATE_MOVIE_NAME_ALREADY_EXISTS.getMessage());
         }
     }
 

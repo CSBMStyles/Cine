@@ -39,7 +39,7 @@ public class CuponServicioImp implements CuponServicio {
      */
     private void validarExiste(Optional<Cupon> cupon) throws Exception {
         if (cupon.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
         }
     }
 
@@ -49,7 +49,7 @@ public class CuponServicioImp implements CuponServicio {
      */
     private void validarExiste(List<Cupon> cupones) throws Exception {
         if (cupones.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.ENT016);
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
         }
     }
 
