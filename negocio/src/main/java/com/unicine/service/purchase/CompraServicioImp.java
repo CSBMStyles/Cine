@@ -259,7 +259,11 @@ public class CompraServicioImp implements CompraServicio {
         if (cuponCliente != null) {
             cuponCliente.setEstado(false);
             cuponClienteRepo.save(cuponCliente);
+
+            // TODO: emitir evento de dominio CUPON_REDIMIDO para reactividad futura (SSE/WebSockets)
         }
+
+        // TODO: emitir evento de dominio COMPRA_CONFIRMADA para reactividad futura (SSE/WebSockets)
 
         return guardada;
     }

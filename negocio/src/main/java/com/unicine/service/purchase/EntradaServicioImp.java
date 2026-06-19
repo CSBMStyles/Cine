@@ -189,6 +189,9 @@ public class EntradaServicioImp implements EntradaServicio {
         validarRegistro(entrada);
         Entrada guardada = entradaRepo.save(entrada);
         ocuparSilla(obtenerFuncionEsquema(guardada.getFuncion().getCodigo()), guardada);
+
+        // TODO: emitir evento de dominio SILLA_OCUPADA para reactividad futura (SSE/WebSockets)
+
         return guardada;
     }
 
@@ -210,6 +213,8 @@ public class EntradaServicioImp implements EntradaServicio {
         validarExiste(buscado);
         entradaRepo.delete(entrada);
         liberarSilla(obtenerFuncionEsquema(entrada.getFuncion().getCodigo()), entrada);
+
+        // TODO: emitir evento de dominio SILLA_LIBERADA para reactividad futura (SSE/WebSockets)
     }
 
     @Override

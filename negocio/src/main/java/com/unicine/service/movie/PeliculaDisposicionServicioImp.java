@@ -78,14 +78,22 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
     public PeliculaDisposicion registrar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception { 
 
         ingresoEstadoIncial(peliculaDisposicion);
-        
-        return peliculaDisposicionRepo.save(peliculaDisposicion); 
+
+        PeliculaDisposicion guardado = peliculaDisposicionRepo.save(peliculaDisposicion);
+
+        // TODO: emitir evento de dominio PELICULA_DISPOSICION_CREADA para reactividad futura (SSE/WebSockets)
+
+        return guardado;
     }
 
     @Override
     public PeliculaDisposicion actualizar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception { 
 
-        return disposicionEstadoModificado(peliculaDisposicion); 
+        PeliculaDisposicion actualizado = disposicionEstadoModificado(peliculaDisposicion);
+
+        // TODO: emitir evento de dominio PELICULA_DISPOSICION_ESTADO_CAMBIADO para reactividad futura (SSE/WebSockets)
+
+        return actualizado;
     }
 
     /**
@@ -93,6 +101,8 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
      */
     public void actualizarEstadoPeliculas() {
         estadoPeliculaServicio.actualizarEstadosAutomaticamente();
+
+        // TODO: emitir evento de dominio PELICULA_ESTADOS_ACTUALIZADOS para reactividad futura (SSE/WebSockets)
     }
 
     @Override

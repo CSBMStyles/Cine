@@ -92,7 +92,12 @@ public class FuncionServicioImp implements FuncionServicio {
 
         reemplazarPrecio(funcion);
 
-        return funcionRepo.save(funcion); }
+        Funcion guardada = funcionRepo.save(funcion);
+
+        // TODO: emitir evento de dominio FUNCION_CREADA para reactividad futura (SSE/WebSockets)
+
+        return guardada;
+    }
 
     @Override
     public Funcion actualizar(@Valid Funcion funcion) throws Exception { 

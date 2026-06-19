@@ -98,7 +98,12 @@ public class ColeccionServicioImp implements ColeccionServicio {
     public Coleccion registrar(@Valid Coleccion coleccion) throws Exception {
         validarClienteExiste(coleccion.getCliente().getCedula());
         validarPeliculaExiste(coleccion.getPelicula().getCodigo());
-        return coleccionRepo.save(coleccion);
+
+        Coleccion guardada = coleccionRepo.save(coleccion);
+
+        // TODO: emitir evento de dominio COLECCION_CREADA para reactividad futura (SSE/WebSockets)
+
+        return guardada;
     }
 
     @Override
@@ -108,7 +113,12 @@ public class ColeccionServicioImp implements ColeccionServicio {
                 coleccion.getPelicula().getCodigo());
         Optional<Coleccion> buscado = coleccionRepo.findById(id);
         validarExiste(buscado);
-        return coleccionRepo.save(coleccion);
+
+        Coleccion actualizada = coleccionRepo.save(coleccion);
+
+        // TODO: emitir evento de dominio COLECCION_ACTUALIZADA para reactividad futura (SSE/WebSockets)
+
+        return actualizada;
     }
 
     @Override

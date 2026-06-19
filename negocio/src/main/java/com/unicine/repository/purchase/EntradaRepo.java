@@ -53,4 +53,15 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      * @return true si la silla esta ocupada, false en caso contrario
      */
     boolean existsByFilaAndColumnaAndFuncionCodigo(Integer fila, Integer columna, Integer codigoFuncion);
+
+    /**
+     * Verifica si un cliente tiene al menos una entrada para una funcion de una pelicula.
+     * NOTA: Actualmente no se valida asistencia real; se asume que comprar entrada implica asistencia.
+     * TODO: agregar validacion de asistencia real cuando se implemente check-in o estado de funcion finalizada.
+     * @param cedula cedula del cliente
+     * @param codigoPelicula codigo de la pelicula
+     * @return true si el cliente tiene entrada, false en caso contrario
+     */
+    @Query("select count(e) > 0 from Entrada e where e.compra.cliente.cedula = :cedula and e.funcion.pelicula.codigo = :codigoPelicula")
+    boolean clienteTieneEntradaParaPelicula(Integer cedula, Integer codigoPelicula);
 }

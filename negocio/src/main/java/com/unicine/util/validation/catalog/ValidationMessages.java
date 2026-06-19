@@ -210,6 +210,15 @@ public final class ValidationMessages {
     public static final String PURCHASE_CONFECTIONERY_PURCHASE_NOT_NULL = "La compra no puede estar vacia";
     public static final String PURCHASE_CONFECTIONERY_CONFECTIONERY_NOT_NULL = "La confiteria no puede estar vacia";
 
+    // SECTION: COMENTARIO
+
+    public static final String COMMENT_TEXT_NOT_BLANK = "El comentario no puede estar en blanco";
+    public static final String COMMENT_LIKES_NOT_NULL = "Los likes no pueden estar vacios";
+    public static final String COMMENT_LIKES_POSITIVE_OR_ZERO = "Los likes deben ser un numero positivo o cero";
+    public static final String COMMENT_DISLIKES_NOT_NULL = "Los dislikes no pueden estar vacios";
+    public static final String COMMENT_DISLIKES_POSITIVE_OR_ZERO = "Los dislikes deben ser un numero positivo o cero";
+    public static final String COMMENT_DATE_NOT_NULL = "La fecha no puede estar vacia";
+
     // SECTION: IMAGEN
 
     public static final String IMAGE_CODE_NOT_BLANK = "El codigo de la imagen no puede estar vacio";
