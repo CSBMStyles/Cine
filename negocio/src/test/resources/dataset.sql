@@ -274,9 +274,9 @@ insert into confiteria (id, precio, nombre, categoria) values (3, 28000, "Combo 
 insert into confiteria (id, precio, nombre, categoria) values (4, 15000, "Crispeta Grande", "SNACK");
 insert into confiteria (id, precio, nombre, categoria) values (5, 10000, "Crispeta Mediana", "SNACK");
 insert into confiteria (id, precio, nombre, categoria) values (6, 8000, "Gaseosa 600ml", "BEBIDA");
-insert into confiteria (id, precio, nombre, categoria) values (7, 5000, "Agua sin gas", "BEBIDA");
+insert into confiteria (id, precio, nombre, categoria) values (7, 4000, "Agua", "BEBIDA");
 insert into confiteria (id, precio, nombre, categoria) values (8, 12000, "Perro Caliente", "SNACK");
-insert into confiteria (id, precio, nombre, categoria) values (9, 14000, "Nachos con Queso", "SNACK");
+insert into confiteria (id, precio, nombre, categoria) values (9, 7000, "Nachos con Queso", "SNACK");
 insert into confiteria (id, precio, nombre, categoria) values (10, 3500, "Chocorramo", "DULCE");
 insert into confiteria (id, precio, nombre, categoria) values (11, 2000, "Supercoco", "DULCE");
 insert into confiteria (id, precio, nombre, categoria) values (12, 2000, "Jet", "DULCE");

@@ -17,11 +17,11 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
-import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
+import com.unicine.service.purchase.CompraConfiteriaServicio;
 import com.unicine.service.purchase.EntradaServicio;
 import com.unicine.repository.user.ClienteRepo;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
@@ -42,23 +42,23 @@ public class CompraServicioImp implements CompraServicio {
     // NOTE: Inyeccion por constructor recomendada sobre @Autowired
     private final CompraRepo compraRepo;
     private final EntradaRepo entradaRepo;
-    private final CompraConfiteriaRepo compraConfiteriaRepo;
     private final CuponClienteRepo cuponClienteRepo;
     private final ClienteRepo clienteRepo;
     private final FuncionRepo funcionRepo;
     private final EntradaServicio entradaServicio;
+    private final CompraConfiteriaServicio compraConfiteriaServicio;
 
     public CompraServicioImp(CompraRepo compraRepo, EntradaRepo entradaRepo,
-                             CompraConfiteriaRepo compraConfiteriaRepo, CuponClienteRepo cuponClienteRepo,
-                             ClienteRepo clienteRepo, FuncionRepo funcionRepo,
-                             EntradaServicio entradaServicio) {
+                             CuponClienteRepo cuponClienteRepo, ClienteRepo clienteRepo,
+                             FuncionRepo funcionRepo, EntradaServicio entradaServicio,
+                             CompraConfiteriaServicio compraConfiteriaServicio) {
         this.compraRepo = compraRepo;
         this.entradaRepo = entradaRepo;
-        this.compraConfiteriaRepo = compraConfiteriaRepo;
         this.cuponClienteRepo = cuponClienteRepo;
         this.clienteRepo = clienteRepo;
         this.funcionRepo = funcionRepo;
         this.entradaServicio = entradaServicio;
+        this.compraConfiteriaServicio = compraConfiteriaServicio;
     }
 
     // SECTION: Metodos de soporte
@@ -253,7 +253,7 @@ public class CompraServicioImp implements CompraServicio {
 
         for (CompraConfiteria cc : confiterias) {
             cc.setCompra(guardada);
-            compraConfiteriaRepo.save(cc);
+            compraConfiteriaServicio.registrar(cc);
         }
 
         if (cuponCliente != null) {

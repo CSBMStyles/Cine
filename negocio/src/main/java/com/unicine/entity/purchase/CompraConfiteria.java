@@ -48,13 +48,12 @@ public class CompraConfiteria implements Serializable {
     // SECTION: Relaciones
 
     @ManyToOne
-    // TODO: No hay constante específica para ValidationMessages.TICKET_PURCHASE_NOT_NULL en CompraConfiteria
-    @NotNull(message = ValidationMessages.TICKET_PURCHASE_NOT_NULL)
+    @NotNull(message = ValidationMessages.PURCHASE_CONFECTIONERY_PURCHASE_NOT_NULL)
     @JoinColumn(nullable = false)
     private Compra compra;
 
     @ManyToOne
-    @NotNull(message = ValidationMessages.FIELD_REQUIRED)
+    @NotNull(message = ValidationMessages.PURCHASE_CONFECTIONERY_CONFECTIONERY_NOT_NULL)
     @JoinColumn(nullable = false)
     private Confiteria confiteria;
     

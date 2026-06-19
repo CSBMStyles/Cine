@@ -205,6 +205,11 @@ public final class ValidationMessages {
     public static final String CONFECTIONERY_PRICE_POSITIVE_OR_ZERO = "El precio debe ser un numero positivo o cero";
     public static final String CONFECTIONERY_CATEGORY_NOT_NULL = "La categoria no puede estar vacia";
 
+    // SECTION: COMPRA_CONFITERIA
+
+    public static final String PURCHASE_CONFECTIONERY_PURCHASE_NOT_NULL = "La compra no puede estar vacia";
+    public static final String PURCHASE_CONFECTIONERY_CONFECTIONERY_NOT_NULL = "La confiteria no puede estar vacia";
+
     // SECTION: IMAGEN
 
     public static final String IMAGE_CODE_NOT_BLANK = "El codigo de la imagen no puede estar vacio";
