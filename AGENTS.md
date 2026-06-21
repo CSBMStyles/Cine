@@ -73,3 +73,11 @@ Available only when working in this repository. Registered via `.opencode/openco
 ### Compatibility
 
 Global skills are symlinked to `~/.claude/skills/` for Claude Code and OpenClaw compatibility. Project-local skills are resolved by OpenCode via `.opencode/opencode.json`.
+
+## execution-discipline
+
+When running shell commands (tests, builds, runners, or any long-running process):
+- Monitor the output actively; do not let a command hang indefinitely.
+- If the command runs much longer than expected, produces no useful progress, or is clearly not doing what the user asked, **cancel it**, inspect the logs, and report the situation before retrying.
+- Avoid repeatedly retrying the same failing approach without diagnosing the root cause.
+- Prefer focused, verifiable commands over broad or speculative ones.

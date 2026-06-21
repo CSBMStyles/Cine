@@ -49,19 +49,86 @@ public class RefactorizadorRuta {
 
     /**
      * Método auxiliar para reemplazar los espacios y caracteres especiales en el nombre del archivo.
+     * Además convierte el resultado a formato título: solo la primera letra de cada palabra en mayúscula.
      *
      * @param fileName nombre del archivo original o carpeta
-     * @return Nombre del archivo/carpeta con espacios y caracteres especiales reemplazados.
+     * @return Nombre del archivo/carpeta normalizado en formato título con guiones.
      */
     public String remplazarDenominacion(String fileName) {
 
-        // Reemplazar los espacios por guiones.
+        // Normalizar a minúsculas para partir de una base uniforme.
+        fileName = fileName.toLowerCase();
+
+        // Reemplazar acentos y caracteres especiales del español por equivalentes ASCII.
+        fileName = normalizarAcentos(fileName);
+
+        // Reemplazar los espacios y guiones bajos por guiones.
         fileName = fileName.replace(" ", "-").replace("_", "-");
         
         // Eliminar cualquier caracter que no sea alfanumérico o alguno de los siguientes: '.', '_' o '-'.
-        fileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "");
+        fileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "");
 
-        return fileName;
+        // Aplicar formato título a cada segmento separado por guiones.
+        return aplicarFormatoTitulo(fileName);
+    }
+
+    /**
+     * Reemplaza vocales acentuadas y la eñe por sus equivalentes ASCII.
+     *
+     * @param input Texto a normalizar.
+     * @return Texto sin acentos ni eñe.
+     */
+    private String normalizarAcentos(String input) {
+        return input
+                .replace("á", "a")
+                .replace("é", "e")
+                .replace("í", "i")
+                .replace("ó", "o")
+                .replace("ú", "u")
+                .replace("ñ", "n")
+                .replace("ü", "u");
+    }
+
+    /**
+     * Método auxiliar para poner en mayúscula solo la primera letra de cada palabra,
+     * manteniendo el resto en minúscula.
+     *
+     * Ejemplo: "de-toditos-rojo" → "De-Toditos-Rojo"
+     *
+     * @param input Texto separado por guiones.
+     * @return Texto en formato título.
+     */
+    private String aplicarFormatoTitulo(String input) {
+
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        String[] segmentos = input.split("-");
+        StringBuilder resultado = new StringBuilder();
+
+        for (int i = 0; i < segmentos.length; i++) {
+            String segmento = segmentos[i];
+
+            if (segmento.isEmpty()) {
+                if (i > 0) {
+                    resultado.append("-");
+                }
+                continue;
+            }
+
+            if (i > 0) {
+                resultado.append("-");
+            }
+
+            resultado.append(Character.toUpperCase(segmento.charAt(0)));
+
+            if (segmento.length() > 1) {
+                resultado.append(segmento.substring(1));
+            }
+        }
+
+        return resultado.toString();
     }
 
 
