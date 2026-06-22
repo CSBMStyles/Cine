@@ -92,6 +92,11 @@ public class ProcesadorImagen {
     }
 
     /**
+     * Formato de salida optimizado para entregar al CDN.
+     */
+    private static final String FORMATO_SALIDA = "webp";
+
+    /**
      * Convierte una imagen a formato WebP aplicando redimensionamiento proporcional.
      *
      * @param file Archivo de imagen a convertir.
@@ -121,17 +126,15 @@ public class ProcesadorImagen {
             Thumbnails.of(image)
                 .width(anchoMaximo)
                 .outputQuality(quality)
-                .outputFormat("webp")
+                .outputFormat(FORMATO_SALIDA)
                 .toOutputStream(outputStream);
 
             return outputStream.toByteArray();
 
-        } catch (UnsatisfiedLinkError e) {
-            // Fallback: libreria nativa webp no disponible en esta arquitectura
+        } catch (Throwable e) {
+            // Fallback ante fallos de librerías nativas. Se prefiere devolver el archivo
+            // original antes de romper el flujo de negocio.
             return file.getBytes();
-
-        } catch (Exception e) {
-            throw new IOException("Error al convertir la imagen: " + e.getMessage());
         }
     }
 
@@ -154,16 +157,13 @@ public class ProcesadorImagen {
             Thumbnails.of(image)
                 .width(800)
                 .outputQuality(quality)
-                .outputFormat("webp")
+                .outputFormat(FORMATO_SALIDA)
                 .toOutputStream(outputStream);
 
             return outputStream.toByteArray();
 
-        } catch (UnsatisfiedLinkError e) {
+        } catch (Throwable e) {
             return java.nio.file.Files.readAllBytes(file.toPath());
-
-        } catch (Exception e) {
-            throw new IOException("Error al convertir la imagen: " + e.getMessage());
         }
     }
 
