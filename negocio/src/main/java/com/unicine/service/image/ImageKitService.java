@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.enums.image.TipoImagenPelicula;
 import com.unicine.util.config.ImageKitConfig;
 import com.unicine.util.funtional.image.ProcesadorImagen;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
@@ -59,8 +60,26 @@ public class ImageKitService {
      * @return Resultado de la subida
      */
     public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) throws IOException {
-        // Convertir la imagen a formato webp conservando el setenta por ciento de calidad
-        byte[] fileData = procesadorImagen.convertirFormato(file, 0.7f);
+        return subirImagen(file, folder, propietario, sobrescribir, nombrePersonalizado, null);
+    }
+
+    /**
+     * Método para subir una imagen al servidor de imageKit.io usando MultipartFile,
+     * permitiendo especificar el tipo de imagen para películas (poster o banner).
+     * 
+     * @param file Archivo MultipartFile a subir
+     * @param folder Carpeta donde se guardará la imagen
+     * @param propietario Propietario de la imagen
+     * @param sobrescribir Si se debe sobrescribir la imagen
+     * @param nombrePersonalizado Nombre personalizado para la imagen
+     * @param tipoPelicula Tipo de imagen de película; puede ser null para otros propietarios
+     * @return Resultado de la subida
+     */
+    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado, TipoImagenPelicula tipoPelicula) throws IOException {
+        // Procesar la imagen según el tipo de propietario y, para películas, su tipo.
+        byte[] fileData = tipoPelicula == null
+                ? procesadorImagen.procesar(file, propietario)
+                : procesadorImagen.procesar(file, propietario, tipoPelicula);
 
         // Obtener el nombre del archivo sin la extensión
         String name;

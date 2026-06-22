@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.unicine.entity.image.Imagen;
 import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.enums.image.TipoImagenPelicula;
 import com.unicine.transfer.record.VersionArchivo;
 
 import jakarta.validation.Valid;
@@ -15,6 +16,8 @@ public interface ImagenServicio {
     // *️⃣ Funciones Generales
 
     Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception;
+
+    Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario, TipoImagenPelicula tipoPelicula) throws Exception;
 
     Imagen actualizar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception;
 

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unicine.entity.image.Imagen;
 import com.unicine.entity.user.Persona;
 import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.enums.image.TipoImagenPelicula;
 import com.unicine.repository.image.ImagenRepo;
 import com.unicine.transfer.record.VersionArchivo;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
@@ -173,7 +174,13 @@ public class ImagenServicioImp implements ImagenServicio {
     // 1️⃣ Funcion del Administrador
 
     @Override
-    public Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
+    public Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception {
+
+        return registrar(imagen, file, propietario, null);
+    }
+
+    @Override
+    public Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario, TipoImagenPelicula tipoPelicula) throws Exception { 
 
         validarExisteImagen(propietario);
 
@@ -181,7 +188,7 @@ public class ImagenServicioImp implements ImagenServicio {
 
         String folder = constructorCarpeta(propietario);
 
-        Result result = imageKitService.subirImagen(file, folder, propietario, false, null);
+        Result result = imageKitService.subirImagen(file, folder, propietario, false, null, tipoPelicula);
 
         reasignarDatos(imagen, result);
 

@@ -10,15 +10,165 @@ import javax.imageio.ImageIO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.entity.user.Persona;
+import com.unicine.enums.image.TipoImagenPelicula;
+
 import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 public class ProcesadorImagen {
 
     /**
-     * Metodo para leer una imagen
-     * @param file Archivo de imagen a leer
-     * @return buffered
+     * Perfil de procesamiento para una entidad imagenable.
+     *
+     * @param anchoMaximo Ancho máximo en píxeles; el alto se escala proporcionalmente.
+     * @param calidad Calidad de compresión entre 0.0 y 1.0.
+     */
+    private record PerfilImagen(int anchoMaximo, float calidad) {}
+
+    // Perfiles por tipo de entidad. Los valores pueden ajustarse según necesidades de diseño.
+    private static final PerfilImagen PERFIL_CONFITERIA = new PerfilImagen(800, 0.7f);
+    private static final PerfilImagen PERFIL_PELICULA_POSTER = new PerfilImagen(800, 0.8f);
+    private static final PerfilImagen PERFIL_PELICULA_BANNER = new PerfilImagen(1200, 0.8f);
+    private static final PerfilImagen PERFIL_PERSONA = new PerfilImagen(400, 0.7f);
+
+    /**
+     * Procesa una imagen según el tipo de propietario.
+     * <p>
+     * Para películas se utiliza el tipo {@link TipoImagenPelicula#POSTER} por defecto.
+     *
+     * @param file Archivo de imagen a procesar.
+     * @param propietario Entidad propietaria de la imagen.
+     * @return Bytes de la imagen procesada en formato WebP.
+     */
+    public byte[] procesar(MultipartFile file, Imagenable propietario) throws IOException {
+
+        if (propietario instanceof Pelicula) {
+            return procesar(file, propietario, TipoImagenPelicula.POSTER);
+        }
+
+        return convertirFormato(file, resolverPerfil(propietario));
+    }
+
+    /**
+     * Procesa una imagen de película según su tipo (poster o banner).
+     *
+     * @param file Archivo de imagen a procesar.
+     * @param propietario Película propietaria de la imagen.
+     * @param tipo Tipo de imagen de película.
+     * @return Bytes de la imagen procesada en formato WebP.
+     */
+    public byte[] procesar(MultipartFile file, Imagenable propietario, TipoImagenPelicula tipo) throws IOException {
+
+        return convertirFormato(file, resolverPerfil(tipo));
+    }
+
+    /**
+     * Resuelve el perfil de procesamiento para una entidad no película.
+     */
+    private PerfilImagen resolverPerfil(Imagenable propietario) {
+
+        if (propietario instanceof Confiteria) {
+            return PERFIL_CONFITERIA;
+        }
+
+        if (propietario instanceof Persona) {
+            return PERFIL_PERSONA;
+        }
+
+        // Perfil conservador por defecto para cualquier otro tipo imagenable.
+        return PERFIL_CONFITERIA;
+    }
+
+    /**
+     * Resuelve el perfil de procesamiento para una película según su tipo.
+     */
+    private PerfilImagen resolverPerfil(TipoImagenPelicula tipo) {
+
+        return tipo == TipoImagenPelicula.BANNER ? PERFIL_PELICULA_BANNER : PERFIL_PELICULA_POSTER;
+    }
+
+    /**
+     * Convierte una imagen a formato WebP aplicando redimensionamiento proporcional.
+     *
+     * @param file Archivo de imagen a convertir.
+     * @param perfil Perfil con ancho máximo y calidad.
+     * @return Bytes de la imagen convertida.
+     */
+    public byte[] convertirFormato(MultipartFile file, PerfilImagen perfil) throws IOException {
+
+        return convertirFormato(file, perfil.anchoMaximo(), perfil.calidad());
+    }
+
+    /**
+     * Convierte una imagen a formato WebP aplicando redimensionamiento proporcional.
+     *
+     * @param file Archivo de imagen a convertir.
+     * @param anchoMaximo Ancho máximo en píxeles.
+     * @param quality Calidad de compresión entre 0.0 y 1.0.
+     * @return Bytes de la imagen convertida.
+     */
+    public byte[] convertirFormato(MultipartFile file, int anchoMaximo, float quality) throws IOException {
+
+        BufferedImage image = leerImagen(file);
+
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            Thumbnails.of(image)
+                .width(anchoMaximo)
+                .outputQuality(quality)
+                .outputFormat("webp")
+                .toOutputStream(outputStream);
+
+            return outputStream.toByteArray();
+
+        } catch (UnsatisfiedLinkError e) {
+            // Fallback: libreria nativa webp no disponible en esta arquitectura
+            return file.getBytes();
+
+        } catch (Exception e) {
+            throw new IOException("Error al convertir la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Método base para convertir un archivo físico a WebP.
+     * Mantiene la firma anterior para compatibilidad.
+     *
+     * @param file Archivo físico.
+     * @param quality Calidad de compresión.
+     * @return Bytes de la imagen convertida.
+     * @deprecated Usar {@link #convertirFormato(MultipartFile, int, float)} o {@link #procesar(MultipartFile, Imagenable)}.
+     */
+    @Deprecated
+    public byte[] convertirFormato(File file, float quality) throws IOException {
+
+        try {
+            BufferedImage image = leerImagen(file);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            Thumbnails.of(image)
+                .width(800)
+                .outputQuality(quality)
+                .outputFormat("webp")
+                .toOutputStream(outputStream);
+
+            return outputStream.toByteArray();
+
+        } catch (UnsatisfiedLinkError e) {
+            return java.nio.file.Files.readAllBytes(file.toPath());
+
+        } catch (Exception e) {
+            throw new IOException("Error al convertir la imagen: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Lee una imagen desde un archivo físico.
      */
     public BufferedImage leerImagen(File file) throws IOException {
 
@@ -26,101 +176,32 @@ public class ProcesadorImagen {
             BufferedImage image = ImageIO.read(file);
 
             if (image == null) {
-
                 throw new IOException("No se pudo leer la imagen. Formato no soportado: " + file.getName());
             }
+
             return image;
 
         } catch (Exception e) {
-
             throw new IOException("Error al leer la imagen: " + file.getAbsolutePath() + ": " + e);
         }
     }
 
     /**
-     * Metodo para leer una imagen desde un MultipartFile
-     * @param file MultipartFile de imagen a leer
-     * @return buffered
+     * Lee una imagen desde un MultipartFile.
      */
     public BufferedImage leerImagen(MultipartFile file) throws IOException {
+
         try {
             BufferedImage image = ImageIO.read(file.getInputStream());
 
             if (image == null) {
                 throw new IOException("No se pudo leer la imagen. Formato no soportado: " + file.getOriginalFilename());
             }
+
             return image;
 
         } catch (Exception e) {
             throw new IOException("Error al leer la imagen: " + file.getOriginalFilename() + ": " + e);
-        }
-    }
-
-    /**
-     * Metodo para convertir una imagen a formato webp
-     * 
-     * @param file Archivo de imagen a convertir
-     * @param quality Calidad de la imagen
-     * @return
-     */
-    public byte[] convertirFormato(File file, float quality) throws IOException {
-
-        // Se lee la imagen original
-        BufferedImage image = leerImagen(file);
-        
-        try {
-            // Convertir la imagen a formato webp
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            // Configurar la calidad de la imagen
-            Thumbnails.of(image)
-                .scale(1.0)
-                .outputQuality(quality)
-                .outputFormat("webp")
-                .toOutputStream(outputStream);
-                
-            // Retornar los bytes de la imagen convertida
-            return outputStream.toByteArray();
-
-        } catch (UnsatisfiedLinkError e) {
-            // Fallback: libreria nativa webp no disponible en esta arquitectura
-            return java.nio.file.Files.readAllBytes(file.toPath());
-        } catch (Exception e) {
-
-            throw new IOException("Error al convertir la imagen: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Metodo para convertir una imagen de MultipartFile a formato webp
-     * 
-     * @param file MultipartFile de imagen a convertir
-     * @param quality Calidad de la imagen
-     * @return
-     */
-    public byte[] convertirFormato(MultipartFile file, float quality) throws IOException {
-        // Se lee la imagen original
-        BufferedImage image = leerImagen(file);
-        
-        try {
-            // Convertir la imagen a formato webp
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            // Configurar la calidad de la imagen
-            Thumbnails.of(image)
-                .scale(1.0)
-                .outputQuality(quality)
-                .outputFormat("webp")
-                .toOutputStream(outputStream);
-                
-            // Retornar los bytes de la imagen convertida
-            return outputStream.toByteArray();
-
-        } catch (UnsatisfiedLinkError e) {
-            // Fallback: libreria nativa webp no disponible en esta arquitectura
-            return file.getBytes();
-        } catch (Exception e) {
-            throw new IOException("Error al convertir la imagen: " + e.getMessage());
         }
     }
 }
