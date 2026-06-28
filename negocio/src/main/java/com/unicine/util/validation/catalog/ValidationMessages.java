@@ -68,6 +68,7 @@ public final class ValidationMessages {
     public static final String PHONE_ONLY_NUMBERS = "El telefono solo puede contener numeros";
     public static final String PHONE_SIZE_EXACT_TEN = "El telefono debe tener exactamente diez caracteres";
     public static final String PHONE_LIST_MAX_FIVE = "No se pueden registrar mas de cinco telefonos";
+    public static final String INVALID_PHONE_FORMAT = "El telefono debe contener solo numeros y tener entre 8 y 15 digitos, opcionalmente con prefijo internacional";
 
     // SECTION: FECHAS
 

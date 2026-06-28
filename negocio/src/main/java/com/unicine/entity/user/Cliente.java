@@ -50,7 +50,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     @Size(max = 5, message = ValidationMessages.PHONE_LIST_MAX_FIVE)
     @ElementCollection
     @Column(nullable = true, length = 20)
-    private List<String> telefonos;
+    private List<@Pattern(regexp = "^\\+?[1-9]\\d{7,14}$", message = ValidationMessages.INVALID_PHONE_FORMAT) String> telefonos;
 
     // SECTION: Relaciones
 
