@@ -1,12 +1,10 @@
 package com.unicine.entity.confiteria;
 
 import com.unicine.entity.image.Imagen;
-import com.unicine.entity.purchase.CompraConfiteria;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,10 +47,9 @@ public class Confiteria implements Serializable, Imagenable {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @NotNull(message = ValidationMessages.CONFECTIONERY_PRICE_NOT_NULL)
-    @PositiveOrZero(message = ValidationMessages.CONFECTIONERY_PRICE_POSITIVE_OR_ZERO)
-    @Column(nullable = false)
-    private Double precio;
+    @Size(max = 500, message = ValidationMessages.CONFECTIONERY_DESCRIPTION_SIZE_MAX_FIVE_HUNDRED)
+    @Column(length = 500)
+    private String descripcion;
 
     @NotNull(message = ValidationMessages.CONFECTIONERY_CATEGORY_NOT_NULL)
     @Column(nullable = false, length = 20)
@@ -63,7 +60,7 @@ public class Confiteria implements Serializable, Imagenable {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "confiteria", cascade = CascadeType.ALL)
-    private List<CompraConfiteria> compraConfiterias;
+    private List<ConfiteriaPresentacion> presentaciones;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "confiteria", cascade = CascadeType.ALL)
@@ -72,9 +69,9 @@ public class Confiteria implements Serializable, Imagenable {
     // SECTION: Constructor
 
     @Builder
-    public Confiteria(String nombre, Double precio, CategoriaConfiteria categoria) {
+    public Confiteria(String nombre, String descripcion, CategoriaConfiteria categoria) {
         this.nombre = nombre;
-        this.precio = precio;
+        this.descripcion = descripcion;
         this.categoria = categoria;
     }
 

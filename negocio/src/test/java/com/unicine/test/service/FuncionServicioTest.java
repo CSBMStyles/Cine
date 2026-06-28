@@ -161,7 +161,10 @@ public class FuncionServicioTest {
         
         try {
 
-            funcion = funcionServicio.registrar(new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula));
+            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
+            funcionNueva.setPrecio(0.0);
+
+            funcion = funcionServicio.registrar(funcionNueva);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 
@@ -195,7 +198,12 @@ public class FuncionServicioTest {
 
         try {
             
-            FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(new FuncionEsquema(funcion));
+            FuncionEsquema esquemaNuevo = new FuncionEsquema(funcion);
+            esquemaNuevo.setDisponibles(0);
+            esquemaNuevo.setOcupadas(0);
+            esquemaNuevo.setMantenimiento(0);
+
+            FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(esquemaNuevo);
 
             System.out.println("\n" + "Funcion esquema registrado:" + "\n" + funcionEsquema);
 

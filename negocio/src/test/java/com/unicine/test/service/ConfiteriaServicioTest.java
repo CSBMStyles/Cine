@@ -35,7 +35,7 @@ public class ConfiteriaServicioTest {
         try {
             Confiteria confiteria = Confiteria.builder()
                     .nombre("Combo Familiar")
-                    .precio(45000.0)
+                    .descripcion("Combo familiar para compartir")
                     .categoria(CategoriaConfiteria.COMBO)
                     .build();
 
@@ -44,7 +44,7 @@ public class ConfiteriaServicioTest {
             Assertions.assertNotNull(registrada);
             Assertions.assertNotNull(registrada.getCodigo());
             Assertions.assertEquals("Combo Familiar", registrada.getNombre());
-            Assertions.assertEquals(45000.0, registrada.getPrecio());
+            Assertions.assertEquals("Combo familiar para compartir", registrada.getDescripcion());
             Assertions.assertEquals(CategoriaConfiteria.COMBO, registrada.getCategoria());
 
             System.out.println("\nRegistro creado correctamente:\n" + registrada);
@@ -63,11 +63,11 @@ public class ConfiteriaServicioTest {
             Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
             Assertions.assertNotNull(confiteria);
 
-            confiteria.setPrecio(35000.0);
+            confiteria.setDescripcion("Nueva descripcion del combo");
 
             Confiteria actualizada = confiteriaServicio.actualizar(confiteria);
 
-            Assertions.assertEquals(35000.0, actualizada.getPrecio());
+            Assertions.assertEquals("Nueva descripcion del combo", actualizada.getDescripcion());
 
             System.out.println("\nRegistro actualizado correctamente:\n" + actualizada);
 

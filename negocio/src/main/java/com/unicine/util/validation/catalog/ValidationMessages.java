@@ -201,14 +201,36 @@ public final class ValidationMessages {
 
     public static final String CONFECTIONERY_NAME_NOT_BLANK = "El nombre no puede estar en blanco";
     public static final String CONFECTIONERY_NAME_SIZE_MAX_HUNDRED = "El nombre no puede tener mas de cien caracteres";
-    public static final String CONFECTIONERY_PRICE_NOT_NULL = "El precio no puede estar vacio";
-    public static final String CONFECTIONERY_PRICE_POSITIVE_OR_ZERO = "El precio debe ser un numero positivo o cero";
+    public static final String CONFECTIONERY_DESCRIPTION_SIZE_MAX_FIVE_HUNDRED = "La descripcion no puede tener mas de quinientos caracteres";
     public static final String CONFECTIONERY_CATEGORY_NOT_NULL = "La categoria no puede estar vacia";
+
+    // SECTION: CONFITERIA_PRESENTACION
+
+    public static final String CONFECTIONERY_PRESENTATION_CONFECTIONERY_NOT_NULL = "La confiteria no puede estar vacia";
+    public static final String CONFECTIONERY_PRESENTATION_PORTION_NOT_NULL = "La porcion no puede estar vacia";
+    public static final String CONFECTIONERY_PRESENTATION_PORTION_POSITIVE = "La porcion debe ser un numero positivo";
+    public static final String CONFECTIONERY_PRESENTATION_UNIT_NOT_NULL = "La unidad de medida no puede estar vacia";
+    public static final String CONFECTIONERY_PRESENTATION_PRICE_NOT_NULL = "El precio no puede estar vacio";
+    public static final String CONFECTIONERY_PRESENTATION_PRICE_POSITIVE_OR_ZERO = "El precio debe ser un numero positivo o cero";
+    public static final String CONFECTIONERY_PRESENTATION_BASE_PRICE_NOT_NULL = "El precio base no puede estar vacio";
+    public static final String CONFECTIONERY_PRESENTATION_BASE_PRICE_POSITIVE_OR_ZERO = "El precio base debe ser un numero positivo o cero";
+
+    // SECTION: HISTORIAL_PRECIO_PRESENTACION
+
+    public static final String CONFECTIONERY_PRICE_HISTORY_PRESENTATION_NOT_NULL = "La presentacion no puede estar vacia";
+    public static final String CONFECTIONERY_PRICE_HISTORY_PREVIOUS_PRICE_NOT_NULL = "El precio anterior no puede estar vacio";
+    public static final String CONFECTIONERY_PRICE_HISTORY_PREVIOUS_PRICE_POSITIVE_OR_ZERO = "El precio anterior debe ser un numero positivo o cero";
+    public static final String CONFECTIONERY_PRICE_HISTORY_NEW_PRICE_NOT_NULL = "El precio nuevo no puede estar vacio";
+    public static final String CONFECTIONERY_PRICE_HISTORY_NEW_PRICE_POSITIVE_OR_ZERO = "El precio nuevo debe ser un numero positivo o cero";
+    public static final String CONFECTIONERY_PRICE_HISTORY_TYPE_NOT_NULL = "El tipo de cambio no puede estar vacio";
+    public static final String CONFECTIONERY_PRICE_HISTORY_PERCENTAGE_NOT_NULL = "El porcentaje no puede estar vacio";
+    public static final String CONFECTIONERY_PRICE_HISTORY_PERCENTAGE_POSITIVE_OR_ZERO = "El porcentaje debe ser un numero positivo o cero";
+    public static final String CONFECTIONERY_PRICE_HISTORY_DATE_NOT_NULL = "La fecha de cambio no puede estar vacia";
 
     // SECTION: COMPRA_CONFITERIA
 
     public static final String PURCHASE_CONFECTIONERY_PURCHASE_NOT_NULL = "La compra no puede estar vacia";
-    public static final String PURCHASE_CONFECTIONERY_CONFECTIONERY_NOT_NULL = "La confiteria no puede estar vacia";
+    public static final String PURCHASE_CONFECTIONERY_PRESENTATION_NOT_NULL = "La presentacion no puede estar vacia";
 
     // SECTION: COMENTARIO
 

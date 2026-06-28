@@ -83,6 +83,7 @@ public class PeliculaDisposicionServicioTest {
         }
 
         PeliculaDisposicion peliculaDisposicion = new PeliculaDisposicion(pelicula, ciudad);
+        peliculaDisposicion.setEstadoPelicula(EstadoPelicula.PENDIENTE);
 
         try {
             PeliculaDisposicion nuevo = peliculaDisposicionServicio.registrar(peliculaDisposicion);
@@ -262,8 +263,8 @@ public class PeliculaDisposicionServicioTest {
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
 
-        LocalDateTime fechaInicio = LocalDateTime.of(2026, 03, 20, 15, 00);
-        LocalDateTime fechaFin = LocalDateTime.of(2026, 03, 20, 17, 00);
+        LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 15, 00);
+        LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 17, 00);
 
         Horario horario = null;
 
@@ -343,7 +344,10 @@ public class PeliculaDisposicionServicioTest {
         
         try {
 
-            funcion = funcionServicio.registrar(new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula));
+            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
+            funcionNueva.setPrecio(0.0);
+
+            funcion = funcionServicio.registrar(funcionNueva);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 
@@ -489,7 +493,10 @@ public class PeliculaDisposicionServicioTest {
         
         try {
 
-            funcion = funcionServicio.registrar(new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula));
+            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
+            funcionNueva.setPrecio(0.0);
+
+            funcion = funcionServicio.registrar(funcionNueva);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 

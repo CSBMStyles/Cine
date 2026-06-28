@@ -11,12 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.confiteria.ConfiteriaPresentacion;
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.CompraConfiteria;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
-import com.unicine.repository.confiteria.ConfiteriaRepo;
+import com.unicine.repository.confiteria.ConfiteriaPresentacionRepo;
 import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.service.purchase.CompraConfiteriaServicio;
@@ -36,19 +36,19 @@ public class CompraConfiteriaServicioTest {
     private CompraRepo compraRepo;
 
     @Autowired
-    private ConfiteriaRepo confiteriaRepo;
+    private ConfiteriaPresentacionRepo presentacionRepo;
 
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() throws Exception {
         Compra compra = compraRepo.findById(1).orElse(null);
-        Confiteria confiteria = confiteriaRepo.findById(3).orElse(null);
+        ConfiteriaPresentacion presentacion = presentacionRepo.findById(3).orElse(null);
 
         CompraConfiteria item = CompraConfiteria.builder()
                 .precio(28000.0)
                 .unidades(1)
                 .compra(compra)
-                .confiteria(confiteria)
+                .presentacion(presentacion)
                 .build();
 
         CompraConfiteria guardado = compraConfiteriaServicio.registrar(item);
@@ -64,7 +64,7 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void registrarCompraInexistente() {
-        Confiteria confiteria = confiteriaRepo.findById(1).orElse(null);
+        ConfiteriaPresentacion presentacion = presentacionRepo.findById(1).orElse(null);
 
         Compra compraInexistente = new Compra();
         compraInexistente.setCodigo(999);
@@ -73,7 +73,7 @@ public class CompraConfiteriaServicioTest {
                 .precio(10000.0)
                 .unidades(1)
                 .compra(compraInexistente)
-                .confiteria(confiteria)
+                .presentacion(presentacion)
                 .build();
 
         Assertions.assertThrows(ResourceNotFoundException.class, () -> compraConfiteriaServicio.registrar(item));
@@ -81,17 +81,17 @@ public class CompraConfiteriaServicioTest {
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void registrarConfiteriaInexistente() {
+    public void registrarPresentacionInexistente() {
         Compra compra = compraRepo.findById(1).orElse(null);
 
-        Confiteria confiteriaInexistente = new Confiteria();
-        confiteriaInexistente.setCodigo(999);
+        ConfiteriaPresentacion presentacionInexistente = new ConfiteriaPresentacion();
+        presentacionInexistente.setCodigo(999);
 
         CompraConfiteria item = CompraConfiteria.builder()
                 .precio(10000.0)
                 .unidades(1)
                 .compra(compra)
-                .confiteria(confiteriaInexistente)
+                .presentacion(presentacionInexistente)
                 .build();
 
         Assertions.assertThrows(ResourceNotFoundException.class, () -> compraConfiteriaServicio.registrar(item));
@@ -152,7 +152,7 @@ public class CompraConfiteriaServicioTest {
     public void listar() {
         List<CompraConfiteria> items = compraConfiteriaServicio.listar();
 
-        Assertions.assertEquals(6, items.size());
+        Assertions.assertEquals(8, items.size());
 
         System.out.println("\nListado de registros:");
         items.forEach(System.out::println);
@@ -163,7 +163,7 @@ public class CompraConfiteriaServicioTest {
     public void listarPaginado() {
         List<CompraConfiteria> items = compraConfiteriaServicio.listarPaginado();
 
-        Assertions.assertEquals(6, items.size());
+        Assertions.assertEquals(8, items.size());
 
         System.out.println("\nListado paginado:");
         items.forEach(System.out::println);
@@ -182,12 +182,12 @@ public class CompraConfiteriaServicioTest {
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void listarPorConfiteria() throws Exception {
-        List<CompraConfiteria> items = compraConfiteriaServicio.listarPorConfiteria(1);
+    public void listarPorPresentacion() throws Exception {
+        List<CompraConfiteria> items = compraConfiteriaServicio.listarPorPresentacion(1);
 
         Assertions.assertEquals(2, items.size());
 
-        System.out.println("\nItems de la confiteria en compras:");
+        System.out.println("\nItems de la presentacion en compras:");
         items.forEach(System.out::println);
     }
 

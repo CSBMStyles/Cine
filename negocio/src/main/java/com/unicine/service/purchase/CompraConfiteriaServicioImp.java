@@ -7,12 +7,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.confiteria.ConfiteriaPresentacion;
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.CompraConfiteria;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
-import com.unicine.repository.confiteria.ConfiteriaRepo;
+import com.unicine.repository.confiteria.ConfiteriaPresentacionRepo;
 import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
  * Implementacion del servicio de items de confiteria dentro de una compra.
  * 
  * Gestiona el registro, actualizacion, consulta y eliminacion de items,
- * validando la existencia de la compra y la confiteria asociadas.
+ * validando la existencia de la compra y la presentacion de confiteria asociadas.
  */
 @Service
 @Validated
@@ -31,14 +31,14 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
 
     private final CompraConfiteriaRepo compraConfiteriaRepo;
     private final CompraRepo compraRepo;
-    private final ConfiteriaRepo confiteriaRepo;
+    private final ConfiteriaPresentacionRepo presentacionRepo;
 
     public CompraConfiteriaServicioImp(CompraConfiteriaRepo compraConfiteriaRepo,
                                        CompraRepo compraRepo,
-                                       ConfiteriaRepo confiteriaRepo) {
+                                       ConfiteriaPresentacionRepo presentacionRepo) {
         this.compraConfiteriaRepo = compraConfiteriaRepo;
         this.compraRepo = compraRepo;
-        this.confiteriaRepo = confiteriaRepo;
+        this.presentacionRepo = presentacionRepo;
     }
 
     // SECTION: Metodos de soporte
@@ -74,12 +74,12 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
     }
 
     /**
-     * Valida que la confiteria exista en la base de datos.
+     * Valida que la presentacion de confiteria exista en la base de datos.
      */
-    private void validarConfiteriaExiste(Integer codigo) {
-        Optional<Confiteria> confiteria = confiteriaRepo.findById(codigo);
-        if (confiteria.isEmpty()) {
-            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_NOT_FOUND);
+    private void validarPresentacionExiste(Integer codigo) {
+        Optional<ConfiteriaPresentacion> presentacion = presentacionRepo.findById(codigo);
+        if (presentacion.isEmpty()) {
+            throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRESENTATION_NOT_FOUND);
         }
     }
 
@@ -93,11 +93,11 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
     }
 
     /**
-     * Valida que la compra y la confiteria asociadas al item existan.
+     * Valida que la compra y la presentacion asociadas al item existan.
      */
     private void validarRelaciones(CompraConfiteria compraConfiteria) {
         validarCompraExiste(compraConfiteria.getCompra().getCodigo());
-        validarConfiteriaExiste(compraConfiteria.getConfiteria().getCodigo());
+        validarPresentacionExiste(compraConfiteria.getPresentacion().getCodigo());
     }
 
     // SECTION: Implementacion de servicios CRUD
@@ -150,9 +150,9 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
     }
 
     @Override
-    public List<CompraConfiteria> listarPorConfiteria(Integer codigoConfiteria) {
-        validarConfiteriaExiste(codigoConfiteria);
-        List<CompraConfiteria> items = compraConfiteriaRepo.findByConfiteriaCodigo(codigoConfiteria);
+    public List<CompraConfiteria> listarPorPresentacion(Integer codigoPresentacion) {
+        validarPresentacionExiste(codigoPresentacion);
+        List<CompraConfiteria> items = compraConfiteriaRepo.findByPresentacionCodigo(codigoPresentacion);
         validarExiste(items);
         return items;
     }

@@ -29,7 +29,7 @@ public class ConfiteriaTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        Confiteria confiteria = new Confiteria("Papas Fritas", 5000.00, CategoriaConfiteria.SNACK);
+        Confiteria confiteria = new Confiteria("Papas Fritas", "Papas fritas crujientes", CategoriaConfiteria.SNACK);
 
         Confiteria guardado = confiteriaRepo.save(confiteria);
 

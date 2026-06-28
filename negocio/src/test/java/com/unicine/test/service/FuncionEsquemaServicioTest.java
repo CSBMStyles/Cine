@@ -52,6 +52,9 @@ public class FuncionEsquemaServicioTest {
         }
 
         FuncionEsquema funcionEsquema = new FuncionEsquema(funcion);
+        funcionEsquema.setDisponibles(0);
+        funcionEsquema.setOcupadas(0);
+        funcionEsquema.setMantenimiento(0);
 
         try {
             FuncionEsquema nuevo = funcionEsquemaServicio.registrar(funcionEsquema);

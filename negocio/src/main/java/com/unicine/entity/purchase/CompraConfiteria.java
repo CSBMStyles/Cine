@@ -1,6 +1,6 @@
 package com.unicine.entity.purchase;
 
-import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.confiteria.ConfiteriaPresentacion;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -53,18 +53,18 @@ public class CompraConfiteria implements Serializable {
     private Compra compra;
 
     @ManyToOne
-    @NotNull(message = ValidationMessages.PURCHASE_CONFECTIONERY_CONFECTIONERY_NOT_NULL)
+    @NotNull(message = ValidationMessages.PURCHASE_CONFECTIONERY_PRESENTATION_NOT_NULL)
     @JoinColumn(nullable = false)
-    private Confiteria confiteria;
+    private ConfiteriaPresentacion presentacion;
     
     // SECTION: Constructor
 
     @Builder
-    public CompraConfiteria(Double precio, Integer unidades, Compra compra, Confiteria confiteria) {
+    public CompraConfiteria(Double precio, Integer unidades, Compra compra, ConfiteriaPresentacion presentacion) {
         this.precio = precio;
         this.unidades = unidades;
         this.compra = compra;
-        this.confiteria = confiteria;
+        this.presentacion = presentacion;
     }
     
 }

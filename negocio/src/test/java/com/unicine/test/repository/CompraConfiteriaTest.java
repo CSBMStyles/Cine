@@ -14,10 +14,10 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.CompraConfiteria;
-import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.confiteria.ConfiteriaPresentacion;
 import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
-import com.unicine.repository.confiteria.ConfiteriaRepo;
+import com.unicine.repository.confiteria.ConfiteriaPresentacionRepo;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -32,7 +32,7 @@ public class CompraConfiteriaTest {
     private CompraRepo compraRepo;
 
     @Autowired
-    private ConfiteriaRepo confiteriaRepo;
+    private ConfiteriaPresentacionRepo presentacionRepo;
 
     // SECTION: Consultas basicas para la base de datos
 
@@ -42,9 +42,9 @@ public class CompraConfiteriaTest {
 
         Compra compra = compraRepo.findById(1).orElse(null);
 
-        Confiteria confiteria = confiteriaRepo.findById(1).orElse(null);
+        ConfiteriaPresentacion presentacion = presentacionRepo.findById(1).orElse(null);
 
-        CompraConfiteria compraConfiteria = new CompraConfiteria(16000.00, 2, compra, confiteria);
+        CompraConfiteria compraConfiteria = new CompraConfiteria(16000.00, 2, compra, presentacion);
 
         CompraConfiteria guardado = compraConfiteriaRepo.save(compraConfiteria);
 
@@ -112,7 +112,7 @@ public class CompraConfiteriaTest {
 
         List<CompraConfiteria> comprasConfiterias = compraConfiteriaRepo.findAll();
 
-        Assertions.assertEquals(6, comprasConfiterias.size());
+        Assertions.assertEquals(8, comprasConfiterias.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -142,7 +142,7 @@ public class CompraConfiteriaTest {
 
         List<CompraConfiteria> comprasConfiterias = compraConfiteriaRepo.findAll(Sort.by("codigo"));
 
-        Assertions.assertEquals(6, comprasConfiterias.size());
+        Assertions.assertEquals(8, comprasConfiterias.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 

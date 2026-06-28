@@ -142,7 +142,7 @@ public class CompraTest {
 
         List<Compra> compras = compraRepo.findAll();
 
-        Assertions.assertEquals(5, compras.size());
+        Assertions.assertEquals(6, compras.size());
 
         System.out.println("\n" + "Listado de registros:");
 
@@ -172,7 +172,7 @@ public class CompraTest {
 
         List<Compra> compras = compraRepo.findAll(Sort.by("codigo"));
 
-        Assertions.assertEquals(5, compras.size());
+        Assertions.assertEquals(6, compras.size());
 
         System.out.println("\n" + "Listado de registros ordenado:");
 

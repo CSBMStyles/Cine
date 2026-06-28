@@ -54,16 +54,16 @@ public interface CompraConfiteriaServicio {
             Integer codigoCompra) throws Exception;
 
     /**
-     * Lista los items asociados a una confiteria en todas las compras.
+     * Lista los items asociados a una presentacion de confiteria en todas las compras.
      * 
-     * @param codigoConfiteria Codigo de la confiteria
+     * @param codigoPresentacion Codigo de la presentacion
      * @return Lista de items de confiteria
-     * @throws Exception si la confiteria no existe o no tiene items
+     * @throws Exception si la presentacion no existe o no tiene items
      */
-    List<CompraConfiteria> listarPorConfiteria(
+    List<CompraConfiteria> listarPorPresentacion(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
-            Integer codigoConfiteria) throws Exception;
+            Integer codigoPresentacion) throws Exception;
 
     /**
      * Calcula el total de confiteria de una compra sumando precio * unidades.

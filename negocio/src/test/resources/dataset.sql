@@ -268,21 +268,38 @@ insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1006000
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1007000033, 2, 1, 4);
 insert into cupon_cliente (cliente_cedula, cupon_id, estado, id) values (1008000022, 1, 0, 5);
 
-insert into confiteria (id, precio, nombre, categoria) values (1, 32000, "Combo Mega", "COMBO");
-insert into confiteria (id, precio, nombre, categoria) values (2, 18000, "Combo Sencillo", "COMBO");
-insert into confiteria (id, precio, nombre, categoria) values (3, 28000, "Combo Pareja", "COMBO");
-insert into confiteria (id, precio, nombre, categoria) values (4, 15000, "Crispeta Grande", "SNACK");
-insert into confiteria (id, precio, nombre, categoria) values (5, 10000, "Crispeta Mediana", "SNACK");
-insert into confiteria (id, precio, nombre, categoria) values (6, 8000, "Coca Cola", "BEBIDA");
-insert into confiteria (id, precio, nombre, categoria) values (7, 4000, "Agua", "BEBIDA");
-insert into confiteria (id, precio, nombre, categoria) values (8, 12000, "Perro Caliente", "SNACK");
-insert into confiteria (id, precio, nombre, categoria) values (9, 7000, "Nachos con Queso", "SNACK");
-insert into confiteria (id, precio, nombre, categoria) values (10, 3500, "Chocorramo", "DULCE");
-insert into confiteria (id, precio, nombre, categoria) values (11, 2000, "Supercoco", "DULCE");
-insert into confiteria (id, precio, nombre, categoria) values (12, 2000, "Jet", "DULCE");
-insert into confiteria (id, precio, nombre, categoria) values (13, 7000, "Helado de Arequipe", "OTROS");
-insert into confiteria (id, precio, nombre, categoria) values (14, 6000, "Cafe", "BEBIDA");
-insert into confiteria (id, precio, nombre, categoria) values (15, 3000, "De Toditos Rojo", "SNACK");
+insert into confiteria (id, nombre, descripcion, categoria) values (1, "Combo Mega", "Combo grande con crispeta, gaseosa y snack", "COMBO");
+insert into confiteria (id, nombre, descripcion, categoria) values (2, "Combo Sencillo", "Combo basico con crispeta y gaseosa", "COMBO");
+insert into confiteria (id, nombre, descripcion, categoria) values (3, "Combo Pareja", "Combo para dos personas", "COMBO");
+insert into confiteria (id, nombre, descripcion, categoria) values (4, "Crispeta Grande", "Crispeta tamaño grande", "SNACK");
+insert into confiteria (id, nombre, descripcion, categoria) values (5, "Crispeta Mediana", "Crispeta tamaño mediano", "SNACK");
+insert into confiteria (id, nombre, descripcion, categoria) values (6, "Coca Cola", "Gaseosa sabor cola", "BEBIDA");
+insert into confiteria (id, nombre, descripcion, categoria) values (7, "Agua", "Agua embotellada", "BEBIDA");
+insert into confiteria (id, nombre, descripcion, categoria) values (8, "Perro Caliente", "Perro caliente tradicional", "SNACK");
+insert into confiteria (id, nombre, descripcion, categoria) values (9, "Nachos con Queso", "Nachos cubiertos con queso", "SNACK");
+insert into confiteria (id, nombre, descripcion, categoria) values (10, "Chocorramo", "Pastel de chocolate", "DULCE");
+insert into confiteria (id, nombre, descripcion, categoria) values (11, "Supercoco", "Dulce de coco", "DULCE");
+insert into confiteria (id, nombre, descripcion, categoria) values (12, "Jet", "Chocolatina Jet", "DULCE");
+insert into confiteria (id, nombre, descripcion, categoria) values (13, "Helado de Arequipe", "Helado suave sabor arequipe", "OTROS");
+insert into confiteria (id, nombre, descripcion, categoria) values (14, "Cafe", "Cafe caliente", "BEBIDA");
+insert into confiteria (id, nombre, descripcion, categoria) values (15, "De Toditos Rojo", "Snack De Toditos sabor picante", "SNACK");
+
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (1, 1, 1, "UNIDAD", 32000, 32000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (2, 2, 1, "UNIDAD", 18000, 18000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (3, 3, 1, "UNIDAD", 28000, 28000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (4, 4, 1, "UNIDAD", 15000, 15000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (5, 5, 1, "UNIDAD", 10000, 10000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (6, 6, 600, "ML", 8000, 8000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (7, 7, 500, "ML", 4000, 4000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (8, 7, 1, "L", 7000, 7000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (9, 8, 1, "UNIDAD", 12000, 12000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (10, 9, 1, "UNIDAD", 7000, 7000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (11, 10, 1, "UNIDAD", 3500, 3500, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (12, 11, 1, "UNIDAD", 2000, 2000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (13, 12, 1, "UNIDAD", 2000, 2000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (14, 13, 1, "UNIDAD", 7000, 7000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (15, 14, 1, "UNIDAD", 6000, 6000, null);
+insert into confiteria_presentacion (id, confiteria_id, porcion, unidad_medida, precio, precio_base, fecha_expiracion_temporal) values (16, 15, 1, "UNIDAD", 3000, 3000, null);
 
 
 insert into imagen (id, url, administrador_cedula, administrador_teatro_cedula, cliente_cedula, pelicula_id, confiteria_id) values ("67c243ec432c4764163416e0", "https://ik.imagekit.io/vfreipue8w/unicine/personas/clientes/Pepe-Rodrigez", null, null, 1009000011, null, null);
@@ -330,13 +347,16 @@ insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_tota
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1006000044, 3, 4, 3, 24000, "2026-12-16T19:12:04", "2026-12-20T20:00:00", "NEQUI", true);
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1005000055, 4, 3, 4, 54800, "2026-12-17T15:32:07", "2026-12-25T20:00:00", "MASTERCARD", true);
 insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1008000022, 5, 2, 5, 72000, "2026-12-16T20:30:12", "2026-12-29T20:00:00", "DAVIPLATA", false);
+insert into compra (cliente_cedula, cupon_cliente_id, funcion_id, id, valor_total, fecha_compra, fecha_pelicula, medio_pago, estado) values (1005000055, null, 2, 6, 11000, "2026-12-18T10:00:00", "2026-12-30T20:00:00", "NEQUI", true);
 
-insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (1, 5, 1, 6000, 2);
-insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (1, 4, 2, 15000, 1);
-insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (2, 2, 3, 29900, 2);
-insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (3, 1, 4, 24000, 1);
-insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (4, 3, 5, 54800, 1);
-insert into compra_confiteria (compra_id, confiteria_id, id, precio, unidades) values (5, 1, 6, 24000, 3);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (1, 5, 1, 6000, 2);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (1, 4, 2, 15000, 1);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (2, 2, 3, 29900, 2);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (3, 1, 4, 24000, 1);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (4, 3, 5, 54800, 1);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (5, 1, 6, 24000, 3);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (6, 7, 7, 4000, 1);
+insert into compra_confiteria (compra_id, presentacion_id, id, precio, unidades) values (6, 8, 8, 7000, 1);
 
 insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (5, 1, 2, 6, 1, 17000);
 insert into entrada (columna, compra_id, fila, funcion_id, id, precio) values (4, 2, 4, 5, 2, 59800);

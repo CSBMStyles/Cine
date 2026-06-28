@@ -28,6 +28,6 @@ public interface ConfiteriaRepo extends JpaRepository<Confiteria, Integer> {
      * @param nombre Texto a buscar
      * @return Lista de productos coincidentes
      */
-    @Query("SELECT c FROM Confiteria c WHERE LOWER(c.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
+    @Query("select c from Confiteria c where lower(c.nombre) like lower(concat('%', :nombre, '%'))")
     List<Confiteria> buscarPorNombre(String nombre);
 }

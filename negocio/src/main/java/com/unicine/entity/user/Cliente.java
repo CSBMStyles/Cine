@@ -48,16 +48,6 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     private LocalDate fechaNacimiento;
 
     @Size(max = 5, message = ValidationMessages.PHONE_LIST_MAX_FIVE)
-    @Pattern.List({
-        @Pattern(
-            regexp = "^[0-9]+$",
-            message = ValidationMessages.PHONE_ONLY_NUMBERS
-        ),
-        @Pattern(
-            regexp = "^.{10}$",
-            message = ValidationMessages.PHONE_SIZE_EXACT_TEN
-        )
-    })
     @ElementCollection
     @Column(nullable = true, length = 20)
     private List<String> telefonos;
@@ -85,7 +75,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     @Builder
     public Cliente(Integer cedula, String nombre, String apellido, String correo, String password, Boolean estado, LocalDate fechaNacimiento, List<String> telefonos) {
         super(cedula, nombre, apellido, correo, password);
-        this.estado = false;
+        this.estado = estado;
         this.fechaNacimiento = fechaNacimiento;
         this.telefonos = telefonos;
     }

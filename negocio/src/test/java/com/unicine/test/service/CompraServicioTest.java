@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.confiteria.ConfiteriaPresentacion;
 import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.CompraConfiteria;
 import com.unicine.entity.purchase.CuponCliente;
@@ -62,11 +62,11 @@ public class CompraServicioTest {
                 Entrada.builder().precio(10000.0).fila(1).columna(1).build()
         );
 
-        Confiteria confiteria = new Confiteria();
-        confiteria.setCodigo(1);
+        ConfiteriaPresentacion presentacion = new ConfiteriaPresentacion();
+        presentacion.setCodigo(1);
 
         List<CompraConfiteria> confiterias = List.of(
-                CompraConfiteria.builder().precio(5000.0).unidades(2).confiteria(confiteria).build()
+                CompraConfiteria.builder().precio(5000.0).unidades(2).presentacion(presentacion).build()
         );
 
         try {
@@ -113,7 +113,7 @@ public class CompraServicioTest {
         try {
             List<Compra> lista = compraServicio.listar();
 
-            Assertions.assertEquals(5, lista.size());
+            Assertions.assertEquals(6, lista.size());
 
             System.out.println("\n" + "Listado de registros:");
             lista.forEach(System.out::println);
@@ -132,7 +132,7 @@ public class CompraServicioTest {
         try {
             List<Compra> lista = compraServicio.listarPaginado();
 
-            Assertions.assertEquals(5, lista.size());
+            Assertions.assertEquals(6, lista.size());
 
             System.out.println("\n" + "Listado paginado:");
             lista.forEach(System.out::println);

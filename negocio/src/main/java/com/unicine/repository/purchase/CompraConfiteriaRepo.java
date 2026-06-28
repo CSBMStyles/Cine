@@ -30,12 +30,12 @@ public interface CompraConfiteriaRepo extends JpaRepository<CompraConfiteria, In
     @Query("select coalesce(sum(cc.precio * cc.unidades), 0) from CompraConfiteria cc where cc.compra.codigo = :codigoCompra")
     Double calcularTotalPorCompra(Integer codigoCompra);
 
-    // SECTION: Relacion con confiteria
+    // SECTION: Relacion con presentacion
 
     /**
-     * Consulta para obtener los items de una confiteria en todas las compras.
-     * @param codigoConfiteria codigo de la confiteria
+     * Consulta para obtener los items de una presentacion en todas las compras.
+     * @param codigoPresentacion codigo de la presentacion
      * @return lista de items de confiteria
      */
-    List<CompraConfiteria> findByConfiteriaCodigo(Integer codigoConfiteria);
+    List<CompraConfiteria> findByPresentacionCodigo(Integer codigoPresentacion);
 }
