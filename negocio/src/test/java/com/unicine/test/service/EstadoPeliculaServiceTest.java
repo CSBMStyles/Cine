@@ -146,4 +146,49 @@ public class EstadoPeliculaServiceTest {
         // Assert: historial de cambios
         assertHistorialExiste(disposicion);
     }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void estrenoCarteleraDespuesDeSieteDias() {
+        // Arrange: disposicion en ESTRENO con fecha de inicio hace 8 dias
+        PeliculaDisposicion disposicion = obtenerDisposicionConEstado(4, 1, EstadoPelicula.ESTRENO);
+        LocalDateTime haceOchoDias = LocalDateTime.now(ZoneId.of("America/Bogota")).minusDays(8);
+        disposicion.setFechaFuncionInicial(haceOchoDias);
+        disposicionRepo.save(disposicion);
+
+        // Act: recalcular estado sin funciones activas nuevas
+        PeliculaDisposicion actualizada = estadoPeliculaService.actualizarEstado(disposicion);
+
+        // Assert: 7+ dias desde el estreno y sin funciones activas -> CARTELERA
+        Assertions.assertEquals(EstadoPelicula.CARTELERA, actualizada.getEstadoPelicula(),
+            "Tras 7 dias desde el estreno sin funciones, debe pasar a CARTELERA");
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void carteleraFueraDeCarteleraSinFunciones() {
+        // Arrange: disposicion en CARTELERA. El dataset tiene funciones activas
+        // para varias disposiciones, asi que usamos la combinacion (1, 1) que no
+        // tiene funciones en el dataset y forzamos el estado CARTELERA.
+        PeliculaDisposicion disposicion = obtenerDisposicionConEstado(1, 1, EstadoPelicula.CARTELERA);
+        LocalDateTime haceOchoDias = LocalDateTime.now(ZoneId.of("America/Bogota")).minusDays(8);
+        disposicion.setFechaFuncionInicial(haceOchoDias);
+        disposicionRepo.save(disposicion);
+
+        // Act
+        PeliculaDisposicion actualizada = estadoPeliculaService.actualizarEstado(disposicion);
+
+        // Assert: sin funciones activas debe pasar a FUERA_CARTELERA
+        Assertions.assertEquals(EstadoPelicula.FUERA_CARTELERA, actualizada.getEstadoPelicula(),
+            "En CARTELERA sin funciones activas, debe pasar a FUERA_CARTELERA");
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void tareaProgramadaSeEjecutaSinExcepcion() {
+        // Verifica que el metodo anotado con @Scheduled se puede invocar
+        // directamente sin lanzar excepciones. La ejecucion real del cron
+        // queda fuera del alcance de un test unitario.
+        Assertions.assertDoesNotThrow(() -> estadoPeliculaService.actualizarEstadosAutomaticamente());
+    }
 }
