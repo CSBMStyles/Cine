@@ -22,7 +22,9 @@ import io.imagekit.sdk.models.results.ResultFileDelete;
 import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ImageKitService {
 
@@ -123,7 +125,7 @@ public class ImageKitService {
 
         String nombreAntiguo = archivoExitente.getName();
 
-        System.out.println("Nombre antiguo: " + nombreAntiguo);
+        log.info("Actualizando imagen: nombre actual '{}', fileId '{}'", nombreAntiguo, fileIdAntiguo);
 
         try {
             subirImagen(fileActual, folder, propietario, true, nombreAntiguo);

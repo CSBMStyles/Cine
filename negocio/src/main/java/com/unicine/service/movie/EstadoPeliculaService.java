@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class EstadoPeliculaService {
 
@@ -251,8 +254,8 @@ public class EstadoPeliculaService {
         List<PeliculaDisposicion> disposicionesCandidatas = disposicionRepo.buscarDisposicionesActualizar(ahora);
 
         // Log del número de disposiciones que se están procesando
-        System.out.println("Verificando " + disposicionesCandidatas.size()
-                + " disposiciones para actualización de estado a las " + ahora);
+        log.info("Verificando {} disposiciones para actualización de estado a las {}",
+                disposicionesCandidatas.size(), ahora);
 
         // Procesamos sólo las disposiciones que son candidatas a cambio de estado
         for (PeliculaDisposicion disposicion : disposicionesCandidatas) {
@@ -264,11 +267,12 @@ public class EstadoPeliculaService {
 
             // Logging cuando hay cambios de estado
             if (estadoAnterior != actualizada.getEstadoPelicula()) {
-                System.out.println("Película " + actualizada.getPelicula().getCodigo() +
-                        " en ciudad " + actualizada.getCiudad().getCodigo() +
-                        " cambió de " + estadoAnterior +
-                        " a " + actualizada.getEstadoPelicula() +
-                        " a las " + ahora);
+                log.info("Película {} en ciudad {} cambió de {} a {} a las {}",
+                        actualizada.getPelicula().getCodigo(),
+                        actualizada.getCiudad().getCodigo(),
+                        estadoAnterior,
+                        actualizada.getEstadoPelicula(),
+                        ahora);
             }
         }
     }

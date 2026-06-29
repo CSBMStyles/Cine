@@ -5,9 +5,13 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class EmailService {
+
+    private static final String REMITENTE = "no_reply@unicine.com";
 
     private final JavaMailSender javaMailSender;
 
@@ -26,22 +30,22 @@ public class EmailService {
 
         // Crear un mensaje
         MimeMessage mensaje = javaMailSender.createMimeMessage();
-        
+
         // Ayudante para configurar el mensaje
         MimeMessageHelper helper = new MimeMessageHelper(mensaje);
 
         try {
             // Establecer el asunto del correo
             helper.setSubject(asunto);
-            
+
             // Establecer el contenido del correo y permitir HTML
             helper.setText(contenido, true);
-            
+
             // Establecer el destinatario del correo
             helper.setTo(destinatario);
-            
+
             // Establecer el remitente del correo
-            helper.setFrom("no_reply@unicine.com");
+            helper.setFrom(REMITENTE);
 
             // Enviar el mensaje
             javaMailSender.send(mensaje);
@@ -51,9 +55,9 @@ public class EmailService {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            log.error("Fallo al enviar correo a {} con asunto '{}'", destinatario, asunto, e);
         }
-        
+
         // Retornar false si hubo algún error al enviar el correo
         return false;
     }
