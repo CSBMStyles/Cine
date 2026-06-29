@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unicine.entity.purchase.Cupon;
 import com.unicine.entity.purchase.CuponCliente;
 import com.unicine.entity.user.Cliente;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CuponClienteServicio;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
@@ -269,24 +270,12 @@ public class CuponClienteServicioTest {
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void eliminarSinConfirmacion() {
+    public void eliminarSinConfirmacion() throws Exception {
+        CuponCliente cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
+        Assertions.assertNotNull(cuponCliente);
 
-        try {
-            CuponCliente cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
-            Assertions.assertNotNull(cuponCliente);
-
-            cuponClienteServicio.eliminar(cuponCliente, false);
-
-            Assertions.fail("Deberia lanzar RuntimeException por falta de confirmacion");
-
-        } catch (RuntimeException e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertTrue(e.getMessage().contains("confirmada"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail("Error inesperado: " + e.getMessage());
-        }
+        Assertions.assertThrows(BusinessRuleException.class,
+                () -> cuponClienteServicio.eliminar(cuponCliente, false));
     }
 
     @Test

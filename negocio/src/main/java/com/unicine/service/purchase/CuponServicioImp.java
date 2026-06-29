@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.purchase.Cupon;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.purchase.CuponRepo;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
@@ -55,10 +56,11 @@ public class CuponServicioImp implements CuponServicio {
 
     /**
      * Metodo para validar la confirmacion de la eliminacion.
+     * Lanza BusinessRuleException con el catalogo de dominio si no se confirma.
      */
     private void comprobarConfirmacion(boolean confirmacion) throws Exception {
         if (!confirmacion) {
-            throw new RuntimeException("La eliminacion no fue confirmada");
+            throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_DELETE_DELETE_NOT_CONFIRMED);
         }
     }
 

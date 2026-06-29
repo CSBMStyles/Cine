@@ -132,7 +132,7 @@ public class EntradaServicioImp implements EntradaServicio {
         }
 
         if (!distribucionSillaParser.esSillaDisponible(esquema, entrada.getFila(), entrada.getColumna())) {
-            throw new BusinessRuleException(TheaterErrorCatalog.DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION);
+            throw new BusinessRuleException(TheaterErrorCatalog.DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_AVAILABLE_FOR_FUNCTION);
         }
     }
 

@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.purchase.Cupon;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CuponServicio;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
@@ -265,24 +266,12 @@ public class CuponServicioTest {
 
     @Test
     @Sql("classpath:dataset.sql")
-    public void eliminarSinConfirmacion() {
+    public void eliminarSinConfirmacion() throws Exception {
+        Cupon cupon = cuponServicio.obtener(1).orElse(null);
+        Assertions.assertNotNull(cupon);
 
-        try {
-            Cupon cupon = cuponServicio.obtener(1).orElse(null);
-            Assertions.assertNotNull(cupon);
-
-            cuponServicio.eliminar(cupon, false);
-
-            Assertions.fail("Deberia lanzar RuntimeException por falta de confirmacion");
-
-        } catch (RuntimeException e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-            Assertions.assertTrue(e.getMessage().contains("confirmada"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail("Error inesperado: " + e.getMessage());
-        }
+        Assertions.assertThrows(BusinessRuleException.class,
+                () -> cuponServicio.eliminar(cupon, false));
     }
 
     @Test
