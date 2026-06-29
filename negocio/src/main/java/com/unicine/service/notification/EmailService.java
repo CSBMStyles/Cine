@@ -4,6 +4,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.unicine.exception.ExternalServiceException;
+import com.unicine.util.validation.catalog.domain.NotificationErrorCatalog;
+
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,13 +23,16 @@ public class EmailService {
     }
 
     /**
-     * Método para enviar un correo electrónico.
+     * Metodo para enviar un correo electronico.
+     * Lanza {@link ExternalServiceException} con el codigo
+     * {@link NotificationErrorCatalog#DOMAIN_NOTIFICATION_EXTERNAL_SEND_ERROR}
+     * si el servidor SMTP rechaza el envio.
+     *
      * @param asunto El asunto del correo.
-     * @param contenido El contenido del correo.
-     * @param destinatario La dirección de correo del destinatario.
-     * @return true si el correo se envió correctamente, false en caso contrario.
+     * @param contenido El contenido del correo (admite HTML).
+     * @param destinatario La direccion de correo del destinatario.
      */
-    public boolean enviarEmail(String asunto, String contenido, String destinatario) {
+    public void enviarEmail(String asunto, String contenido, String destinatario) {
 
         // Crear un mensaje
         MimeMessage mensaje = javaMailSender.createMimeMessage();
@@ -50,15 +56,11 @@ public class EmailService {
             // Enviar el mensaje
             javaMailSender.send(mensaje);
 
-            // Retornar true si el correo se envió correctamente
-            return true;
-
         } catch (Exception e) {
 
             log.error("Fallo al enviar correo a {} con asunto '{}'", destinatario, asunto, e);
+            throw new ExternalServiceException(
+                    NotificationErrorCatalog.DOMAIN_NOTIFICATION_EXTERNAL_SEND_ERROR, e, e.getMessage());
         }
-
-        // Retornar false si hubo algún error al enviar el correo
-        return false;
     }
 }
