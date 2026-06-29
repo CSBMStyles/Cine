@@ -14,10 +14,12 @@ import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.repository.theater.SalaRepo;
 import com.unicine.service.movie.EstadoPeliculaService;
 import com.unicine.service.movie.HistorialEstadoPeliculaServicio;
+import com.unicine.service.notification.EmailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,13 @@ import java.util.List;
 @SpringBootTest
 @Transactional
 public class EstadoPeliculaServiceTest {
+
+    // Mockeamos EmailService para evitar conexiones SMTP reales durante los tests.
+    // Tras el refactor de la tarea 2.9, EmailService.enviarEmail lanza
+    // ExternalServiceException ante fallos SMTP; sin este mock los tests
+    // fallarian al intentar conectar a un servidor que no existe.
+    @MockBean
+    private EmailService emailService;
 
     @Autowired
     private EstadoPeliculaService estadoPeliculaService;
