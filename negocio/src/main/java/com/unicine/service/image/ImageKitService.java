@@ -1,16 +1,17 @@
 package com.unicine.service.image;
 
 import java.util.List;
-import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.enums.image.TipoImagenPelicula;
+import com.unicine.exception.ExternalServiceException;
 import com.unicine.util.config.ImageKitConfig;
 import com.unicine.util.funtional.image.ProcesadorImagen;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
+import com.unicine.util.validation.catalog.domain.ImageErrorCatalog;
 
 import io.imagekit.sdk.ImageKit;
 import io.imagekit.sdk.config.Configuration;
@@ -61,7 +62,7 @@ public class ImageKitService {
      * @param nombrePersonalizado Nombre personalizado para la imagen
      * @return Resultado de la subida
      */
-    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) throws IOException {
+    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) {
         return subirImagen(file, folder, propietario, sobrescribir, nombrePersonalizado, null);
     }
 
@@ -77,11 +78,18 @@ public class ImageKitService {
      * @param tipoPelicula Tipo de imagen de película; puede ser null para otros propietarios
      * @return Resultado de la subida
      */
-    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado, TipoImagenPelicula tipoPelicula) throws IOException {
+    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado, TipoImagenPelicula tipoPelicula) {
         // Procesar la imagen según el tipo de propietario y, para películas, su tipo.
-        byte[] fileData = tipoPelicula == null
-                ? procesadorImagen.procesar(file, propietario)
-                : procesadorImagen.procesar(file, propietario, tipoPelicula);
+        byte[] fileData;
+        try {
+            fileData = tipoPelicula == null
+                    ? procesadorImagen.procesar(file, propietario)
+                    : procesadorImagen.procesar(file, propietario, tipoPelicula);
+        } catch (Exception e) {
+            // El procesamiento local de la imagen se considera parte del flujo de subida
+            // y se mapea al mismo codigo que un fallo del SDK remoto.
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_UPLOAD_ERROR, e, e.getMessage());
+        }
 
         // Obtener el nombre del archivo sin la extensión
         String name;
@@ -105,9 +113,9 @@ public class ImageKitService {
         // Realiza la subida
         try {
             return imageKit.upload(request);
-            
+
         } catch (Exception e) {
-            throw new IOException("Error al subir la imagen: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_UPLOAD_ERROR, e, e.getMessage());
         }
     }
 
@@ -120,7 +128,7 @@ public class ImageKitService {
      * @param propietario Propietario de la imagen
      * @return resultado de la actualización de la imagen
      */
-    public Result actualizarImagen(MultipartFile fileActual, String fileIdAntiguo, String folder, Imagenable propietario) throws IOException {
+    public Result actualizarImagen(MultipartFile fileActual, String fileIdAntiguo, String folder, Imagenable propietario) {
         Result archivoExitente = obtenerDatos(fileIdAntiguo);
 
         String nombreAntiguo = archivoExitente.getName();
@@ -134,7 +142,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al actualizar la imagen: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_UPDATE_ERROR, e, e.getMessage());
         }
     }
 
@@ -145,14 +153,14 @@ public class ImageKitService {
      * @param versionId Identificador de la versión
      * @return Resultado de la restauración
      */
-    public Result restaurarVersion(String fileId, String versionId) throws IOException {
+    public Result restaurarVersion(String fileId, String versionId) {
 
         try {
             return imageKit.restoreFileVersion(fileId, versionId);
 
         } catch (Exception e) {
 
-            throw new IOException("Error al restaurar la versión de la imagen: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_RESTORE_VERSION_ERROR, e, e.getMessage());
         }
     }
 
@@ -163,7 +171,7 @@ public class ImageKitService {
      * @param nombreNuevo Nuevo nombre para el archivo
      * @return Resultado de la operación
      */
-    public Result renombrarImagen(String fileId, String nombreNuevo, Imagenable propietario) throws IOException {
+    public Result renombrarImagen(String fileId, String nombreNuevo, Imagenable propietario) {
 
         Result archivoExistente = obtenerDatos(fileId);
 
@@ -189,7 +197,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al renombrar el archivo: " + e);  
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_RENAME_FILE_ERROR, e, e.getMessage());
         }
     }
 
@@ -199,7 +207,7 @@ public class ImageKitService {
      * @param fileId
      * @return Resultado de la eliminación de la imagen
      */
-    public Result eliminarImagen(String fileId) throws IOException {
+    public Result eliminarImagen(String fileId) {
 
         try {
             Result result = imageKit.deleteFile(fileId);
@@ -208,11 +216,11 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al eliminar la imagen: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_DELETE_IMAGE_ERROR, e, e.getMessage());
         }
     }
 
-    public ResultFileDelete eliminarImagenes(List<String> fileIds) throws IOException {
+    public ResultFileDelete eliminarImagenes(List<String> fileIds) {
 
         try {
             ResultFileDelete result = imageKit.bulkDeleteFiles(fileIds);
@@ -221,7 +229,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al eliminar las imágenes: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_DELETE_IMAGES_ERROR, e, e.getMessage());
         }
     }
 
@@ -231,7 +239,7 @@ public class ImageKitService {
      * @param fileId
      * @return Resultado de la consulta de la imagen
      */
-    public Result obtenerDatos(String fileId) throws IOException {
+    public Result obtenerDatos(String fileId) {
 
         try {
             Result result = imageKit.getFileDetail(fileId);
@@ -240,7 +248,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al obtener los datos de la imagen: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_GET_IMAGE_DATA_ERROR, e, e.getMessage());
         }
     }
 
@@ -250,7 +258,7 @@ public class ImageKitService {
      * @param folderPath
      * @return Resultado de la lista de imágenes
      */
-    public ResultList listarImagenes(String folderPath) throws IOException {
+    public ResultList listarImagenes(String folderPath) {
 
         GetFileListRequest getFileListRequest = new GetFileListRequest();
 
@@ -266,7 +274,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al listar las imagenes: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_LIST_IMAGES_ERROR, e, e.getMessage());
         }
     }
 
@@ -276,7 +284,7 @@ public class ImageKitService {
      * @param fileId Identificador del arvhivo
      * @return Resultado de la version
      */
-    public ResultFileVersions listarVersiones(String fileId) throws IOException {
+    public ResultFileVersions listarVersiones(String fileId) {
 
         try {
             ResultFileVersions result = imageKit.getFileVersions(fileId);
@@ -285,7 +293,7 @@ public class ImageKitService {
 
         } catch (Exception e) {
 
-            throw new IOException("Error al listar las versiones de la imagen: " + e);
+            throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_LIST_IMAGE_VERSIONS_ERROR, e, e.getMessage());
         }
     }
 }
