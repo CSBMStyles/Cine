@@ -1,19 +1,24 @@
 package com.unicine.transfer.mapper;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-import com.unicine.transfer.data.DetalleFuncionesDTO;
+import com.unicine.transfer.dto.response.DetalleFuncionesDTO;
 import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 
 @Component
 public class DetalleFuncionMapper {
+
+    private final ImagenMapper imagenMapper = Mappers.getMapper(ImagenMapper.class);
+
+    private final HorarioMapper horarioMapper = Mappers.getMapper(HorarioMapper.class);
 
     public DetalleFuncionesDTO convertirDTO(DetalleFuncionesProjection projection) {
         return new DetalleFuncionesDTO(
 
             projection.getNombrePelicula(),
 
-            projection.getImagenes(),
+            imagenMapper.toResponseList(projection.getImagenes()),
 
             projection.getCodigoSala(),
 
@@ -21,7 +26,7 @@ public class DetalleFuncionMapper {
 
             projection.getNombreCiudad(),
             
-            projection.getHorario()
+            horarioMapper.toResponse(projection.getHorario())
         );
     }
 }
