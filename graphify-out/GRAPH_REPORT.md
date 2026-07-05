@@ -1,4 +1,4 @@
-# Graph Report - Cine  (2026-06-28)
+# Graph Report - Cine  (2026-07-03)
 
 ## Corpus Check
 - 206 files · ~1,116,494 words
