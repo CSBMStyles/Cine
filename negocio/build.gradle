@@ -13,7 +13,18 @@ dependencies {
     implementation 'org.jasypt:jasypt:1.9.3'
     implementation 'mysql:mysql-connector-java:8.0.33'
     runtimeOnly 'mysql:mysql-connector-java'
+    implementation 'org.mapstruct:mapstruct:1.6.0'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.0'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}
+
+compileJava {
+    options.compilerArgs += [
+        '-Amapstruct.defaultComponentModel=spring',
+        '-Amapstruct.disableBuilders=true',
+        '-Amapstruct.unmappedTargetPolicy=IGNORE'
+    ]
 }
 
 test {
