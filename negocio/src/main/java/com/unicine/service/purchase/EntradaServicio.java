@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.purchase.Entrada;
-import com.unicine.transfer.data.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaDTO;
 
 import jakarta.validation.Valid;
 

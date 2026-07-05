@@ -23,7 +23,7 @@ import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.CuponRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.data.DetalleCompraDTO;
+import com.unicine.transfer.dto.response.DetalleCompraDTO;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

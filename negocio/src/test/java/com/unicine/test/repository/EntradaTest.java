@@ -17,7 +17,7 @@ import com.unicine.entity.showing.Funcion;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.data.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaDTO;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

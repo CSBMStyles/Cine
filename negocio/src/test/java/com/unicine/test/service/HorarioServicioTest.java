@@ -18,7 +18,7 @@ import com.unicine.entity.showing.Horario;
 import com.unicine.entity.theater.Sala;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.theater.SalaServicio;
-import com.unicine.transfer.data.FuncionInterseccionDTO;
+import com.unicine.transfer.dto.response.FuncionInterseccionDTO;
 import com.unicine.transfer.mapper.FuncionInterseccionMapper;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas

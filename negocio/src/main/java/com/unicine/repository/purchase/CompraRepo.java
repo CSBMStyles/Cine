@@ -2,7 +2,7 @@ package com.unicine.repository.purchase;
 
 import com.unicine.entity.purchase.Compra;
 import com.unicine.enums.purchase.MedioPago;
-import com.unicine.transfer.data.DetalleCompraDTO;
+import com.unicine.transfer.dto.response.DetalleCompraDTO;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +16,7 @@ public interface CompraRepo extends JpaRepository<Compra, Integer> {
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
-    String direccion = "com.unicine.transfer.data";
+    String direccion = "com.unicine.transfer.dto.response";
 
     // NOTE: En el caso de necesitar conexiones para hacer la consulta como esta donde necesatamos obtener la compras del cliente se puede hacer con join se puede usar en lugar del in, ambos cumplen la misma función, es así como la cláusula anterior
 

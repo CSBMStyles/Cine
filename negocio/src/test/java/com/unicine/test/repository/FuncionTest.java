@@ -26,7 +26,7 @@ import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.repository.theater.SalaRepo;
-import com.unicine.transfer.data.DetalleFuncionesDTO;
+import com.unicine.transfer.dto.response.DetalleFuncionesDTO;
 import com.unicine.transfer.mapper.DetalleFuncionMapper;
 import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 

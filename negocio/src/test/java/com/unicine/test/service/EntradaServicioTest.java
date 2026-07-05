@@ -21,7 +21,7 @@ import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.service.purchase.EntradaServicio;
-import com.unicine.transfer.data.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaDTO;
 import com.unicine.util.parser.DistribucionSillaParser;
 
 @SpringBootTest
