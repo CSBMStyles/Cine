@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @AllArgsConstructor
-public class DetalleSillaDTO {
+public class DetalleSillaResponse {
 
     private Integer codigoEntrada;
 

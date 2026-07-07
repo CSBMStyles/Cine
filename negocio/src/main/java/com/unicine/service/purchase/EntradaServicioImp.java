@@ -18,7 +18,7 @@ import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.dto.response.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
 import com.unicine.util.parser.DistribucionSillaParser;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
@@ -253,7 +253,7 @@ public class EntradaServicioImp implements EntradaServicio {
     }
 
     @Override
-    public List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception {
+    public List<DetalleSillaResponse> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception {
         obtenerFuncion(codigoFuncion);
         return entradaRepo.obtenerSillasOcupadas(codigoFuncion);
     }

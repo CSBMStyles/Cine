@@ -4,15 +4,15 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 import com.unicine.entity.showing.Funcion;
-import com.unicine.transfer.dto.response.FuncionInterseccionDTO;
+import com.unicine.transfer.dto.response.FuncionInterseccionResponse;
 
 @Component
 public class FuncionInterseccionMapper {
 
     private final ImagenMapper imagenMapper = Mappers.getMapper(ImagenMapper.class);
 
-    public FuncionInterseccionDTO convertirDTO(Funcion funcion) {
-        return new FuncionInterseccionDTO(
+    public FuncionInterseccionResponse convertirDTO(Funcion funcion) {
+        return new FuncionInterseccionResponse(
             funcion.getSala().getNombre(),
 
             funcion.getPelicula().getNombre(), 

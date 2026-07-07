@@ -23,7 +23,7 @@ import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.CuponRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.dto.response.DetalleCompraDTO;
+import com.unicine.transfer.dto.response.DetalleCompraResponse;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -230,14 +230,14 @@ public class CompraTest {
     @Sql("classpath:dataset.sql")
     public void obtenerInformacionCompra() {
 
-        List<DetalleCompraDTO> detallesCompra = compraRepo.obtenerInformacionCompra(1008000022);
+        List<DetalleCompraResponse> detallesCompra = compraRepo.obtenerInformacionCompra(1008000022);
 
         // Verifica que los detalles de la c sean correctos
         Assertions.assertFalse(detallesCompra.isEmpty(), "No se encontraron detalles de la c");
 
         System.out.println("Resultado: \n");
 
-        for (DetalleCompraDTO detalle : detallesCompra) {
+        for (DetalleCompraResponse detalle : detallesCompra) {
             System.out.println(detalle);
         }
     }

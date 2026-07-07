@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.unicine.entity.purchase.Entrada;
-import com.unicine.transfer.dto.response.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
 
 import jakarta.validation.Valid;
 
@@ -33,5 +33,5 @@ public interface EntradaServicio {
 
     List<Entrada> listarPorFuncion(Integer codigoFuncion) throws Exception;
 
-    List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception;
+    List<DetalleSillaResponse> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception;
 }

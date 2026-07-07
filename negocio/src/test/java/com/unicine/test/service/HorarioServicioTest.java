@@ -18,7 +18,7 @@ import com.unicine.entity.showing.Horario;
 import com.unicine.entity.theater.Sala;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.theater.SalaServicio;
-import com.unicine.transfer.dto.response.FuncionInterseccionDTO;
+import com.unicine.transfer.dto.response.FuncionInterseccionResponse;
 import com.unicine.transfer.mapper.FuncionInterseccionMapper;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
@@ -66,9 +66,9 @@ public class HorarioServicioTest {
         try {
             Respuesta<?> actualizado = horarioServicio.registrar(horario, sala);
 
-            if (actualizado.getData() instanceof FuncionInterseccionDTO) {
+            if (actualizado.getData() instanceof FuncionInterseccionResponse) {
 
-                FuncionInterseccionDTO funcionRespuesta = (FuncionInterseccionDTO) actualizado.getData();
+                FuncionInterseccionResponse funcionRespuesta = (FuncionInterseccionResponse) actualizado.getData();
 
                 System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
 
@@ -120,9 +120,9 @@ public class HorarioServicioTest {
         try {
             Respuesta<?> actualizado = horarioServicio.actualizar(horario);
 
-            if (actualizado.getData() instanceof FuncionInterseccionDTO) {
+            if (actualizado.getData() instanceof FuncionInterseccionResponse) {
 
-                FuncionInterseccionDTO funcionRespuesta = (FuncionInterseccionDTO) actualizado.getData();
+                FuncionInterseccionResponse funcionRespuesta = (FuncionInterseccionResponse) actualizado.getData();
 
                 System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
 
@@ -280,7 +280,7 @@ public class HorarioServicioTest {
 
                 Funcion funcionSolapado = (Funcion) actualizado.getData();
 
-                FuncionInterseccionDTO funcionRespuesta = funcionMapper.convertirDTO(funcionSolapado);
+                FuncionInterseccionResponse funcionRespuesta = funcionMapper.convertirDTO(funcionSolapado);
 
                 System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
             }

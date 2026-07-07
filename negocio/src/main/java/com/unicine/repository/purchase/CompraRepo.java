@@ -2,7 +2,7 @@ package com.unicine.repository.purchase;
 
 import com.unicine.entity.purchase.Compra;
 import com.unicine.enums.purchase.MedioPago;
-import com.unicine.transfer.dto.response.DetalleCompraDTO;
+import com.unicine.transfer.dto.response.DetalleCompraResponse;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -54,8 +54,8 @@ public interface CompraRepo extends JpaRepository<Compra, Integer> {
      * @param atributo: cedula del cliente
      * @return lista del detalle de la compra: valor total, fecha de compra, codigo de la funcion, total de las entradas, total de la confiteria
      */
-    @Query("select new " + direccion + ".DetalleCompraDTO( c.valorTotal, c.fechaCompra, c.funcion.codigo, (select coalesce(sum(e.precio), 0) from Entrada e where e.compra.codigo = c.codigo), (select coalesce(sum(conf.precio * conf.unidades), 0) from CompraConfiteria conf where conf.compra.codigo = c.codigo) ) from Compra c where c.cliente.cedula = :cedulaCliente")
-    List<DetalleCompraDTO> obtenerInformacionCompra(Integer cedulaCliente);
+    @Query("select new " + direccion + ".DetalleCompraResponse( c.valorTotal, c.fechaCompra, c.funcion.codigo, (select coalesce(sum(e.precio), 0) from Entrada e where e.compra.codigo = c.codigo), (select coalesce(sum(conf.precio * conf.unidades), 0) from CompraConfiteria conf where conf.compra.codigo = c.codigo) ) from Compra c where c.cliente.cedula = :cedulaCliente")
+    List<DetalleCompraResponse> obtenerInformacionCompra(Integer cedulaCliente);
 
     // SECTION: Relacion con entrada
 

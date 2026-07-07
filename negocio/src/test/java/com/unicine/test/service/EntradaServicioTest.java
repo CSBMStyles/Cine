@@ -21,7 +21,7 @@ import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.service.purchase.EntradaServicio;
-import com.unicine.transfer.dto.response.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
 import com.unicine.util.parser.DistribucionSillaParser;
 
 @SpringBootTest
@@ -198,7 +198,7 @@ public class EntradaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void obtenerSillasOcupadas() throws Exception {
-        List<DetalleSillaDTO> sillas = entradaServicio.obtenerSillasOcupadas(3);
+        List<DetalleSillaResponse> sillas = entradaServicio.obtenerSillasOcupadas(3);
 
         Assertions.assertEquals(2, sillas.size());
 

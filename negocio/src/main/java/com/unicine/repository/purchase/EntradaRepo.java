@@ -1,7 +1,7 @@
 package com.unicine.repository.purchase;
 
 import com.unicine.entity.purchase.Entrada;
-import com.unicine.transfer.dto.response.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
 
 import java.util.List;
 
@@ -40,8 +40,8 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      * @param codigoFuncion codigo de la funcion
      * @return codigo, fila y columna de las entradas
      */
-    @Query("select new " + direccion + ".DetalleSillaDTO(e.codigo, e.fila, e.columna) from Entrada e where e.funcion.codigo = :codigoFuncion")
-    List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion);
+    @Query("select new " + direccion + ".DetalleSillaResponse(e.codigo, e.fila, e.columna) from Entrada e where e.funcion.codigo = :codigoFuncion")
+    List<DetalleSillaResponse> obtenerSillasOcupadas(Integer codigoFuncion);
 
     /**
      * Consulta para verificar si una silla especifica ya esta ocupada

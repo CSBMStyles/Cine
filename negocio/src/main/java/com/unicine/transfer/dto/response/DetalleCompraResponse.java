@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @AllArgsConstructor
-public class DetalleCompraDTO {
+public class DetalleCompraResponse {
 
     private Double valorTotal;
 

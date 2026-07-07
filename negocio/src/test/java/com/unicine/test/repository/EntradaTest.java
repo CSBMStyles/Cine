@@ -17,7 +17,7 @@ import com.unicine.entity.showing.Funcion;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.dto.response.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -183,7 +183,7 @@ public class EntradaTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void obtenerSillasOcupadas() {
-        List<DetalleSillaDTO> sillas = entradaRepo.obtenerSillasOcupadas(2);
+        List<DetalleSillaResponse> sillas = entradaRepo.obtenerSillasOcupadas(2);
 
         Assertions.assertEquals(1, sillas.size());
 

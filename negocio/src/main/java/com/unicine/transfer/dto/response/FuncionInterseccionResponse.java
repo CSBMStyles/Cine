@@ -15,7 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @AllArgsConstructor
-public class FuncionInterseccionDTO {
+public class FuncionInterseccionResponse {
 
     private String nombreSala;
 

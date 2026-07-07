@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @ToString
 @AllArgsConstructor
-public class DetalleFuncionesDTO {
+public class DetalleFuncionesResponse {
 
     private String nombrePelicula;
 
