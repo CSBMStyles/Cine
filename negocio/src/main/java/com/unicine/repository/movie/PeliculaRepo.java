@@ -2,7 +2,7 @@ package com.unicine.repository.movie;
 
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.enums.movie.EstadoPelicula;
-import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
+import com.unicine.transfer.dto.response.PeliculaHorarioResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface PeliculaRepo extends JpaRepository<Pelicula, Integer> {
 // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
-    String direccion = "com.unicine.transfer.data";
+    String direccion = "com.unicine.transfer.dto.response";
 
     /**
      * Consulta para obtener una pelicula por su nombre
@@ -97,8 +97,8 @@ public interface PeliculaRepo extends JpaRepository<Pelicula, Integer> {
      * @param atributo: codigo de la pelicula, codigo del teatro
      * @return lista del detalle que tiene: pelicula, horario, sala
      */
-    @Query("select new " + direccion + ".DetallePeliculaHorarioDTO( p, f.horario, f.sala ) from Pelicula p join p.funciones f where p.codigo = :codigoPelicula and f.sala.teatro.codigo = :codigoTeatro")
-    List<DetallePeliculaHorarioDTO> peliculaHorariosSalas(Integer codigoPelicula, Integer codigoTeatro);
+    @Query("select new " + direccion + ".PeliculaHorarioResponse( p.codigo, p.nombre, h.codigo, h.fechaInicio, h.fechaFin, s.codigo, s.nombre ) from Pelicula p join p.funciones f join f.horario h join f.sala s where p.codigo = :codigoPelicula and s.teatro.codigo = :codigoTeatro")
+    List<PeliculaHorarioResponse> peliculaHorariosSalas(Integer codigoPelicula, Integer codigoTeatro);
 
     /**
      * Consulta para obtener la pelicula mas vista de una ciudad
