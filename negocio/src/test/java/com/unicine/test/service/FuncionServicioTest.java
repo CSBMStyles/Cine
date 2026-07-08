@@ -13,22 +13,22 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.api.response.Respuesta;
-import com.unicine.entity.showing.Funcion;
-import com.unicine.entity.showing.FuncionEsquema;
-import com.unicine.entity.showing.Horario;
 import com.unicine.entity.movie.Pelicula;
-import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.theater.Sala;
 import com.unicine.enums.movie.FormatoPelicula;
-import com.unicine.repository.movie.PeliculaDisposicionRepo;
 import com.unicine.repository.movie.PeliculaRepo;
+import com.unicine.repository.theater.SalaRepo;
 import com.unicine.service.showing.FuncionEsquemaServicio;
 import com.unicine.service.showing.FuncionServicio;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
-import com.unicine.service.theater.SalaServicio;
-import com.unicine.repository.theater.SalaRepo;
+import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
+import com.unicine.transfer.dto.request.FuncionRequest;
+import com.unicine.transfer.dto.request.HorarioRequest;
 import com.unicine.transfer.dto.request.PeliculaDisposicionRequest;
+import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
+import com.unicine.transfer.dto.response.FuncionResponse;
+import com.unicine.transfer.dto.response.HorarioResponse;
 import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
@@ -41,16 +41,10 @@ public class FuncionServicioTest {
     private FuncionServicio funcionServicio;
 
     @Autowired
-    private SalaServicio salaServicio;
-
-    @Autowired
     private SalaRepo salaRepo;
 
     @Autowired
     private PeliculaRepo peliculaRepo;
-
-    @Autowired
-    private PeliculaDisposicionRepo peliculaDisposicionRepo;
 
     @Autowired
     private HorarioServicio horarioServicio;
@@ -89,17 +83,22 @@ public class FuncionServicioTest {
         LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
         LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 22, 00);
 
-        Horario horario = null;
+        HorarioResponse horario;
 
         try {
-            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+            HorarioRequest horarioRequest = HorarioRequest.builder()
+                    .fechaInicio(fechaInicio)
+                    .fechaFin(fechaFin)
+                    .build();
+
+            Respuesta<?> repuestaHorario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
 
             if (!repuestaHorario.isExito()) {
 
                 Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
             }
 
-            horario = (Horario) repuestaHorario.getData();
+            horario = (HorarioResponse) repuestaHorario.getData();
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
@@ -155,14 +154,19 @@ public class FuncionServicioTest {
 
         // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
 
-        Funcion funcion;
+        FuncionResponse funcion;
         
         try {
 
-            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
-            funcionNueva.setPrecio(0.0);
+            FuncionRequest funcionRequest = FuncionRequest.builder()
+                    .precio(0.0)
+                    .formato(FormatoPelicula.DOBLADO)
+                    .salaCodigo(sala.getCodigo())
+                    .horarioCodigo(horario.getCodigo())
+                    .peliculaCodigo(pelicula.getCodigo())
+                    .build();
 
-            funcion = funcionServicio.registrar(funcionNueva);
+            funcion = funcionServicio.registrar(funcionRequest);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 
@@ -197,12 +201,14 @@ public class FuncionServicioTest {
 
         try {
             
-            FuncionEsquema esquemaNuevo = new FuncionEsquema(funcion);
-            esquemaNuevo.setDisponibles(0);
-            esquemaNuevo.setOcupadas(0);
-            esquemaNuevo.setMantenimiento(0);
+            FuncionEsquemaRequest esquemaRequest = FuncionEsquemaRequest.builder()
+                    .funcionCodigo(funcion.getCodigo())
+                    .disponibles(0)
+                    .ocupadas(0)
+                    .mantenimiento(0)
+                    .build();
 
-            FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(esquemaNuevo);
+            FuncionEsquemaResponse funcionEsquema = funcionEsquemaServicio.registrar(esquemaRequest);
 
             System.out.println("\n" + "Funcion esquema registrado:" + "\n" + funcionEsquema);
 
@@ -226,7 +232,7 @@ public class FuncionServicioTest {
         
         // Primero obtenemos la funcion a actualizar.
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
             funcion = funcionServicio.obtener(1).orElse(null);
@@ -245,9 +251,13 @@ public class FuncionServicioTest {
 
         boolean modificaHorario = true; // En caso que modifique el horario
 
+        Integer salaCodigo = funcion.getSala().getCodigo();
+        Integer horarioCodigo = funcion.getHorario().getCodigo();
+        Integer peliculaCodigo = funcion.getPelicula().getCodigo();
+
         // En caso que modifique el la sala necesitamos recalcular el precio de la funcion.
 
-        funcion.setFormato(FormatoPelicula.SUBTITULADO);
+        FormatoPelicula formato = FormatoPelicula.SUBTITULADO;
 
         if (modificarSala) {
 
@@ -255,7 +265,7 @@ public class FuncionServicioTest {
                 
                 Sala sala = salaRepo.findById(3).orElse(null);
 
-                funcion.setSala(sala);
+                salaCodigo = sala.getCodigo();
 
                 System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -270,7 +280,7 @@ public class FuncionServicioTest {
 
         if (modificaHorario) {
 
-            Horario horario = funcion.getHorario();
+            HorarioResponse horario = funcion.getHorario();
 
             System.out.println("\n" + "Horario antes de modificar:" + "\n" + horario);
 
@@ -278,24 +288,28 @@ public class FuncionServicioTest {
 
                 LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 14, 05, 30);
 
-                horario.setFechaInicio(fechaInicio);
+                HorarioRequest horarioRequest = HorarioRequest.builder()
+                        .codigo(horario.getCodigo())
+                        .fechaInicio(fechaInicio)
+                        .fechaFin(horario.getFechaFin())
+                        .build();
 
-                Respuesta<?> repuestaHorario = horarioServicio.actualizar(horario);
+                Respuesta<?> repuestaHorario = horarioServicio.actualizar(horarioRequest);
     
                 if (!repuestaHorario.isExito()) {
     
                     Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
                 }
     
-                horario = (Horario) repuestaHorario.getData();
+                HorarioResponse horarioActualizado = (HorarioResponse) repuestaHorario.getData();
     
-                String dia = horarioServicio.obtenerDia(horario.getFechaInicio());
+                String dia = horarioServicio.obtenerDia(horarioActualizado.getFechaInicio());
     
-                System.out.println("\n" + "Horario actualizado:" + "\n" + horario);
+                System.out.println("\n" + "Horario actualizado:" + "\n" + horarioActualizado);
     
                 System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
     
-                funcion.setHorario(horario);
+                horarioCodigo = horarioActualizado.getCodigo();
     
                 Assertions.assertTrue(repuestaHorario.isExito());
     
@@ -311,7 +325,6 @@ public class FuncionServicioTest {
         PeliculaDisposicionResponse peliculaDisposicion;
 
         Integer ciudadCodigo = funcion.getSala().getTeatro().getCiudad().getCodigo();
-        Integer peliculaCodigo = funcion.getPelicula().getCodigo();
 
         try {
             peliculaDisposicion = disposicionServicio.obtener(ciudadCodigo, peliculaCodigo).orElse(null);
@@ -328,7 +341,16 @@ public class FuncionServicioTest {
 
         try {
 
-            Funcion actualizado = funcionServicio.actualizar(funcion);
+            FuncionRequest funcionRequest = FuncionRequest.builder()
+                    .codigo(funcion.getCodigo())
+                    .precio(0.0)
+                    .formato(formato)
+                    .salaCodigo(salaCodigo)
+                    .horarioCodigo(horarioCodigo)
+                    .peliculaCodigo(peliculaCodigo)
+                    .build();
+
+            FuncionResponse actualizado = funcionServicio.actualizar(funcionRequest);
 
             Assertions.assertNotNull(actualizado);
 
@@ -370,7 +392,7 @@ public class FuncionServicioTest {
 
         Integer codigoEsquema;
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
             funcion = funcionServicio.obtener(codigoFuncion).orElse(null);
@@ -392,7 +414,7 @@ public class FuncionServicioTest {
         }
 
         try {
-            funcionServicio.eliminar(funcion, true);
+            funcionServicio.eliminar(codigoFuncion, true);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -444,7 +466,7 @@ public class FuncionServicioTest {
         Integer codigo = 1;
 
         try {
-            Funcion funcion = funcionServicio.obtener(1).orElse(null);
+            FuncionResponse funcion = funcionServicio.obtener(1).orElse(null);
 
             Assertions.assertEquals(codigo, funcion.getCodigo());
 
@@ -462,7 +484,7 @@ public class FuncionServicioTest {
     public void listar() {
 
         try {
-            List<Funcion> lista = funcionServicio.listar();
+            List<FuncionResponse> lista = funcionServicio.listar();
 
             Assertions.assertEquals(8, lista.size());
 
@@ -482,7 +504,7 @@ public class FuncionServicioTest {
     public void listarPaginado() {
 
         try {
-            List<Funcion> lista = funcionServicio.listarPaginado();
+            List<FuncionResponse> lista = funcionServicio.listarPaginado();
 
             Assertions.assertEquals(5, lista.size());
 

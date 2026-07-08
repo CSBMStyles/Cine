@@ -8,8 +8,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.api.response.Respuesta;
-import com.unicine.entity.showing.Funcion;
-import com.unicine.entity.showing.Horario;
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.theater.Sala;
 import com.unicine.enums.movie.EstadoPelicula;
@@ -21,8 +19,11 @@ import com.unicine.repository.theater.SalaRepo;
 import com.unicine.service.showing.FuncionServicio;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
-import com.unicine.service.theater.SalaServicio;
+import com.unicine.transfer.dto.request.FuncionRequest;
+import com.unicine.transfer.dto.request.HorarioRequest;
 import com.unicine.transfer.dto.request.PeliculaDisposicionRequest;
+import com.unicine.transfer.dto.response.FuncionResponse;
+import com.unicine.transfer.dto.response.HorarioResponse;
 import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
 
 import java.time.LocalDateTime;
@@ -37,9 +38,6 @@ public class PeliculaDisposicionServicioTest {
 
     @Autowired
     private FuncionServicio funcionServicio;
-
-    @Autowired
-    private SalaServicio salaServicio;
 
     @Autowired
     private PeliculaRepo peliculaRepo;
@@ -216,17 +214,22 @@ public class PeliculaDisposicionServicioTest {
         LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 15, 00);
         LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 17, 00);
 
-        Horario horario = null;
+        HorarioResponse horario = null;
 
         try {
-            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+            HorarioRequest horarioRequest = HorarioRequest.builder()
+                    .fechaInicio(fechaInicio)
+                    .fechaFin(fechaFin)
+                    .build();
+
+            Respuesta<?> repuestaHorario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
 
             if (!repuestaHorario.isExito()) {
 
                 Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
             }
 
-            horario = (Horario) repuestaHorario.getData();
+            horario = (HorarioResponse) repuestaHorario.getData();
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
@@ -273,14 +276,19 @@ public class PeliculaDisposicionServicioTest {
             throw new RuntimeException(e);
         }
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
 
-            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
-            funcionNueva.setPrecio(0.0);
+            FuncionRequest funcionRequest = FuncionRequest.builder()
+                    .precio(0.0)
+                    .formato(FormatoPelicula.DOBLADO)
+                    .salaCodigo(sala.getCodigo())
+                    .horarioCodigo(horario.getCodigo())
+                    .peliculaCodigo(pelicula.getCodigo())
+                    .build();
 
-            funcion = funcionServicio.registrar(funcionNueva);
+            funcion = funcionServicio.registrar(funcionRequest);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 
@@ -339,17 +347,22 @@ public class PeliculaDisposicionServicioTest {
         LocalDateTime fechaInicio = LocalDateTime.now().plusSeconds(2);
         LocalDateTime fechaFin = LocalDateTime.now().plusHours(1);
 
-        Horario horario = null;
+        HorarioResponse horario = null;
 
         try {
-            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+            HorarioRequest horarioRequest = HorarioRequest.builder()
+                    .fechaInicio(fechaInicio)
+                    .fechaFin(fechaFin)
+                    .build();
+
+            Respuesta<?> repuestaHorario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
 
             if (!repuestaHorario.isExito()) {
 
                 Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
             }
 
-            horario = (Horario) repuestaHorario.getData();
+            horario = (HorarioResponse) repuestaHorario.getData();
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
@@ -398,14 +411,19 @@ public class PeliculaDisposicionServicioTest {
             throw new RuntimeException(e);
         }
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
 
-            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
-            funcionNueva.setPrecio(0.0);
+            FuncionRequest funcionRequest = FuncionRequest.builder()
+                    .precio(0.0)
+                    .formato(FormatoPelicula.DOBLADO)
+                    .salaCodigo(sala.getCodigo())
+                    .horarioCodigo(horario.getCodigo())
+                    .peliculaCodigo(pelicula.getCodigo())
+                    .build();
 
-            funcion = funcionServicio.registrar(funcionNueva);
+            funcion = funcionServicio.registrar(funcionRequest);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 

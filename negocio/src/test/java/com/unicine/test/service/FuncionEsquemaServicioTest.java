@@ -10,10 +10,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.unicine.entity.showing.Funcion;
-import com.unicine.entity.showing.FuncionEsquema;
 import com.unicine.service.showing.FuncionEsquemaServicio;
 import com.unicine.service.showing.FuncionServicio;
+import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
+import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
+import com.unicine.transfer.dto.response.FuncionResponse;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -35,7 +36,7 @@ public class FuncionEsquemaServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
             funcion = funcionServicio.obtener(8).orElse(null);
@@ -51,13 +52,15 @@ public class FuncionEsquemaServicioTest {
 
         }
 
-        FuncionEsquema funcionEsquema = new FuncionEsquema(funcion);
-        funcionEsquema.setDisponibles(0);
-        funcionEsquema.setOcupadas(0);
-        funcionEsquema.setMantenimiento(0);
+        FuncionEsquemaRequest funcionEsquemaRequest = FuncionEsquemaRequest.builder()
+                .funcionCodigo(funcion.getCodigo())
+                .disponibles(0)
+                .ocupadas(0)
+                .mantenimiento(0)
+                .build();
 
         try {
-            FuncionEsquema nuevo = funcionEsquemaServicio.registrar(funcionEsquema);
+            FuncionEsquemaResponse nuevo = funcionEsquemaServicio.registrar(funcionEsquemaRequest);
 
             Assertions.assertEquals(78, nuevo.getDisponibles());
 
@@ -77,7 +80,9 @@ public class FuncionEsquemaServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        FuncionEsquema funcionEsquema;
+        FuncionEsquemaResponse funcionEsquema = null;
+
+        String[][] matriz = null;
 
         int x = 2;
         int y = 4;
@@ -87,11 +92,9 @@ public class FuncionEsquemaServicioTest {
             funcionEsquema = funcionEsquemaServicio.obtener(1).orElse(null);
 
             // Modifica la matriz de la disposicion de la funcion
-            String[][] matriz = gson.fromJson(funcionEsquema.getEsquemaTemporal(), String[][].class);
+            matriz = gson.fromJson(funcionEsquema.getEsquemaTemporal(), String[][].class);
 
             matriz[x][y] = "O";
-
-            funcionEsquema.setEsquemaTemporal(gson.toJson(matriz));
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -104,7 +107,16 @@ public class FuncionEsquemaServicioTest {
         
         try {
 
-            FuncionEsquema actualizado = funcionEsquemaServicio.actualizar(funcionEsquema);
+            FuncionEsquemaRequest request = FuncionEsquemaRequest.builder()
+                    .codigo(funcionEsquema.getCodigo())
+                    .esquemaTemporal(gson.toJson(matriz))
+                    .ocupadas(funcionEsquema.getOcupadas())
+                    .disponibles(funcionEsquema.getDisponibles())
+                    .mantenimiento(funcionEsquema.getMantenimiento())
+                    .funcionCodigo(funcionEsquema.getFuncionCodigo())
+                    .build();
+
+            FuncionEsquemaResponse actualizado = funcionEsquemaServicio.actualizar(request);
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
@@ -122,22 +134,8 @@ public class FuncionEsquemaServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        FuncionEsquema funcionEsquema;
-
         try {
-            funcionEsquema = funcionEsquemaServicio.obtener(1).orElse(null);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-
-        try {
-            funcionEsquemaServicio.eliminar(funcionEsquema, true);
+            funcionEsquemaServicio.eliminar(1, true);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -164,7 +162,7 @@ public class FuncionEsquemaServicioTest {
     public void obtener() {
 
         try {
-            FuncionEsquema funcionEsquema = funcionEsquemaServicio.obtener(1).orElse(null);
+            FuncionEsquemaResponse funcionEsquema = funcionEsquemaServicio.obtener(1).orElse(null);
 
             Assertions.assertEquals(1, funcionEsquema.getCodigo());
 
@@ -185,7 +183,7 @@ public class FuncionEsquemaServicioTest {
     public void listar() {
 
         try {
-            List<FuncionEsquema> lista = funcionEsquemaServicio.listar();
+            List<FuncionEsquemaResponse> lista = funcionEsquemaServicio.listar();
 
             Assertions.assertEquals(7, lista.size());
 

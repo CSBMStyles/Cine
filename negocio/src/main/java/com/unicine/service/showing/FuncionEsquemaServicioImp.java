@@ -13,10 +13,13 @@ import org.springframework.validation.annotation.Validated;
 import com.google.gson.Gson;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.FuncionEsquema;
-import com.unicine.repository.theater.DistribucionSillaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
+import com.unicine.repository.showing.FuncionRepo;
+import com.unicine.repository.theater.DistribucionSillaRepo;
+import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
+import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
+import com.unicine.transfer.mapper.FuncionEsquemaMapper;
 
-import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
@@ -27,13 +30,19 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
     // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final FuncionEsquemaRepo funcionEsquemaRepo;
 
+    private final FuncionEsquemaMapper funcionEsquemaMapper;
+
     private final DistribucionSillaRepo distribucionRepo;
+
+    private final FuncionRepo funcionRepo;
 
     private final Gson gson = new Gson();
 
-    public FuncionEsquemaServicioImp(FuncionEsquemaRepo funcionEsquemaRepo, DistribucionSillaRepo distribucionRepo) {
+    public FuncionEsquemaServicioImp(FuncionEsquemaRepo funcionEsquemaRepo, FuncionEsquemaMapper funcionEsquemaMapper, DistribucionSillaRepo distribucionRepo, FuncionRepo funcionRepo) {
         this.funcionEsquemaRepo = funcionEsquemaRepo;
+        this.funcionEsquemaMapper = funcionEsquemaMapper;
         this.distribucionRepo = distribucionRepo;
+        this.funcionRepo = funcionRepo;
     }
 
     // SECTION: Metodos de soporte
@@ -104,46 +113,71 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
         }
    }
 
+    /**
+     * Método para cargar la función real asociada al esquema.
+     * @param funcionCodigo
+     * @return función gestionada por JPA
+     */
+    private Funcion cargarFuncion(Integer funcionCodigo) throws Exception {
+
+        return funcionRepo.findById(funcionCodigo)
+                .orElseThrow(() -> new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND));
+    }
+
     // SECTION: Implementacion de servicios
 
     // 1️⃣ Funcion del Administrador
 
     @Override
-    public FuncionEsquema registrar(@Valid FuncionEsquema funcionEsquema) throws Exception { 
+    public FuncionEsquemaResponse registrar(FuncionEsquemaRequest request) throws Exception { 
         
+        FuncionEsquema funcionEsquema = funcionEsquemaMapper.toEntity(request);
+        funcionEsquema.setFuncion(cargarFuncion(request.getFuncionCodigo()));
+
         reemplazarDatos(obtenerEsquema(funcionEsquema.getFuncion()), funcionEsquema);
 
-        return funcionEsquemaRepo.save(funcionEsquema); 
+        return funcionEsquemaMapper.toResponse(funcionEsquemaRepo.save(funcionEsquema));
     }
 
     @Override
-    public FuncionEsquema actualizar(@Valid FuncionEsquema funcionEsquema) throws Exception { 
+    public FuncionEsquemaResponse actualizar(FuncionEsquemaRequest request) throws Exception { 
         
-        reemplazarDatos(funcionEsquema.getEsquemaTemporal(), funcionEsquema);
+        Optional<FuncionEsquema> existente = funcionEsquemaRepo.findById(request.getCodigo());
+        validarExiste(existente);
 
-        return funcionEsquemaRepo.save(funcionEsquema); 
+        FuncionEsquema actual = existente.get();
+        actual.setEsquemaTemporal(request.getEsquemaTemporal());
+        actual.setOcupadas(request.getOcupadas());
+        actual.setDisponibles(request.getDisponibles());
+        actual.setMantenimiento(request.getMantenimiento());
+
+        reemplazarDatos(actual.getEsquemaTemporal(), actual);
+
+        return funcionEsquemaMapper.toResponse(funcionEsquemaRepo.save(actual));
     }
 
     @Override
-    public void eliminar(@Valid FuncionEsquema eliminado, boolean confirmacion) throws Exception { 
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception { 
         
         comprobarConfirmacion(confirmacion);
 
-        funcionEsquemaRepo.delete(eliminado);
+        Optional<FuncionEsquema> buscado = funcionEsquemaRepo.findById(codigo);
+        validarExiste(buscado);
+        funcionEsquemaRepo.delete(buscado.get());
     }
 
     // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la funcionEsquema usando las anotaciones para validar
 
     @Override
-    public Optional<FuncionEsquema> obtener(Integer codigo) throws Exception {
+    public Optional<FuncionEsquemaResponse> obtener(Integer codigo) throws Exception {
 
         Optional<FuncionEsquema> buscado = funcionEsquemaRepo.findById(codigo);
 
         validarExiste(buscado);
 
-        return buscado;
+        return buscado.map(funcionEsquemaMapper::toResponse);
     }
 
     @Override
-    public List<FuncionEsquema> listar() { return funcionEsquemaRepo.findAll(); }
+    public List<FuncionEsquemaResponse> listar() { return funcionEsquemaMapper.toResponseList(funcionEsquemaRepo.findAll()); }
 }
