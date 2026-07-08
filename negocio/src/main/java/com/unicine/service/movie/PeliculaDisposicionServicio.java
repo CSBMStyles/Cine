@@ -3,35 +3,51 @@ package com.unicine.service.movie;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.movie.PeliculaDisposicion;
-import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
+import com.unicine.transfer.dto.request.PeliculaDisposicionRequest;
+import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
 import com.unicine.enums.movie.EstadoPelicula;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface PeliculaDisposicionServicio {
 
     // 1️⃣ Funciones del Administrador
 
-    PeliculaDisposicion registrar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception;
+    PeliculaDisposicionResponse registrar(@Valid PeliculaDisposicionRequest request) throws Exception;
 
-    PeliculaDisposicion actualizar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception;
+    PeliculaDisposicionResponse actualizar(@Valid PeliculaDisposicionRequest request) throws Exception;
 
     void actualizarEstadoPeliculas();
 
-    void eliminar(@Valid PeliculaDisposicion peliculaDisposicion, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer peliculaCodigo,
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer ciudadCodigo,
+            boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Generales
 
-    Optional<PeliculaDisposicion> obtener(@Valid PeliculaDisposicionCompuesta codigo) throws Exception;
+    Optional<PeliculaDisposicionResponse> obtener(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer peliculaCodigo,
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer ciudadCodigo) throws Exception;
 
-    List<PeliculaDisposicion> listar();
+    List<PeliculaDisposicionResponse> listar();
 
-    List<PeliculaDisposicion> listarRecomendacionPeliculaEstado(PeliculaDisposicion peliculaDisposicion, EstadoPelicula estadoPelicula);
+    List<PeliculaDisposicionResponse> listarRecomendacionPeliculaEstado(@Valid PeliculaDisposicionRequest request, EstadoPelicula estadoPelicula);
 
-    List<PeliculaDisposicion> listarPaginado();
+    List<PeliculaDisposicionResponse> listarPaginado();
 
-    List<PeliculaDisposicion> listarAscendente();
+    List<PeliculaDisposicionResponse> listarAscendente();
 
-    List<PeliculaDisposicion> listarDescendente();
+    List<PeliculaDisposicionResponse> listarDescendente();
 }

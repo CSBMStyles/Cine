@@ -22,10 +22,10 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.entity.image.Imagen;
 import com.unicine.entity.movie.Pelicula;
+import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.repository.user.ClienteRepo;
 import com.unicine.service.confiteria.ConfiteriaServicio;
 import com.unicine.service.image.ImagenServicio;
-import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;
 
@@ -49,7 +49,7 @@ public class ImagenServicioTest {
     private ClienteRepo clienteRepo;
 
     @Autowired
-    private PeliculaServicio peliculaServicio;
+    private PeliculaRepo peliculaRepo;
 
     @Autowired
     private ConfiteriaServicio confiteriaServicio;
@@ -170,7 +170,7 @@ public class ImagenServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(5).orElse(null);
+            pelicula = peliculaRepo.findById(5).orElse(null);
             
             Assertions.assertNotNull(pelicula, "La película no debe ser nula");
             
@@ -567,7 +567,7 @@ public class ImagenServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(5).orElse(null);
+            pelicula = peliculaRepo.findById(5).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());

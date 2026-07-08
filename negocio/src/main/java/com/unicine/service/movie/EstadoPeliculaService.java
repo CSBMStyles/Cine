@@ -7,6 +7,7 @@ import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.event.movie.PeliculaStateChangeEvent;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
+import com.unicine.transfer.dto.request.HistorialEstadoPeliculaRequest;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
@@ -77,12 +78,13 @@ public class EstadoPeliculaService {
             eventPublisher.publishEvent(evento);
 
             // Registrar en historial
-            historialServicio.registrar(
-                actualizada.getPelicula().getCodigo(),
-                actualizada.getCiudad().getCodigo(),
-                estadoActual,
-                nuevoEstado
-            );
+            historialServicio.registrar(HistorialEstadoPeliculaRequest.builder()
+                    .peliculaCodigo(actualizada.getPelicula().getCodigo())
+                    .ciudadCodigo(actualizada.getCiudad().getCodigo())
+                    .estadoAnterior(estadoActual)
+                    .estadoNuevo(nuevoEstado)
+                    .fechaCambio(LocalDateTime.now(ZoneId.of("America/Bogota")))
+                    .build());
 
             return actualizada;
         }

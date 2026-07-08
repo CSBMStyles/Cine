@@ -10,8 +10,9 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.repository.movie.PeliculaRepo;
-
-import jakarta.validation.Valid;
+import com.unicine.transfer.dto.request.PeliculaRequest;
+import com.unicine.transfer.dto.response.PeliculaResponse;
+import com.unicine.transfer.mapper.PeliculaMapper;
 import com.unicine.util.validation.catalog.domain.MovieErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
@@ -19,20 +20,16 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class PeliculaServicioImp implements PeliculaServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final PeliculaRepo peliculaRepo;
+    private final PeliculaMapper peliculaMapper;
 
-
-    public PeliculaServicioImp(PeliculaRepo peliculaRepo) {
+    public PeliculaServicioImp(PeliculaRepo peliculaRepo, PeliculaMapper peliculaMapper) {
         this.peliculaRepo = peliculaRepo;
+        this.peliculaMapper = peliculaMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la presencia del pelicula que se esta buscando
-     * @param pelicula
-     */
     private void validarExiste(Optional<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
@@ -40,10 +37,6 @@ public class PeliculaServicioImp implements PeliculaServicio {
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia la lista de peliculas que se esta buscando
-     * @param pelicula
-     */
     private void validarExiste(List<Pelicula> pelicula) throws Exception {
 
         if (pelicula.isEmpty()) {
@@ -51,112 +44,119 @@ public class PeliculaServicioImp implements PeliculaServicio {
         }
     }
 
-    /**
-     * Método que verifica si existe un pelicula con el mismo nombre
-     * @param pelicula
-     */
     private void validarExisteNombre(Pelicula pelicula) throws Exception {
 
         Optional<Pelicula> existe = peliculaRepo.obtenerPeliculaNombre(pelicula.getNombre());
-       
+
         if (existe.isPresent()) {
             throw new RuntimeException(MovieErrorCatalog.DOMAIN_MOVIE_DUPLICATE_MOVIE_ALREADY_EXISTS.getMessage());
         }
     }
 
-    /**
-     * Método que verifica si existe un pelicula con el mismo nombre adicional se excluye el pelicula que se esta actualizando
-     * @param pelicula
-     */
     private void validarRepiteNombre(Pelicula pelicula) throws Exception {
 
         Optional<Pelicula> existe = peliculaRepo.obtenerNombreExcluido(pelicula.getNombre(), pelicula.getCodigo());
-       
+
         if (existe.isPresent()) {
             throw new RuntimeException(MovieErrorCatalog.DOMAIN_MOVIE_DUPLICATE_MOVIE_NAME_ALREADY_EXISTS.getMessage());
         }
     }
 
-    /**
-     * Metodo para validar la confirmacion de la eliminacion
-     * @param confirmacion
-     */
     private void comprobarConfirmacion(boolean confirmacion) throws Exception {
 
         if (!confirmacion) {
             throw new RuntimeException("La eliminación no fue confirmada");
         }
-   }
+    }
+
+    private void copiarPelicula(Pelicula origen, Pelicula destino) {
+        destino.setGeneros(origen.getGeneros());
+        destino.setNombre(origen.getNombre());
+        destino.setRepartos(origen.getRepartos());
+        destino.setSinopsis(origen.getSinopsis());
+        destino.setUrlTrailer(origen.getUrlTrailer());
+        destino.setPuntuacion(origen.getPuntuacion());
+        destino.setRestriccionEdad(origen.getRestriccionEdad());
+    }
 
     // SECTION: Implementacion de servicios
 
-    // 1️⃣ Funciones del Administrador
-
     @Override
-    public Pelicula registrar(@Valid Pelicula pelicula) throws Exception { 
+    public PeliculaResponse registrar(PeliculaRequest request) throws Exception {
+
+        Pelicula pelicula = peliculaMapper.toEntity(request);
 
         validarExisteNombre(pelicula);
 
-        return peliculaRepo.save(pelicula);
+        return peliculaMapper.toResponse(peliculaRepo.save(pelicula));
     }
 
     @Override
-    public Pelicula actualizar(@Valid Pelicula pelicula) throws Exception {
+    public PeliculaResponse actualizar(PeliculaRequest request) throws Exception {
 
-        validarRepiteNombre(pelicula);
+        Pelicula pelicula = peliculaMapper.toEntity(request);
 
-        return peliculaRepo.save(pelicula);
+        Optional<Pelicula> existente = peliculaRepo.findById(pelicula.getCodigo());
+        validarExiste(existente);
+
+        Pelicula actual = existente.get();
+        copiarPelicula(pelicula, actual);
+
+        validarRepiteNombre(actual);
+
+        return peliculaMapper.toResponse(peliculaRepo.save(actual));
     }
 
     @Override
-    public void eliminar(@Valid Pelicula eliminado, boolean confirmacion) throws Exception { 
-        
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception {
+
         comprobarConfirmacion(confirmacion);
 
-        peliculaRepo.delete(eliminado);
+        Optional<Pelicula> buscado = peliculaRepo.findById(codigo);
+        validarExiste(buscado);
+        peliculaRepo.delete(buscado.get());
     }
 
-    // *️⃣ Funciones Generales
-
     @Override
-    public Optional<Pelicula> obtener(Integer codigo) throws Exception {
+    public Optional<PeliculaResponse> obtener(Integer codigo) throws Exception {
 
         Optional<Pelicula> buscado = peliculaRepo.findById(codigo);
 
         validarExiste(buscado);
 
-        return buscado;
+        return buscado.map(peliculaMapper::toResponse);
     }
 
     @Override
-    public List<Pelicula> obtenerNombrePeliculas(String nombre) throws Exception {
+    public List<PeliculaResponse> obtenerNombrePeliculas(String nombre) throws Exception {
 
         List<Pelicula> peliculas = peliculaRepo.buscarNombres(nombre);
 
         validarExiste(peliculas);
 
-        return peliculas; 
-    }
-
-
-    @Override
-    public List<Pelicula> listar() { return peliculaRepo.findAll(); }
-
-    @Override
-    public List<Pelicula> listarPaginado() { 
-
-        return peliculaRepo.findAll(PageRequest.of(0, 10)).toList();
+        return peliculaMapper.toResponseList(peliculas);
     }
 
     @Override
-    public List<Pelicula> listarAscendente() { 
-        
-        return peliculaRepo.findAll(Sort.by("codigo").ascending());
+    public List<PeliculaResponse> listar() {
+        return peliculaMapper.toResponseList(peliculaRepo.findAll());
     }
 
     @Override
-    public List<Pelicula> listarDescendente() { 
-        
-        return peliculaRepo.findAll(Sort.by("codigo").descending());
+    public List<PeliculaResponse> listarPaginado() {
+
+        return peliculaMapper.toResponseList(peliculaRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    @Override
+    public List<PeliculaResponse> listarAscendente() {
+
+        return peliculaMapper.toResponseList(peliculaRepo.findAll(Sort.by("codigo").ascending()));
+    }
+
+    @Override
+    public List<PeliculaResponse> listarDescendente() {
+
+        return peliculaMapper.toResponseList(peliculaRepo.findAll(Sort.by("codigo").descending()));
     }
 }

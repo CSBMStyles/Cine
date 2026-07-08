@@ -12,10 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.movie.Pelicula;
 import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.image.ImageKitService;
+import com.unicine.transfer.dto.request.PeliculaRequest;
+import com.unicine.transfer.dto.response.PeliculaResponse;
 
 import io.imagekit.sdk.models.results.ResultList;
 
@@ -46,12 +47,20 @@ public class PeliculaServicioTest {
         repartos.put("Director", "Damien Leone");
         repartos.put("Terrifier", "David Howard");
         repartos.put("Tara", "Jenna Kanell");
-        
-        Pelicula pelicula = new Pelicula(generos, "Terrifier", repartos, "En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.", "https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz", 3.9, 18);
+
+        PeliculaRequest request = PeliculaRequest.builder()
+                .generos(generos)
+                .nombre("Terrifier")
+                .repartos(repartos)
+                .sinopsis("En la noche de Halloween, tras una fiesta, Tara y Dawn entran en una pizzería. Tras ellas llega un payaso inquietante y grotesco que hiela la sangre a Tara. Las chicas no tardan en descubrir que es un psicópata sádico que pretende matarlas.")
+                .urlTrailer("https://youtu.be/UOrNESb8T4I?si=lMhpWAgNXeelOsrz")
+                .puntuacion(3.9)
+                .restriccionEdad(18)
+                .build();
 
         try {
-            Pelicula nuevo = peliculaServicio.registrar(pelicula);
-            
+            PeliculaResponse nuevo = peliculaServicio.registrar(request);
+
             Assertions.assertEquals("Terrifier", nuevo.getNombre());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
@@ -70,30 +79,37 @@ public class PeliculaServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
+        PeliculaResponse existente;
 
-        Pelicula pelicula;
-
-        try{
-            pelicula = peliculaServicio.obtener(1).orElse(null);
+        try {
+            existente = peliculaServicio.obtener(1).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         // Variables que el usuario modifica
-        pelicula.setRestriccionEdad(20);
-        pelicula.getGeneros().add(GeneroPelicula.TERROR);
+        List<GeneroPelicula> generos = new ArrayList<>(existente.getGeneros());
+        generos.add(GeneroPelicula.TERROR);
 
-        System.out.println(pelicula.getImagenes());
+        PeliculaRequest request = PeliculaRequest.builder()
+                .codigo(existente.getCodigo())
+                .generos(generos)
+                .nombre(existente.getNombre())
+                .repartos(existente.getRepartos())
+                .sinopsis(existente.getSinopsis())
+                .urlTrailer(existente.getUrlTrailer())
+                .puntuacion(existente.getPuntuacion())
+                .restriccionEdad(20)
+                .build();
+
+        System.out.println(existente.getImagenes());
 
         try {
 
-            Pelicula actualizado = peliculaServicio.actualizar(pelicula);
+            PeliculaResponse actualizado = peliculaServicio.actualizar(request);
 
             Assertions.assertEquals(20, actualizado.getRestriccionEdad());
 
@@ -112,7 +128,7 @@ public class PeliculaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarImagenes() {
-        
+
         try {
             ResultList result = imageKitService.listarImagenes("unicine/peliculas/Pinocho");
 
@@ -123,10 +139,7 @@ public class PeliculaServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
     }
 
@@ -136,20 +149,8 @@ public class PeliculaServicioTest {
 
         Integer codigo = 1;
 
-        Pelicula pelicula;
-
         try {
-            pelicula = peliculaServicio.obtener(codigo).orElse(null);
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
-
-        try {
-            peliculaServicio.eliminar(pelicula, true);
+            peliculaServicio.eliminar(codigo, true);
 
         } catch (Exception e) {
 
@@ -180,7 +181,7 @@ public class PeliculaServicioTest {
         Integer codigo = 1;
 
         try {
-            Pelicula pelicula = peliculaServicio.obtener(codigo).orElse(null);
+            PeliculaResponse pelicula = peliculaServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, pelicula.getCodigo());
 
@@ -203,7 +204,7 @@ public class PeliculaServicioTest {
         String nombre = "P";
 
         try {
-            List<Pelicula> peliculas = peliculaServicio.obtenerNombrePeliculas(nombre);
+            List<PeliculaResponse> peliculas = peliculaServicio.obtenerNombrePeliculas(nombre);
 
             Assertions.assertEquals(2, peliculas.size());
 
@@ -226,7 +227,7 @@ public class PeliculaServicioTest {
     public void listar() {
 
         try {
-            List<Pelicula> lista = peliculaServicio.listar();
+            List<PeliculaResponse> lista = peliculaServicio.listar();
 
             Assertions.assertEquals(5, lista.size());
 
@@ -243,6 +244,4 @@ public class PeliculaServicioTest {
             throw new RuntimeException(e);
         }
     }
-
-
 }
