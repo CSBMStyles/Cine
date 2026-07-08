@@ -10,41 +10,38 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Administrador;
 import com.unicine.repository.user.AdministradorRepo;
-import com.unicine.util.validation.group.OnCreate;
-import com.unicine.util.validation.group.OnUpdate;
-
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
-import jakarta.validation.Validator;
+import com.unicine.transfer.dto.request.AdministradorRequest;
+import com.unicine.transfer.dto.response.AdministradorResponse;
+import com.unicine.transfer.mapper.AdministradorMapper;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
+import com.unicine.util.validation.group.OnCreate;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.exception.ValidationException;
 import com.unicine.exception.AuthenticationException;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
+
 @Service
 @Validated
-public class AdministradorServicioImp implements PersonaServicio<Administrador> {
+public class AdministradorServicioImp implements AdministradorServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final AdministradorRepo administradorRepo;
 
-    // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
+    private final AdministradorMapper administradorMapper;
+
     private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
 
     private final Validator validator;
 
-    public AdministradorServicioImp(AdministradorRepo administradorRepo, Validator validator) {
+    public AdministradorServicioImp(AdministradorRepo administradorRepo, AdministradorMapper administradorMapper, Validator validator) {
         this.administradorRepo = administradorRepo;
+        this.administradorMapper = administradorMapper;
         this.validator = validator;
     }
 
      // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la autenticacion de un administrador
-     * @param numero
-     * @throws
-     */
     private Administrador comprobarAutenticacion(String correo, String password) throws Exception {
 
         Optional<Administrador> administrador = administradorRepo.findByCorreo(correo);
@@ -60,11 +57,6 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         return administrador.get();
     }
 
-    /**
-     * Metodo para comprobar la presencia del administrador que se esta buscando
-     * @param numero
-     * @throws
-     */
     private void validarExiste(Optional<Administrador> administrador) throws Exception {
 
         if (administrador.isEmpty()) {
@@ -72,11 +64,6 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia de una cedula en la base de datos
-     * @param numero
-     * @throws
-     */
     private void validarExisteCedula(Integer numero) throws Exception {
 
         Optional<Administrador> existe = administradorRepo.findById(numero);
@@ -86,11 +73,6 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         }
     }
 
-    /**
-     * Método que verifica si el correo ya esta registrado
-     * @param correo
-     * @return si existe el correo devuelve true, de lo contrario false
-     */
     private void validarExisteCorreo(String correo) {
 
         Optional<Administrador> existe = administradorRepo.findByCorreo(correo);
@@ -100,12 +82,6 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         }
     }
 
-    /**
-     * Método que verifica si existe un administrador con el mismo correo mediante la cedula, excluyendo el cliente que se esta actualizando, ya que se puede o no modificar la cedula
-     * @param correo
-     * @param cedula
-     * @return si existe el correo devuelve true, de lo contrario false
-     */
     private void validarRepiteCorreo(String correoModificar, Integer cedula) throws Exception {
 
         Optional<Administrador> existe = administradorRepo.buscarCorreoExcluido(correoModificar, cedula);
@@ -115,11 +91,6 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia de las relaciones del teatro
-     * @param teatro
-     * @throws
-     */
     private void comprobarConfirmacion(boolean confirmacion) {
 
         if (!confirmacion) {
@@ -127,15 +98,8 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
         }
    }
 
-    /**
-      * Metodo para encriptar la contraseña de un administrador
-     * @param administrador
-     */
     private void encriptar(Administrador administrador) { administrador.setPassword(encriptador.encryptPassword(administrador.getPassword())); }
 
-    /**
-     * Valida el administrador usando el grupo OnCreate para aplicar las restricciones de password en texto plano.
-     */
     private void validarParaRegistro(Administrador administrador) {
 
         var violaciones = validator.validate(administrador, OnCreate.class);
@@ -147,10 +111,8 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
 
     // SECTION: Metodos del servicio
 
-    // 1️⃣ Funciones del Administrador
-
     @Override
-    public Administrador login(@Valid String correo, String password) throws Exception {
+    public Administrador login(String correo, String password) throws Exception {
 
         Administrador administrador = comprobarAutenticacion(correo, password);
 
@@ -158,7 +120,9 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
     }
 
     @Override
-    public Administrador registrar(@Validated(OnCreate.class) Administrador administrador) throws Exception {
+    public AdministradorResponse registrar(AdministradorRequest request) throws Exception {
+
+        Administrador administrador = administradorMapper.toEntity(request);
 
         validarParaRegistro(administrador);
         
@@ -169,69 +133,65 @@ public class AdministradorServicioImp implements PersonaServicio<Administrador> 
 
         Administrador registro = administradorRepo.save(administrador);
 
-        /* AES256TextEncryptor textEncryptor = new AES256TextEncryptor();
-        textEncryptor.setPassword("teclado");
-
-        LocalDateTime ldt = LocalDateTime.now();
-        ZonedDateTime zdt = ldt.atZone(ZoneId.of("America/Bogota"));
-
-        String param1 = textEncryptor.encrypt(registro.getCorreo());
-        String param2 = textEncryptor.encrypt(""+zdt.toInstant().toEpochMilli());
-
-        emailServicio.enviarEmail("Registro en unicine", "Por favor acceda al siguiente enlace para activar la cuenta: http://localhost:8080/activar_cuenta.xhtml?p1="+param1+"&p2="+param2, administrador.getCorreo()); */
-        return registro;
+        return administradorMapper.toResponse(registro);
     }
 
     @Override
-    public Administrador actualizar(@Validated(OnUpdate.class) Administrador administrador) throws Exception {
+    public AdministradorResponse actualizar(AdministradorRequest request) throws Exception {
 
-        validarRepiteCorreo(administrador.getCorreo(), administrador.getCedula());
+        validarRepiteCorreo(request.getCorreo(), request.getCedula());
+
+        Administrador administrador = administradorMapper.toEntity(request);
         
+        Administrador actualizado = administradorRepo.save(administrador);
+
+        return administradorMapper.toResponse(actualizado);
+    }
+
+    @Override
+    public Administrador cambiarPassword(Administrador administrador, String passwordActual, String passwordNuevo) throws Exception {
+        
+        if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
+        }
+
+        if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT);
+        }
+
+        administrador.setPassword(passwordNuevo);
+        validarParaRegistro(administrador);
+        encriptar(administrador);
+
         return administradorRepo.save(administrador);
     }
 
     @Override
-    public Administrador cambiarPassword(@Validated(OnCreate.class) Administrador administrador, String passwordActual, String passwordNuevo) throws Exception {
-        
-    // 2. Verificar que el password actual es correcto
-    if (!encriptador.checkPassword(passwordActual, administrador.getPassword())) {
-        throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
-    }
-
-    // 3. Verificar que el nuevo password sea diferente al actual
-    if (encriptador.checkPassword(passwordNuevo, administrador.getPassword())) {
-        throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT);
-    }
-
-    administrador.setPassword(passwordNuevo);
-    validarParaRegistro(administrador);
-    encriptar(administrador);
-
-    return administradorRepo.save(administrador);
-}
-
-    @Override
-    public void eliminar(@Valid Administrador administrador, boolean confirmacion) throws Exception {
+    public void eliminar(Integer cedula, boolean confirmacion) throws Exception {
 
         comprobarConfirmacion(confirmacion);
-
-        administradorRepo.delete(administrador);
-    }
-
-    @Override
-    public Optional<Administrador> obtener(Integer cedula) throws Exception {
 
         Optional<Administrador> buscado = administradorRepo.findById(cedula);
 
         validarExiste(buscado);
 
-        return buscado;
+        administradorRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Administrador> listar() {
+    public Optional<AdministradorResponse> obtener(Integer cedula) throws Exception {
 
-        return administradorRepo.findAll();
+        Optional<Administrador> buscado = administradorRepo.findById(cedula);
+
+        validarExiste(buscado);
+
+        return buscado.map(administradorMapper::toResponse);
+    }
+
+    @Override
+    public List<AdministradorResponse> listar() {
+
+        return administradorMapper.toResponseList(administradorRepo.findAll());
     }
 
 }

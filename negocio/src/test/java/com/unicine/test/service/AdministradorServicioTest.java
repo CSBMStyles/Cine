@@ -13,7 +13,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.user.Administrador;
-import com.unicine.service.user.PersonaServicio;
+import com.unicine.repository.user.AdministradorRepo;
+import com.unicine.service.user.AdministradorServicio;
+import com.unicine.transfer.dto.request.AdministradorRequest;
+import com.unicine.transfer.dto.response.AdministradorResponse;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -24,7 +27,10 @@ import jakarta.validation.ConstraintViolationException;
 public class AdministradorServicioTest {
 
     @Autowired
-    private PersonaServicio<Administrador> administradorServicio;
+    private AdministradorServicio administradorServicio;
+
+    @Autowired
+    private AdministradorRepo administradorRepo;
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -51,13 +57,18 @@ public class AdministradorServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        Administrador administrador = new Administrador(1002000000, "Camilo", "Esprada", "camilo@gmail.com", "Abc12345!");
+        AdministradorRequest request = AdministradorRequest.builder()
+            .cedula(1002000000)
+            .nombre("Camilo")
+            .apellido("Esprada")
+            .correo("camilo@gmail.com")
+            .password("Abc12345!")
+            .build();
 
         try {
-            Administrador nuevo = administradorServicio.registrar(administrador);
+            AdministradorResponse nuevo = administradorServicio.registrar(request);
             
             Assertions.assertEquals(1002000000, nuevo.getCedula());
-            Assertions.assertNotEquals("Abc12345!", nuevo.getPassword());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
@@ -83,17 +94,22 @@ public class AdministradorServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrarContraseñaInvalida(String password) {
 
-        Administrador administrador = new Administrador(1002000011, "Camilo", "Esprada", "camilo2@gmail.com", password);
+        AdministradorRequest request = AdministradorRequest.builder()
+            .cedula(1002000011)
+            .nombre("Camilo")
+            .apellido("Esprada")
+            .correo("camilo2@gmail.com")
+            .password(password)
+            .build();
 
         ConstraintViolationException excepcion = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            administradorServicio.registrar(administrador);
+            administradorServicio.registrar(request);
         });
 
-        // Recorre los errores de validacion, le pone un formato y luego los imprime en consola para verificar los errores
         String errores = excepcion.getConstraintViolations().stream()
             .map(v -> "→ " + v.getMessage()).collect(Collectors.joining("\n"));
 
-        System.out.println("Errores de validación: '" + password + "':\n" + errores);
+        System.out.println("Errores de validación: '" + password + ":\n" + errores);
 
         Assertions.assertFalse(excepcion.getConstraintViolations().isEmpty());
 
@@ -117,7 +133,7 @@ public class AdministradorServicioTest {
 
         Assertions.assertTrue(
             excepcion.getConstraintViolations().stream().anyMatch(v ->
-                "password".equals(v.getPropertyPath().toString()) && v.getMessage().contains(mensajeEsperado)
+                v.getPropertyPath().toString().endsWith("password") && v.getMessage().contains(mensajeEsperado)
             )
         );
     }
@@ -126,10 +142,16 @@ public class AdministradorServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrarRepetido() {
 
-        Administrador administrador = new Administrador(1001000000, "Camilo", "Esprada", "camilo@gmail.com", "78!Kz9'Aovr1>`A5");
+        AdministradorRequest request = AdministradorRequest.builder()
+            .cedula(1001000000)
+            .nombre("Camilo")
+            .apellido("Esprada")
+            .correo("camilo@gmail.com")
+            .password("78!Kz9'Aovr1>`A5")
+            .build();
 
         try {
-            administradorServicio.registrar(administrador);
+            administradorServicio.registrar(request);
             
             Assertions.assertTrue(false);
 
@@ -144,13 +166,19 @@ public class AdministradorServicioTest {
     public void actualizar() {
 
         try{
-            Administrador administrador = administradorServicio.obtener(1001000000).orElse(null);
+            AdministradorResponse existente = administradorServicio.obtener(1001000000).orElse(null);
 
-            administrador.setNombre("Roberto");
+            Assertions.assertNotNull(existente);
 
-            System.out.println("Contrasena del administrador: " + administrador.getPassword());
+            AdministradorRequest request = AdministradorRequest.builder()
+                .cedula(existente.getCedula())
+                .nombre("Roberto")
+                .apellido(existente.getApellido())
+                .correo(existente.getCorreo())
+                .password("78!Kz9'Aovr1>`A5")
+                .build();
 
-            Administrador actualizado = administradorServicio.actualizar(administrador);
+            AdministradorResponse actualizado = administradorServicio.actualizar(request);
 
             Assertions.assertEquals("Roberto", actualizado.getNombre());
 
@@ -173,7 +201,9 @@ public class AdministradorServicioTest {
         Administrador administrador;
 
         try{
-            administrador = administradorServicio.obtener(1001000000).orElse(null);
+            administrador = administradorRepo.findById(1001000000).orElse(null);
+
+            Assertions.assertNotNull(administrador);
 
         } catch (Exception e) {
 
@@ -219,10 +249,8 @@ public class AdministradorServicioTest {
         
         Integer cedula = 1001000000;
 
-        Administrador administrador;
-
         try {
-            administrador = administradorServicio.obtener(cedula).orElse(null);
+            AdministradorResponse administrador = administradorServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, administrador.getCedula());
 
@@ -235,7 +263,7 @@ public class AdministradorServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            administradorServicio.eliminar(administrador, true);
+            administradorServicio.eliminar(cedula, true);
 
         } catch (Exception e) {
 
@@ -264,7 +292,7 @@ public class AdministradorServicioTest {
     public void obtener() {
 
         try {
-            Administrador administrador = administradorServicio.obtener(1001000000).orElse(null);
+            AdministradorResponse administrador = administradorServicio.obtener(1001000000).orElse(null);
 
             Assertions.assertEquals(1001000000, administrador.getCedula());
 
@@ -285,7 +313,7 @@ public class AdministradorServicioTest {
     public void listar() {
 
         try {
-            List<Administrador> lista = administradorServicio.listar();
+            List<AdministradorResponse> lista = administradorServicio.listar();
 
             Assertions.assertEquals(1, lista.size());
 

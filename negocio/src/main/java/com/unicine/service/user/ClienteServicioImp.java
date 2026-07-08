@@ -12,42 +12,39 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Cliente;
 import com.unicine.repository.user.ClienteRepo;
-import com.unicine.util.validation.group.OnCreate;
-import com.unicine.util.validation.group.OnUpdate;
-
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
-import jakarta.validation.Validator;
+import com.unicine.transfer.dto.request.ClienteRequest;
+import com.unicine.transfer.dto.response.ClienteResponse;
+import com.unicine.transfer.mapper.ClienteMapper;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
+import com.unicine.util.validation.group.OnCreate;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.exception.ValidationException;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.AuthenticationException;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
+
 @Service
 @Validated
-public class ClienteServicioImp implements PersonaServicio<Cliente> {
+public class ClienteServicioImp implements ClienteServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final ClienteRepo clienteRepo;
 
-    // Instanciamos el encriptador en este punto para no tener que instanciarlo cada vez que se usalo en los metodos que lo usan
+    private final ClienteMapper clienteMapper;
+
     private final PasswordEncryptor encriptador = new StrongPasswordEncryptor();
 
     private final Validator validator;
 
-    public ClienteServicioImp(ClienteRepo clienteRepo, Validator validator) {
+    public ClienteServicioImp(ClienteRepo clienteRepo, ClienteMapper clienteMapper, Validator validator) {
         this.clienteRepo = clienteRepo;
+        this.clienteMapper = clienteMapper;
         this.validator = validator;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la autenticacion de un cliente
-     * @param numero
-     * @throws
-     */
     private Cliente comprobarAutenticacion(String correo, String password) throws Exception {
 
         Optional<Cliente> cliente = clienteRepo.findByCorreo(correo);
@@ -63,11 +60,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         return cliente.get();
     }
 
-    /**
-     * Metodo para comprobar la presencia del cliente que se esta buscando
-     * @param numero
-     * @throws
-     */
     private void validarExiste(Optional<Cliente> cliente) throws Exception {
 
         if (cliente.isEmpty()) {
@@ -75,11 +67,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia de una cedula en la base de datos
-     * @param numero
-     * @throws
-     */
     private void validarExisteCedula(Integer numero) throws Exception {
 
         Optional<Cliente> existe = clienteRepo.findById(numero);
@@ -89,11 +76,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
-    /**
-     * Método que verifica si el correo ya esta registrado
-     * @param correo
-     * @return si existe el correo devuelve true, de lo contrario false
-     */
     private void validarExisteCorreo(String correo) {
 
         Optional<Cliente> existe = clienteRepo.findByCorreo(correo);
@@ -103,11 +85,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
-    /**
-     * Método que verifica si existe un cliente con el mismo correo mediante la cedula, excluyendo el cliente que se esta actualizando, ya que se puede o no modificar la cedula
-     * @param cliente
-     * @return si existe el correo devuelve true, de lo contrario false
-     */
     private void validarRepiteCorreo(String correoModificar, Integer cedula) throws Exception {
 
         Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedula);
@@ -117,10 +94,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
-    /**
-     * Método comprueba la edad de la persona que crea la cuenta
-     * @param fecha
-     */
     public void validarEdad(LocalDate fechaNacimiento) throws Exception {
 
         LocalDate fechaActual = LocalDate.now();
@@ -132,10 +105,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
-    /**
-     * Método para validar el estado de un cliente
-     * @param cliente
-     */
     public void validarEstado(Cliente cliente) throws Exception {
 
         if (!cliente.getEstado()) {
@@ -143,11 +112,6 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia de las relaciones del teatro
-     * @param teatro
-     * @throws
-     */
     private void comprobarConfirmacion(boolean confirmacion) {
 
         if (!confirmacion) {
@@ -155,15 +119,8 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
         }
    }
 
-    /**
-      * Metodo para encriptar la contraseña de un cliente
-     * @param cliente
-     */
     private void encriptar(Cliente cliente) { cliente.setPassword(encriptador.encryptPassword(cliente.getPassword())); }
 
-    /**
-     * Valida usando OnCreate para asegurar reglas de password en texto plano.
-     */
     private void validarParaRegistro(Cliente cliente) {
 
         var violaciones = validator.validate(cliente, OnCreate.class);
@@ -176,7 +133,7 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     // SECTION: Implementacion de servicios
 
     @Override
-    public Cliente login(@Valid String correo, String password) throws Exception {
+    public Cliente login(String correo, String password) throws Exception {
 
         Cliente cliente = comprobarAutenticacion(correo, password);
 
@@ -186,7 +143,9 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public Cliente registrar(@Validated(OnCreate.class) Cliente cliente) throws Exception {
+    public ClienteResponse registrar(ClienteRequest request) throws Exception {
+
+        Cliente cliente = clienteMapper.toEntity(request);
 
         validarParaRegistro(cliente);
 
@@ -198,29 +157,23 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
 
         Cliente registro = clienteRepo.save(cliente);
 
-        /* AES256TextEncryptor textEncryptor = new AES256TextEncryptor();
-        textEncryptor.setPassword("teclado");
-
-        LocalDateTime ldt = LocalDateTime.now();
-        ZonedDateTime zdt = ldt.atZone(ZoneId.of("America/Bogota"));
-
-        String param1 = textEncryptor.encrypt(registro.getCorreo());
-        String param2 = textEncryptor.encrypt(""+zdt.toInstant().toEpochMilli());
-
-        emailServicio.enviarEmail("Registro en unicine", "Por favor acceda al siguiente enlace para activar la cuenta: http://localhost:8080/activar_cuenta.xhtml?p1="+param1+"&p2="+param2, cliente.getCorreo()); */
-        return registro;
+        return clienteMapper.toResponse(registro);
     }
 
     @Override
-    public Cliente actualizar(@Validated(OnUpdate.class) Cliente cliente) throws Exception {
+    public ClienteResponse actualizar(ClienteRequest request) throws Exception {
 
-        validarRepiteCorreo(cliente.getCorreo(), cliente.getCedula());
+        validarRepiteCorreo(request.getCorreo(), request.getCedula());
 
-        return clienteRepo.save(cliente);
+        Cliente cliente = clienteMapper.toEntity(request);
+
+        Cliente actualizado = clienteRepo.save(cliente);
+
+        return clienteMapper.toResponse(actualizado);
     }
 
     @Override
-    public Cliente cambiarPassword(@Validated(OnCreate.class) Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
+    public Cliente cambiarPassword(Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
 
         if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
             throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
@@ -238,24 +191,28 @@ public class ClienteServicioImp implements PersonaServicio<Cliente> {
     }
 
     @Override
-    public void eliminar(@Valid Cliente cliente, boolean confirmacion) throws Exception {
+    public void eliminar(Integer cedula, boolean confirmacion) throws Exception {
 
         comprobarConfirmacion(confirmacion);
-
-        clienteRepo.delete(cliente);
-    }
-
-    @Override
-    public Optional<Cliente> obtener(Integer cedula) throws Exception {
 
         Optional<Cliente> buscado = clienteRepo.findById(cedula);
 
         validarExiste(buscado);
 
-        return buscado;
+        clienteRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Cliente> listar() { return clienteRepo.findAll(); }
+    public Optional<ClienteResponse> obtener(Integer cedula) throws Exception {
+
+        Optional<Cliente> buscado = clienteRepo.findById(cedula);
+
+        validarExiste(buscado);
+
+        return buscado.map(clienteMapper::toResponse);
+    }
+
+    @Override
+    public List<ClienteResponse> listar() { return clienteMapper.toResponseList(clienteRepo.findAll()); }
 
 }

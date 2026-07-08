@@ -22,10 +22,10 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.entity.image.Imagen;
 import com.unicine.entity.movie.Pelicula;
+import com.unicine.repository.user.ClienteRepo;
 import com.unicine.service.confiteria.ConfiteriaServicio;
 import com.unicine.service.image.ImagenServicio;
 import com.unicine.service.movie.PeliculaServicio;
-import com.unicine.service.user.PersonaServicio;
 import com.unicine.service.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;
 
@@ -46,7 +46,7 @@ public class ImagenServicioTest {
     private ImageKitService imagenKitIo;
 
     @Autowired
-    private PersonaServicio<Cliente> clienteServicio;
+    private ClienteRepo clienteRepo;
 
     @Autowired
     private PeliculaServicio peliculaServicio;
@@ -112,7 +112,7 @@ public class ImagenServicioTest {
         Cliente cliente;
 
         try {
-            cliente = clienteServicio.obtener(1005000055).orElse(null);
+            cliente = clienteRepo.findById(1005000055).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
