@@ -11,10 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.theater.Ciudad;
 import com.unicine.service.theater.CiudadServicio;
-
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+import com.unicine.transfer.dto.request.CiudadRequest;
+import com.unicine.transfer.dto.response.CiudadResponse;
 
 @SpringBootTest
 @Transactional
@@ -23,22 +22,20 @@ public class CiudadServicioTest {
     @Autowired
     private CiudadServicio ciudadServicio;
 
-    // 🟩
-
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
         String nombre = "Garzon";
 
-        Ciudad ciudad = new Ciudad(nombre);
+        CiudadRequest request = CiudadRequest.builder().nombre(nombre).build();
 
         try {
-            Ciudad nuevo = ciudadServicio.registrar(ciudad);
+            CiudadResponse response = ciudadServicio.registrar(request);
             
-            Assertions.assertEquals(nombre, nuevo.getNombre());
+            Assertions.assertEquals(nombre, response.getNombre());
 
-            System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
+            System.out.println("\n" + "Registro guardado:" + "\n" + response);
 
         } catch (Exception e) {
 
@@ -57,11 +54,12 @@ public class CiudadServicioTest {
         String nombre = "Cundinamarca";
 
         try{
-            Ciudad ciudad = ciudadServicio.obtener(1).orElse(null);
+            CiudadRequest request = CiudadRequest.builder()
+                    .codigo(1)
+                    .nombre(nombre)
+                    .build();
 
-            ciudad.setNombre(nombre);
-
-            Ciudad actualizado = ciudadServicio.actualizar(ciudad);
+            CiudadResponse actualizado = ciudadServicio.actualizar(request);
 
             Assertions.assertEquals(nombre, actualizado.getNombre());
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
@@ -82,20 +80,8 @@ public class CiudadServicioTest {
 
         Integer codigo = 1;
 
-        Ciudad ciudad;
-
         try {
-            ciudad = ciudadServicio.obtener(codigo).orElse(null);
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
-
-        try {
-            ciudadServicio.eliminar(ciudad);
+            ciudadServicio.eliminar(codigo);
 
         } catch (Exception e) {
 
@@ -112,7 +98,6 @@ public class CiudadServicioTest {
 
             System.out.println("Mensaje de error: " + e.getMessage());
 
-            // Realizamos una validacion de la prueba para aceptar que el ciudad fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -126,11 +111,11 @@ public class CiudadServicioTest {
         Integer codigo = 1;
 
         try {
-            Ciudad ciudad = ciudadServicio.obtener(codigo).orElse(null);
+            CiudadResponse response = ciudadServicio.obtener(codigo).orElse(null);
 
-            Assertions.assertEquals(codigo, ciudad.getCodigo());
+            Assertions.assertEquals(codigo, response.getCodigo());
 
-            System.out.println("\n" + "Registro encontrado:" + "\n" + ciudad);
+            System.out.println("\n" + "Registro encontrado:" + "\n" + response);
 
         } catch (Exception e) {
 
@@ -149,7 +134,7 @@ public class CiudadServicioTest {
         String nombre = "Bogota";
 
         try {
-            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(nombre);
+            List<CiudadResponse> ciudades = ciudadServicio.obtenerNombre(nombre);
 
             Assertions.assertEquals(1, ciudades.size());
 
@@ -172,7 +157,7 @@ public class CiudadServicioTest {
     public void listar() {
 
         try {
-            List<Ciudad> lista = ciudadServicio.listar();
+            List<CiudadResponse> lista = ciudadServicio.listar();
 
             Assertions.assertEquals(5, lista.size());
 
@@ -204,11 +189,12 @@ public class CiudadServicioTest {
     public void validacionNombre(String nombre) {
 
         try{
-            Ciudad ciudad = ciudadServicio.obtener(1).orElse(null);
+            CiudadRequest request = CiudadRequest.builder()
+                    .codigo(1)
+                    .nombre(nombre)
+                    .build();
 
-            ciudad.setNombre(nombre);
-
-            Ciudad actualizado = ciudadServicio.actualizar(ciudad);
+            CiudadResponse actualizado = ciudadServicio.actualizar(request);
 
             Assertions.assertEquals(nombre, actualizado.getNombre());
 
@@ -237,7 +223,7 @@ public class CiudadServicioTest {
         System.out.println("\n" + nombre);
 
         try {
-            List<Ciudad> ciudades = ciudadServicio.obtenerNombre(nombre);
+            List<CiudadResponse> ciudades = ciudadServicio.obtenerNombre(nombre);
 
             Assertions.assertEquals(1, ciudades.size());
 

@@ -10,6 +10,9 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Ciudad;
 import com.unicine.repository.theater.CiudadRepo;
+import com.unicine.transfer.dto.request.CiudadRequest;
+import com.unicine.transfer.dto.response.CiudadResponse;
+import com.unicine.transfer.mapper.CiudadMapper;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.domain.TheaterErrorCatalog;
@@ -19,20 +22,16 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class CiudadServicioImp implements CiudadServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final CiudadRepo ciudadRepo;
+    private final CiudadMapper ciudadMapper;
 
-    public CiudadServicioImp(CiudadRepo ciudadRepo) {
+    public CiudadServicioImp(CiudadRepo ciudadRepo, CiudadMapper ciudadMapper) {
         this.ciudadRepo = ciudadRepo;
+        this.ciudadMapper = ciudadMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la presencia del ciudad que se esta buscando
-     * @param ciudad
-     * @throws
-     */
     private void validarExiste(Optional<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
@@ -40,11 +39,6 @@ public class CiudadServicioImp implements CiudadServicio {
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia la lista de ciudades que se esta buscando
-     * @param ciudad
-     * @throws
-     */
     private void validarExiste(List<Ciudad> ciudad) throws Exception {
 
         if (ciudad.isEmpty()) {
@@ -55,53 +49,55 @@ public class CiudadServicioImp implements CiudadServicio {
     // SECTION: Implementacion de servicios
 
     @Override
-    public Ciudad registrar(@Valid Ciudad ciudad) throws Exception { return ciudadRepo.save(ciudad); }
+    public CiudadResponse registrar(@Valid CiudadRequest request) throws Exception {
+        Ciudad ciudad = ciudadMapper.toEntity(request);
+        return ciudadMapper.toResponse(ciudadRepo.save(ciudad));
+    }
 
     @Override
-    public Ciudad actualizar(@Valid Ciudad ciudad) throws Exception { return ciudadRepo.save(ciudad); }
+    public CiudadResponse actualizar(@Valid CiudadRequest request) throws Exception {
+        Ciudad ciudad = ciudadMapper.toEntity(request);
+        return ciudadMapper.toResponse(ciudadRepo.save(ciudad));
+    }
 
     @Override
-    public void eliminar(@Valid Ciudad eliminado) throws Exception { ciudadRepo.delete(eliminado); }
-
-    @Override
-    public Optional<Ciudad> obtener(Integer codigo) throws Exception {
-
+    public void eliminar(Integer codigo) throws Exception {
         Optional<Ciudad> buscado = ciudadRepo.findById(codigo);
-
         validarExiste(buscado);
-
-        return buscado;
+        ciudadRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Ciudad> obtenerNombre(String nombre) throws Exception { 
+    public Optional<CiudadResponse> obtener(Integer codigo) throws Exception {
+        Optional<Ciudad> buscado = ciudadRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(ciudadMapper::toResponse);
+    }
 
+    @Override
+    public List<CiudadResponse> obtenerNombre(String nombre) throws Exception {
         List<Ciudad> ciudades = ciudadRepo.findByNombre(nombre);
-
         validarExiste(ciudades);
-
-        return ciudades; 
+        return ciudadMapper.toResponseList(ciudades);
     }
 
     @Override
-    public List<Ciudad> listar() { return ciudadRepo.findAll(); }
-
-    @Override
-    public List<Ciudad> listarPaginado() { 
-
-        return ciudadRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<CiudadResponse> listar() {
+        return ciudadMapper.toResponseList(ciudadRepo.findAll());
     }
 
     @Override
-    public List<Ciudad> listarAscendenteNombre() { 
-        
-        return ciudadRepo.findAll(Sort.by("nombre").ascending());
+    public List<CiudadResponse> listarPaginado() {
+        return ciudadMapper.toResponseList(ciudadRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     @Override
-    public List<Ciudad> listarDescendenteNombre() { 
-        
-        return ciudadRepo.findAll(Sort.by("nombre").descending());
+    public List<CiudadResponse> listarAscendenteNombre() {
+        return ciudadMapper.toResponseList(ciudadRepo.findAll(Sort.by("nombre").ascending()));
     }
 
+    @Override
+    public List<CiudadResponse> listarDescendenteNombre() {
+        return ciudadMapper.toResponseList(ciudadRepo.findAll(Sort.by("nombre").descending()));
+    }
 }

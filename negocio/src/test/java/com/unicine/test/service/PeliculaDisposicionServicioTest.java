@@ -23,6 +23,8 @@ import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.theater.SalaServicio;
+import com.unicine.repository.theater.CiudadRepo;
+import com.unicine.repository.theater.SalaRepo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,8 +45,14 @@ public class PeliculaDisposicionServicioTest {
     @Autowired
     private PeliculaServicio peliculaServicio;
 
-    @Autowired 
+    @Autowired
     private CiudadServicio ciudadServicio;
+
+    @Autowired
+    private CiudadRepo ciudadRepo;
+
+    @Autowired
+    private SalaRepo salaRepo;
 
     @Autowired
     private HorarioServicio horarioServicio;
@@ -71,7 +79,7 @@ public class PeliculaDisposicionServicioTest {
         Ciudad ciudad;
 
         try {
-            ciudad = ciudadServicio.obtener(3).orElse(null);
+            ciudad = ciudadRepo.findById(3).orElse(null);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -246,7 +254,7 @@ public class PeliculaDisposicionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(4).orElse(null); // Esta sala pertenece a la ciudad {1}
+            sala = salaRepo.findById(4).orElse(null); // Esta sala pertenece a la ciudad {1}
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -394,7 +402,7 @@ public class PeliculaDisposicionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(4).orElse(null); // Esta sala pertenece a la ciudad {1}
+            sala = salaRepo.findById(4).orElse(null); // Esta sala pertenece a la ciudad {1}
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 

@@ -11,14 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.user.AdministradorTeatro;
-import com.unicine.entity.theater.Ciudad;
-import com.unicine.entity.theater.Teatro;
-import com.unicine.service.theater.CiudadServicio;
-import com.unicine.service.user.PersonaServicio;
 import com.unicine.service.theater.TeatroServicio;
-
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+import com.unicine.transfer.dto.request.TeatroRequest;
+import com.unicine.transfer.dto.response.TeatroResponse;
 
 @SpringBootTest
 @Transactional
@@ -26,12 +21,6 @@ public class TeatroServicioTest {
 
     @Autowired
     private TeatroServicio teatroServicio;
-
-    @Autowired
-    private CiudadServicio ciudadServicio;
-
-    @Autowired
-    private PersonaServicio<AdministradorTeatro> administradorServicio;
 
     // 🟩
 
@@ -41,44 +30,19 @@ public class TeatroServicioTest {
         
         String direccion = "Avenida 1 # 4-6 Este";
 
-        Ciudad ciudad;
+        TeatroRequest request = TeatroRequest.builder()
+                .direccion(direccion)
+                .telefono("3162316812")
+                .ciudadCodigo(1)
+                .administradorTeatroCedula(1119000000)
+                .build();
 
         try {
-            ciudad = ciudadServicio.obtener(1).orElse(null);
-
-        } catch (Exception e) {
-
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
-
-        AdministradorTeatro administradorTeatro;
-        
-        try {
-            administradorTeatro = administradorServicio.obtener(1119000000).orElse(null);
-
-        } catch (Exception e) {
-
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
-
-        // Creacion del teatro
-
-        Teatro teatro = new Teatro(direccion, "3162316812", ciudad, administradorTeatro);
-
-        try {
-            Teatro nuevo = teatroServicio.registrar(teatro);
+            TeatroResponse response = teatroServicio.registrar(request);
             
-            Assertions.assertEquals(direccion, nuevo.getDireccion());
+            Assertions.assertEquals(direccion, response.getDireccion());
 
-            System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
+            System.out.println("\n" + "Registro guardado:" + "\n" + response);
 
         } catch (Exception e) {
 
@@ -97,11 +61,15 @@ public class TeatroServicioTest {
         String telefono = "3125867145";
 
         try{
-            Teatro teatro = teatroServicio.obtener(1).orElse(null);
+            TeatroRequest request = TeatroRequest.builder()
+                    .codigo(1)
+                    .direccion("Calle 3 # 1 A 24 Sur")
+                    .telefono(telefono)
+                    .ciudadCodigo(1)
+                    .administradorTeatroCedula(1119000000)
+                    .build();
 
-            teatro.setTelefono(telefono);
-
-            Teatro actualizado = teatroServicio.actualizar(teatro);
+            TeatroResponse actualizado = teatroServicio.actualizar(request);
 
             Assertions.assertEquals(telefono, actualizado.getTelefono());
 
@@ -123,22 +91,8 @@ public class TeatroServicioTest {
 
         Integer codigo = 1;
 
-        Teatro teatro;
-
         try {
-            teatro = teatroServicio.obtener(codigo).orElse(null);
-
-        } catch (Exception e) {
-
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
-
-        try {
-            teatroServicio.eliminar(teatro, true);
+            teatroServicio.eliminar(codigo, true);
 
         } catch (Exception e) {
 
@@ -156,7 +110,6 @@ public class TeatroServicioTest {
 
             System.out.println("Mensaje de error: " + e.getMessage());
 
-            // Realizamos una validacion de la prueba para aceptar que el teatro fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -170,11 +123,11 @@ public class TeatroServicioTest {
         Integer codigo = 1;
 
         try {
-            Teatro teatro = teatroServicio.obtener(codigo).orElse(null);
+            TeatroResponse response = teatroServicio.obtener(codigo).orElse(null);
 
-            Assertions.assertEquals(codigo, teatro.getCodigo());
+            Assertions.assertEquals(codigo, response.getCodigo());
 
-            System.out.println("\n" + "Registro encontrado:" + "\n" + teatro);
+            System.out.println("\n" + "Registro encontrado:" + "\n" + response);
 
         } catch (Exception e) {
 
@@ -191,7 +144,7 @@ public class TeatroServicioTest {
     public void listar() {
 
         try {
-            List<Teatro> lista = teatroServicio.listar();
+            List<TeatroResponse> lista = teatroServicio.listar();
 
             Assertions.assertEquals(6, lista.size());
 
@@ -223,11 +176,15 @@ public class TeatroServicioTest {
 
         System.out.println("\n" + direcion);
         try{
-            Teatro teatro = teatroServicio.obtener(3).orElse(null);
+            TeatroRequest request = TeatroRequest.builder()
+                    .codigo(3)
+                    .direccion(direcion)
+                    .telefono("3162316812")
+                    .ciudadCodigo(1)
+                    .administradorTeatroCedula(1119000000)
+                    .build();
 
-            teatro.setDireccion(direcion);
-
-            Teatro actualizado = teatroServicio.actualizar(teatro);
+            TeatroResponse actualizado = teatroServicio.actualizar(request);
 
             Assertions.assertEquals(direcion, actualizado.getDireccion());
 

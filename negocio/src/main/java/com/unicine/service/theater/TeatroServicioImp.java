@@ -10,6 +10,9 @@ import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.theater.Teatro;
 import com.unicine.repository.theater.TeatroRepo;
+import com.unicine.transfer.dto.request.TeatroRequest;
+import com.unicine.transfer.dto.response.TeatroResponse;
+import com.unicine.transfer.mapper.TeatroMapper;
 
 import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.domain.TheaterErrorCatalog;
@@ -19,20 +22,16 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class TeatroServicioImp implements TeatroServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final TeatroRepo teatroRepo;
+    private final TeatroMapper teatroMapper;
 
-    public TeatroServicioImp(TeatroRepo teatroRepo) {
+    public TeatroServicioImp(TeatroRepo teatroRepo, TeatroMapper teatroMapper) {
         this.teatroRepo = teatroRepo;
+        this.teatroMapper = teatroMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la presencia del teatro que se esta buscando
-     * @param numero
-     * @throws
-     */
     private void validarExiste(Optional<Teatro> teatro) throws Exception {
 
         if (teatro.isEmpty()) {
@@ -40,11 +39,6 @@ public class TeatroServicioImp implements TeatroServicio {
         }
     }
 
-    /**
-     * Método que verifica si existe un teatro con la misma direccion en la ciudad
-     * @param teatro
-     * @return si existe la direccion devuelve true, de lo contrario false
-     */
     private void validarExisteDireccion(Teatro teatro) throws Exception {
 
         Optional<Teatro> existe = teatroRepo.findByDireccion(teatro.getDireccion(), teatro.getCiudad().getCodigo());
@@ -54,11 +48,6 @@ public class TeatroServicioImp implements TeatroServicio {
         }
     }
 
-    /**
-     * Método que verifica si existe un teatro con la misma direccion en la ciudad adicional se excluye el teatro que se esta actualizando
-     * @param teatro
-     * @return si existe la direccion devuelve true, de lo contrario false
-     */
     private void validarRepiteDireccion(Teatro teatro) throws Exception {
 
         Optional<Teatro> existe = teatroRepo.buscarDireccionExcluido(teatro.getDireccion(), teatro.getCiudad().getCodigo(), teatro.getCodigo());
@@ -68,11 +57,6 @@ public class TeatroServicioImp implements TeatroServicio {
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia de las relaciones del teatro
-     * @param teatro
-     * @throws
-     */
     private void comprobarConfirmacion(boolean confirmacion) {
 
         if (!confirmacion) {
@@ -82,60 +66,64 @@ public class TeatroServicioImp implements TeatroServicio {
 
      // SECTION: Implementacion de servicios
 
-    // 2️⃣ Funciones del Administrador de Teatro
-
     @Override
-    public Teatro registrar(@Valid Teatro teatro) throws Exception { 
+    public TeatroResponse registrar(@Valid TeatroRequest request) throws Exception { 
 
+        Teatro teatro = teatroMapper.toEntity(request);
         validarExisteDireccion(teatro);
 
-        return teatroRepo.save(teatro);
+        return teatroMapper.toResponse(teatroRepo.save(teatro));
     }
 
     @Override
-    public Teatro actualizar(@Valid Teatro teatro) throws Exception {
+    public TeatroResponse actualizar(@Valid TeatroRequest request) throws Exception {
 
+        Teatro teatro = teatroMapper.toEntity(request);
         validarRepiteDireccion(teatro);
 
-        return teatroRepo.save(teatro);
+        return teatroMapper.toResponse(teatroRepo.save(teatro));
     }
 
     @Override
-    public void eliminar(@Valid Teatro eliminado, boolean confirmacion) throws Exception { 
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception { 
         
         comprobarConfirmacion(confirmacion);
 
-        teatroRepo.delete(eliminado);
+        Optional<Teatro> buscado = teatroRepo.findById(codigo);
+        validarExiste(buscado);
+        teatroRepo.delete(buscado.get());
     }
 
     @Override
-    public Optional<Teatro> obtener(Integer codigo) throws Exception {
+    public Optional<TeatroResponse> obtener(Integer codigo) throws Exception {
 
         Optional<Teatro> buscado = teatroRepo.findById(codigo);
 
         validarExiste(buscado);
 
-        return buscado;
+        return buscado.map(teatroMapper::toResponse);
     }
 
     @Override
-    public List<Teatro> listar() { return teatroRepo.findAll(); }
-
-    @Override
-    public List<Teatro> listarPaginado() { 
-
-        return teatroRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<TeatroResponse> listar() { 
+        return teatroMapper.toResponseList(teatroRepo.findAll()); 
     }
 
     @Override
-    public List<Teatro> listarAscendente() { 
+    public List<TeatroResponse> listarPaginado() { 
+
+        return teatroMapper.toResponseList(teatroRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    @Override
+    public List<TeatroResponse> listarAscendente() { 
         
-        return teatroRepo.findAll(Sort.by("codigo").ascending());
+        return teatroMapper.toResponseList(teatroRepo.findAll(Sort.by("codigo").ascending()));
     }
 
     @Override
-    public List<Teatro> listarDescendente() { 
+    public List<TeatroResponse> listarDescendente() { 
         
-        return teatroRepo.findAll(Sort.by("codigo").descending());
+        return teatroMapper.toResponseList(teatroRepo.findAll(Sort.by("codigo").descending()));
     }
 }

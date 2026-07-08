@@ -18,6 +18,7 @@ import com.unicine.entity.showing.Horario;
 import com.unicine.entity.theater.Sala;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.theater.SalaServicio;
+import com.unicine.repository.theater.SalaRepo;
 import com.unicine.transfer.dto.response.FuncionInterseccionResponse;
 import com.unicine.transfer.mapper.FuncionInterseccionMapper;
 
@@ -32,6 +33,9 @@ public class HorarioServicioTest {
 
     @Autowired
     private SalaServicio salaServicio;
+
+    @Autowired
+    private SalaRepo salaRepo;
 
     @Autowired
     private FuncionInterseccionMapper funcionMapper;
@@ -50,7 +54,7 @@ public class HorarioServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(2).orElse(null);
+            sala = salaRepo.findById(2).orElse(null);
 
             System.out.println("Sala encontrada: " + sala);
 
@@ -258,7 +262,7 @@ public class HorarioServicioTest {
         Sala sala;
         try {
             // Se obtiene la sala usando el validator en este caso se usa el id 2 para ejemplificar
-            sala = salaServicio.obtener(2).orElse(null);
+            sala = salaRepo.findById(2).orElse(null);
 
             System.out.println("Sala encontrada: " + sala);
 

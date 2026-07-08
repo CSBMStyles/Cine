@@ -1,10 +1,10 @@
 package com.unicine.service.theater;
 
+import com.unicine.transfer.dto.request.DistribucionSillaRequest;
+import com.unicine.transfer.dto.response.DistribucionSillaResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
-
-import com.unicine.entity.theater.DistribucionSilla;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -14,19 +14,19 @@ public interface DistribucionSillaServicio {
 
     // 2️⃣ Funciones del Administrador Teatro
 
-    DistribucionSilla registrar(@Valid DistribucionSilla distribucion) throws Exception;
+    DistribucionSillaResponse registrar(@Valid DistribucionSillaRequest request) throws Exception;
 
-    DistribucionSilla actualizar(@Valid DistribucionSilla distribucion) throws Exception;
+    DistribucionSillaResponse actualizar(@Valid DistribucionSillaRequest request) throws Exception;
 
-    void eliminar(@Valid DistribucionSilla distribucion, boolean confirmacion) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
-    Optional<DistribucionSilla> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+    Optional<DistribucionSillaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<DistribucionSilla> listar();
+    List<DistribucionSillaResponse> listar();
 
-    List<DistribucionSilla> listarPaginado();
+    List<DistribucionSillaResponse> listarPaginado();
 
-    List<DistribucionSilla> listarAscendente();
+    List<DistribucionSillaResponse> listarAscendente();
 
-    List<DistribucionSilla> listarDescendente();
+    List<DistribucionSillaResponse> listarDescendente();
 }

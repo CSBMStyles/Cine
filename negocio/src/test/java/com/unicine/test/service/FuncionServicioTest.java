@@ -27,6 +27,7 @@ import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.service.theater.SalaServicio;
+import com.unicine.repository.theater.SalaRepo;
 
 // IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -39,6 +40,9 @@ public class FuncionServicioTest {
 
     @Autowired
     private SalaServicio salaServicio;
+
+    @Autowired
+    private SalaRepo salaRepo;
 
     @Autowired
     private PeliculaServicio peliculaServicio;
@@ -63,7 +67,7 @@ public class FuncionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(5).orElse(null);
+            sala = salaRepo.findById(5).orElse(null);
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -262,7 +266,7 @@ public class FuncionServicioTest {
 
             try {
                 
-                Sala sala = salaServicio.obtener(3).orElse(null);
+                Sala sala = salaRepo.findById(3).orElse(null);
 
                 funcion.setSala(sala);
 

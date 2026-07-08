@@ -1,10 +1,10 @@
 package com.unicine.service.theater;
 
+import com.unicine.transfer.dto.request.TeatroRequest;
+import com.unicine.transfer.dto.response.TeatroResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
-
-import com.unicine.entity.theater.Teatro;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -14,19 +14,19 @@ public interface TeatroServicio {
 
     // 2️⃣ Funciones del Administrador Teatro
 
-    Teatro registrar(@Valid Teatro teatro) throws Exception;
+    TeatroResponse registrar(@Valid TeatroRequest request) throws Exception;
 
-    Teatro actualizar(@Valid Teatro teatro) throws Exception;
+    TeatroResponse actualizar(@Valid TeatroRequest request) throws Exception;
 
-    void eliminar(@Valid Teatro teatro, boolean confirmacion) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
-    Optional<Teatro> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+    Optional<TeatroResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Teatro> listar();
+    List<TeatroResponse> listar();
 
-    List<Teatro> listarPaginado();
+    List<TeatroResponse> listarPaginado();
 
-    List<Teatro> listarAscendente();
+    List<TeatroResponse> listarAscendente();
 
-    List<Teatro> listarDescendente();
+    List<TeatroResponse> listarDescendente();
 }
