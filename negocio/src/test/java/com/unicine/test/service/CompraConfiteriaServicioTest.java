@@ -11,15 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.ConfiteriaPresentacion;
-import com.unicine.entity.purchase.Compra;
 import com.unicine.entity.purchase.CompraConfiteria;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
-import com.unicine.repository.confiteria.ConfiteriaPresentacionRepo;
 import com.unicine.repository.purchase.CompraConfiteriaRepo;
-import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.service.purchase.CompraConfiteriaServicio;
+import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
+import com.unicine.transfer.dto.response.CompraConfiteriaResponse;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -32,26 +30,17 @@ public class CompraConfiteriaServicioTest {
     @Autowired
     private CompraConfiteriaRepo compraConfiteriaRepo;
 
-    @Autowired
-    private CompraRepo compraRepo;
-
-    @Autowired
-    private ConfiteriaPresentacionRepo presentacionRepo;
-
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() throws Exception {
-        Compra compra = compraRepo.findById(1).orElse(null);
-        ConfiteriaPresentacion presentacion = presentacionRepo.findById(3).orElse(null);
-
-        CompraConfiteria item = CompraConfiteria.builder()
+        CompraConfiteriaRequest request = CompraConfiteriaRequest.builder()
                 .precio(28000.0)
                 .unidades(1)
-                .compra(compra)
-                .presentacion(presentacion)
+                .compraCodigo(1)
+                .presentacionCodigo(3)
                 .build();
 
-        CompraConfiteria guardado = compraConfiteriaServicio.registrar(item);
+        CompraConfiteriaResponse guardado = compraConfiteriaServicio.registrar(request);
 
         Assertions.assertNotNull(guardado);
         Assertions.assertEquals(28000.0, guardado.getPrecio());
@@ -64,48 +53,47 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void registrarCompraInexistente() {
-        ConfiteriaPresentacion presentacion = presentacionRepo.findById(1).orElse(null);
-
-        Compra compraInexistente = new Compra();
-        compraInexistente.setCodigo(999);
-
-        CompraConfiteria item = CompraConfiteria.builder()
+        CompraConfiteriaRequest request = CompraConfiteriaRequest.builder()
                 .precio(10000.0)
                 .unidades(1)
-                .compra(compraInexistente)
-                .presentacion(presentacion)
+                .compraCodigo(999)
+                .presentacionCodigo(1)
                 .build();
 
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> compraConfiteriaServicio.registrar(item));
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> compraConfiteriaServicio.registrar(request));
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void registrarPresentacionInexistente() {
-        Compra compra = compraRepo.findById(1).orElse(null);
-
-        ConfiteriaPresentacion presentacionInexistente = new ConfiteriaPresentacion();
-        presentacionInexistente.setCodigo(999);
-
-        CompraConfiteria item = CompraConfiteria.builder()
+        CompraConfiteriaRequest request = CompraConfiteriaRequest.builder()
                 .precio(10000.0)
                 .unidades(1)
-                .compra(compra)
-                .presentacion(presentacionInexistente)
+                .compraCodigo(1)
+                .presentacionCodigo(999)
                 .build();
 
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> compraConfiteriaServicio.registrar(item));
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> compraConfiteriaServicio.registrar(request));
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void actualizar() throws Exception {
-        CompraConfiteria buscado = compraConfiteriaServicio.obtener(1).orElse(null);
+        CompraConfiteriaResponse buscado = compraConfiteriaServicio.obtener(1).orElse(null);
+        Assertions.assertNotNull(buscado);
 
-        buscado.setUnidades(5);
-        buscado.setPrecio(7500.0);
+        CompraConfiteria entidad = compraConfiteriaRepo.findById(1).orElse(null);
+        Assertions.assertNotNull(entidad);
 
-        CompraConfiteria actualizado = compraConfiteriaServicio.actualizar(buscado);
+        CompraConfiteriaRequest request = CompraConfiteriaRequest.builder()
+                .codigo(buscado.getCodigo())
+                .precio(7500.0)
+                .unidades(5)
+                .compraCodigo(entidad.getCompra().getCodigo())
+                .presentacionCodigo(entidad.getPresentacion().getCodigo())
+                .build();
+
+        CompraConfiteriaResponse actualizado = compraConfiteriaServicio.actualizar(request);
 
         Assertions.assertEquals(5, actualizado.getUnidades());
         Assertions.assertEquals(7500.0, actualizado.getPrecio());
@@ -117,9 +105,7 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminar() throws Exception {
-        CompraConfiteria buscado = compraConfiteriaServicio.obtener(1).orElse(null);
-
-        compraConfiteriaServicio.eliminar(buscado, true);
+        compraConfiteriaServicio.eliminar(1, true);
 
         Optional<CompraConfiteria> verificacion = compraConfiteriaRepo.findById(1);
 
@@ -131,15 +117,13 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminarSinConfirmacion() throws Exception {
-        CompraConfiteria buscado = compraConfiteriaServicio.obtener(1).orElse(null);
-
-        Assertions.assertThrows(BusinessRuleException.class, () -> compraConfiteriaServicio.eliminar(buscado, false));
+        Assertions.assertThrows(BusinessRuleException.class, () -> compraConfiteriaServicio.eliminar(1, false));
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void obtener() throws Exception {
-        Optional<CompraConfiteria> buscado = compraConfiteriaServicio.obtener(1);
+        Optional<CompraConfiteriaResponse> buscado = compraConfiteriaServicio.obtener(1);
 
         Assertions.assertTrue(buscado.isPresent());
 
@@ -150,7 +134,7 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listar() {
-        List<CompraConfiteria> items = compraConfiteriaServicio.listar();
+        List<CompraConfiteriaResponse> items = compraConfiteriaServicio.listar();
 
         Assertions.assertEquals(8, items.size());
 
@@ -161,7 +145,7 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPaginado() {
-        List<CompraConfiteria> items = compraConfiteriaServicio.listarPaginado();
+        List<CompraConfiteriaResponse> items = compraConfiteriaServicio.listarPaginado();
 
         Assertions.assertEquals(8, items.size());
 
@@ -172,7 +156,7 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPorCompra() throws Exception {
-        List<CompraConfiteria> items = compraConfiteriaServicio.listarPorCompra(1);
+        List<CompraConfiteriaResponse> items = compraConfiteriaServicio.listarPorCompra(1);
 
         Assertions.assertEquals(2, items.size());
 
@@ -183,7 +167,7 @@ public class CompraConfiteriaServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPorPresentacion() throws Exception {
-        List<CompraConfiteria> items = compraConfiteriaServicio.listarPorPresentacion(1);
+        List<CompraConfiteriaResponse> items = compraConfiteriaServicio.listarPorPresentacion(1);
 
         Assertions.assertEquals(2, items.size());
 

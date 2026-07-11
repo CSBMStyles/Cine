@@ -11,17 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.ConfiteriaPresentacion;
-import com.unicine.entity.purchase.Compra;
-import com.unicine.entity.purchase.CompraConfiteria;
-import com.unicine.entity.purchase.CuponCliente;
-import com.unicine.entity.purchase.Entrada;
-import com.unicine.entity.showing.Funcion;
-import com.unicine.entity.user.Cliente;
 import com.unicine.enums.purchase.MedioPago;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CompraServicio;
+import com.unicine.transfer.dto.request.CompraCompletaRequest;
+import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
+import com.unicine.transfer.dto.request.CompraRequest;
+import com.unicine.transfer.dto.request.EntradaRequest;
+import com.unicine.transfer.dto.response.CompraResponse;
 import com.unicine.util.validation.catalog.SuccessCatalog;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
@@ -46,31 +44,43 @@ public class CompraServicioTest {
         Integer cedula = 1009000011;
         Integer codigoFuncion = 1;
 
-        Cliente cliente = Cliente.builder().cedula(cedula).build();
-        Funcion funcion = new Funcion();
-        funcion.setCodigo(codigoFuncion);
-
-        Compra compra = Compra.builder()
+        CompraRequest compraRequest = CompraRequest.builder()
                 .estado(true)
                 .medioPago(MedioPago.NEQUI)
-                .cliente(cliente)
-                .funcion(funcion)
+                .fechaCompra(LocalDateTime.now())
+                .fechaPelicula(LocalDateTime.now().plusDays(1))
+                .valorTotal(0.0)
+                .clienteCedula(cedula)
+                .funcionCodigo(codigoFuncion)
                 .build();
-        compra.setFechaPelicula(LocalDateTime.now().plusDays(1));
 
-        List<Entrada> entradas = List.of(
-                Entrada.builder().precio(10000.0).fila(1).columna(1).build()
+        List<EntradaRequest> entradas = List.of(
+                EntradaRequest.builder()
+                        .precio(10000.0)
+                        .fila(1)
+                        .columna(1)
+                        .compraCodigo(1)
+                        .funcionCodigo(codigoFuncion)
+                        .build()
         );
 
-        ConfiteriaPresentacion presentacion = new ConfiteriaPresentacion();
-        presentacion.setCodigo(1);
-
-        List<CompraConfiteria> confiterias = List.of(
-                CompraConfiteria.builder().precio(5000.0).unidades(2).presentacion(presentacion).build()
+        List<CompraConfiteriaRequest> confiterias = List.of(
+                CompraConfiteriaRequest.builder()
+                        .precio(5000.0)
+                        .unidades(2)
+                        .compraCodigo(1)
+                        .presentacionCodigo(1)
+                        .build()
         );
+
+        CompraCompletaRequest request = CompraCompletaRequest.builder()
+                .compra(compraRequest)
+                .entradas(entradas)
+                .confiterias(confiterias)
+                .build();
 
         try {
-            Compra registrada = compraServicio.registrarCompraCompleta(compra, entradas, confiterias);
+            CompraResponse registrada = compraServicio.registrarCompraCompleta(request);
 
             Double esperado = 20000.0;
             Assertions.assertEquals(esperado, registrada.getValorTotal());
@@ -92,7 +102,7 @@ public class CompraServicioTest {
         Integer codigo = 1;
 
         try {
-            Compra compra = compraServicio.obtener(codigo).orElse(null);
+            CompraResponse compra = compraServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, compra.getCodigo());
             Assertions.assertTrue(compra.getEstado());
@@ -111,7 +121,7 @@ public class CompraServicioTest {
     public void listar() {
 
         try {
-            List<Compra> lista = compraServicio.listar();
+            List<CompraResponse> lista = compraServicio.listar();
 
             Assertions.assertEquals(6, lista.size());
 
@@ -130,7 +140,7 @@ public class CompraServicioTest {
     public void listarPaginado() {
 
         try {
-            List<Compra> lista = compraServicio.listarPaginado();
+            List<CompraResponse> lista = compraServicio.listarPaginado();
 
             Assertions.assertEquals(6, lista.size());
 
@@ -151,7 +161,7 @@ public class CompraServicioTest {
         Integer cedula = 1008000022;
 
         try {
-            List<Compra> compras = compraServicio.obtenerComprasCliente(cedula);
+            List<CompraResponse> compras = compraServicio.obtenerComprasCliente(cedula);
 
             Assertions.assertEquals(2, compras.size());
 
@@ -216,29 +226,37 @@ public class CompraServicioTest {
         Integer cedula = 1005000055;
         Integer codigoFuncion = 1;
 
-        Cliente cliente = Cliente.builder().cedula(cedula).build();
-        Funcion funcion = new Funcion();
-        funcion.setCodigo(codigoFuncion);
-        CuponCliente cuponCliente = new CuponCliente();
-        cuponCliente.setCodigo(6);
-
-        Compra compra = Compra.builder()
+        CompraRequest compraRequest = CompraRequest.builder()
                 .estado(true)
                 .medioPago(MedioPago.NEQUI)
-                .cliente(cliente)
-                .funcion(funcion)
-                .cuponCliente(cuponCliente)
+                .fechaCompra(LocalDateTime.now())
+                .fechaPelicula(LocalDateTime.now().plusDays(1))
+                .valorTotal(0.0)
+                .cuponClienteCodigo(6)
+                .clienteCedula(cedula)
+                .funcionCodigo(codigoFuncion)
                 .build();
-        compra.setFechaPelicula(LocalDateTime.now().plusDays(1));
 
-        List<Entrada> entradas = List.of(
-                Entrada.builder().precio(10000.0).fila(1).columna(1).build()
+        List<EntradaRequest> entradas = List.of(
+                EntradaRequest.builder()
+                        .precio(10000.0)
+                        .fila(1)
+                        .columna(1)
+                        .compraCodigo(1)
+                        .funcionCodigo(codigoFuncion)
+                        .build()
         );
 
-        List<CompraConfiteria> confiterias = new ArrayList<>();
+        List<CompraConfiteriaRequest> confiterias = new ArrayList<>();
+
+        CompraCompletaRequest request = CompraCompletaRequest.builder()
+                .compra(compraRequest)
+                .entradas(entradas)
+                .confiterias(confiterias)
+                .build();
 
         try {
-            compraServicio.registrarCompraCompleta(compra, entradas, confiterias);
+            compraServicio.registrarCompraCompleta(request);
 
             Assertions.fail("Deberia lanzar BusinessRuleException por cupon expirado");
 
@@ -259,29 +277,37 @@ public class CompraServicioTest {
         Integer cedula = 1006000044;
         Integer codigoFuncion = 1;
 
-        Cliente cliente = Cliente.builder().cedula(cedula).build();
-        Funcion funcion = new Funcion();
-        funcion.setCodigo(codigoFuncion);
-        CuponCliente cuponCliente = new CuponCliente();
-        cuponCliente.setCodigo(2);
-
-        Compra compra = Compra.builder()
+        CompraRequest compraRequest = CompraRequest.builder()
                 .estado(true)
                 .medioPago(MedioPago.VISA)
-                .cliente(cliente)
-                .funcion(funcion)
-                .cuponCliente(cuponCliente)
+                .fechaCompra(LocalDateTime.now())
+                .fechaPelicula(LocalDateTime.now().plusDays(1))
+                .valorTotal(0.0)
+                .cuponClienteCodigo(2)
+                .clienteCedula(cedula)
+                .funcionCodigo(codigoFuncion)
                 .build();
-        compra.setFechaPelicula(LocalDateTime.now().plusDays(1));
 
-        List<Entrada> entradas = List.of(
-                Entrada.builder().precio(10000.0).fila(2).columna(2).build()
+        List<EntradaRequest> entradas = List.of(
+                EntradaRequest.builder()
+                        .precio(10000.0)
+                        .fila(2)
+                        .columna(2)
+                        .compraCodigo(1)
+                        .funcionCodigo(codigoFuncion)
+                        .build()
         );
 
-        List<CompraConfiteria> confiterias = new ArrayList<>();
+        List<CompraConfiteriaRequest> confiterias = new ArrayList<>();
+
+        CompraCompletaRequest request = CompraCompletaRequest.builder()
+                .compra(compraRequest)
+                .entradas(entradas)
+                .confiterias(confiterias)
+                .build();
 
         try {
-            compraServicio.registrarCompraCompleta(compra, entradas, confiterias);
+            compraServicio.registrarCompraCompleta(request);
 
             Assertions.fail("Deberia lanzar BusinessRuleException por cupon usado");
 
@@ -302,13 +328,22 @@ public class CompraServicioTest {
         Integer codigo = 5;
 
         try {
-            Compra compra = compraServicio.obtener(codigo).orElse(null);
+            CompraResponse compra = compraServicio.obtener(codigo).orElse(null);
             Assertions.assertNotNull(compra);
             Assertions.assertFalse(compra.getEstado(), "La compra deberia estar procesada (estado=false)");
 
-            compra.setValorTotal(99999.0);
-            compra.setFechaPelicula(LocalDateTime.now().plusDays(1));
-            compraServicio.actualizar(compra);
+            CompraRequest request = CompraRequest.builder()
+                    .codigo(compra.getCodigo())
+                    .estado(compra.getEstado())
+                    .medioPago(compra.getMedioPago())
+                    .fechaCompra(compra.getFechaCompra())
+                    .fechaPelicula(LocalDateTime.now().plusDays(1))
+                    .valorTotal(99999.0)
+                    .clienteCedula(compra.getCliente().getCedula())
+                    .funcionCodigo(compra.getFuncion().getCodigo())
+                    .build();
+
+            compraServicio.actualizar(request);
 
             Assertions.fail("Deberia lanzar BusinessRuleException por compra procesada");
 

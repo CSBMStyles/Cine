@@ -4,9 +4,9 @@ import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.purchase.Compra;
-import com.unicine.entity.purchase.Entrada;
-import com.unicine.entity.purchase.CompraConfiteria;
+import com.unicine.transfer.dto.request.CompraCompletaRequest;
+import com.unicine.transfer.dto.request.CompraRequest;
+import com.unicine.transfer.dto.response.CompraResponse;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -16,23 +16,23 @@ public interface CompraServicio {
 
     // SECTION: Metodos CRUD base
 
-    Compra registrar(@Valid Compra compra) throws Exception;
+    CompraResponse registrar(@Valid CompraRequest request) throws Exception;
 
-    Compra actualizar(@Valid Compra compra) throws Exception;
+    CompraResponse actualizar(@Valid CompraRequest request) throws Exception;
 
-    void eliminar(@Valid Compra compra) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    Optional<Compra> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+    Optional<CompraResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Compra> listar();
+    List<CompraResponse> listar();
 
-    List<Compra> listarPaginado();
+    List<CompraResponse> listarPaginado();
 
     // SECTION: Metodos de negocio
 
-    Compra registrarCompraCompleta(Compra compra, List<Entrada> entradas, List<CompraConfiteria> confiterias) throws Exception;
+    CompraResponse registrarCompraCompleta(@Valid CompraCompletaRequest request) throws Exception;
 
-    List<Compra> obtenerComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
+    List<CompraResponse> obtenerComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
 
     Double obtenerTotalComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
 }

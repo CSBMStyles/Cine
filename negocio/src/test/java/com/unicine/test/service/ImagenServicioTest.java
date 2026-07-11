@@ -22,9 +22,9 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.entity.image.Imagen;
 import com.unicine.entity.movie.Pelicula;
+import com.unicine.repository.confiteria.ConfiteriaRepo;
 import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.repository.user.ClienteRepo;
-import com.unicine.service.confiteria.ConfiteriaServicio;
 import com.unicine.service.image.ImagenServicio;
 import com.unicine.service.image.ImageKitService;
 import com.unicine.transfer.record.VersionArchivo;
@@ -52,7 +52,7 @@ public class ImagenServicioTest {
     private PeliculaRepo peliculaRepo;
 
     @Autowired
-    private ConfiteriaServicio confiteriaServicio;
+    private ConfiteriaRepo confiteriaRepo;
 
     // 🟩
 
@@ -228,7 +228,7 @@ public class ImagenServicioTest {
         Confiteria confiteria;
 
         try {
-            confiteria = confiteriaServicio.obtener(15).orElse(null);
+            confiteria = confiteriaRepo.findById(15).orElse(null);
 
             Assertions.assertNotNull(confiteria, "La confiteria no debe ser nula");
 

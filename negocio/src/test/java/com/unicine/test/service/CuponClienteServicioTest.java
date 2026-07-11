@@ -9,12 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.purchase.Cupon;
-import com.unicine.entity.purchase.CuponCliente;
-import com.unicine.entity.user.Cliente;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CuponClienteServicio;
+import com.unicine.transfer.dto.request.CuponClienteRequest;
+import com.unicine.transfer.dto.response.CuponClienteResponse;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
@@ -35,18 +34,13 @@ public class CuponClienteServicioTest {
     public void registrar() {
 
         try {
-            Cupon cupon = Cupon.builder().build();
-            cupon.setCodigo(4);
-
-            Cliente cliente = Cliente.builder().cedula(1009000011).build();
-
-            CuponCliente cuponCliente = CuponCliente.builder()
+            CuponClienteRequest request = CuponClienteRequest.builder()
                     .estado(true)
-                    .cupon(cupon)
-                    .cliente(cliente)
+                    .cuponCodigo(4)
+                    .clienteCedula(1009000011)
                     .build();
 
-            CuponCliente registrado = cuponClienteServicio.registrar(cuponCliente);
+            CuponClienteResponse registrado = cuponClienteServicio.registrar(request);
 
             Assertions.assertNotNull(registrado);
             Assertions.assertNotNull(registrado.getCodigo());
@@ -65,12 +59,17 @@ public class CuponClienteServicioTest {
     public void actualizar() {
 
         try {
-            CuponCliente cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
-            Assertions.assertNotNull(cuponCliente);
+            CuponClienteResponse existente = cuponClienteServicio.obtener(1).orElse(null);
+            Assertions.assertNotNull(existente);
 
-            cuponCliente.setEstado(false);
+            CuponClienteRequest request = CuponClienteRequest.builder()
+                    .codigo(existente.getCodigo())
+                    .estado(false)
+                    .cuponCodigo(existente.getCupon().getCodigo())
+                    .clienteCedula(existente.getCliente().getCedula())
+                    .build();
 
-            CuponCliente actualizado = cuponClienteServicio.actualizar(cuponCliente);
+            CuponClienteResponse actualizado = cuponClienteServicio.actualizar(request);
 
             Assertions.assertFalse(actualizado.getEstado());
 
@@ -87,7 +86,7 @@ public class CuponClienteServicioTest {
     public void obtener() {
 
         try {
-            CuponCliente cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
+            CuponClienteResponse cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
 
             Assertions.assertNotNull(cuponCliente);
             Assertions.assertEquals(1005000055, cuponCliente.getCliente().getCedula());
@@ -105,7 +104,7 @@ public class CuponClienteServicioTest {
     public void listar() {
 
         try {
-            List<CuponCliente> cuponesClientes = cuponClienteServicio.listar();
+            List<CuponClienteResponse> cuponesClientes = cuponClienteServicio.listar();
 
             Assertions.assertEquals(5, cuponesClientes.size());
 
@@ -122,7 +121,7 @@ public class CuponClienteServicioTest {
     public void listarPaginado() {
 
         try {
-            List<CuponCliente> cuponesClientes = cuponClienteServicio.listarPaginado();
+            List<CuponClienteResponse> cuponesClientes = cuponClienteServicio.listarPaginado();
 
             Assertions.assertEquals(5, cuponesClientes.size());
 
@@ -139,7 +138,7 @@ public class CuponClienteServicioTest {
     public void listarPorCliente() {
 
         try {
-            List<CuponCliente> cuponesClientes = cuponClienteServicio.listarPorCliente(1006000044);
+            List<CuponClienteResponse> cuponesClientes = cuponClienteServicio.listarPorCliente(1006000044);
 
             Assertions.assertEquals(2, cuponesClientes.size());
 
@@ -156,7 +155,7 @@ public class CuponClienteServicioTest {
     public void listarActivosPorCliente() {
 
         try {
-            List<CuponCliente> cuponesClientes = cuponClienteServicio.listarActivosPorCliente(1006000044);
+            List<CuponClienteResponse> cuponesClientes = cuponClienteServicio.listarActivosPorCliente(1006000044);
 
             Assertions.assertEquals(1, cuponesClientes.size());
             Assertions.assertTrue(cuponesClientes.get(0).getEstado());
@@ -174,7 +173,7 @@ public class CuponClienteServicioTest {
     public void listarInactivosPorCliente() {
 
         try {
-            List<CuponCliente> cuponesClientes = cuponClienteServicio.listarInactivosPorCliente(1006000044);
+            List<CuponClienteResponse> cuponesClientes = cuponClienteServicio.listarInactivosPorCliente(1006000044);
 
             Assertions.assertEquals(1, cuponesClientes.size());
             Assertions.assertFalse(cuponesClientes.get(0).getEstado());
@@ -192,7 +191,7 @@ public class CuponClienteServicioTest {
     public void obtenerPorCuponYCliente() {
 
         try {
-            CuponCliente cuponCliente = cuponClienteServicio.obtenerPorCuponYCliente(1, 1005000055).orElse(null);
+            CuponClienteResponse cuponCliente = cuponClienteServicio.obtenerPorCuponYCliente(1, 1005000055).orElse(null);
 
             Assertions.assertNotNull(cuponCliente);
             Assertions.assertEquals(1, cuponCliente.getCodigo());
@@ -227,10 +226,10 @@ public class CuponClienteServicioTest {
     public void eliminar() {
 
         try {
-            CuponCliente cuponCliente = cuponClienteServicio.obtener(2).orElse(null);
+            CuponClienteResponse cuponCliente = cuponClienteServicio.obtener(2).orElse(null);
             Assertions.assertNotNull(cuponCliente);
 
-            cuponClienteServicio.eliminar(cuponCliente, true);
+            cuponClienteServicio.eliminar(2, true);
 
             try {
                 cuponClienteServicio.obtener(2);
@@ -271,11 +270,11 @@ public class CuponClienteServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminarSinConfirmacion() throws Exception {
-        CuponCliente cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
+        CuponClienteResponse cuponCliente = cuponClienteServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(cuponCliente);
 
         Assertions.assertThrows(BusinessRuleException.class,
-                () -> cuponClienteServicio.eliminar(cuponCliente, false));
+                () -> cuponClienteServicio.eliminar(1, false));
     }
 
     @Test

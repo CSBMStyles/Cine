@@ -1,6 +1,7 @@
 package com.unicine.test.service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -10,14 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.Confiteria;
-import com.unicine.entity.confiteria.ConfiteriaPresentacion;
-import com.unicine.entity.confiteria.HistorialPrecioPresentacion;
 import com.unicine.enums.confiteria.TipoCambioPrecioPresentacion;
 import com.unicine.enums.confiteria.UnidadMedida;
 import com.unicine.service.confiteria.ConfiteriaPresentacionServicio;
 import com.unicine.service.confiteria.ConfiteriaServicio;
 import com.unicine.service.confiteria.HistorialPrecioPresentacionServicio;
+import com.unicine.transfer.dto.request.ConfiteriaPresentacionRequest;
+import com.unicine.transfer.dto.response.ConfiteriaPresentacionResponse;
+import com.unicine.transfer.dto.response.ConfiteriaResponse;
+import com.unicine.transfer.dto.response.HistorialPrecioPresentacionResponse;
 
 @SpringBootTest
 @Transactional
@@ -35,17 +37,17 @@ public class ConfiteriaPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() throws Exception {
-        Confiteria confiteria = confiteriaServicio.obtener(7).orElse(null);
+        ConfiteriaResponse confiteria = confiteriaServicio.obtener(7).orElse(null);
         Assertions.assertNotNull(confiteria);
 
-        ConfiteriaPresentacion presentacion = ConfiteriaPresentacion.builder()
+        ConfiteriaPresentacionRequest request = ConfiteriaPresentacionRequest.builder()
                 .porcion(1.5)
                 .unidadMedida(UnidadMedida.L)
                 .precio(9000.0)
-                .confiteria(confiteria)
+                .confiteriaCodigo(confiteria.getCodigo())
                 .build();
 
-        ConfiteriaPresentacion registrada = presentacionServicio.registrar(presentacion);
+        ConfiteriaPresentacionResponse registrada = presentacionServicio.registrar(request);
 
         Assertions.assertNotNull(registrada);
         Assertions.assertNotNull(registrada.getCodigo());
@@ -58,28 +60,33 @@ public class ConfiteriaPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void aplicarDescuentoTemporal() throws Exception {
-        Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
+        ConfiteriaResponse confiteria = confiteriaServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(confiteria);
 
-        ConfiteriaPresentacion presentacion = ConfiteriaPresentacion.builder()
+        ConfiteriaPresentacionRequest request = ConfiteriaPresentacionRequest.builder()
+                .codigo(1)
                 .porcion(1.0)
                 .unidadMedida(UnidadMedida.UNIDAD)
                 .precio(25600.0)
-                .confiteria(confiteria)
+                .confiteriaCodigo(confiteria.getCodigo())
                 .build();
-        presentacion.setCodigo(1);
 
-        LocalDateTime expiracion = LocalDateTime.now().plusDays(7).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        LocalDateTime expiracion = LocalDateTime.now().plusDays(7).truncatedTo(ChronoUnit.MICROS);
 
-        ConfiteriaPresentacion actualizada = presentacionServicio.actualizar(presentacion, expiracion);
+        ConfiteriaPresentacionResponse actualizada = presentacionServicio.actualizar(request, expiracion);
 
         Assertions.assertEquals(25600.0, actualizada.getPrecio());
         Assertions.assertEquals(32000.0, actualizada.getPrecioBase());
         Assertions.assertEquals(expiracion, actualizada.getFechaExpiracionTemporal());
-        Assertions.assertTrue(actualizada.esPrecioTemporal());
-        Assertions.assertEquals(20, actualizada.calcularPorcentajeDescuento());
 
-        HistorialPrecioPresentacion historial = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
+        boolean esPrecioTemporal = actualizada.getFechaExpiracionTemporal() != null
+                && actualizada.getFechaExpiracionTemporal().isAfter(LocalDateTime.now());
+        Assertions.assertTrue(esPrecioTemporal);
+
+        int porcentajeDescuento = calcularPorcentajeDescuento(actualizada.getPrecioBase(), actualizada.getPrecio());
+        Assertions.assertEquals(20, porcentajeDescuento);
+
+        HistorialPrecioPresentacionResponse historial = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
         Assertions.assertNotNull(historial);
         Assertions.assertEquals(TipoCambioPrecioPresentacion.DESCUENTO_TEMPORAL, historial.getTipoCambio());
         Assertions.assertEquals(20, historial.getPorcentaje());
@@ -90,25 +97,28 @@ public class ConfiteriaPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void aplicarAumentoCambiaBase() throws Exception {
-        Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
+        ConfiteriaResponse confiteria = confiteriaServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(confiteria);
 
-        ConfiteriaPresentacion presentacion = ConfiteriaPresentacion.builder()
+        ConfiteriaPresentacionRequest request = ConfiteriaPresentacionRequest.builder()
+                .codigo(1)
                 .porcion(1.0)
                 .unidadMedida(UnidadMedida.UNIDAD)
                 .precio(35000.0)
-                .confiteria(confiteria)
+                .confiteriaCodigo(confiteria.getCodigo())
                 .build();
-        presentacion.setCodigo(1);
 
-        ConfiteriaPresentacion actualizada = presentacionServicio.actualizar(presentacion, null);
+        ConfiteriaPresentacionResponse actualizada = presentacionServicio.actualizar(request, null);
 
         Assertions.assertEquals(35000.0, actualizada.getPrecio());
         Assertions.assertEquals(35000.0, actualizada.getPrecioBase());
         Assertions.assertNull(actualizada.getFechaExpiracionTemporal());
-        Assertions.assertFalse(actualizada.esPrecioTemporal());
 
-        HistorialPrecioPresentacion historial = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
+        boolean esPrecioTemporal = actualizada.getFechaExpiracionTemporal() != null
+                && actualizada.getFechaExpiracionTemporal().isAfter(LocalDateTime.now());
+        Assertions.assertFalse(esPrecioTemporal);
+
+        HistorialPrecioPresentacionResponse historial = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
         Assertions.assertNotNull(historial);
         Assertions.assertEquals(TipoCambioPrecioPresentacion.AUMENTO, historial.getTipoCambio());
 
@@ -118,16 +128,23 @@ public class ConfiteriaPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void sinCambioDePrecioNoGeneraHistorial() throws Exception {
-        ConfiteriaPresentacion presentacion = presentacionServicio.obtener(1).orElse(null);
+        ConfiteriaPresentacionResponse presentacion = presentacionServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(presentacion);
 
-        presentacion.setPorcion(2.0);
+        ConfiteriaPresentacionRequest request = ConfiteriaPresentacionRequest.builder()
+                .codigo(presentacion.getCodigo())
+                .porcion(2.0)
+                .unidadMedida(presentacion.getUnidadMedida())
+                .precio(presentacion.getPrecio())
+                .precioBase(presentacion.getPrecioBase())
+                .confiteriaCodigo(presentacion.getConfiteria().getCodigo())
+                .build();
 
-        ConfiteriaPresentacion actualizada = presentacionServicio.actualizar(presentacion, null);
+        ConfiteriaPresentacionResponse actualizada = presentacionServicio.actualizar(request, null);
 
         Assertions.assertNotNull(actualizada);
 
-        HistorialPrecioPresentacion historial = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
+        HistorialPrecioPresentacionResponse historial = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
         Assertions.assertNull(historial);
 
         System.out.println("\nActualizacion sin cambio de precio, sin historial.");
@@ -136,7 +153,7 @@ public class ConfiteriaPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPorConfiteria() throws Exception {
-        List<ConfiteriaPresentacion> presentaciones = presentacionServicio.listarPorConfiteria(7);
+        List<ConfiteriaPresentacionResponse> presentaciones = presentacionServicio.listarPorConfiteria(7);
 
         Assertions.assertEquals(2, presentaciones.size());
 
@@ -147,24 +164,31 @@ public class ConfiteriaPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarConDescuentoTemporal() throws Exception {
-        Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
+        ConfiteriaResponse confiteria = confiteriaServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(confiteria);
 
-        ConfiteriaPresentacion presentacion = ConfiteriaPresentacion.builder()
+        ConfiteriaPresentacionRequest request = ConfiteriaPresentacionRequest.builder()
+                .codigo(1)
                 .porcion(1.0)
                 .unidadMedida(UnidadMedida.UNIDAD)
                 .precio(25000.0)
-                .confiteria(confiteria)
+                .confiteriaCodigo(confiteria.getCodigo())
                 .build();
-        presentacion.setCodigo(1);
 
-        presentacionServicio.actualizar(presentacion, LocalDateTime.now().plusDays(5).truncatedTo(java.time.temporal.ChronoUnit.MICROS));
+        presentacionServicio.actualizar(request, LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS));
 
-        List<ConfiteriaPresentacion> descuentos = presentacionServicio.listarConDescuentoTemporal();
+        List<ConfiteriaPresentacionResponse> descuentos = presentacionServicio.listarConDescuentoTemporal();
 
         Assertions.assertEquals(1, descuentos.size());
 
         System.out.println("\nPresentaciones con descuento temporal:");
         descuentos.forEach(System.out::println);
+    }
+
+    private int calcularPorcentajeDescuento(Double precioBase, Double precioNuevo) {
+        if (precioBase == null || precioBase == 0) {
+            return 0;
+        }
+        return (int) Math.round(((precioBase - precioNuevo) / precioBase) * 100);
     }
 }

@@ -17,18 +17,23 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
+import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.service.purchase.CompraConfiteriaServicio;
-import com.unicine.service.purchase.EntradaServicio;
 import com.unicine.repository.user.ClienteRepo;
+import com.unicine.transfer.dto.request.CompraCompletaRequest;
+import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
+import com.unicine.transfer.dto.request.CompraRequest;
+import com.unicine.transfer.dto.request.EntradaRequest;
+import com.unicine.transfer.dto.response.CompraResponse;
+import com.unicine.transfer.mapper.CompraConfiteriaMapper;
+import com.unicine.transfer.mapper.CompraMapper;
+import com.unicine.transfer.mapper.EntradaMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de compras con logica de negocio completa.
@@ -39,53 +44,52 @@ import jakarta.validation.Valid;
 @Validated
 public class CompraServicioImp implements CompraServicio {
 
-    // NOTE: Inyeccion por constructor recomendada sobre @Autowired
     private final CompraRepo compraRepo;
     private final EntradaRepo entradaRepo;
+    private final CompraConfiteriaRepo compraConfiteriaRepo;
     private final CuponClienteRepo cuponClienteRepo;
     private final ClienteRepo clienteRepo;
     private final FuncionRepo funcionRepo;
     private final EntradaServicio entradaServicio;
     private final CompraConfiteriaServicio compraConfiteriaServicio;
+    private final CompraMapper compraMapper;
+    private final EntradaMapper entradaMapper;
+    private final CompraConfiteriaMapper compraConfiteriaMapper;
 
     public CompraServicioImp(CompraRepo compraRepo, EntradaRepo entradaRepo,
+                             CompraConfiteriaRepo compraConfiteriaRepo,
                              CuponClienteRepo cuponClienteRepo, ClienteRepo clienteRepo,
                              FuncionRepo funcionRepo, EntradaServicio entradaServicio,
-                             CompraConfiteriaServicio compraConfiteriaServicio) {
+                             CompraConfiteriaServicio compraConfiteriaServicio,
+                             CompraMapper compraMapper, EntradaMapper entradaMapper,
+                             CompraConfiteriaMapper compraConfiteriaMapper) {
         this.compraRepo = compraRepo;
         this.entradaRepo = entradaRepo;
+        this.compraConfiteriaRepo = compraConfiteriaRepo;
         this.cuponClienteRepo = cuponClienteRepo;
         this.clienteRepo = clienteRepo;
         this.funcionRepo = funcionRepo;
         this.entradaServicio = entradaServicio;
         this.compraConfiteriaServicio = compraConfiteriaServicio;
+        this.compraMapper = compraMapper;
+        this.entradaMapper = entradaMapper;
+        this.compraConfiteriaMapper = compraConfiteriaMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Valida que la compra exista en la base de datos.
-     * Lanza ResourceNotFoundException si no se encuentra.
-     */
     private void validarExiste(Optional<Compra> compra) {
         if (compra.isEmpty()) {
             throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
     }
 
-    /**
-     * Valida que la lista de compras no este vacia.
-     * Lanza ResourceNotFoundException si la lista esta vacia.
-     */
     private void validarExiste(List<Compra> compras) {
         if (compras.isEmpty()) {
             throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
     }
 
-    /**
-     * Valida que el cliente exista en la base de datos.
-     */
     private void validarClienteExiste(Integer cedula) {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
@@ -93,9 +97,6 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Valida que la funcion exista en la base de datos.
-     */
     private void validarFuncionExiste(Integer codigo) {
         Optional<Funcion> funcion = funcionRepo.findById(codigo);
         if (funcion.isEmpty()) {
@@ -103,10 +104,6 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Valida que el cupon del cliente este disponible (no usado y no vencido).
-     * Lanza BusinessRuleException si el cupon ya fue usado o si expiro.
-     */
     private void validarCuponDisponible(CuponCliente cuponCliente) {
         if (cuponCliente == null) {
             return;
@@ -121,29 +118,18 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Valida que el descuento no supere el valor total de la compra.
-     */
     private void validarDescuentoNoMayorTotal(Double descuento, Double total) {
         if (descuento > total) {
             throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_DISCOUNT_GREATER_THAN_TOTAL);
         }
     }
 
-    /**
-     * Valida que la compra no haya sido procesada (estado false).
-     * Una compra procesada no puede modificarse.
-     */
     private void validarCompraNoProcesada(Compra compra) {
         if (!compra.getEstado()) {
             throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_PURCHASE_ALREADY_PROCESSED);
         }
     }
 
-    /**
-     * Valida que las sillas solicitadas para una funcion esten disponibles.
-     * Lanza BusinessRuleException si alguna silla ya esta ocupada.
-     */
     private void validarSillasDisponibles(List<Entrada> entradas, Integer codigoFuncion) {
         for (Entrada entrada : entradas) {
             boolean ocupada = entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(
@@ -154,10 +140,6 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Calcula el valor total de la compra sumando entradas, confiteria
-     * y aplicando el descuento del cupon si existe.
-     */
     private Double calcularValorTotal(List<Entrada> entradas,
                                        List<CompraConfiteria> confiterias,
                                        CuponCliente cuponCliente) {
@@ -183,96 +165,109 @@ public class CompraServicioImp implements CompraServicio {
     // SECTION: Implementacion de servicios CRUD
 
     @Override
-    public Compra registrar(@Valid Compra compra) {
-        return compraRepo.save(compra);
+    public CompraResponse registrar(CompraRequest request) {
+        Compra compra = compraMapper.toEntity(request);
+        Compra registro = compraRepo.save(compra);
+        return compraMapper.toResponse(registro);
     }
 
     @Override
-    public Compra actualizar(@Valid Compra compra) {
-        Optional<Compra> buscado = compraRepo.findById(compra.getCodigo());
+    public CompraResponse actualizar(CompraRequest request) {
+        Optional<Compra> buscado = compraRepo.findById(request.getCodigo());
         validarExiste(buscado);
         validarCompraNoProcesada(buscado.get());
-        return compraRepo.save(compra);
+
+        Compra compra = compraMapper.toEntity(request);
+        Compra actualizado = compraRepo.save(compra);
+        return compraMapper.toResponse(actualizado);
     }
 
     @Override
-    public void eliminar(@Valid Compra compra) {
-        compraRepo.delete(compra);
-    }
-
-    @Override
-    public Optional<Compra> obtener(Integer codigo) {
+    public void eliminar(Integer codigo) {
         Optional<Compra> buscado = compraRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+        compraRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Compra> listar() {
-        return compraRepo.findAll();
+    public Optional<CompraResponse> obtener(Integer codigo) {
+        Optional<Compra> buscado = compraRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(compraMapper::toResponse);
     }
 
     @Override
-    public List<Compra> listarPaginado() {
-        return compraRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<CompraResponse> listar() {
+        return compraMapper.toResponseList(compraRepo.findAll());
+    }
+
+    @Override
+    public List<CompraResponse> listarPaginado() {
+        return compraMapper.toResponseList(compraRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public Compra registrarCompraCompleta(Compra compra,
-                                           List<Entrada> entradas,
-                                           List<CompraConfiteria> confiterias) throws Exception {
-        validarClienteExiste(compra.getCliente().getCedula());
-        validarFuncionExiste(compra.getFuncion().getCodigo());
-        validarSillasDisponibles(entradas, compra.getFuncion().getCodigo());
+    public CompraResponse registrarCompraCompleta(CompraCompletaRequest request) throws Exception {
+        CompraRequest compraRequest = request.getCompra();
+        List<EntradaRequest> entradaRequests = request.getEntradas();
+        List<CompraConfiteriaRequest> confiteriaRequests = request.getConfiterias();
 
-        CuponCliente cuponCliente = compra.getCuponCliente();
-        if (cuponCliente != null) {
-            Optional<CuponCliente> cc = cuponClienteRepo.findById(cuponCliente.getCodigo());
+        validarClienteExiste(compraRequest.getClienteCedula());
+        validarFuncionExiste(compraRequest.getFuncionCodigo());
+
+        List<Entrada> entradas = entradaMapper.toEntityList(entradaRequests);
+        validarSillasDisponibles(entradas, compraRequest.getFuncionCodigo());
+
+        CuponCliente cuponCliente = null;
+        if (compraRequest.getCuponClienteCodigo() != null) {
+            Optional<CuponCliente> cc = cuponClienteRepo.findById(compraRequest.getCuponClienteCodigo());
             if (cc.isEmpty()) {
                 throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
             }
             cuponCliente = cc.get();
             validarCuponDisponible(cuponCliente);
-            compra.setCuponCliente(cuponCliente);
         }
 
+        List<CompraConfiteria> confiterias = compraConfiteriaMapper.toEntityList(confiteriaRequests);
+
         Double valorTotal = calcularValorTotal(entradas, confiterias, cuponCliente);
+
+        Compra compra = compraMapper.toEntity(compraRequest);
         compra.setValorTotal(valorTotal);
         compra.setFechaCompra(LocalDateTime.now(ZoneId.of("America/Bogota")));
         compra.setEstado(true);
+        if (cuponCliente != null) {
+            compra.setCuponCliente(cuponCliente);
+        }
 
         Compra guardada = compraRepo.save(compra);
 
         for (Entrada entrada : entradas) {
             entrada.setCompra(guardada);
             entrada.setFuncion(guardada.getFuncion());
-            entradaServicio.registrar(entrada);
+            entradaRepo.save(entrada);
         }
 
         for (CompraConfiteria cc : confiterias) {
             cc.setCompra(guardada);
-            compraConfiteriaServicio.registrar(cc);
+            compraConfiteriaRepo.save(cc);
         }
 
         if (cuponCliente != null) {
             cuponCliente.setEstado(false);
             cuponClienteRepo.save(cuponCliente);
-
-            // TODO: emitir evento de dominio CUPON_REDIMIDO para reactividad futura (SSE/WebSockets)
         }
 
-        // TODO: emitir evento de dominio COMPRA_CONFIRMADA para reactividad futura (SSE/WebSockets)
-
-        return guardada;
+        return compraMapper.toResponse(guardada);
     }
 
     @Override
-    public List<Compra> obtenerComprasCliente(Integer cedula) {
+    public List<CompraResponse> obtenerComprasCliente(Integer cedula) {
         List<Compra> compras = compraRepo.obtenerComprasCedula(cedula);
         validarExiste(compras);
-        return compras;
+        return compraMapper.toResponseList(compras);
     }
 
     @Override

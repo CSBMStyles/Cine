@@ -22,4 +22,6 @@ public interface CompraConfiteriaMapper {
     @Mapping(target = "compra.codigo", source = "compraCodigo")
     @Mapping(target = "presentacion.codigo", source = "presentacionCodigo")
     CompraConfiteria toEntity(CompraConfiteriaRequest request);
+
+    List<CompraConfiteria> toEntityList(List<CompraConfiteriaRequest> requests);
 }

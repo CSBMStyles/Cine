@@ -3,10 +3,13 @@ package com.unicine.service.purchase;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.purchase.Entrada;
+import com.unicine.transfer.dto.request.EntradaRequest;
 import com.unicine.transfer.dto.response.DetalleSillaResponse;
+import com.unicine.transfer.dto.response.EntradaResponse;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 /**
  * Servicio de gestion de entradas.
@@ -17,21 +20,23 @@ import jakarta.validation.Valid;
  */
 public interface EntradaServicio {
 
-    Entrada registrar(@Valid Entrada entrada) throws Exception;
+    EntradaResponse registrar(@Valid EntradaRequest request) throws Exception;
 
-    Entrada actualizar(@Valid Entrada entrada) throws Exception;
+    EntradaResponse actualizar(@Valid EntradaRequest request) throws Exception;
 
-    void eliminar(@Valid Entrada entrada, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull @Positive Integer codigo,
+            boolean confirmacion) throws Exception;
 
-    Optional<Entrada> obtener(Integer codigo) throws Exception;
+    Optional<EntradaResponse> obtener(@NotNull @Positive Integer codigo) throws Exception;
 
-    List<Entrada> listar();
+    List<EntradaResponse> listar();
 
-    List<Entrada> listarPaginado();
+    List<EntradaResponse> listarPaginado();
 
-    List<Entrada> listarPorCompra(Integer codigoCompra) throws Exception;
+    List<EntradaResponse> listarPorCompra(@NotNull @Positive Integer codigoCompra) throws Exception;
 
-    List<Entrada> listarPorFuncion(Integer codigoFuncion) throws Exception;
+    List<EntradaResponse> listarPorFuncion(@NotNull @Positive Integer codigoFuncion) throws Exception;
 
-    List<DetalleSillaResponse> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception;
+    List<DetalleSillaResponse> obtenerSillasOcupadas(@NotNull @Positive Integer codigoFuncion) throws Exception;
 }

@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.entity.image.Imagen;
-import com.unicine.service.confiteria.ConfiteriaServicio;
+import com.unicine.repository.confiteria.ConfiteriaRepo;
 import com.unicine.service.image.ImagenServicio;
 
 @SpringBootTest
@@ -29,11 +29,11 @@ public class ImagenConfiteriaCargaTest {
     private ImagenServicio imagenServicio;
 
     @Autowired
-    private ConfiteriaServicio confiteriaServicio;
+    private ConfiteriaRepo confiteriaRepo;
 
     private static final String RUTA_BASE = "image/confiteria";
 
-    private Imagen subirImagenConfiteria(String rutaRelativa, Integer confiteriaId, String nombreConfiteria) throws Exception {
+    private Imagen subirImagenConfiteria(String rutaRelativa, Integer confiteriaCodigo, String nombreConfiteria) throws Exception {
 
         Path rutaBase = Paths.get(System.getProperty("user.dir"))
                 .getParent() // subir de 'negocio' a 'Cine'
@@ -51,8 +51,8 @@ public class ImagenConfiteriaCargaTest {
 
         MultipartFile file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/png", contenido);
 
-        Confiteria confiteria = confiteriaServicio.obtener(confiteriaId)
-                .orElseThrow(() -> new RuntimeException("No se encontro la confiteria con id " + confiteriaId));
+        Confiteria confiteria = confiteriaRepo.findById(confiteriaCodigo)
+                .orElseThrow(() -> new RuntimeException("No se encontro la confiteria con codigo " + confiteriaCodigo));
 
         Imagen imagen = new Imagen();
         imagen.setConfiteria(confiteria);
@@ -64,7 +64,7 @@ public class ImagenConfiteriaCargaTest {
 
         System.out.println("===== " + nombreConfiteria + " =====");
         System.out.println("ARCHIVO: " + rutaRelativa);
-        System.out.println("CONFITERIA_ID: " + confiteriaId);
+        System.out.println("CONFITERIA_CODIGO: " + confiteriaCodigo);
         System.out.println("IMAGEN_ID: " + resultado.getCodigo());
         System.out.println("IMAGEN_URL: " + resultado.getUrl());
         System.out.println("==============================");

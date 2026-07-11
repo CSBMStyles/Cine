@@ -4,8 +4,9 @@ import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.enums.confiteria.CategoriaConfiteria;
+import com.unicine.transfer.dto.request.ConfiteriaRequest;
+import com.unicine.transfer.dto.response.ConfiteriaResponse;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -23,20 +24,24 @@ public interface ConfiteriaServicio {
     // CRUD BASE
     // ============================================================
 
-    Confiteria registrar(@Valid Confiteria confiteria) throws Exception;
+    ConfiteriaResponse registrar(@Valid ConfiteriaRequest request) throws Exception;
 
-    Confiteria actualizar(@Valid Confiteria confiteria) throws Exception;
+    ConfiteriaResponse actualizar(@Valid ConfiteriaRequest request) throws Exception;
 
-    void eliminar(@Valid Confiteria confiteria, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigo,
+            boolean confirmacion) throws Exception;
 
-    Optional<Confiteria> obtener(
+    Optional<ConfiteriaResponse> obtener(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
 
-    List<Confiteria> listar();
+    List<ConfiteriaResponse> listar();
 
-    List<Confiteria> listarPaginado();
+    List<ConfiteriaResponse> listarPaginado();
 
     // ============================================================
     // METODOS DE NEGOCIO
@@ -49,7 +54,7 @@ public interface ConfiteriaServicio {
      * @return Lista de productos de esa categoria
      * @throws Exception si no hay productos en la categoria
      */
-    List<Confiteria> listarPorCategoria(CategoriaConfiteria categoria) throws Exception;
+    List<ConfiteriaResponse> listarPorCategoria(CategoriaConfiteria categoria) throws Exception;
 
     /**
      * Busca productos de confiteria por nombre (busqueda parcial).
@@ -58,5 +63,5 @@ public interface ConfiteriaServicio {
      * @return Lista de productos que coinciden
      * @throws Exception si no se encuentran coincidencias
      */
-    List<Confiteria> buscarPorNombre(String nombre) throws Exception;
+    List<ConfiteriaResponse> buscarPorNombre(String nombre) throws Exception;
 }

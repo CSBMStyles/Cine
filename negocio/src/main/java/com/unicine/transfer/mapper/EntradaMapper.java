@@ -22,4 +22,6 @@ public interface EntradaMapper {
     @Mapping(target = "compra.codigo", source = "compraCodigo")
     @Mapping(target = "funcion.codigo", source = "funcionCodigo")
     Entrada toEntity(EntradaRequest request);
+
+    List<Entrada> toEntityList(List<EntradaRequest> requests);
 }

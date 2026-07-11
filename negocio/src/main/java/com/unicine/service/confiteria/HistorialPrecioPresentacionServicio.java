@@ -3,8 +3,8 @@ package com.unicine.service.confiteria;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.confiteria.ConfiteriaPresentacion;
-import com.unicine.entity.confiteria.HistorialPrecioPresentacion;
+import com.unicine.transfer.dto.request.HistorialPrecioPresentacionRequest;
+import com.unicine.transfer.dto.response.HistorialPrecioPresentacionResponse;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -20,20 +20,17 @@ import jakarta.validation.constraints.Positive;
  */
 public interface HistorialPrecioPresentacionServicio {
 
-    HistorialPrecioPresentacion registrarCambio(ConfiteriaPresentacion presentacion,
-                                                 Double precioAnterior,
-                                                 Double precioNuevo,
-                                                 Double precioBaseAnterior) throws Exception;
+    HistorialPrecioPresentacionResponse registrar(@Valid HistorialPrecioPresentacionRequest request) throws Exception;
 
-    List<HistorialPrecioPresentacion> listarPorPresentacion(Integer codigoPresentacion) throws Exception;
+    List<HistorialPrecioPresentacionResponse> listarPorPresentacion(Integer codigoPresentacion) throws Exception;
 
-    Optional<HistorialPrecioPresentacion> obtenerUltimoPorPresentacion(Integer codigoPresentacion) throws Exception;
+    Optional<HistorialPrecioPresentacionResponse> obtenerUltimoPorPresentacion(Integer codigoPresentacion) throws Exception;
 
     void eliminarPorPresentacion(@NotNull @Positive Integer codigoPresentacion) throws Exception;
 
     void eliminarTodo() throws Exception;
 
-    Optional<HistorialPrecioPresentacion> obtener(
+    Optional<HistorialPrecioPresentacionResponse> obtener(
             @NotNull(message = "El codigo no puede estar vacio")
             @Positive(message = "El codigo debe ser un numero positivo")
             Integer codigo) throws Exception;

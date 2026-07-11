@@ -13,10 +13,11 @@ import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.user.ClienteRepo;
+import com.unicine.transfer.dto.request.CuponClienteRequest;
+import com.unicine.transfer.dto.response.CuponClienteResponse;
+import com.unicine.transfer.mapper.CuponClienteMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de cupones asignados a clientes.
@@ -30,10 +31,12 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
 
     private final CuponClienteRepo cuponClienteRepo;
     private final ClienteRepo clienteRepo;
+    private final CuponClienteMapper cuponClienteMapper;
 
-    public CuponClienteServicioImp(CuponClienteRepo cuponClienteRepo, ClienteRepo clienteRepo) {
+    public CuponClienteServicioImp(CuponClienteRepo cuponClienteRepo, ClienteRepo clienteRepo, CuponClienteMapper cuponClienteMapper) {
         this.cuponClienteRepo = cuponClienteRepo;
         this.clienteRepo = clienteRepo;
+        this.cuponClienteMapper = cuponClienteMapper;
     }
 
     // SECTION: Metodos de soporte
@@ -81,71 +84,80 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
     // SECTION: Implementacion de servicios CRUD
 
     @Override
-    public CuponCliente registrar(@Valid CuponCliente cuponCliente) throws Exception {
-        return cuponClienteRepo.save(cuponCliente);
+    public CuponClienteResponse registrar(CuponClienteRequest request) throws Exception {
+        CuponCliente cuponCliente = cuponClienteMapper.toEntity(request);
+        CuponCliente registro = cuponClienteRepo.save(cuponCliente);
+        return cuponClienteMapper.toResponse(registro);
     }
 
     @Override
-    public CuponCliente actualizar(@Valid CuponCliente cuponCliente) throws Exception {
-        Optional<CuponCliente> buscado = cuponClienteRepo.findById(cuponCliente.getCodigo());
+    public CuponClienteResponse actualizar(CuponClienteRequest request) throws Exception {
+        Optional<CuponCliente> buscado = cuponClienteRepo.findById(request.getCodigo());
         validarExiste(buscado);
-        return cuponClienteRepo.save(cuponCliente);
+
+        CuponCliente cuponCliente = cuponClienteMapper.toEntity(request);
+        CuponCliente actualizado = cuponClienteRepo.save(cuponCliente);
+        return cuponClienteMapper.toResponse(actualizado);
     }
 
     @Override
-    public void eliminar(@Valid CuponCliente cuponCliente, boolean confirmacion) throws Exception {
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception {
         comprobarConfirmacion(confirmacion);
-        cuponClienteRepo.delete(cuponCliente);
-    }
 
-    @Override
-    public Optional<CuponCliente> obtener(Integer codigo) throws Exception {
         Optional<CuponCliente> buscado = cuponClienteRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+
+        cuponClienteRepo.delete(buscado.get());
     }
 
     @Override
-    public List<CuponCliente> listar() {
-        return cuponClienteRepo.findAll();
+    public Optional<CuponClienteResponse> obtener(Integer codigo) throws Exception {
+        Optional<CuponCliente> buscado = cuponClienteRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(cuponClienteMapper::toResponse);
     }
 
     @Override
-    public List<CuponCliente> listarPaginado() {
-        return cuponClienteRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<CuponClienteResponse> listar() {
+        return cuponClienteMapper.toResponseList(cuponClienteRepo.findAll());
+    }
+
+    @Override
+    public List<CuponClienteResponse> listarPaginado() {
+        return cuponClienteMapper.toResponseList(cuponClienteRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public List<CuponCliente> listarPorCliente(Integer cedula) throws Exception {
+    public List<CuponClienteResponse> listarPorCliente(Integer cedula) throws Exception {
         validarClienteExiste(cedula);
         List<CuponCliente> cuponesClientes = cuponClienteRepo.findByClienteCedula(cedula);
         validarExiste(cuponesClientes);
-        return cuponesClientes;
+        return cuponClienteMapper.toResponseList(cuponesClientes);
     }
 
     @Override
-    public List<CuponCliente> listarActivosPorCliente(Integer cedula) throws Exception {
+    public List<CuponClienteResponse> listarActivosPorCliente(Integer cedula) throws Exception {
         validarClienteExiste(cedula);
         List<CuponCliente> cuponesClientes = cuponClienteRepo.findByClienteCedulaAndEstado(cedula, true);
         validarExiste(cuponesClientes);
-        return cuponesClientes;
+        return cuponClienteMapper.toResponseList(cuponesClientes);
     }
 
     @Override
-    public List<CuponCliente> listarInactivosPorCliente(Integer cedula) throws Exception {
+    public List<CuponClienteResponse> listarInactivosPorCliente(Integer cedula) throws Exception {
         validarClienteExiste(cedula);
         List<CuponCliente> cuponesClientes = cuponClienteRepo.findByClienteCedulaAndEstado(cedula, false);
         validarExiste(cuponesClientes);
-        return cuponesClientes;
+        return cuponClienteMapper.toResponseList(cuponesClientes);
     }
 
     @Override
-    public Optional<CuponCliente> obtenerPorCuponYCliente(Integer codigoCupon, Integer cedula) throws Exception {
+    public Optional<CuponClienteResponse> obtenerPorCuponYCliente(Integer codigoCupon, Integer cedula) throws Exception {
         Optional<CuponCliente> buscado = cuponClienteRepo.findByCuponCodigoAndClienteCedula(codigoCupon, cedula);
         validarExiste(buscado);
-        return buscado;
+        return buscado.map(cuponClienteMapper::toResponse);
     }
 
     @Override

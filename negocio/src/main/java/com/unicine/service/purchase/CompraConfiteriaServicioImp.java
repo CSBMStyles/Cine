@@ -15,9 +15,10 @@ import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.confiteria.ConfiteriaPresentacionRepo;
 import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
+import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
+import com.unicine.transfer.dto.response.CompraConfiteriaResponse;
+import com.unicine.transfer.mapper.CompraConfiteriaMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de items de confiteria dentro de una compra.
@@ -32,13 +33,16 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
     private final CompraConfiteriaRepo compraConfiteriaRepo;
     private final CompraRepo compraRepo;
     private final ConfiteriaPresentacionRepo presentacionRepo;
+    private final CompraConfiteriaMapper compraConfiteriaMapper;
 
     public CompraConfiteriaServicioImp(CompraConfiteriaRepo compraConfiteriaRepo,
                                        CompraRepo compraRepo,
-                                       ConfiteriaPresentacionRepo presentacionRepo) {
+                                       ConfiteriaPresentacionRepo presentacionRepo,
+                                       CompraConfiteriaMapper compraConfiteriaMapper) {
         this.compraConfiteriaRepo = compraConfiteriaRepo;
         this.compraRepo = compraRepo;
         this.presentacionRepo = presentacionRepo;
+        this.compraConfiteriaMapper = compraConfiteriaMapper;
     }
 
     // SECTION: Metodos de soporte
@@ -103,58 +107,67 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
     // SECTION: Implementacion de servicios CRUD
 
     @Override
-    public CompraConfiteria registrar(@Valid CompraConfiteria compraConfiteria) {
+    public CompraConfiteriaResponse registrar(CompraConfiteriaRequest request) {
+        CompraConfiteria compraConfiteria = compraConfiteriaMapper.toEntity(request);
         validarRelaciones(compraConfiteria);
-        return compraConfiteriaRepo.save(compraConfiteria);
+        CompraConfiteria registro = compraConfiteriaRepo.save(compraConfiteria);
+        return compraConfiteriaMapper.toResponse(registro);
     }
 
     @Override
-    public CompraConfiteria actualizar(@Valid CompraConfiteria compraConfiteria) {
-        Optional<CompraConfiteria> buscado = compraConfiteriaRepo.findById(compraConfiteria.getCodigo());
+    public CompraConfiteriaResponse actualizar(CompraConfiteriaRequest request) {
+        Optional<CompraConfiteria> buscado = compraConfiteriaRepo.findById(request.getCodigo());
         validarExiste(buscado);
+
+        CompraConfiteria compraConfiteria = compraConfiteriaMapper.toEntity(request);
         validarRelaciones(compraConfiteria);
-        return compraConfiteriaRepo.save(compraConfiteria);
+        CompraConfiteria actualizado = compraConfiteriaRepo.save(compraConfiteria);
+        return compraConfiteriaMapper.toResponse(actualizado);
     }
 
     @Override
-    public void eliminar(@Valid CompraConfiteria compraConfiteria, boolean confirmacion) throws Exception {
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception {
         comprobarConfirmacion(confirmacion);
-        compraConfiteriaRepo.delete(compraConfiteria);
-    }
 
-    @Override
-    public Optional<CompraConfiteria> obtener(Integer codigo) {
         Optional<CompraConfiteria> buscado = compraConfiteriaRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+
+        compraConfiteriaRepo.delete(buscado.get());
     }
 
     @Override
-    public List<CompraConfiteria> listar() {
-        return compraConfiteriaRepo.findAll();
+    public Optional<CompraConfiteriaResponse> obtener(Integer codigo) {
+        Optional<CompraConfiteria> buscado = compraConfiteriaRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(compraConfiteriaMapper::toResponse);
     }
 
     @Override
-    public List<CompraConfiteria> listarPaginado() {
-        return compraConfiteriaRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<CompraConfiteriaResponse> listar() {
+        return compraConfiteriaMapper.toResponseList(compraConfiteriaRepo.findAll());
+    }
+
+    @Override
+    public List<CompraConfiteriaResponse> listarPaginado() {
+        return compraConfiteriaMapper.toResponseList(compraConfiteriaRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public List<CompraConfiteria> listarPorCompra(Integer codigoCompra) {
+    public List<CompraConfiteriaResponse> listarPorCompra(Integer codigoCompra) {
         validarCompraExiste(codigoCompra);
         List<CompraConfiteria> items = compraConfiteriaRepo.findByCompraCodigo(codigoCompra);
         validarExiste(items);
-        return items;
+        return compraConfiteriaMapper.toResponseList(items);
     }
 
     @Override
-    public List<CompraConfiteria> listarPorPresentacion(Integer codigoPresentacion) {
+    public List<CompraConfiteriaResponse> listarPorPresentacion(Integer codigoPresentacion) {
         validarPresentacionExiste(codigoPresentacion);
         List<CompraConfiteria> items = compraConfiteriaRepo.findByPresentacionCodigo(codigoPresentacion);
         validarExiste(items);
-        return items;
+        return compraConfiteriaMapper.toResponseList(items);
     }
 
     @Override
