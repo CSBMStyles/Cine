@@ -15,10 +15,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.unicine.entity.confiteria.Confiteria;
-import com.unicine.entity.image.Imagen;
-import com.unicine.repository.confiteria.ConfiteriaRepo;
+import com.unicine.enums.image.TipoPropietarioImagen;
 import com.unicine.service.image.ImagenServicio;
+import com.unicine.transfer.dto.request.ImagenRequest;
+import com.unicine.transfer.dto.response.ImagenResponse;
 
 @SpringBootTest
 @Transactional
@@ -28,12 +28,9 @@ public class ImagenConfiteriaCargaTest {
     @Autowired
     private ImagenServicio imagenServicio;
 
-    @Autowired
-    private ConfiteriaRepo confiteriaRepo;
-
     private static final String RUTA_BASE = "image/confiteria";
 
-    private Imagen subirImagenConfiteria(String rutaRelativa, Integer confiteriaCodigo, String nombreConfiteria) throws Exception {
+    private ImagenResponse subirImagenConfiteria(String rutaRelativa, Integer confiteriaCodigo, String nombreConfiteria) throws Exception {
 
         Path rutaBase = Paths.get(System.getProperty("user.dir"))
                 .getParent() // subir de 'negocio' a 'Cine'
@@ -51,13 +48,13 @@ public class ImagenConfiteriaCargaTest {
 
         MultipartFile file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/png", contenido);
 
-        Confiteria confiteria = confiteriaRepo.findById(confiteriaCodigo)
-                .orElseThrow(() -> new RuntimeException("No se encontro la confiteria con codigo " + confiteriaCodigo));
+        ImagenRequest request = ImagenRequest.builder()
+                .nombre(fileOriginal.getName())
+                .tipoPropietario(TipoPropietarioImagen.CONFITERIA)
+                .codigoPropietario(confiteriaCodigo)
+                .build();
 
-        Imagen imagen = new Imagen();
-        imagen.setConfiteria(confiteria);
-
-        Imagen resultado = imagenServicio.registrar(imagen, file, confiteria);
+        ImagenResponse resultado = imagenServicio.registrar(request, file);
 
         Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
         Assertions.assertNotNull(resultado.getCodigo(), "El codigo de la imagen no debe ser nulo");

@@ -11,299 +11,342 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.image.Imagen;
+import com.unicine.entity.user.Administrador;
+import com.unicine.entity.user.AdministradorTeatro;
+import com.unicine.entity.user.Cliente;
+import com.unicine.entity.confiteria.Confiteria;
+import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.user.Persona;
 import com.unicine.entity.image.interfaced.Imagenable;
-import com.unicine.enums.image.TipoImagenPelicula;
+import com.unicine.enums.image.TipoPropietarioImagen;
+import com.unicine.exception.ResourceNotFoundException;
+import com.unicine.exception.ValidationException;
+import com.unicine.repository.confiteria.ConfiteriaRepo;
 import com.unicine.repository.image.ImagenRepo;
-import com.unicine.transfer.record.VersionArchivo;
+import com.unicine.repository.movie.PeliculaRepo;
+import com.unicine.repository.user.AdministradorRepo;
+import com.unicine.repository.user.AdministradorTeatroRepo;
+import com.unicine.repository.user.ClienteRepo;
+import com.unicine.transfer.dto.request.ImagenRequest;
+import com.unicine.transfer.dto.response.ImagenResponse;
+import com.unicine.transfer.dto.response.VersionArchivoResponse;
+import com.unicine.transfer.mapper.ImagenMapper;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
+import com.unicine.util.validation.catalog.domain.ImageErrorCatalog;
 
 import io.imagekit.sdk.models.results.Result;
 import io.imagekit.sdk.models.results.ResultFileVersionDetails;
 import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
-import jakarta.validation.Valid;
-import com.unicine.util.validation.catalog.domain.ImageErrorCatalog;
-import com.unicine.exception.ResourceNotFoundException;
-import com.unicine.exception.ValidationException;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Service
 @Validated
 public class ImagenServicioImp implements ImagenServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final ImagenRepo imagenRepo;
     private final ImageKitService imageKitService;
     private final RefactorizadorRuta refactorizadorRuta;
+    private final ImagenMapper imagenMapper;
+    private final ClienteRepo clienteRepo;
+    private final AdministradorRepo administradorRepo;
+    private final AdministradorTeatroRepo administradorTeatroRepo;
+    private final PeliculaRepo peliculaRepo;
+    private final ConfiteriaRepo confiteriaRepo;
 
-    public ImagenServicioImp(ImagenRepo imagenRepo, ImageKitService imageKitService, RefactorizadorRuta refactorizadorRuta) {
+    public ImagenServicioImp(ImagenRepo imagenRepo, ImageKitService imageKitService,
+                             RefactorizadorRuta refactorizadorRuta, ImagenMapper imagenMapper,
+                             ClienteRepo clienteRepo, AdministradorRepo administradorRepo,
+                             AdministradorTeatroRepo administradorTeatroRepo,
+                             PeliculaRepo peliculaRepo, ConfiteriaRepo confiteriaRepo) {
         this.imagenRepo = imagenRepo;
         this.imageKitService = imageKitService;
         this.refactorizadorRuta = refactorizadorRuta;
+        this.imagenMapper = imagenMapper;
+        this.clienteRepo = clienteRepo;
+        this.administradorRepo = administradorRepo;
+        this.administradorTeatroRepo = administradorTeatroRepo;
+        this.peliculaRepo = peliculaRepo;
+        this.confiteriaRepo = confiteriaRepo;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la presencia de la disposicion que se esta buscando
-     * @param numero
-     * @throws
-     */
     private void validarExiste(Optional<Imagen> imagen) throws Exception {
-
         if (imagen.isEmpty()) {
             throw new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND);
         }
     }
 
     private void validarExisteImagen(Imagenable propietario) throws Exception {
-
         if (propietario instanceof Persona) {
-            
             Persona persona = (Persona) propietario;
-
             Optional<Imagen> imagenRelacion = imagenRepo.findByPersona(persona.getCedula());
-            
             if (imagenRelacion.isPresent()) {
                 throw new ValidationException(ImageErrorCatalog.DOMAIN_IMAGE_DUPLICATE_PERSON_ALREADY_HAS_IMAGE);
             }
-        }  
+        }
     }
 
-    /**
-     * Metodo para construir la carpeta de la imagen
-     * @param propietario
-     * @return
-     */
     private String constructorCarpeta(Imagenable propietario) {
-
         if (propietario instanceof Persona) {
-
-            return "personas" + "/" + propietario.getCarpetaPrefijo();
-
+            return "personas/" + propietario.getCarpetaPrefijo();
         } else {
-
             String nombreEntidad = refactorizadorRuta.remplazarDenominacion(propietario.getNombre());
-
             String subCarpeta = propietario.getSubCarpeta();
-
             if (subCarpeta != null) {
-
                 return propietario.getCarpetaPrefijo() + "/" + subCarpeta + "/" + nombreEntidad;
             }
-    
             return propietario.getCarpetaPrefijo() + "/" + nombreEntidad;
         }
     }
 
-    /**
-     * Método para reasignar los datos de la imagen
-     * @param pelicula
-     * @param result
-     */
-    private void reasignarDatos(Imagen imagen, Result result) {
-
-        String fileId = result.getFileId();
-
-        String urlImagen = result.getUrl();
-
-        // REVIEW: Recordar borrar esta infomacion
-
-        System.out.println("Version: " + result.getVersionInfo().getAsJsonObject().get("id"));
-
-        System.out.println("Actualizado: " + result.getUpdatedAt());
-
-        // Actualizar la imagen
-        imagen.setCodigo(fileId);
-
-        imagen.setUrl(urlImagen);
-    }
-
-    /**
-     * Metodo para comprobar la presencia de las relaciones del imagen
-     * @param imagen
-     * @throws
-     */
     private void comprobarConfirmacion(boolean confirmacion) {
-
         if (!confirmacion) {
             throw new RuntimeException("La eliminación no fue confirmada");
         }
-   }
+    }
 
-   /**
-     * Metodo para obtener los ids de las imagenes eliminadas
-     * @param eliminados
-     * @return
-     */
-   private List<String> obtenerEliminadosId(List<Imagen> eliminados) {
-
+    private List<String> obtenerEliminadosId(List<Imagen> eliminados) {
         return eliminados.stream().map(Imagen::getCodigo).collect(Collectors.toList());
     }
 
-    /**
-     * Metodo para obtener los ids de las imagenes de la carpeta
-     * @param result
-     * @return identificadores de las imagenes
-     */
     private List<String> obtenerImagenesCarpetaId(ResultList result) {
-
         return result.getResults().stream().map(response -> response.getFileId()).collect(Collectors.toList());
     }
 
-    /**
-     * Método para validar que el tamaño de la imagen no exceda los 5MB
-     * @param file Archivo MultipartFile a validar
-     * @throws Exception Si el tamaño del archivo excede los 5MB
-     */
     private void validarTamanoImagen(MultipartFile file) throws Exception {
-
         long tamanoMaximo = 5;
-
         double conversion = file.getSize() / Math.pow(1024.0, 2);
-        
         if (conversion > tamanoMaximo) {
-
-            // La razon de dividir el tamaño de la imagen es por el formato, este esta en bytes entonces lo convertimos en mega bytes
-            throw new Exception("El tamaño de la imagen excede el límite permitido de 5 MB. Tamaño actual: " + String.format("%.2f", conversion) + " MB"); 
+            throw new Exception("El tamaño de la imagen excede el límite permitido de 5 MB. Tamaño actual: " + String.format("%.2f", conversion) + " MB");
         }
+    }
+
+    private Imagenable obtenerPropietario(ImagenRequest request) throws Exception {
+        TipoPropietarioImagen tipo = request.getTipoPropietario();
+        Integer codigo = request.getCodigoPropietario();
+
+        return switch (tipo) {
+            case CLIENTE -> clienteRepo.findById(codigo)
+                    .orElseThrow(() -> new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND));
+            case ADMINISTRADOR -> administradorRepo.findById(codigo)
+                    .orElseThrow(() -> new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND));
+            case ADMINISTRADOR_TEATRO -> administradorTeatroRepo.findById(codigo)
+                    .orElseThrow(() -> new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND));
+            case PELICULA -> peliculaRepo.findById(codigo)
+                    .orElseThrow(() -> new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND));
+            case CONFITERIA -> confiteriaRepo.findById(codigo)
+                    .orElseThrow(() -> new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND));
+        };
+    }
+
+    private Imagenable obtenerPropietarioPorTipo(TipoPropietarioImagen tipo, Integer codigo) throws Exception {
+        return obtenerPropietario(ImagenRequest.builder()
+                .tipoPropietario(tipo)
+                .codigoPropietario(codigo)
+                .build());
+    }
+
+    private void asignarPropietario(Imagen imagen, Imagenable propietario) {
+        if (propietario instanceof Cliente cliente) {
+            imagen.setCliente(cliente);
+        } else if (propietario instanceof Administrador administrador) {
+            imagen.setAdministrador(administrador);
+        } else if (propietario instanceof AdministradorTeatro administradorTeatro) {
+            imagen.setAdministradorTeatro(administradorTeatro);
+        } else if (propietario instanceof Pelicula pelicula) {
+            imagen.setPelicula(pelicula);
+        } else if (propietario instanceof Confiteria confiteria) {
+            imagen.setConfiteria(confiteria);
+        }
+    }
+
+    private ImagenResponse enriquecerResponse(Imagen imagen, Result result, TipoPropietarioImagen tipoPropietario, Integer codigoPropietario) {
+        ImagenResponse response = imagenMapper.toResponse(imagen);
+        response.setTipoPropietario(tipoPropietario.name());
+        response.setCodigoPropietario(codigoPropietario);
+
+        if (result != null) {
+            response.setNombre(result.getName());
+            response.setFilePath(result.getFilePath());
+            response.setThumbnailUrl(result.getThumbnail());
+            response.setFileType(result.getFileType());
+            response.setAltura(result.getHeight());
+            response.setAnchura(result.getWidth());
+            response.setTamanio(result.getSize());
+            if (result.getVersionInfo() != null && result.getVersionInfo().isJsonObject()) {
+                JsonObject versionInfo = result.getVersionInfo().getAsJsonObject();
+                if (versionInfo.has("id")) {
+                    response.setVersionId(versionInfo.get("id").getAsString());
+                }
+                if (versionInfo.has("name")) {
+                    response.setVersionName(versionInfo.get("name").getAsString());
+                }
+            }
+        }
+        return response;
     }
 
     // SECTION: Implementacion de servicios
 
-    // 1️⃣ Funcion del Administrador
-
     @Override
-    public Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception {
-
-        return registrar(imagen, file, propietario, null);
-    }
-
-    @Override
-    public Imagen registrar(Imagen imagen, MultipartFile file, Imagenable propietario, TipoImagenPelicula tipoPelicula) throws Exception { 
-
+    public ImagenResponse registrar(ImagenRequest request, MultipartFile file) throws Exception {
+        Imagenable propietario = obtenerPropietario(request);
         validarExisteImagen(propietario);
-
         validarTamanoImagen(file);
 
+        Imagen imagen = imagenMapper.toEntity(request);
+        asignarPropietario(imagen, propietario);
+
         String folder = constructorCarpeta(propietario);
+        Result result = imageKitService.subirImagen(file, folder, propietario, false, request.getNombre(), request.getTipoImagenPelicula());
 
-        Result result = imageKitService.subirImagen(file, folder, propietario, false, null, tipoPelicula);
+        imagen.setCodigo(result.getFileId());
+        imagen.setUrl(result.getUrl());
 
-        reasignarDatos(imagen, result);
-
-        return imagenRepo.save(imagen); 
+        Imagen guardada = imagenRepo.save(imagen);
+        return enriquecerResponse(guardada, result, request.getTipoPropietario(), request.getCodigoPropietario());
     }
 
     @Override
-    public Imagen actualizar(Imagen imagen, MultipartFile file, Imagenable propietario) throws Exception { 
-        
+    public ImagenResponse actualizar(ImagenRequest request, MultipartFile file) throws Exception {
         validarTamanoImagen(file);
-        
-        String folder = constructorCarpeta(propietario);
+        Imagenable propietario = obtenerPropietario(request);
 
-        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario);
-
-        reasignarDatos(imagen, result);
-
-        return imagenRepo.save(imagen); 
-    }
-
-    @Override
-    public Imagen restaurar(@Valid Imagen imagen, String versionId) throws Exception {
-
-        Result result = imageKitService.restaurarVersion(imagen.getCodigo(), versionId);
-
-        reasignarDatos(imagen, result);
-        
-        return imagenRepo.save(imagen);
-    }
-
-    @Override
-    public Imagen renombrar(@Valid Imagen imagen, String nuevoNombre, Imagenable propietario) throws Exception {
-
-        Result result = imageKitService.renombrarImagen(imagen.getCodigo(), nuevoNombre, propietario);
-
-        reasignarDatos(imagen, result);
-
-        return imagenRepo.save(imagen);
-    }
-
-    @Override
-    public void eliminar(@Valid Imagen eliminado, boolean confirmacion) throws Exception { 
-        
-        comprobarConfirmacion(confirmacion);
-
-        imageKitService.eliminarImagen(eliminado.getCodigo());
-
-        imagenRepo.delete(eliminado);
-    }
-
-    @Override
-    public void eliminarMultiple (@Valid List<Imagen> eliminados, boolean confirmacion) throws Exception { 
-        
-        comprobarConfirmacion(confirmacion);
-        
-        imageKitService.eliminarImagenes(obtenerEliminadosId(eliminados));
-
-        imagenRepo.deleteAll(eliminados);
-    }
-
-    // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la imagen usando las anotaciones para validar
-
-    @Override
-    public Optional<Imagen> obtener(String codigo) throws Exception {
-
-        Optional<Imagen> buscado = imagenRepo.findById(codigo);
-
+        Optional<Imagen> buscado = imagenRepo.findById(request.getCodigo());
         validarExiste(buscado);
 
-        return buscado;
+        Imagen imagen = buscado.get();
+        asignarPropietario(imagen, propietario);
+
+        String folder = constructorCarpeta(propietario);
+        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario);
+
+        imagen.setUrl(result.getUrl());
+
+        Imagen actualizada = imagenRepo.save(imagen);
+        return enriquecerResponse(actualizada, result, request.getTipoPropietario(), request.getCodigoPropietario());
     }
 
     @Override
-    public List<String> listar(@Valid Imagenable propietario) throws Exception {
+    public ImagenResponse restaurar(ImagenRequest request, String versionId) throws Exception {
+        Optional<Imagen> buscado = imagenRepo.findById(request.getCodigo());
+        validarExiste(buscado);
 
+        Imagen imagen = buscado.get();
+        Result result = imageKitService.restaurarVersion(imagen.getCodigo(), versionId);
+        imagen.setUrl(result.getUrl());
+
+        Imagen restaurada = imagenRepo.save(imagen);
+        return enriquecerResponse(restaurada, result, request.getTipoPropietario(), request.getCodigoPropietario());
+    }
+
+    @Override
+    public ImagenResponse renombrar(ImagenRequest request, String nuevoNombre) throws Exception {
+        Optional<Imagen> buscado = imagenRepo.findById(request.getCodigo());
+        validarExiste(buscado);
+
+        Imagenable propietario = obtenerPropietario(request);
+        Imagen imagen = buscado.get();
+        Result result = imageKitService.renombrarImagen(imagen.getCodigo(), nuevoNombre, propietario);
+        imagen.setUrl(result.getUrl());
+
+        Imagen renombrada = imagenRepo.save(imagen);
+        return enriquecerResponse(renombrada, result, request.getTipoPropietario(), request.getCodigoPropietario());
+    }
+
+    @Override
+    public void eliminar(String codigo, boolean confirmacion) throws Exception {
+        comprobarConfirmacion(confirmacion);
+
+        Optional<Imagen> buscado = imagenRepo.findById(codigo);
+        validarExiste(buscado);
+
+        imageKitService.eliminarImagen(codigo);
+        imagenRepo.delete(buscado.get());
+    }
+
+    @Override
+    public void eliminarMultiple(List<String> codigos, boolean confirmacion) throws Exception {
+        comprobarConfirmacion(confirmacion);
+
+        List<Imagen> imagenes = imagenRepo.findAllById(codigos);
+        if (imagenes.isEmpty()) {
+            throw new ResourceNotFoundException(ImageErrorCatalog.DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND);
+        }
+
+        imageKitService.eliminarImagenes(obtenerEliminadosId(imagenes));
+        imagenRepo.deleteAll(imagenes);
+    }
+
+    @Override
+    public Optional<ImagenResponse> obtener(String codigo) throws Exception {
+        Optional<Imagen> buscado = imagenRepo.findById(codigo);
+        validarExiste(buscado);
+
+        Imagen imagen = buscado.get();
+        TipoPropietarioImagen tipo = null;
+        Integer codigoPropietario = null;
+
+        if (imagen.getCliente() != null) {
+            tipo = TipoPropietarioImagen.CLIENTE;
+            codigoPropietario = imagen.getCliente().getCedula();
+        } else if (imagen.getAdministrador() != null) {
+            tipo = TipoPropietarioImagen.ADMINISTRADOR;
+            codigoPropietario = imagen.getAdministrador().getCedula();
+        } else if (imagen.getAdministradorTeatro() != null) {
+            tipo = TipoPropietarioImagen.ADMINISTRADOR_TEATRO;
+            codigoPropietario = imagen.getAdministradorTeatro().getCedula();
+        } else if (imagen.getPelicula() != null) {
+            tipo = TipoPropietarioImagen.PELICULA;
+            codigoPropietario = imagen.getPelicula().getCodigo();
+        } else if (imagen.getConfiteria() != null) {
+            tipo = TipoPropietarioImagen.CONFITERIA;
+            codigoPropietario = imagen.getConfiteria().getCodigo();
+        }
+
+        final TipoPropietarioImagen tipoFinal = tipo;
+        final Integer codigoPropietarioFinal = codigoPropietario;
+        return buscado.map(i -> enriquecerResponse(i, null, tipoFinal, codigoPropietarioFinal));
+    }
+
+    @Override
+    public List<String> listar(TipoPropietarioImagen tipoPropietario, Integer codigoPropietario) throws Exception {
+        Imagenable propietario = obtenerPropietarioPorTipo(tipoPropietario, codigoPropietario);
         String folder = constructorCarpeta(propietario);
-
         ResultList result = imageKitService.listarImagenes(folder);
-
         return obtenerImagenesCarpetaId(result);
     }
 
     @Override
-    public List<VersionArchivo> listarVersiones(String fileId) throws Exception {
-
-        ResultFileVersions result = imageKitService.listarVersiones(fileId);
-
-        System.out.println("Respuesta detallada de versiones:" + result);
-
+    public List<VersionArchivoResponse> listarVersiones(String codigo) throws Exception {
+        ResultFileVersions result = imageKitService.listarVersiones(codigo);
         List<ResultFileVersionDetails> listaRespuesta = result.getResultFileVersionDetailsList();
 
-        // Convierte una lista de respuestas de versiones de archivo en una lista de objetos VersionArchivo.
-        List<VersionArchivo> listaVersiones = listaRespuesta.stream().map(version -> new VersionArchivo
-        (version.getFileId(), version.getUrl(), version.getUpdatedAt())) // Mapea cada versión recuperada extrayendo su fileId, URL y fecha de actualización
-        .collect(Collectors.toList()); // Convierte una lista de respuestas de versiones de archivo en una lista de objetos VersionArchivo.
-
-        return listaVersiones;
-    }
-    
-
-    @Override
-    public List<Imagen> listarPaginado() { 
-
-        return imagenRepo.findAll(PageRequest.of(0, 10)).toList();
+        return listaRespuesta.stream()
+                .map(version -> VersionArchivoResponse.builder()
+                        .fileId(version.getFileId())
+                        .name(version.getUrl())
+                        .updatedAt(version.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Imagen> listarAscendente() { 
-        
-        return imagenRepo.findAll(Sort.by("codigo").ascending());
+    public List<ImagenResponse> listarPaginado() {
+        return imagenMapper.toResponseList(imagenRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     @Override
-    public List<Imagen> listarDescendente() { 
-        
-        return imagenRepo.findAll(Sort.by("codigo").descending());
+    public List<ImagenResponse> listarAscendente() {
+        return imagenMapper.toResponseList(imagenRepo.findAll(Sort.by("codigo").ascending()));
+    }
+
+    @Override
+    public List<ImagenResponse> listarDescendente() {
+        return imagenMapper.toResponseList(imagenRepo.findAll(Sort.by("codigo").descending()));
     }
 }

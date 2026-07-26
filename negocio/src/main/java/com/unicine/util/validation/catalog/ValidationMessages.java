@@ -246,6 +246,9 @@ public final class ValidationMessages {
 
     public static final String IMAGE_CODE_NOT_BLANK = "El codigo de la imagen no puede estar vacio";
     public static final String IMAGE_URL_NOT_BLANK = "La url no puede estar vacia";
+    public static final String IMAGE_NAME_SIZE_MAX_HUNDRED = "El nombre de la imagen no puede exceder los 100 caracteres";
+    public static final String IMAGE_OWNER_TYPE_NOT_NULL = "El tipo de propietario de la imagen no puede estar vacio";
+    public static final String IMAGE_OWNER_ID_NOT_NULL = "El codigo del propietario de la imagen no puede estar vacio";
 
     // SECTION: ESTADO CLIENTE
 
