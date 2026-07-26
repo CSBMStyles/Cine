@@ -32,6 +32,8 @@ All commit messages must be written in English, following the convention defined
 - Format: `<type>(<optional scope>): <imperative description>`
 - Allowed types: `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `style`, `perf`, `build`, `ci`
 - Do not mix Spanish and English in commit messages.
+- Commits must be made manually by the user (`/auto-commits` disabled).
+- The assistant can suggest the right moment and a concrete commit message, but must not run `git commit`, `git push`, or any other git mutation without explicit user approval.
 
 Example:
 ```
