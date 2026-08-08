@@ -55,6 +55,8 @@ Available across all projects:
 - `security-review` — Vulnerability auditing and OWASP checks
 - `grill-me` — Stress-test plans and designs via questioning
 - `napkin` — Visual whiteboard collaboration
+- `council` — Read-only multi-perspective review for architecture, risk, and rollout decisions
+- `context7-mcp` — Current documentation for libraries, frameworks, SDKs, and APIs
 
 ### Project-Local Skills (in `.opencode/skills/`)
 
@@ -71,6 +73,20 @@ Available only when working in this repository. Registered via `.opencode/openco
 
 **Frontend & Animation:**
 - `animejs`, `css-animations`, `frontend-design`, `gsap`, `lottie`, `tailwind`, `three`, `waapi`
+- `notion-task-refiner` — Audit, split, estimate, and synchronize UniCine engineering tasks in Notion
+
+### Supporting Skills (in `.agents/skills/`)
+
+- `clean-code` — Apply readable names, small responsibilities, explicit error handling, and testable design to code-facing tasks
+
+### Task Refinement Policy
+
+- Use `notion-task-refiner` in audit-first mode for backlog or Notion task changes.
+- Use `council` for dependency order, security, financial integrations, external services, deployment, and disputed scope; council members are read-only unless explicitly authorized.
+- Use `clean-code` when refining implementation tasks and acceptance criteria for Java or frontend code.
+- Use Context7 for current library/framework/API documentation, Exa for broad source discovery, and Firecrawl for reading known source pages.
+- Preserve completed Notion tasks. Do not mark tasks complete from prose alone; require code, test, and commit evidence.
+- Require explicit user approval before bulk Notion mutations, schema changes, or task deletion.
 
 ### Compatibility
 
