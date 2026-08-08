@@ -20,7 +20,7 @@ import jakarta.validation.constraints.Positive;
 public interface ComentarioServicio {
 
     // ============================================================
-    // CRUD BASE
+    // SECTION CRUD BASE
     // ============================================================
 
     ComentarioResponse registrar(@Valid ComentarioRequest request) throws Exception;
@@ -41,6 +41,8 @@ public interface ComentarioServicio {
     List<ComentarioResponse> listar();
 
     List<ComentarioResponse> listarPaginado();
+
+    // !SECTION
 
     // ============================================================
     // METODOS DE NEGOCIO
