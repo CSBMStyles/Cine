@@ -28,7 +28,7 @@ import com.unicine.transfer.dto.response.VersionArchivoResponse;
 import io.imagekit.sdk.models.results.Result;
 import io.imagekit.sdk.models.results.ResultList;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
@@ -77,7 +77,7 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void comprobarLectura(){
 
-        Path path = Paths.get("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+        Path path = Paths.get("image/confiteria/snaks/De Toditos Rojo.png");
 
         // Leer el archivo en un array de bytes
         byte[] content;
@@ -102,20 +102,20 @@ public class ImagenServicioTest {
     @Test
     @Disabled("Depende de una ruta local de archivos y del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
-    public void subirImagenCliente() {
+    public void subirImagenPersona() {
 
         MultipartFile file;
 
         try {
             // TODO: Colocar imagen en proyecto y actualizar ruta relativa
             // Creamos un archivo MultipartFile usando un archivo físico
-            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+            File fileOriginal = new File("image/persona/Camila.png");
 
             byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
 
             file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
 
-            // IMPORTANT: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
+            // Important: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -315,7 +315,7 @@ public class ImagenServicioTest {
 
         String fileIdSeleccionado = "67cca0f3432c47641676174c";
 
-        // NOTE: Listamos las versiones de la imagen y seleccionamos el versionId de la version que queremos recuperar
+        // Note: Listamos las versiones de la imagen y seleccionamos el versionId de la version que queremos recuperar
 
         String versionIdSeleccionado = "----";
 
@@ -564,9 +564,9 @@ public class ImagenServicioTest {
 
         }
 
-        // NOTE: Esto se puede eliminar es para obtener los datos de las imagenes de la base de datos, lo digo a causa de que hay metodos que solo necesitan el fileId como el test listar versiones imagen o eliminar diversos
+        // Note: Esto se puede eliminar es para obtener los datos de las imagenes de la base de datos, lo digo a causa de que hay metodos que solo necesitan el fileId como el test listar versiones imagen o eliminar diversos
 
-        //REVIEW: En el caso de obtener, es necesario que tengamos el elemento ya que apartir de ese podemos hacer modificaciones a la imagen como actualizar, renombrar o otras
+        //Review: En el caso de obtener, es necesario que tengamos el elemento ya que apartir de ese podemos hacer modificaciones a la imagen como actualizar, renombrar o otras
     }
 
     @Test
