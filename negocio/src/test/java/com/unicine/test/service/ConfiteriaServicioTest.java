@@ -27,7 +27,7 @@ public class ConfiteriaServicioTest {
     @Autowired
     private ConfiteriaServicio confiteriaServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -193,7 +193,7 @@ public class ConfiteriaServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")

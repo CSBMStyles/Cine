@@ -62,7 +62,8 @@ public class ConfiteriaPresentacionServicioImp implements ConfiteriaPresentacion
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public ConfiteriaPresentacionResponse registrar(ConfiteriaPresentacionRequest request) throws Exception {
@@ -153,4 +154,5 @@ public class ConfiteriaPresentacionServicioImp implements ConfiteriaPresentacion
     public List<ConfiteriaPresentacionResponse> listarConDescuentoTemporal() {
         return presentacionMapper.toResponseList(presentacionRepo.findConDescuentoTemporalActivo());
     }
+    // !SECTION
 }

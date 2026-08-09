@@ -21,9 +21,7 @@ import jakarta.validation.constraints.PositiveOrZero;
  */
 public interface CuponServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
     CuponResponse registrar(@Valid CuponRequest request) throws Exception;
 
@@ -44,9 +42,8 @@ public interface CuponServicio {
 
     List<CuponResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista los cupones cuya fecha de vencimiento aun no ha pasado.
@@ -96,4 +93,5 @@ public interface CuponServicio {
      * @throws Exception si no hay cupones con asignaciones
      */
     List<CuponResponse> listarConAsignaciones() throws Exception;
+    // !SECTION
 }

@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Positive;
 
 public interface CompraServicio {
 
-    // SECTION: Metodos CRUD base
+    // SECTION: Metodos Crud base
 
     CompraResponse registrar(@Valid CompraRequest request) throws Exception;
 
@@ -28,6 +28,7 @@ public interface CompraServicio {
 
     List<CompraResponse> listarPaginado();
 
+    // !SECTION
     // SECTION: Metodos de negocio
 
     CompraResponse registrarCompraCompleta(@Valid CompraCompletaRequest request) throws Exception;
@@ -35,4 +36,5 @@ public interface CompraServicio {
     List<CompraResponse> obtenerComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
 
     Double obtenerTotalComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
+    // !SECTION
 }

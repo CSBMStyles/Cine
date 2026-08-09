@@ -12,7 +12,7 @@ import com.unicine.entity.purchase.CuponCliente;
 @Repository
 public interface CuponClienteRepo extends JpaRepository<CuponCliente, Integer> {
 
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // SECTION: Relacion propia
 
@@ -42,6 +42,7 @@ public interface CuponClienteRepo extends JpaRepository<CuponCliente, Integer> {
      */
     List<CuponCliente> findByClienteCedulaAndEstado(Integer cedula, Boolean estado);
 
+    // !SECTION
     // SECTION: Relacion con compra
 
     /**
@@ -60,4 +61,5 @@ public interface CuponClienteRepo extends JpaRepository<CuponCliente, Integer> {
      */
     @Query("select count(c) from Compra c where c.cuponCliente.cliente.cedula = :cedula and c.cuponCliente is not null")
     Long contarRedimidosPorCliente(Integer cedula);
+    // !SECTION
 }

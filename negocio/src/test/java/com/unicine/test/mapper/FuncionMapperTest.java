@@ -82,7 +82,7 @@ public class FuncionMapperTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(6, response.getCodigo());
-        // NOTE: compras no estan en FuncionResponse para evitar ciclos
+        // Note: compras no estan en FuncionResponse para evitar ciclos
     }
 
     @Test

@@ -56,6 +56,7 @@ public class CompraTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
+    // !SECTION
         // SECTION: Se obtienen los datos necesarios para la creación de la compra
         MedioPago pago = MedioPago.valueOf("VISA");
 
@@ -69,6 +70,7 @@ public class CompraTest {
 
         CuponCliente cuponClienteSave = cuponClienteRepo.save(cuponCliente);
 
+        // !SECTION
         // SECTION: Se construye la compra
         Compra compra = new Compra(true, pago, cuponClienteSave, cliente, funcion);
 
@@ -181,6 +183,7 @@ public class CompraTest {
         }
     }
 
+        // !SECTION
     // SECTION: Consultas personalizadas para la base de datos
 
     @Test
@@ -299,4 +302,5 @@ public class CompraTest {
             System.out.println("Correo: " + mayorCompra[0] + "\n" + "Compra: " + mayorCompra[1]);
         }
     }
+    // !SECTION
 }

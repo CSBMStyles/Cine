@@ -29,7 +29,7 @@ public class ColeccionServicioTest {
     @Autowired
     private ColeccionServicio coleccionServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -298,7 +298,7 @@ public class ColeccionServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")

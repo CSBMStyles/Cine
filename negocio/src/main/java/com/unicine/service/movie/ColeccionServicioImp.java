@@ -83,7 +83,8 @@ public class ColeccionServicioImp implements ColeccionServicio {
         return new ColeccionCompuesta(cedula, codigoPelicula);
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public ColeccionResponse registrar(ColeccionRequest request) throws Exception {
@@ -145,6 +146,7 @@ public class ColeccionServicioImp implements ColeccionServicio {
         return coleccionMapper.toResponseList(coleccionRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
@@ -201,4 +203,5 @@ public class ColeccionServicioImp implements ColeccionServicio {
         validarExiste(buscado);
         return buscado;
     }
+    // !SECTION
 }

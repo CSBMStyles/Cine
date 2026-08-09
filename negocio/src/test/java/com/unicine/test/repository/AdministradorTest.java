@@ -137,6 +137,7 @@ public class AdministradorTest {
         }
     }
 
+    // !SECTION
     // SECTION: Consultas personalizadas para la base de datos
 
     @Test
@@ -164,4 +165,5 @@ public class AdministradorTest {
         
         System.out.println(buscado.orElse(null));
     }
+    // !SECTION
 }

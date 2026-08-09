@@ -30,7 +30,7 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class HorarioServicioImp implements HorarioServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
+    // Note: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final HorarioRepo horarioRepo;
 
     private final HorarioMapper horarioMapper;
@@ -128,6 +128,7 @@ public class HorarioServicioImp implements HorarioServicio {
         }
    }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     // 2️⃣ Funciones del Administrador de Horario
@@ -200,4 +201,5 @@ public class HorarioServicioImp implements HorarioServicio {
         
         return horarioMapper.toResponseList(horarioRepo.findAll(Sort.by("codigo").descending()));
     }
+    // !SECTION
 }

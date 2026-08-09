@@ -50,6 +50,7 @@ public class Entrada implements Serializable {
     @Column(nullable = false)
     private Integer columna;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ManyToOne
@@ -60,6 +61,7 @@ public class Entrada implements Serializable {
     @NotNull(message = ValidationMessages.TICKET_SHOWING_NOT_NULL)
     private Funcion funcion;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -70,4 +72,5 @@ public class Entrada implements Serializable {
         this.compra = compra;
         this.funcion = funcion;
     }
+    // !SECTION
 }

@@ -55,12 +55,14 @@ public class DistribucionSilla implements Serializable {
     @Column(nullable = false)
     private Integer columnas;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
     @OneToMany(mappedBy = "distribucionSilla", cascade = CascadeType.ALL)
     private List<Sala> salas;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -70,4 +72,5 @@ public class DistribucionSilla implements Serializable {
         this.filas = filas;
         this.columnas = columnas;
     }
+    // !SECTION
 }

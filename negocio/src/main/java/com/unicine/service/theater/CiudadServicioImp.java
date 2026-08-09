@@ -46,6 +46,7 @@ public class CiudadServicioImp implements CiudadServicio {
         }
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
@@ -100,4 +101,5 @@ public class CiudadServicioImp implements CiudadServicio {
     public List<CiudadResponse> listarDescendenteNombre() {
         return ciudadMapper.toResponseList(ciudadRepo.findAll(Sort.by("nombre").descending()));
     }
+    // !SECTION
 }

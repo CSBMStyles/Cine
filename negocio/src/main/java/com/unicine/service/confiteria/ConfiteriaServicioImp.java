@@ -66,7 +66,8 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public ConfiteriaResponse registrar(ConfiteriaRequest request) throws Exception {
@@ -112,6 +113,7 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
         return confiteriaMapper.toResponseList(confiteriaRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
@@ -127,4 +129,5 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
         validarExiste(confiterias);
         return confiteriaMapper.toResponseList(confiterias);
     }
+    // !SECTION
 }

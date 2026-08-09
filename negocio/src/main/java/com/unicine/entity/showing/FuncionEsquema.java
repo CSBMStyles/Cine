@@ -51,16 +51,19 @@ public class FuncionEsquema implements Serializable {
     @Column(nullable = false)
     private Integer mantenimiento;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @NotNull(message = ValidationMessages.SHOWING_SCHEMA_SHOWING_NOT_NULL)
     @OneToOne
     private Funcion funcion;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
     public FuncionEsquema(Funcion funcion) {
         this.funcion = funcion;
     }
+    // !SECTION
 }

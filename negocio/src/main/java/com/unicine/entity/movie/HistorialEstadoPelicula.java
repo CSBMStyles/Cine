@@ -51,12 +51,14 @@ public class HistorialEstadoPelicula implements Serializable {
     @Column(nullable = false)
     private LocalDateTime fechaCambio;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @NotNull
     @ManyToOne
     private PeliculaDisposicion peliculaDisposicion;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -66,4 +68,5 @@ public class HistorialEstadoPelicula implements Serializable {
         this.fechaCambio = fechaCambio;
         this.peliculaDisposicion = peliculaDisposicion;
     }
+    // !SECTION
 }

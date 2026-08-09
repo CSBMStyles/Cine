@@ -49,9 +49,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ============================================================
-    // EXCEPCIONES DEL DOMINIO UNICINE
-    // ============================================================
+    // SECTION: Excepciones del dominio Unicine
 
     /**
      * Maneja errores cuando un recurso no existe (404 Not Found).
@@ -172,9 +170,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-    // ============================================================
-    // EXCEPCIONES DE VALIDACION DE SPRING / JAKARTA
-    // ============================================================
+    // !SECTION
+    // SECTION: Excepciones de validacion de Spring / Jakarta
 
     /**
      * Maneja errores de validacion de @Valid en controllers (400 Bad Request).
@@ -222,9 +219,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    // ============================================================
-    // EXCEPCIONES GENERICAS
-    // ============================================================
+    // !SECTION
+    // SECTION: Excepciones genericas
 
     /**
      * Manejador de ultimo recurso para cualquier excepcion no capturada (500 Internal Server Error).
@@ -244,9 +240,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-    // ============================================================
-    // UTILIDADES
-    // ============================================================
+    // !SECTION
+    // SECTION: Utilidades
 
     /**
      * Extrae la ruta del request desde el WebRequest.
@@ -257,4 +252,5 @@ public class GlobalExceptionHandler {
         }
         return request.getDescription(false).replace("uri=", "");
     }
+    // !SECTION
 }

@@ -28,7 +28,7 @@ import com.unicine.transfer.dto.response.ClienteResponse;
 
 import jakarta.validation.ConstraintViolationException;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional

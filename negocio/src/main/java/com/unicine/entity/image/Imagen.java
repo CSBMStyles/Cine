@@ -39,6 +39,7 @@ public class Imagen implements Serializable {
     @Column(nullable = false, length = 200)
     private String url;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @OneToOne
@@ -55,4 +56,5 @@ public class Imagen implements Serializable {
 
     @ManyToOne
     private Confiteria confiteria;
+    // !SECTION
 }

@@ -43,7 +43,7 @@ public class ClienteMapperTest {
         Assertions.assertEquals(true, response.getEstado());
         Assertions.assertEquals(LocalDate.of(1995, 5, 15), response.getFechaNacimiento());
         Assertions.assertEquals(List.of("+573001234567"), response.getTelefonos());
-        // NOTE: password no esta en ClienteResponse por seguridad
+        // Note: password no esta en ClienteResponse por seguridad
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ClienteMapperTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(222, response.getCedula());
-        // NOTE: compras, cuponClientes y colecciones no estan en ClienteResponse
+        // Note: compras, cuponClientes y colecciones no estan en ClienteResponse
     }
 
     @Test

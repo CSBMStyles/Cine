@@ -109,6 +109,7 @@ public class AdministradorServicioImp implements AdministradorServicio {
         }
     }
 
+     // !SECTION
     // SECTION: Metodos del servicio
 
     @Override
@@ -194,4 +195,5 @@ public class AdministradorServicioImp implements AdministradorServicio {
         return administradorMapper.toResponseList(administradorRepo.findAll());
     }
 
+    // !SECTION
 }

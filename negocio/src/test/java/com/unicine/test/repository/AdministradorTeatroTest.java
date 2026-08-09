@@ -136,6 +136,7 @@ public class AdministradorTeatroTest {
         }
     }
 
+    // !SECTION
     // SECTION: Colsultas personalizadas
 
     @Test
@@ -164,4 +165,5 @@ public class AdministradorTeatroTest {
         System.out.println(buscado.orElse(null));
     }
 
+    // !SECTION
 }

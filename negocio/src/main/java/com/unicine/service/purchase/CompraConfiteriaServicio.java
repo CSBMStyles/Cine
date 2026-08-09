@@ -19,9 +19,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface CompraConfiteriaServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
     CompraConfiteriaResponse registrar(@Valid CompraConfiteriaRequest request) throws Exception;
 
@@ -42,9 +40,8 @@ public interface CompraConfiteriaServicio {
 
     List<CompraConfiteriaResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista los items de confiteria de una compra especifica.
@@ -81,4 +78,5 @@ public interface CompraConfiteriaServicio {
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigoCompra) throws Exception;
+    // !SECTION
 }

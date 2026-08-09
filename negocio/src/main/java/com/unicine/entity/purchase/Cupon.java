@@ -62,12 +62,14 @@ public class Cupon implements Serializable {
     @Column(nullable = false)
     private LocalDateTime fechaVencimiento;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
     @OneToMany(mappedBy = "cupon", cascade =  CascadeType.ALL)
     private List<CuponCliente> cuponClientes;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -77,4 +79,5 @@ public class Cupon implements Serializable {
         this.criterio = criterio;
         this.fechaVencimiento = fechaVencimiento;
     }
+    // !SECTION
 }

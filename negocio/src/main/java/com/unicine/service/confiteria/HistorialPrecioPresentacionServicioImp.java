@@ -64,6 +64,7 @@ public class HistorialPrecioPresentacionServicioImp implements HistorialPrecioPr
         return (int) Math.round((diferencia / precioBase) * 100);
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
@@ -128,4 +129,5 @@ public class HistorialPrecioPresentacionServicioImp implements HistorialPrecioPr
         validarExiste(buscado);
         return buscado.map(historialMapper::toResponse);
     }
+    // !SECTION
 }

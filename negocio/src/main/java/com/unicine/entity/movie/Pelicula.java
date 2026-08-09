@@ -84,6 +84,7 @@ public class Pelicula implements Serializable, Imagenable {
     @Column(nullable = true)
     private Integer restriccionEdad;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
@@ -102,6 +103,7 @@ public class Pelicula implements Serializable, Imagenable {
     @OneToMany(mappedBy = "pelicula", cascade =  CascadeType.ALL)
     private List<Imagen> imagenes;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -119,4 +121,5 @@ public class Pelicula implements Serializable, Imagenable {
     public String getCarpetaPrefijo() {
         return "peliculas";
     }
+    // !SECTION
 }

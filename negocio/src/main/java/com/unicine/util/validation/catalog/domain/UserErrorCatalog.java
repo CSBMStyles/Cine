@@ -19,16 +19,16 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum UserErrorCatalog implements ErrorCode {
 
-    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    // Entity - Entidad no encontrada (404 not found)
     DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND("DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND", "El administrador no existe"),
     DOMAIN_USER_ENTITY_THEATER_ADMIN_NOT_FOUND("DOMAIN_USER_ENTITY_THEATER_ADMIN_NOT_FOUND", "El administrador de teatro no existe"),
     DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND("DOMAIN_USER_ENTITY_CLIENT_NOT_FOUND", "El cliente no existe"),
 
-    // DUPLICATE - CONFLICTO / DUPLICADO (409 Conflict)
+    // Duplicate - Conflicto / duplicado (409 conflict)
     DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED("DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED", "La cedula ya esta registrada"),
     DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED("DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED", "Este correo ya esta registrado"),
 
-    // AUTH - AUTENTICACION (401 Unauthorized)
+    // Auth - Autenticacion (401 unauthorized)
     DOMAIN_USER_AUTH_INVALID_CREDENTIALS("DOMAIN_USER_AUTH_INVALID_CREDENTIALS", "Credenciales invalidas"),
     DOMAIN_USER_AUTH_EMAIL_NOT_FOUND("DOMAIN_USER_AUTH_EMAIL_NOT_FOUND", "El correo no existe"),
     DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT("DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT", "Los datos de autenticacion son incorrectos"),
@@ -37,7 +37,7 @@ public enum UserErrorCatalog implements ErrorCode {
     DOMAIN_USER_AUTH_CLIENT_INACTIVE("DOMAIN_USER_AUTH_CLIENT_INACTIVE", "El cliente no esta activo, debe activarla con el enlace que fue enviado a su correo"),
     DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED("DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED", "El usuario no tiene permisos para realizar esta accion"),
 
-    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    // Business rule - Reglas de negocio (400 bad request)
     DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE("DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE", "El cliente debe ser mayor de edad para registrarse");
 
     private final String code;

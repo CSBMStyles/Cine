@@ -52,6 +52,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     @Column(nullable = true, length = 20)
     private List<@Pattern(regexp = "^\\+?[1-9]\\d{7,14}$", message = ValidationMessages.INVALID_PHONE_FORMAT) String> telefonos;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
@@ -70,6 +71,7 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Imagen imagen;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -84,4 +86,5 @@ public class Cliente extends Persona implements Serializable, Imagenable {
     public String getCarpetaPrefijo() {
         return "clientes";
     }
+    // !SECTION
 }

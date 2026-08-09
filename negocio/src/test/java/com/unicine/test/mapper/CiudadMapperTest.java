@@ -40,7 +40,7 @@ public class CiudadMapperTest {
         Assertions.assertNotNull(response);
         Assertions.assertEquals(2, response.getCodigo());
         Assertions.assertEquals("Medellin", response.getNombre());
-        // NOTE: teatros y peliculaDisposicion no estan en CiudadResponse para evitar ciclos
+        // Note: teatros y peliculaDisposicion no estan en CiudadResponse para evitar ciclos
     }
 
     @Test

@@ -19,9 +19,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ComentarioServicio {
 
-    // ============================================================
-    // SECTION CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
     ComentarioResponse registrar(@Valid ComentarioRequest request) throws Exception;
 
@@ -44,9 +42,7 @@ public interface ComentarioServicio {
 
     // !SECTION
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // SECTION: Metodos de negocio
 
     /**
      * Lista los comentarios de una pelicula especifica.
@@ -95,4 +91,5 @@ public interface ComentarioServicio {
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
+    // !SECTION
 }

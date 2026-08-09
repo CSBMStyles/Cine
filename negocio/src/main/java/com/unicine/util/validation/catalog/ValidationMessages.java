@@ -17,13 +17,14 @@ public final class ValidationMessages {
         throw new AssertionError("No se puede instanciar una clase de utilidad");
     }
 
-    // SECTION: GENERALES - Campos obligatorios
+    // SECTION: Generales - campos obligatorios
 
     public static final String FIELD_REQUIRED = "Este campo no puede estar vacio";
     public static final String FIELD_BLANK = "Este campo no puede estar en blanco";
     public static final String FIELD_NULL = "Este campo no puede ser nulo";
 
-    // SECTION: IDENTIFICACION
+    // !SECTION
+    // SECTION: Identificacion
 
     public static final String CEDULA_POSITIVE = "La cedula debe ser un numero positivo";
     public static final String CEDULA_NOT_NULL = "La cedula no puede estar vacia";
@@ -34,7 +35,8 @@ public final class ValidationMessages {
     public static final String THEATER_ID_NOT_NULL = "El codigo de teatro no puede estar vacio";
     public static final String THEATER_ID_POSITIVE = "El codigo de teatro debe ser un numero positivo";
 
-    // SECTION: NOMBRES Y TEXTOS
+    // !SECTION
+    // SECTION: Nombres y textos
 
     public static final String NAME_NOT_BLANK = "El nombre no puede estar en blanco";
     public static final String NAME_SIZE_MAX_FIFTY = "El nombre no puede tener mas de cincuenta caracteres";
@@ -46,13 +48,15 @@ public final class ValidationMessages {
     public static final String CRITERION_NOT_BLANK = "El criterio no puede estar en blanco";
     public static final String CRITERION_SIZE_MAX_HUNDRED = "El criterio no puede tener mas de cien caracteres";
 
-    // SECTION: CORREO ELECTRONICO
+    // !SECTION
+    // SECTION: Correo electronico
 
     public static final String EMAIL_NOT_NULL = "El correo no puede estar vacio";
     public static final String EMAIL_INVALID = "El correo no tiene un formato valido";
     public static final String EMAIL_SIZE_MAX_ONE_HUNDRED_FIFTY = "El correo no puede tener mas de ciento cincuenta caracteres";
 
-    // SECTION: CONTRASENA
+    // !SECTION
+    // SECTION: Contrasena
 
     public static final String PASSWORD_NOT_BLANK = "La contrasena no puede estar en blanco";
     public static final String PASSWORD_SIZE_MIN_EIGHT = "La contrasena debe tener al menos ocho caracteres";
@@ -62,7 +66,8 @@ public final class ValidationMessages {
     public static final String PASSWORD_DIGIT = "La contrasena debe contener al menos un digito";
     public static final String PASSWORD_SPECIAL = "La contrasena debe contener al menos un caracter especial";
 
-    // SECTION: TELEFONO
+    // !SECTION
+    // SECTION: Telefono
 
     public static final String PHONE_NOT_NULL = "El telefono no puede estar vacio";
     public static final String PHONE_ONLY_NUMBERS = "El telefono solo puede contener numeros";
@@ -70,7 +75,8 @@ public final class ValidationMessages {
     public static final String PHONE_LIST_MAX_FIVE = "No se pueden registrar mas de cinco telefonos";
     public static final String INVALID_PHONE_FORMAT = "El telefono debe contener solo numeros y tener entre 8 y 15 digitos, opcionalmente con prefijo internacional";
 
-    // SECTION: FECHAS
+    // !SECTION
+    // SECTION: Fechas
 
     public static final String DATE_NOT_NULL = "La fecha no puede estar vacia";
     public static final String DATE_PAST = "La fecha debe estar en el pasado";
@@ -78,7 +84,8 @@ public final class ValidationMessages {
     public static final String DATE_FUTURE_OR_PRESENT = "La fecha debe estar en el presente o en el futuro";
     public static final String BIRTH_DATE_NOT_NULL = "La fecha de nacimiento no puede estar vacia";
 
-    // SECTION: PRECIOS Y VALORES NUMERICOS
+    // !SECTION
+    // SECTION: Precios y valores numericos
 
     public static final String PRICE_NOT_NULL = "El precio no puede estar vacio";
     public static final String PRICE_POSITIVE = "El precio debe ser un numero positivo";
@@ -96,7 +103,8 @@ public final class ValidationMessages {
     public static final String DISCOUNT_POSITIVE_OR_ZERO = "El descuento debe ser un numero positivo o cero";
     public static final String DISCOUNT_MAX_TOTAL = "El descuento no puede ser mayor al total";
 
-    // SECTION: DIRECCION Y UBICACION
+    // !SECTION
+    // SECTION: Direccion y ubicacion
 
     public static final String ADDRESS_NOT_BLANK = "La direccion no puede estar vacia";
     public static final String ADDRESS_SIZE_MIN_FOUR = "La direccion debe tener al menos cuatro caracteres";
@@ -107,7 +115,8 @@ public final class ValidationMessages {
     public static final String CITY_NAME_SIZE_MAX_HUNDRED = "El nombre de la ciudad no puede tener mas de cien caracteres";
     public static final String CITY_NAME_PATTERN = "El nombre de la ciudad solo puede contener letras y espacios";
 
-    // SECTION: PELICULA
+    // !SECTION
+    // SECTION: Pelicula
 
     public static final String MOVIE_NAME_NOT_BLANK = "El nombre de la pelicula no puede estar en blanco";
     public static final String MOVIE_NAME_SIZE_MAX_HUNDRED = "El nombre de la pelicula no puede tener mas de cien caracteres";
@@ -120,7 +129,8 @@ public final class ValidationMessages {
     public static final String MOVIE_ACTOR_ROLE_SIZE_MAX_ONE_HUNDRED_FIFTY = "El rol del actor no puede tener mas de ciento cincuenta caracteres";
     public static final String MOVIE_ACTOR_NAME_SIZE_MAX_ONE_HUNDRED_FIFTY = "El nombre del actor no puede tener mas de ciento cincuenta caracteres";
 
-    // SECTION: TEATRO Y SALA
+    // !SECTION
+    // SECTION: Teatro y sala
 
     public static final String THEATER_NAME_NOT_BLANK = "El nombre del teatro no puede estar en blanco";
     public static final String THEATER_PHONE_NOT_BLANK = "El telefono del teatro no puede estar vacio";
@@ -132,7 +142,8 @@ public final class ValidationMessages {
     public static final String ROOM_DISTRIBUTION_NOT_NULL = "La distribucion de sillas no puede estar vacia";
     public static final String ROOM_THEATER_NOT_NULL = "El teatro no puede estar vacio";
 
-    // SECTION: DISTRIBUCION DE SILLAS
+    // !SECTION
+    // SECTION: Distribucion de sillas
 
     public static final String SEAT_SCHEMA_NOT_BLANK = "El esquema no puede estar vacio";
     public static final String SEAT_TOTAL_NOT_NULL = "El total de sillas no puede estar vacio";
@@ -142,7 +153,8 @@ public final class ValidationMessages {
     public static final String SEAT_COLUMNS_NOT_NULL = "El numero de columnas no puede estar vacio";
     public static final String SEAT_COLUMNS_POSITIVE = "El numero de columnas debe ser un numero positivo";
 
-    // SECTION: FUNCION Y HORARIO
+    // !SECTION
+    // SECTION: Funcion y horario
 
     public static final String SCHEDULE_START_NOT_NULL = "La fecha de inicio no puede estar vacia";
     public static final String SCHEDULE_START_FUTURE = "La fecha de inicio debe ser en el futuro";
@@ -165,7 +177,8 @@ public final class ValidationMessages {
     public static final String SHOWING_SCHEMA_MAINTENANCE_NOT_NULL = "El numero de sillas en mantenimiento no puede estar vacio";
     public static final String SHOWING_SCHEMA_MAINTENANCE_POSITIVE = "El numero de sillas en mantenimiento debe ser un numero positivo o cero";
 
-    // SECTION: COMPRA Y CUPON
+    // !SECTION
+    // SECTION: Compra y cupon
 
     public static final String PURCHASE_STATUS_NOT_NULL = "El estado de la compra no puede estar vacio";
     public static final String PURCHASE_DATE_NOT_NULL = "La fecha de compra no puede estar vacia";
@@ -187,7 +200,8 @@ public final class ValidationMessages {
     public static final String CLIENT_COUPON_COUPON_NOT_NULL = "El cupon no puede estar vacio";
     public static final String CLIENT_COUPON_CLIENT_NOT_NULL = "El cliente no puede estar vacio";
 
-    // SECTION: ENTRADA
+    // !SECTION
+    // SECTION: Entrada
 
     public static final String TICKET_PRICE_NOT_NULL = "El precio no puede estar vacio";
     public static final String TICKET_PRICE_POSITIVE = "El precio debe ser un numero positivo";
@@ -198,14 +212,16 @@ public final class ValidationMessages {
     public static final String TICKET_PURCHASE_NOT_NULL = "La compra no puede estar vacia";
     public static final String TICKET_SHOWING_NOT_NULL = "La funcion no puede estar vacia";
 
-    // SECTION: CONFITERIA
+    // !SECTION
+    // SECTION: Confiteria
 
     public static final String CONFECTIONERY_NAME_NOT_BLANK = "El nombre no puede estar en blanco";
     public static final String CONFECTIONERY_NAME_SIZE_MAX_HUNDRED = "El nombre no puede tener mas de cien caracteres";
     public static final String CONFECTIONERY_DESCRIPTION_SIZE_MAX_FIVE_HUNDRED = "La descripcion no puede tener mas de quinientos caracteres";
     public static final String CONFECTIONERY_CATEGORY_NOT_NULL = "La categoria no puede estar vacia";
 
-    // SECTION: CONFITERIA_PRESENTACION
+    // !SECTION
+    // SECTION: Confiteria presentacion
 
     public static final String CONFECTIONERY_PRESENTATION_CONFECTIONERY_NOT_NULL = "La confiteria no puede estar vacia";
     public static final String CONFECTIONERY_PRESENTATION_PORTION_NOT_NULL = "La porcion no puede estar vacia";
@@ -216,7 +232,8 @@ public final class ValidationMessages {
     public static final String CONFECTIONERY_PRESENTATION_BASE_PRICE_NOT_NULL = "El precio base no puede estar vacio";
     public static final String CONFECTIONERY_PRESENTATION_BASE_PRICE_POSITIVE_OR_ZERO = "El precio base debe ser un numero positivo o cero";
 
-    // SECTION: HISTORIAL_PRECIO_PRESENTACION
+    // !SECTION
+    // SECTION: Historial precio presentacion
 
     public static final String CONFECTIONERY_PRICE_HISTORY_PRESENTATION_NOT_NULL = "La presentacion no puede estar vacia";
     public static final String CONFECTIONERY_PRICE_HISTORY_PREVIOUS_PRICE_NOT_NULL = "El precio anterior no puede estar vacio";
@@ -228,12 +245,14 @@ public final class ValidationMessages {
     public static final String CONFECTIONERY_PRICE_HISTORY_PERCENTAGE_POSITIVE_OR_ZERO = "El porcentaje debe ser un numero positivo o cero";
     public static final String CONFECTIONERY_PRICE_HISTORY_DATE_NOT_NULL = "La fecha de cambio no puede estar vacia";
 
-    // SECTION: COMPRA_CONFITERIA
+    // !SECTION
+    // SECTION: Compra confiteria
 
     public static final String PURCHASE_CONFECTIONERY_PURCHASE_NOT_NULL = "La compra no puede estar vacia";
     public static final String PURCHASE_CONFECTIONERY_PRESENTATION_NOT_NULL = "La presentacion no puede estar vacia";
 
-    // SECTION: COMENTARIO
+    // !SECTION
+    // SECTION: Comentario
 
     public static final String COMMENT_TEXT_NOT_BLANK = "El comentario no puede estar en blanco";
     public static final String COMMENT_LIKES_NOT_NULL = "Los likes no pueden estar vacios";
@@ -242,7 +261,8 @@ public final class ValidationMessages {
     public static final String COMMENT_DISLIKES_POSITIVE_OR_ZERO = "Los dislikes deben ser un numero positivo o cero";
     public static final String COMMENT_DATE_NOT_NULL = "La fecha no puede estar vacia";
 
-    // SECTION: IMAGEN
+    // !SECTION
+    // SECTION: Imagen
 
     public static final String IMAGE_CODE_NOT_BLANK = "El codigo de la imagen no puede estar vacio";
     public static final String IMAGE_URL_NOT_BLANK = "La url no puede estar vacia";
@@ -250,7 +270,8 @@ public final class ValidationMessages {
     public static final String IMAGE_OWNER_TYPE_NOT_NULL = "El tipo de propietario de la imagen no puede estar vacio";
     public static final String IMAGE_OWNER_ID_NOT_NULL = "El codigo del propietario de la imagen no puede estar vacio";
 
-    // SECTION: ESTADO CLIENTE
+    // !SECTION
+    // SECTION: Estado cliente
 
     public static final String CLIENT_STATUS_NOT_NULL = "El estado no puede estar vacio";
     public static final String CLIENT_PHONE_NOT_NULL = "El telefono no puede estar vacio";

@@ -40,6 +40,7 @@ public class CuponCliente implements Serializable {
     @Column(nullable = false)
     private Boolean estado;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ManyToOne
@@ -56,6 +57,7 @@ public class CuponCliente implements Serializable {
     @OneToOne(mappedBy = "cuponCliente", cascade = CascadeType.ALL)
     private Compra compra;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -64,4 +66,5 @@ public class CuponCliente implements Serializable {
         this.cupon = cupon;
         this.cliente = cliente;
     }
+    // !SECTION
 }

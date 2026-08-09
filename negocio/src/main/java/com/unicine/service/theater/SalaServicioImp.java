@@ -80,6 +80,7 @@ public class SalaServicioImp implements SalaServicio {
         }
    }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
@@ -172,4 +173,5 @@ public class SalaServicioImp implements SalaServicio {
         
         return salaMapper.toResponseList(salaRepo.findAll(Sort.by("codigo").descending()));
     }
+    // !SECTION
 }

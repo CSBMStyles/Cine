@@ -49,6 +49,7 @@ public class Teatro implements Serializable {
     @Column(nullable = false, length = 20)
     private String telefono;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @NotNull(message = ValidationMessages.THEATER_CITY_NOT_NULL)
@@ -63,6 +64,7 @@ public class Teatro implements Serializable {
     @OneToMany(mappedBy = "teatro", cascade = CascadeType.ALL)
     private List<Sala> salas;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -72,4 +74,5 @@ public class Teatro implements Serializable {
         this.ciudad = ciudad;
         this.administradorTeatro = administradorTeatro;
     }
+    // !SECTION
 }

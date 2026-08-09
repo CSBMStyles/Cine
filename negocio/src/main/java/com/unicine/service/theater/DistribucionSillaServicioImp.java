@@ -66,6 +66,7 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
         distribucion.setTotalSillas(totalSillas);
     }
 
+    // !SECTION
      // SECTION: Implementacion de servicios
 
     @Override
@@ -128,4 +129,5 @@ public class DistribucionSillaServicioImp implements DistribucionSillaServicio {
         
         return distribucionMapper.toResponseList(distribucionRepo.findAll(Sort.by("codigo").descending()));
     }
+     // !SECTION
 }

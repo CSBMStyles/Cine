@@ -24,9 +24,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ColeccionServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
     ColeccionResponse registrar(@Valid ColeccionRequest request) throws Exception;
 
@@ -53,9 +51,8 @@ public interface ColeccionServicio {
 
     List<ColeccionResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista todas las colecciones de un cliente especifico.
@@ -113,4 +110,5 @@ public interface ColeccionServicio {
      * @throws Exception si la coleccion no existe
      */
     ColeccionResponse cambiarEstadoPelicula(Integer cedula, Integer codigoPelicula, EstadoPropio estado) throws Exception;
+    // !SECTION
 }

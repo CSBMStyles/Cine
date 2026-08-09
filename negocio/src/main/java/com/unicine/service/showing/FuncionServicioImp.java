@@ -31,7 +31,7 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class FuncionServicioImp implements FuncionServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
+    // Note: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final FuncionRepo funcionRepo;
     private final FuncionMapper funcionMapper;
     private final SalaServicio salaServicio;
@@ -125,6 +125,7 @@ public class FuncionServicioImp implements FuncionServicio {
         return funcion;
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     // 2️⃣ Funciones del Administrador de Teatro
@@ -204,4 +205,5 @@ public class FuncionServicioImp implements FuncionServicio {
         
         return funcionMapper.toResponseList(funcionRepo.findAll(Sort.by("codigo").descending()));
     }
+    // !SECTION
 }

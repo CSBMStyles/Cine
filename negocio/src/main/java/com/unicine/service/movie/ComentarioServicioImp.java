@@ -91,7 +91,8 @@ public class ComentarioServicioImp implements ComentarioServicio {
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public ComentarioResponse registrar(ComentarioRequest request) throws Exception {
@@ -153,6 +154,7 @@ public class ComentarioServicioImp implements ComentarioServicio {
         return comentarioMapper.toResponseList(comentarioRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
@@ -198,4 +200,5 @@ public class ComentarioServicioImp implements ComentarioServicio {
 
         return comentarioMapper.toResponse(actualizado);
     }
+    // !SECTION
 }

@@ -64,6 +64,7 @@ public class TeatroServicioImp implements TeatroServicio {
         }
    }
 
+    // !SECTION
      // SECTION: Implementacion de servicios
 
     @Override
@@ -126,4 +127,5 @@ public class TeatroServicioImp implements TeatroServicio {
         
         return teatroMapper.toResponseList(teatroRepo.findAll(Sort.by("codigo").descending()));
     }
+     // !SECTION
 }

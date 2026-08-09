@@ -55,7 +55,7 @@ public class TeatroMapperTest {
         Assertions.assertNotNull(response.getAdministradorTeatro());
         Assertions.assertEquals(123456, response.getAdministradorTeatro().getCedula());
         Assertions.assertEquals("Carlos", response.getAdministradorTeatro().getNombre());
-        // NOTE: password y lista de teatros no estan en AdministradorTeatroResponse
+        // Note: password y lista de teatros no estan en AdministradorTeatroResponse
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TeatroMapperTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(20, response.getCodigo());
-        // NOTE: salas no estan en TeatroResponse para evitar ciclos
+        // Note: salas no estan en TeatroResponse para evitar ciclos
     }
 
     @Test

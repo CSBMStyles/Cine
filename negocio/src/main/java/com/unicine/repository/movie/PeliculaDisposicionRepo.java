@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PeliculaDisposicionRepo extends JpaRepository<PeliculaDisposicion, PeliculaDisposicionCompuesta> {
     
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     /**
      * Consulta que permite obtener el estado de la pelicula en una ciudad

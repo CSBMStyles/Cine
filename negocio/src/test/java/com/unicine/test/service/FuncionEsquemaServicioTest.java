@@ -16,7 +16,7 @@ import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
 import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
 import com.unicine.transfer.dto.response.FuncionResponse;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional

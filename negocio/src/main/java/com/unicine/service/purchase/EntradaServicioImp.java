@@ -186,7 +186,8 @@ public class EntradaServicioImp implements EntradaServicio {
         validarSillaNoOcupada(entrada);
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public EntradaResponse registrar(EntradaRequest request) throws Exception {
@@ -243,6 +244,7 @@ public class EntradaServicioImp implements EntradaServicio {
         return entradaMapper.toResponseList(entradaRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
@@ -266,4 +268,5 @@ public class EntradaServicioImp implements EntradaServicio {
         obtenerFuncion(codigoFuncion);
         return entradaRepo.obtenerSillasOcupadas(codigoFuncion);
     }
+    // !SECTION
 }

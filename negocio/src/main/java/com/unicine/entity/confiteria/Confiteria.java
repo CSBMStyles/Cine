@@ -56,6 +56,7 @@ public class Confiteria implements Serializable, Imagenable {
     @Enumerated(EnumType.STRING)
     private CategoriaConfiteria categoria;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
@@ -66,6 +67,7 @@ public class Confiteria implements Serializable, Imagenable {
     @OneToMany(mappedBy = "confiteria", cascade = CascadeType.ALL)
     private List<Imagen> imagenes;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -75,6 +77,7 @@ public class Confiteria implements Serializable, Imagenable {
         this.categoria = categoria;
     }
 
+    // !SECTION
     // SECTION: Implementacion de Imagenable
 
     @Override

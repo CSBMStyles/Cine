@@ -35,7 +35,7 @@ public class CompraServicioTest {
     @Autowired
     private CompraServicio compraServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -196,7 +196,7 @@ public class CompraServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")

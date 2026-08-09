@@ -12,7 +12,7 @@ import com.unicine.entity.theater.Sala;
 @Repository
 public interface SalaRepo extends JpaRepository<Sala, Integer> {
     
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     /**
      * Consulta para obtener una salas por su nombre

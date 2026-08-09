@@ -11,7 +11,7 @@ import com.unicine.entity.purchase.CompraConfiteria;
 @Repository
 public interface CompraConfiteriaRepo extends JpaRepository<CompraConfiteria, Integer> {
 
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // SECTION: Relacion con compra
 
@@ -30,6 +30,7 @@ public interface CompraConfiteriaRepo extends JpaRepository<CompraConfiteria, In
     @Query("select coalesce(sum(cc.precio * cc.unidades), 0) from CompraConfiteria cc where cc.compra.codigo = :codigoCompra")
     Double calcularTotalPorCompra(Integer codigoCompra);
 
+    // !SECTION
     // SECTION: Relacion con presentacion
 
     /**
@@ -38,4 +39,5 @@ public interface CompraConfiteriaRepo extends JpaRepository<CompraConfiteria, In
      * @return lista de items de confiteria
      */
     List<CompraConfiteria> findByPresentacionCodigo(Integer codigoPresentacion);
+    // !SECTION
 }

@@ -20,9 +20,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ConfiteriaServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
     ConfiteriaResponse registrar(@Valid ConfiteriaRequest request) throws Exception;
 
@@ -43,9 +41,8 @@ public interface ConfiteriaServicio {
 
     List<ConfiteriaResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista los productos filtrados por categoria.
@@ -64,4 +61,5 @@ public interface ConfiteriaServicio {
      * @throws Exception si no se encuentran coincidencias
      */
     List<ConfiteriaResponse> buscarPorNombre(String nombre) throws Exception;
+    // !SECTION
 }

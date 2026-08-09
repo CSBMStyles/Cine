@@ -153,7 +153,7 @@ public class CuponClienteTest {
         }
     }
 
-    //SECTION: Consultas personalizadas para la base de datos
+    // SECTION: Consultas personalizadas para la base de datos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -197,4 +197,5 @@ public class CuponClienteTest {
             System.out.println("Cedula: " + c[0] + " Nombre: " + c[1] + " Cantidad: " + c[2]);
         }
     }
+    // !SECTION
 }

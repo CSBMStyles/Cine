@@ -19,9 +19,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface CuponClienteServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
     CuponClienteResponse registrar(@Valid CuponClienteRequest request) throws Exception;
 
@@ -42,9 +40,8 @@ public interface CuponClienteServicio {
 
     List<CuponClienteResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista las asignaciones de cupones de un cliente especifico.
@@ -109,4 +106,5 @@ public interface CuponClienteServicio {
             @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
             @Positive(message = ValidationMessages.CEDULA_POSITIVE)
             Integer cedula) throws Exception;
+    // !SECTION
 }

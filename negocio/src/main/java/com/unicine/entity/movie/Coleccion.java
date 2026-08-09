@@ -44,6 +44,7 @@ public class Coleccion implements Serializable {
     @Column(nullable = false)
     private Boolean notificacionActiva = true;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @Id
@@ -56,6 +57,7 @@ public class Coleccion implements Serializable {
     @NotNull(message = ValidationMessages.SHOWING_MOVIE_NOT_NULL)
     private Pelicula pelicula;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -66,4 +68,5 @@ public class Coleccion implements Serializable {
         this.cliente = cliente;
         this.pelicula = pelicula;
     }
+    // !SECTION
 }

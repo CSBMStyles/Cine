@@ -75,6 +75,7 @@ public class HistorialPrecioPresentacion implements Serializable {
     @Column(nullable = false)
     private LocalDateTime fechaCambio;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @NotNull(message = ValidationMessages.CONFECTIONERY_PRICE_HISTORY_PRESENTATION_NOT_NULL)
@@ -82,6 +83,7 @@ public class HistorialPrecioPresentacion implements Serializable {
     @JoinColumn(nullable = false)
     private ConfiteriaPresentacion presentacion;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder

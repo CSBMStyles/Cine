@@ -122,7 +122,7 @@ public class PeliculaTest {
 
         Assertions.assertEquals(5, peliculas.size());
 
-        // NOTE: En este caso se usa el logger para imprimir el resultado ya que si se usar el sout para mostrarlo omite las tildes y caracteres especiales usando el ? en lugar de la letra, cuando se muestrs en la consola debug
+        // Note: En este caso se usa el logger para imprimir el resultado ya que si se usar el sout para mostrarlo omite las tildes y caracteres especiales usando el ? en lugar de la letra, cuando se muestrs en la consola debug
         for (Pelicula p : peliculas) {
             logger.info("Pelicula: ", p);
         }
@@ -296,4 +296,5 @@ public class PeliculaTest {
             System.out.println("Pelicula: " + o[0] + "\n" + "Cantidad de compras: " + o[1]);
         });
     }
+    // !SECTION
 }

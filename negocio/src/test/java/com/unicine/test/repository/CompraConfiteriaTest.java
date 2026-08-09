@@ -150,4 +150,5 @@ public class CompraConfiteriaTest {
             System.out.println(c);
         }
     }
+    // !SECTION
 }

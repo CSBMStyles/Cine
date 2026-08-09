@@ -81,7 +81,8 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public CuponClienteResponse registrar(CuponClienteRequest request) throws Exception {
@@ -127,6 +128,7 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
         return cuponClienteMapper.toResponseList(cuponClienteRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
@@ -169,4 +171,5 @@ public class CuponClienteServicioImp implements CuponClienteServicio {
         }
         return cantidad;
     }
+    // !SECTION
 }

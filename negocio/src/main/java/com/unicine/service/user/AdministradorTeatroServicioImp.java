@@ -109,6 +109,7 @@ public class AdministradorTeatroServicioImp implements AdministradorTeatroServic
         }
     }
 
+    // !SECTION
     // SECTION: Metodos del servicio
 
     @Override
@@ -191,4 +192,5 @@ public class AdministradorTeatroServicioImp implements AdministradorTeatroServic
     @Override
     public List<AdministradorTeatroResponse> listar() { return administradorTeatroMapper.toResponseList(administradorTeatroRepo.findAll()); }
 
+    // !SECTION
 }

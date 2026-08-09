@@ -27,7 +27,7 @@ public class CuponClienteServicioTest {
     @Autowired
     private CuponClienteServicio cuponClienteServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -244,7 +244,7 @@ public class CuponClienteServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")

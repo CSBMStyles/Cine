@@ -17,7 +17,7 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum MovieErrorCatalog implements ErrorCode {
 
-    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    // Entity - Entidad no encontrada (404 not found)
     DOMAIN_MOVIE_ENTITY_MOVIE_NOT_FOUND("DOMAIN_MOVIE_ENTITY_MOVIE_NOT_FOUND", "La pelicula no existe"),
     DOMAIN_MOVIE_ENTITY_MOVIES_NOT_FOUND_BY_NAME("DOMAIN_MOVIE_ENTITY_MOVIES_NOT_FOUND_BY_NAME", "No existe peliculas con ese nombre"),
     DOMAIN_MOVIE_ENTITY_MOVIE_DISPOSITION_NOT_FOUND("DOMAIN_MOVIE_ENTITY_MOVIE_DISPOSITION_NOT_FOUND", "La disposicion de pelicula no existe"),
@@ -25,7 +25,7 @@ public enum MovieErrorCatalog implements ErrorCode {
     DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND("DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND", "La coleccion no existe"),
     DOMAIN_MOVIE_ENTITY_COMMENT_NOT_FOUND("DOMAIN_MOVIE_ENTITY_COMMENT_NOT_FOUND", "El comentario no existe"),
 
-    // DUPLICATE - CONFLICTO / DUPLICADO (409 Conflict)
+    // Duplicate - Conflicto / duplicado (409 conflict)
     DOMAIN_MOVIE_DUPLICATE_MOVIE_ALREADY_EXISTS("DOMAIN_MOVIE_DUPLICATE_MOVIE_ALREADY_EXISTS", "La pelicula ya existe"),
     DOMAIN_MOVIE_DUPLICATE_MOVIE_NAME_ALREADY_EXISTS("DOMAIN_MOVIE_DUPLICATE_MOVIE_NAME_ALREADY_EXISTS", "El nombre que esta ingresando ya existe");
 

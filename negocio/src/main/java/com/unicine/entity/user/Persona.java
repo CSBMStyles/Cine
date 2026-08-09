@@ -85,6 +85,7 @@ public class Persona {
     @Column(nullable = false, length = 200)
     private String password;
 
+    // !SECTION
     // SECTION: Constructor
 
     public Persona(Integer cedula, String nombre, String apellido, String correo, String password) {
@@ -94,4 +95,5 @@ public class Persona {
         this.correo = correo;
         this.password = password;
     }
+    // !SECTION
 }

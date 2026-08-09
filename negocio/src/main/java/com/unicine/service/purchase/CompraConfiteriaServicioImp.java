@@ -104,7 +104,8 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
         validarPresentacionExiste(compraConfiteria.getPresentacion().getCodigo());
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public CompraConfiteriaResponse registrar(CompraConfiteriaRequest request) {
@@ -152,6 +153,7 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
         return compraConfiteriaMapper.toResponseList(compraConfiteriaRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
@@ -175,4 +177,5 @@ public class CompraConfiteriaServicioImp implements CompraConfiteriaServicio {
         validarCompraExiste(codigoCompra);
         return compraConfiteriaRepo.calcularTotalPorCompra(codigoCompra);
     }
+    // !SECTION
 }

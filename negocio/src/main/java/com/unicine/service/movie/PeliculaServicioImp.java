@@ -79,6 +79,7 @@ public class PeliculaServicioImp implements PeliculaServicio {
         destino.setRestriccionEdad(origen.getRestriccionEdad());
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
@@ -159,4 +160,5 @@ public class PeliculaServicioImp implements PeliculaServicio {
 
         return peliculaMapper.toResponseList(peliculaRepo.findAll(Sort.by("codigo").descending()));
     }
+    // !SECTION
 }

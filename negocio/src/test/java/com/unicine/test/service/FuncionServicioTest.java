@@ -31,7 +31,7 @@ import com.unicine.transfer.dto.response.FuncionResponse;
 import com.unicine.transfer.dto.response.HorarioResponse;
 import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
@@ -228,7 +228,7 @@ public class FuncionServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        // NOTE: El administrador cuando actualiza tiene la posibilidad de modificar la referencia del horario, sala y pelicula, entonces en una interfaz tenemos una lista y selecciona una que lo reemplaza.
+        // Note: El administrador cuando actualiza tiene la posibilidad de modificar la referencia del horario, sala y pelicula, entonces en una interfaz tenemos una lista y selecciona una que lo reemplaza.
         
         // Primero obtenemos la funcion a actualizar.
 

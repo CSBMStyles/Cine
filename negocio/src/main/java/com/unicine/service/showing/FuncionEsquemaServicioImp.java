@@ -27,7 +27,7 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
+    // Note: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final FuncionEsquemaRepo funcionEsquemaRepo;
 
     private final FuncionEsquemaMapper funcionEsquemaMapper;
@@ -124,6 +124,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
                 .orElseThrow(() -> new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND));
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     // 1️⃣ Funcion del Administrador
@@ -166,7 +167,7 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
         funcionEsquemaRepo.delete(buscado.get());
     }
 
-    // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la funcionEsquema usando las anotaciones para validar
+    // Review: En este caso se utiliza una clase de validacion para obtener el codigo de la funcionEsquema usando las anotaciones para validar
 
     @Override
     public Optional<FuncionEsquemaResponse> obtener(Integer codigo) throws Exception {
@@ -180,4 +181,5 @@ public class FuncionEsquemaServicioImp implements FuncionEsquemaServicio {
 
     @Override
     public List<FuncionEsquemaResponse> listar() { return funcionEsquemaMapper.toResponseList(funcionEsquemaRepo.findAll()); }
+    // !SECTION
 }

@@ -52,6 +52,7 @@ public class Sala implements Serializable {
     @Enumerated(EnumType.STRING)
     private TipoSala tipoSala;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ManyToOne
@@ -66,6 +67,7 @@ public class Sala implements Serializable {
     @OneToMany(mappedBy = "sala",cascade = CascadeType.ALL)
     private List<Funcion> funciones;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -75,4 +77,5 @@ public class Sala implements Serializable {
         this.teatro = teatro;
         this.distribucionSilla = distribucionSilla;
     }
+    // !SECTION
 }
