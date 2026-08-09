@@ -40,8 +40,10 @@ import io.imagekit.sdk.models.results.ResultFileVersions;
 import io.imagekit.sdk.models.results.ResultList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
+/**
+ * Servicio para persistir imagenes y sincronizarlas con ImageKit.
+ */
 @Service
 @Validated
 public class ImagenServicioImp implements ImagenServicio {
@@ -168,28 +170,43 @@ public class ImagenServicioImp implements ImagenServicio {
         ImagenResponse response = imagenMapper.toResponse(imagen);
         response.setTipoPropietario(tipoPropietario.name());
         response.setCodigoPropietario(codigoPropietario);
-
-        if (result != null) {
-            response.setNombre(result.getName());
-            response.setFilePath(result.getFilePath());
-            response.setThumbnailUrl(result.getThumbnail());
-            response.setFileType(result.getFileType());
-            response.setAltura(result.getHeight());
-            response.setAnchura(result.getWidth());
-            response.setTamanio(result.getSize());
-            if (result.getVersionInfo() != null && result.getVersionInfo().isJsonObject()) {
-                JsonObject versionInfo = result.getVersionInfo().getAsJsonObject();
-                if (versionInfo.has("id")) {
-                    response.setVersionId(versionInfo.get("id").getAsString());
-                }
-                if (versionInfo.has("name")) {
-                    response.setVersionName(versionInfo.get("name").getAsString());
-                }
-            }
-        }
+        completarDatosArchivo(response, result);
         return response;
     }
 
+    /**
+     * Completa la respuesta con los metadatos devueltos por ImageKit.
+     */
+    private void completarDatosArchivo(ImagenResponse response, Result result) {
+        if (result == null) {
+            return;
+        }
+
+        response.setNombre(result.getName());
+        response.setFilePath(result.getFilePath());
+        response.setThumbnailUrl(result.getThumbnail());
+        response.setFileType(result.getFileType());
+        response.setAltura(result.getHeight());
+        response.setAnchura(result.getWidth());
+        response.setTamanio(result.getSize());
+        asignarVersion(response, result.getVersionInfo());
+    }
+
+    private void asignarVersion(ImagenResponse response, JsonElement versionInfo) {
+        if (versionInfo == null || !versionInfo.isJsonObject()) {
+            return;
+        }
+
+        JsonObject datosVersion = versionInfo.getAsJsonObject();
+        if (datosVersion.has("id")) {
+            response.setVersionId(datosVersion.get("id").getAsString());
+        }
+        if (datosVersion.has("name")) {
+            response.setVersionName(datosVersion.get("name").getAsString());
+        }
+    }
+
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
@@ -349,4 +366,5 @@ public class ImagenServicioImp implements ImagenServicio {
     public List<ImagenResponse> listarDescendente() {
         return imagenMapper.toResponseList(imagenRepo.findAll(Sort.by("codigo").descending()));
     }
+    // !SECTION
 }

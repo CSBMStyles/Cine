@@ -24,7 +24,6 @@ import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.user.ClienteRepo;
 import com.unicine.transfer.dto.request.CompraCompletaRequest;
-import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
 import com.unicine.transfer.dto.request.CompraRequest;
 import com.unicine.transfer.dto.request.EntradaRequest;
 import com.unicine.transfer.dto.response.CompraResponse;
@@ -140,29 +139,105 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
+    /**
+     * Calcula el total de la compra separando entradas, confiteria y descuento.
+     */
     private Double calcularValorTotal(List<Entrada> entradas,
-                                       List<CompraConfiteria> confiterias,
-                                       CuponCliente cuponCliente) {
-        double totalEntradas = entradas.stream()
-                .mapToDouble(Entrada::getPrecio)
-                .sum();
-
-        double totalConfiteria = confiterias.stream()
-                .mapToDouble(c -> c.getPrecio() * c.getUnidades())
-                .sum();
-
-        double subtotal = totalEntradas + totalConfiteria;
-
-        if (cuponCliente != null) {
-            double descuento = subtotal * cuponCliente.getCupon().getDescuento();
-            validarDescuentoNoMayorTotal(descuento, subtotal);
-            subtotal -= descuento;
-        }
-
-        return subtotal;
+                                      List<CompraConfiteria> confiterias,
+                                      CuponCliente cuponCliente) {
+        double totalEntradas = calcularTotalEntradas(entradas);
+        double totalConfiteria = calcularTotalConfiteria(confiterias);
+        return aplicarDescuento(totalEntradas + totalConfiteria, cuponCliente);
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    private double calcularTotalEntradas(List<Entrada> entradas) {
+        return entradas.stream()
+                .mapToDouble(Entrada::getPrecio)
+                .sum();
+    }
+
+    private double calcularTotalConfiteria(List<CompraConfiteria> confiterias) {
+        return confiterias.stream()
+                .mapToDouble(confiteria -> confiteria.getPrecio() * confiteria.getUnidades())
+                .sum();
+    }
+
+    /**
+     * Aplica el descuento del cupon y evita que el descuento supere el subtotal.
+     */
+    private double aplicarDescuento(double subtotal, CuponCliente cuponCliente) {
+        if (cuponCliente == null) {
+            return subtotal;
+        }
+
+        double descuento = subtotal * cuponCliente.getCupon().getDescuento();
+        validarDescuentoNoMayorTotal(descuento, subtotal);
+        return subtotal - descuento;
+    }
+
+    private void validarDatosCompra(CompraRequest request) {
+        validarClienteExiste(request.getClienteCedula());
+        validarFuncionExiste(request.getFuncionCodigo());
+    }
+
+    private List<Entrada> prepararEntradas(List<EntradaRequest> requests, Integer codigoFuncion) {
+        List<Entrada> entradas = entradaMapper.toEntityList(requests);
+        validarSillasDisponibles(entradas, codigoFuncion);
+        return entradas;
+    }
+
+    /**
+     * Obtiene el cupon asignado y comprueba que pueda utilizarse en la compra.
+     */
+    private CuponCliente obtenerCuponCliente(Integer codigo) {
+        if (codigo == null) {
+            return null;
+        }
+
+        CuponCliente cuponCliente = cuponClienteRepo.findById(codigo)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND));
+        validarCuponDisponible(cuponCliente);
+        return cuponCliente;
+    }
+
+    private Compra construirCompra(CompraRequest request, Double valorTotal, CuponCliente cuponCliente) {
+        Compra compra = compraMapper.toEntity(request);
+        compra.setValorTotal(valorTotal);
+        compra.setFechaCompra(LocalDateTime.now(ZoneId.of("America/Bogota")));
+        compra.setEstado(true);
+        if (cuponCliente != null) {
+            compra.setCuponCliente(cuponCliente);
+        }
+        return compra;
+    }
+
+    private void guardarEntradas(List<Entrada> entradas, Compra compra) {
+        for (Entrada entrada : entradas) {
+            entrada.setCompra(compra);
+            entrada.setFuncion(compra.getFuncion());
+            entradaRepo.save(entrada);
+        }
+    }
+
+    private void guardarConfiterias(List<CompraConfiteria> confiterias, Compra compra) {
+        for (CompraConfiteria confiteria : confiterias) {
+            confiteria.setCompra(compra);
+            compraConfiteriaRepo.save(confiteria);
+        }
+    }
+
+    private void consumirCupon(CuponCliente cuponCliente) {
+        if (cuponCliente == null) {
+            return;
+        }
+
+        cuponCliente.setEstado(false);
+        cuponClienteRepo.save(cuponCliente);
+    }
+
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
     public CompraResponse registrar(CompraRequest request) {
@@ -206,59 +281,27 @@ public class CompraServicioImp implements CompraServicio {
         return compraMapper.toResponseList(compraRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
+    /**
+     * Registra una compra con sus entradas, productos de confiteria y cupon opcional.
+     */
     @Override
     public CompraResponse registrarCompraCompleta(CompraCompletaRequest request) throws Exception {
         CompraRequest compraRequest = request.getCompra();
-        List<EntradaRequest> entradaRequests = request.getEntradas();
-        List<CompraConfiteriaRequest> confiteriaRequests = request.getConfiterias();
+        validarDatosCompra(compraRequest);
 
-        validarClienteExiste(compraRequest.getClienteCedula());
-        validarFuncionExiste(compraRequest.getFuncionCodigo());
-
-        List<Entrada> entradas = entradaMapper.toEntityList(entradaRequests);
-        validarSillasDisponibles(entradas, compraRequest.getFuncionCodigo());
-
-        CuponCliente cuponCliente = null;
-        if (compraRequest.getCuponClienteCodigo() != null) {
-            Optional<CuponCliente> cc = cuponClienteRepo.findById(compraRequest.getCuponClienteCodigo());
-            if (cc.isEmpty()) {
-                throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
-            }
-            cuponCliente = cc.get();
-            validarCuponDisponible(cuponCliente);
-        }
-
-        List<CompraConfiteria> confiterias = compraConfiteriaMapper.toEntityList(confiteriaRequests);
+        List<Entrada> entradas = prepararEntradas(request.getEntradas(), compraRequest.getFuncionCodigo());
+        CuponCliente cuponCliente = obtenerCuponCliente(compraRequest.getCuponClienteCodigo());
+        List<CompraConfiteria> confiterias = compraConfiteriaMapper.toEntityList(request.getConfiterias());
 
         Double valorTotal = calcularValorTotal(entradas, confiterias, cuponCliente);
 
-        Compra compra = compraMapper.toEntity(compraRequest);
-        compra.setValorTotal(valorTotal);
-        compra.setFechaCompra(LocalDateTime.now(ZoneId.of("America/Bogota")));
-        compra.setEstado(true);
-        if (cuponCliente != null) {
-            compra.setCuponCliente(cuponCliente);
-        }
-
-        Compra guardada = compraRepo.save(compra);
-
-        for (Entrada entrada : entradas) {
-            entrada.setCompra(guardada);
-            entrada.setFuncion(guardada.getFuncion());
-            entradaRepo.save(entrada);
-        }
-
-        for (CompraConfiteria cc : confiterias) {
-            cc.setCompra(guardada);
-            compraConfiteriaRepo.save(cc);
-        }
-
-        if (cuponCliente != null) {
-            cuponCliente.setEstado(false);
-            cuponClienteRepo.save(cuponCliente);
-        }
+        Compra guardada = compraRepo.save(construirCompra(compraRequest, valorTotal, cuponCliente));
+        guardarEntradas(entradas, guardada);
+        guardarConfiterias(confiterias, guardada);
+        consumirCupon(cuponCliente);
 
         return compraMapper.toResponse(guardada);
     }
@@ -278,4 +321,5 @@ public class CompraServicioImp implements CompraServicio {
         }
         return total;
     }
+    // !SECTION
 }

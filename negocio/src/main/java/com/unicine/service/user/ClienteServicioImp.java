@@ -25,6 +25,9 @@ import com.unicine.exception.AuthenticationException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
+/**
+ * Servicio de registro, autenticacion y mantenimiento de clientes.
+ */
 @Service
 @Validated
 public class ClienteServicioImp implements ClienteServicio {
@@ -46,18 +49,23 @@ public class ClienteServicioImp implements ClienteServicio {
     // SECTION: Metodos de soporte
 
     private Cliente comprobarAutenticacion(String correo, String password) throws Exception {
+        Cliente cliente = obtenerClientePorCorreo(correo);
+        validarPassword(password, cliente);
+        return cliente;
+    }
 
-        Optional<Cliente> cliente = clienteRepo.findByCorreo(correo);
+    private Cliente obtenerClientePorCorreo(String correo) {
+        return clienteRepo.findByCorreo(correo)
+                .orElseThrow(() -> new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_EMAIL_NOT_FOUND));
+    }
 
-        if (cliente.isEmpty()) {
-            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_EMAIL_NOT_FOUND);
-        }
-
-        if (!encriptador.checkPassword(password, cliente.get().getPassword())) {
+    /**
+     * Comprueba la credencial antes de permitir el acceso al cliente.
+     */
+    private void validarPassword(String password, Cliente cliente) {
+        if (!encriptador.checkPassword(password, cliente.getPassword())) {
             throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_AUTH_DATA_INCORRECT);
         }
-
-        return cliente.get();
     }
 
     private void validarExiste(Optional<Cliente> cliente) throws Exception {
@@ -130,6 +138,7 @@ public class ClienteServicioImp implements ClienteServicio {
         }
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
@@ -174,20 +183,26 @@ public class ClienteServicioImp implements ClienteServicio {
 
     @Override
     public Cliente cambiarPassword(Cliente cliente, String passwordActual, String passwordNuevo) throws Exception {
-
-        if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
-            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
-        }
-
-        if (encriptador.checkPassword(passwordNuevo, cliente.getPassword())) {
-            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT);
-        }
+        validarPasswordActual(cliente, passwordActual);
+        validarPasswordNueva(cliente, passwordNuevo);
 
         cliente.setPassword(passwordNuevo);
         validarParaRegistro(cliente);
         encriptar(cliente);
 
         return clienteRepo.save(cliente);
+    }
+
+    private void validarPasswordActual(Cliente cliente, String passwordActual) {
+        if (!encriptador.checkPassword(passwordActual, cliente.getPassword())) {
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_CURRENT_PASSWORD_INCORRECT);
+        }
+    }
+
+    private void validarPasswordNueva(Cliente cliente, String passwordNuevo) {
+        if (encriptador.checkPassword(passwordNuevo, cliente.getPassword())) {
+            throw new AuthenticationException(UserErrorCatalog.DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT);
+        }
     }
 
     @Override
@@ -215,4 +230,5 @@ public class ClienteServicioImp implements ClienteServicio {
     @Override
     public List<ClienteResponse> listar() { return clienteMapper.toResponseList(clienteRepo.findAll()); }
 
+    // !SECTION
 }
