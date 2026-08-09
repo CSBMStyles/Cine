@@ -99,3 +99,13 @@ When running shell commands (tests, builds, runners, or any long-running process
 - If the command runs much longer than expected, produces no useful progress, or is clearly not doing what the user asked, **cancel it**, inspect the logs, and report the situation before retrying.
 - Avoid repeatedly retrying the same failing approach without diagnosing the root cause.
 - Prefer focused, verifiable commands over broad or speculative ones.
+
+## code-organization
+
+- Keep each method focused on one main responsibility and one level of abstraction.
+- Extract validation, mapping, persistence, and business-rule details into small private helpers when a public method combines them.
+- Use descriptive method names in Spanish, following the naming rules in `SPEC.md`.
+- Add comments above classes or methods when they explain a non-obvious responsibility, business rule, external integration, or technical constraint. Do not add comments that merely repeat the code.
+- Open code sections with `// SECTION: Nombre` and close every section with its own `// !SECTION` before the next section or class closing brace.
+- Do not use comment separators made of repeated `=` characters.
+- Write section names and explanatory comments with normal capitalization, such as `Crud base` or `Metodos de negocio`, never as all-uppercase phrases.

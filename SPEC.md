@@ -60,6 +60,20 @@ private Double calcularValorTotal(Compra compra) {
 }
 ```
 
+### Secciones de codigo
+- Abrir cada seccion con `// SECTION: Nombre` y cerrarla con `// !SECTION` al terminar su bloque.
+- Cada `SECTION` debe tener su propio `!SECTION`, ubicado antes de la siguiente seccion o antes del cierre de la clase.
+- No usar separadores visuales formados por `=` para iniciar o cerrar secciones.
+- Escribir los nombres de las secciones con capitalizacion normal: `Crud base`, `Metodos de negocio`, `Metodos de soporte`.
+- La palabra `SECTION` y la marca `!SECTION` son directivas y se mantienen en mayusculas.
+
+### Responsabilidad de metodos
+- Cada metodo debe tener una responsabilidad principal y un unico nivel de abstraccion.
+- Si un metodo mezcla validacion, transformacion, persistencia y reglas de negocio, extraer metodos privados de soporte con nombres descriptivos en espanol.
+- Mantener los metodos pequenos y legibles; el metodo publico debe expresar el flujo de negocio y delegar los detalles a helpers.
+- Comentar una responsabilidad cuando la regla no sea evidente por el nombre del metodo o cuando dependa de una decision de negocio, una integracion externa o una limitacion tecnica.
+- Evitar comentarios redundantes que repitan literalmente el codigo.
+
 ---
 
 ## 3. Estructura de Clases
