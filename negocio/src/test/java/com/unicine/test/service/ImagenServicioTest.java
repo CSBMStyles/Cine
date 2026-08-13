@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.enums.image.TipoPropietarioImagen;
+import com.unicine.enums.image.TipoImagen;
 import com.unicine.service.image.ImagenServicio;
 import com.unicine.service.image.ImageKitService;
 import com.unicine.transfer.dto.request.ImagenRequest;
@@ -67,17 +68,17 @@ public class ImagenServicioTest {
                 .nombre(response.getNombre())
                 .tipoPropietario(TipoPropietarioImagen.valueOf(response.getTipoPropietario()))
                 .codigoPropietario(response.getCodigoPropietario())
+                .tipoImagen(response.getTipoImagen())
                 .build();
     }
 
     // 🟩
 
     @Test
-    @Disabled("Depende de una ruta local de archivos")
     @Sql("classpath:dataset.sql")
     public void comprobarLectura(){
 
-        Path path = Paths.get("image/confiteria/snaks/De Toditos Rojo.png");
+        Path path = resolverRutaImagen("image/confiteria/snaks/De Toditos Rojo.png");
 
         // Leer el archivo en un array de bytes
         byte[] content;
@@ -87,7 +88,7 @@ public class ImagenServicioTest {
 
         } catch (IOException e) { throw new RuntimeException("Error leyendo el archivo", e); }
 
-        MockMultipartFile multipartFile = new MockMultipartFile("file", path.getFileName().toString(), "image/jpg", content);
+        MockMultipartFile multipartFile = new MockMultipartFile("file", path.getFileName().toString(), "image/png", content);
 
         System.out.println("Formato: " + multipartFile.getName());
 
@@ -100,20 +101,18 @@ public class ImagenServicioTest {
     }
 
     @Test
-    @Disabled("Depende de una ruta local de archivos y del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void subirImagenPersona() {
 
         MultipartFile file;
 
         try {
-            // TODO: Colocar imagen en proyecto y actualizar ruta relativa
             // Creamos un archivo MultipartFile usando un archivo físico
-            File fileOriginal = new File("image/persona/Camila.png");
+            File fileOriginal = resolverRutaImagen("image/persona/Camila.png").toFile();
 
             byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
 
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/png", contenido);
 
             // Important: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
 
@@ -126,13 +125,20 @@ public class ImagenServicioTest {
 
         ImagenRequest request = ImagenRequest.builder()
                 .nombre(file.getOriginalFilename())
-                .tipoPropietario(TipoPropietarioImagen.CLIENTE)
-                .codigoPropietario(1005000055)
+                .tipoPropietario(TipoPropietarioImagen.ADMINISTRADOR)
+                .codigoPropietario(1001000000)
+                .tipoImagen(TipoImagen.AVATAR)
                 .build();
 
         try {
 
             ImagenResponse resultado = imagenServicio.registrar(request, file);
+
+            Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
+            Assertions.assertNotNull(resultado.getCodigo(), "El código de la imagen no debe ser nulo");
+            Assertions.assertNotNull(resultado.getUrl(), "La URL de la imagen no debe ser nula");
+            Assertions.assertEquals(TipoImagen.AVATAR, resultado.getTipoImagen());
+            Assertions.assertTrue(resultado.getNombre().startsWith("Cristian-Barrera"));
 
             System.out.println("Imagen subida: " + resultado);
 
@@ -146,20 +152,18 @@ public class ImagenServicioTest {
     }
 
     @Test
-    @Disabled("Depende de una ruta local de archivos y del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void subirImagenPelicula() {
 
         MultipartFile file;
 
         try {
-            // TODO: Colocar imagen en proyecto y actualizar ruta relativa
             // Creamos un archivo MultipartFile usando un archivo físico
-            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+            File fileOriginal = resolverRutaImagen("image/pelicula/Ratatouille 1.webp").toFile();
 
             byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
 
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/webp", contenido);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -172,6 +176,7 @@ public class ImagenServicioTest {
                 .nombre(file.getOriginalFilename())
                 .tipoPropietario(TipoPropietarioImagen.PELICULA)
                 .codigoPropietario(5)
+                .tipoImagen(TipoImagen.POSTER)
                 .build();
 
         try {
@@ -180,6 +185,9 @@ public class ImagenServicioTest {
             Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
 
             Assertions.assertNotNull(resultado.getCodigo(), "El código de la imagen no debe ser nulo");
+            Assertions.assertEquals(TipoImagen.POSTER, resultado.getTipoImagen());
+            Assertions.assertTrue(resultado.getNombre().startsWith("Encanto-Poster"));
+            Assertions.assertNotNull(resultado.getOrden(), "La imagen de película debe tener orden");
 
             System.out.println("Imagen subida: " + resultado);
 
@@ -214,6 +222,7 @@ public class ImagenServicioTest {
                 .nombre(file.getOriginalFilename())
                 .tipoPropietario(TipoPropietarioImagen.CONFITERIA)
                 .codigoPropietario(15)
+                .tipoImagen(TipoImagen.PRODUCTO)
                 .build();
 
         try {
@@ -222,6 +231,8 @@ public class ImagenServicioTest {
             Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
 
             Assertions.assertNotNull(resultado.getCodigo(), "El codigo de la imagen no debe ser nulo");
+            Assertions.assertEquals(TipoImagen.PRODUCTO, resultado.getTipoImagen());
+            Assertions.assertTrue(resultado.getNombre().startsWith("De-Toditos-Rojo"));
 
             System.out.println("===== ImagenResponse (objeto completo) =====");
             System.out.println(resultado);
@@ -249,19 +260,24 @@ public class ImagenServicioTest {
     }
 
     @Test
-    @Disabled("Depende de una ruta local de archivos y del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
         MultipartFile file;
+        byte[] contenido;
 
         try {
             // Preparamos el archivo MultipartFile para actualizar
-            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3929 M.JPG");
+            File fileOriginal = resolverRutaImagen("image/pelicula/Ratatouille 1.webp").toFile();
 
-            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
+            contenido = Files.readAllBytes(fileOriginal.toPath());
 
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+            file = new MockMultipartFile(
+                    "imagen",
+                    "Ratatouille-" + System.nanoTime() + ".webp",
+                    "image/webp",
+                    contenido
+            );
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -270,13 +286,16 @@ public class ImagenServicioTest {
 
         }
 
-            // Obtenemos la imagen a actualizar
-            String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
-
-            ImagenResponse imagenAntigua;
+        ImagenResponse imagenAntigua;
 
         try {
-            imagenAntigua = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
+            ImagenRequest registro = ImagenRequest.builder()
+                    .nombre(file.getOriginalFilename())
+                    .tipoPropietario(TipoPropietarioImagen.PELICULA)
+                    .codigoPropietario(5)
+                    .build();
+
+            imagenAntigua = imagenServicio.registrar(registro, file);
 
             Assertions.assertNotNull(imagenAntigua, "La imagen antigua no debe estar vacía");
 
@@ -293,9 +312,18 @@ public class ImagenServicioTest {
         try {
             ImagenRequest request = construirRequestDesde(imagenAntigua);
 
-            ImagenResponse actualizado = imagenServicio.actualizar(request, file);
+            MultipartFile archivoActualizado = new MockMultipartFile(
+                    "imagen",
+                    "Ratatouille-actualizada-" + System.nanoTime() + ".webp",
+                    "image/webp",
+                    contenido
+            );
 
-            Assertions.assertEquals(fileIdSeleccionado, actualizado.getCodigo());
+            ImagenResponse actualizado = imagenServicio.actualizar(request, archivoActualizado);
+
+            Assertions.assertEquals(imagenAntigua.getCodigo(), actualizado.getCodigo());
+            Assertions.assertEquals(imagenAntigua.getNombre(), actualizado.getNombre());
+            Assertions.assertEquals(imagenAntigua.getTipoImagen(), actualizado.getTipoImagen());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
