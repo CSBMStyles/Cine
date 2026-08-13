@@ -1,5 +1,7 @@
 package com.unicine.transfer.dto.response;
 
+import com.unicine.enums.image.TipoImagen;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,4 +54,10 @@ public class ImagenResponse {
     private String tipoPropietario;
 
     private Integer codigoPropietario;
+
+    private TipoImagen tipoImagen;
+
+    private Integer orden;
+
+    private Boolean principal;
 }

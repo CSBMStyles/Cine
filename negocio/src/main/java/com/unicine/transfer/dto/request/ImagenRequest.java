@@ -1,6 +1,6 @@
 package com.unicine.transfer.dto.request;
 
-import com.unicine.enums.image.TipoImagenPelicula;
+import com.unicine.enums.image.TipoImagen;
 import com.unicine.enums.image.TipoPropietarioImagen;
 import com.unicine.util.validation.catalog.ValidationMessages;
 
@@ -21,7 +21,7 @@ import lombok.ToString;
  * Incluido:
  * - {@code codigo}, {@code nombre}.
  * - Identificacion del propietario: {@code tipoPropietario}, {@code codigoPropietario}.
- * - {@code tipoImagenPelicula} (opcional, solo para peliculas).
+ * - {@code tipoImagen} (opcional; se resuelve un valor por defecto según el propietario).
  *
  * Excluido:
  * - URL y demas metadatos: son devueltos por ImageKit y no deben entrar por API.
@@ -48,5 +48,5 @@ public class ImagenRequest {
     @Positive(message = ValidationMessages.ID_POSITIVE)
     private Integer codigoPropietario;
 
-    private TipoImagenPelicula tipoImagenPelicula;
+    private TipoImagen tipoImagen;
 }

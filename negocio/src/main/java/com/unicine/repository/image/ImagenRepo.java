@@ -1,5 +1,6 @@
 package com.unicine.repository.image;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,11 @@ public interface ImagenRepo extends JpaRepository<Imagen, String> {
 
     @Query("select i from Imagen i where (i.cliente.cedula = :cedula) or (i.administrador.cedula = :cedula) or (i.administradorTeatro.cedula = :cedula)")
     Optional<Imagen> findByPersona(Integer cedula);
+
+    @Query("select coalesce(max(i.orden), 0) from Imagen i where i.pelicula.codigo = :codigoPelicula")
+    Integer findMaxOrdenByPelicula(Integer codigoPelicula);
+
+    long countByPeliculaCodigo(Integer codigoPelicula);
+
+    List<Imagen> findByPeliculaCodigo(Integer codigoPelicula);
 }

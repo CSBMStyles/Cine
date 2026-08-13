@@ -2,6 +2,7 @@ package com.unicine.service.image;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.user.Persona;
 import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.enums.image.TipoPropietarioImagen;
+import com.unicine.enums.image.TipoImagen;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.exception.ValidationException;
 import com.unicine.repository.confiteria.ConfiteriaRepo;
@@ -152,6 +154,67 @@ public class ImagenServicioImp implements ImagenServicio {
                 .build());
     }
 
+    private TipoImagen resolverTipoImagen(ImagenRequest request, Imagenable propietario) {
+        if (request.getTipoImagen() != null) {
+            return request.getTipoImagen();
+        }
+
+        if (propietario instanceof Persona) {
+            return TipoImagen.AVATAR;
+        }
+
+        if (propietario instanceof Pelicula) {
+            return TipoImagen.POSTER;
+        }
+
+        return TipoImagen.PRODUCTO;
+    }
+
+    private void asignarMetadatosRegistro(Imagen imagen, Imagenable propietario) {
+        if (!(propietario instanceof Pelicula pelicula)) {
+            imagen.setOrden(null);
+            imagen.setPrincipal(null);
+            return;
+        }
+
+        Integer maxOrden = Optional.ofNullable(imagenRepo.findMaxOrdenByPelicula(pelicula.getCodigo()))
+                .orElse(0);
+        long totalImagenes = imagenRepo.countByPeliculaCodigo(pelicula.getCodigo());
+        int siguienteOrden = Math.toIntExact(Math.max(maxOrden, totalImagenes) + 1);
+
+        imagen.setOrden(siguienteOrden);
+        imagen.setPrincipal(siguienteOrden == 1);
+    }
+
+    private Comparator<Imagen> comparadorOrden() {
+        return Comparator.comparing(
+                        Imagen::getOrden,
+                        Comparator.nullsLast(Integer::compareTo))
+                .thenComparing(Imagen::getCodigo);
+    }
+
+    private List<String> obtenerIdsOrdenados(List<Imagen> imagenes) {
+        return imagenes.stream()
+                .sorted(comparadorOrden())
+                .map(Imagen::getCodigo)
+                .collect(Collectors.toList());
+    }
+
+    private void promoverSiguientePrincipal(Imagen eliminada) {
+        if (!(eliminada.getPelicula() != null && Boolean.TRUE.equals(eliminada.getPrincipal()))) {
+            return;
+        }
+
+        imagenRepo.findByPeliculaCodigo(eliminada.getPelicula().getCodigo()).stream()
+                .filter(imagen -> !imagen.getCodigo().equals(eliminada.getCodigo()))
+                .sorted(comparadorOrden())
+                .findFirst()
+                .ifPresent(siguiente -> {
+                    siguiente.setPrincipal(true);
+                    imagenRepo.save(siguiente);
+                });
+    }
+
     private void asignarPropietario(Imagen imagen, Imagenable propietario) {
         if (propietario instanceof Cliente cliente) {
             imagen.setCliente(cliente);
@@ -215,11 +278,15 @@ public class ImagenServicioImp implements ImagenServicio {
         validarExisteImagen(propietario);
         validarTamanoImagen(file);
 
+        TipoImagen tipoImagen = resolverTipoImagen(request, propietario);
+
         Imagen imagen = imagenMapper.toEntity(request);
         asignarPropietario(imagen, propietario);
+        imagen.setTipoImagen(tipoImagen);
+        asignarMetadatosRegistro(imagen, propietario);
 
         String folder = constructorCarpeta(propietario);
-        Result result = imageKitService.subirImagen(file, folder, propietario, false, request.getNombre(), request.getTipoImagenPelicula());
+        Result result = imageKitService.subirImagen(file, folder, propietario, false, request.getNombre(), tipoImagen);
 
         imagen.setCodigo(result.getFileId());
         imagen.setUrl(result.getUrl());
@@ -239,8 +306,13 @@ public class ImagenServicioImp implements ImagenServicio {
         Imagen imagen = buscado.get();
         asignarPropietario(imagen, propietario);
 
+        TipoImagen tipoImagen = imagen.getTipoImagen() == null
+                ? resolverTipoImagen(request, propietario)
+                : imagen.getTipoImagen();
+        imagen.setTipoImagen(tipoImagen);
+
         String folder = constructorCarpeta(propietario);
-        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario);
+        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario, tipoImagen);
 
         imagen.setUrl(result.getUrl());
 
@@ -282,8 +354,10 @@ public class ImagenServicioImp implements ImagenServicio {
         Optional<Imagen> buscado = imagenRepo.findById(codigo);
         validarExiste(buscado);
 
+        Imagen imagen = buscado.get();
         imageKitService.eliminarImagen(codigo);
-        imagenRepo.delete(buscado.get());
+        promoverSiguientePrincipal(imagen);
+        imagenRepo.delete(imagen);
     }
 
     @Override
@@ -333,6 +407,11 @@ public class ImagenServicioImp implements ImagenServicio {
     @Override
     public List<String> listar(TipoPropietarioImagen tipoPropietario, Integer codigoPropietario) throws Exception {
         Imagenable propietario = obtenerPropietarioPorTipo(tipoPropietario, codigoPropietario);
+
+        if (propietario instanceof Pelicula pelicula) {
+            return obtenerIdsOrdenados(imagenRepo.findByPeliculaCodigo(pelicula.getCodigo()));
+        }
+
         String folder = constructorCarpeta(propietario);
         ResultList result = imageKitService.listarImagenes(folder);
         return obtenerImagenesCarpetaId(result);

@@ -32,6 +32,8 @@ public interface ImagenMapper {
 
     @Mapping(target = "codigo", source = "codigo")
     @Mapping(target = "url", ignore = true)
+    @Mapping(target = "orden", ignore = true)
+    @Mapping(target = "principal", ignore = true)
     @Mapping(target = "cliente", ignore = true)
     @Mapping(target = "administrador", ignore = true)
     @Mapping(target = "administradorTeatro", ignore = true)

@@ -5,6 +5,7 @@ import com.unicine.entity.showing.Funcion;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -100,6 +101,7 @@ public class Pelicula implements Serializable, Imagenable {
     private List<PeliculaDisposicion> peliculaDisposicion;
 
     @ToString.Exclude
+    @OrderBy("orden ASC, codigo ASC")
     @OneToMany(mappedBy = "pelicula", cascade =  CascadeType.ALL)
     private List<Imagen> imagenes;
     
