@@ -1,6 +1,7 @@
 package com.unicine.exception.handler;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.unicine.util.validation.catalog.ErrorCode;
 
@@ -62,6 +63,11 @@ public class ApiError {
     private String path;
 
     /**
+     * Detalles de validacion sin incluir valores rechazados o datos sensibles.
+     */
+    private List<ValidationErrorDetail> details;
+
+    /**
      * Crea una instancia de ApiError con timestamp actual.
      * 
      * @param status Codigo HTTP
@@ -72,6 +78,28 @@ public class ApiError {
      * @return ApiError construido
      */
     public static ApiError of(int status, String error, String code, String message, String path) {
+        return of(status, error, code, message, path, List.of());
+    }
+
+    /**
+     * Crea una instancia de ApiError con detalles estructurados de validacion.
+     *
+     * @param status Codigo HTTP
+     * @param error Nombre del error HTTP
+     * @param code Codigo del catalogo UniCine (puede ser null)
+     * @param message Mensaje descriptivo
+     * @param path Ruta del endpoint
+     * @param details Detalles publicos de validacion
+     * @return ApiError construido
+     */
+    public static ApiError of(
+            int status,
+            String error,
+            String code,
+            String message,
+            String path,
+            List<ValidationErrorDetail> details) {
+
         return ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status)
@@ -79,6 +107,7 @@ public class ApiError {
                 .code(code)
                 .message(message)
                 .path(path)
+                .details(details == null ? List.of() : List.copyOf(details))
                 .build();
     }
 
@@ -99,6 +128,7 @@ public class ApiError {
                 .code(errorCatalog.getCode())
                 .message(errorCatalog.getMessage())
                 .path(path)
+                .details(List.of())
                 .build();
     }
 }

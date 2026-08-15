@@ -2,12 +2,16 @@ package com.unicine.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.core.MethodParameter;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.validation.method.ParameterValidationResult;
 
 import com.unicine.exception.AuthenticationException;
 import com.unicine.exception.AuthorizationException;
@@ -16,11 +20,12 @@ import com.unicine.exception.ExternalServiceException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.exception.UnicineException;
 import com.unicine.exception.ValidationException;
+import com.unicine.util.validation.catalog.ErrorCode;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 /**
  * Manejador global de excepciones para la API REST de UniCine.
@@ -74,15 +79,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiError> handleValidation(ValidationException ex, WebRequest request) {
         log.warn("Validation error: {} - {}", ex.getErrorCode(), ex.getMessage());
-        
+
+        HttpStatus status = resolverEstadoDominio(ex.getErrorCatalog(), HttpStatus.BAD_REQUEST);
         ApiError error = ApiError.fromCatalog(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                status.value(),
+                status.getReasonPhrase(),
                 ex.getErrorCatalog(),
                 extractPath(request)
         );
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+
+        return ResponseEntity.status(status).body(error);
     }
 
     /**
@@ -91,15 +97,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessRuleException.class)
     public ResponseEntity<ApiError> handleBusinessRule(BusinessRuleException ex, WebRequest request) {
         log.warn("Business rule violated: {} - {}", ex.getErrorCode(), ex.getMessage());
-        
+
+        HttpStatus status = resolverEstadoDominio(ex.getErrorCatalog(), HttpStatus.BAD_REQUEST);
         ApiError error = ApiError.fromCatalog(
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                status.value(),
+                status.getReasonPhrase(),
                 ex.getErrorCatalog(),
                 extractPath(request)
         );
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+
+        return ResponseEntity.status(status).body(error);
     }
 
     /**
@@ -179,20 +186,47 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
-        String errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining("; "));
-        
-        log.warn("Method argument validation failed: {}", errors);
-        
+        List<ValidationErrorDetail> details = ex.getBindingResult().getFieldErrors().stream()
+                .map(this::crearDetalleCampo)
+                .toList();
+
+        log.warn("Method argument validation failed: {}", details);
+
         ApiError error = ApiError.of(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 null,
-                errors,
-                extractPath(request)
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                details
         );
-        
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Maneja errores de validacion de parametros en metodos MVC.
+     */
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiError> handleHandlerMethodValidation(
+            HandlerMethodValidationException ex,
+            WebRequest request) {
+
+        List<ValidationErrorDetail> details = ex.getParameterValidationResults().stream()
+                .flatMap(this::crearDetallesParametro)
+                .toList();
+
+        log.warn("Handler method validation failed: {}", details);
+
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                null,
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                details
+        );
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -202,20 +236,23 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
-        String errors = ex.getConstraintViolations().stream()
-                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
-                .collect(Collectors.joining("; "));
-        
-        log.warn("Constraint validation failed: {}", errors);
-        
+        List<ValidationErrorDetail> details = ex.getConstraintViolations().stream()
+                .map(violation -> new ValidationErrorDetail(
+                        violation.getPropertyPath().toString(),
+                        violation.getMessage()))
+                .toList();
+
+        log.warn("Constraint validation failed: {}", details);
+
         ApiError error = ApiError.of(
                 HttpStatus.BAD_REQUEST.value(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 null,
-                errors,
-                extractPath(request)
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                details
         );
-        
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -242,6 +279,38 @@ public class GlobalExceptionHandler {
 
     // !SECTION
     // SECTION: Utilidades
+
+    private ValidationErrorDetail crearDetalleCampo(FieldError error) {
+        return new ValidationErrorDetail(error.getField(), error.getDefaultMessage());
+    }
+
+    private java.util.stream.Stream<ValidationErrorDetail> crearDetallesParametro(ParameterValidationResult result) {
+        String field = obtenerNombreParametro(result.getMethodParameter());
+
+        return result.getResolvableErrors().stream()
+                .map(error -> new ValidationErrorDetail(field, obtenerMensaje(error)));
+    }
+
+    private String obtenerNombreParametro(MethodParameter parameter) {
+        String parameterName = parameter.getParameterName();
+        return parameterName != null ? parameterName : "parameter[" + parameter.getParameterIndex() + "]";
+    }
+
+    private String obtenerMensaje(MessageSourceResolvable error) {
+        return error.getDefaultMessage() != null
+                ? error.getDefaultMessage()
+                : "El valor no cumple las reglas de validacion";
+    }
+
+    private HttpStatus resolverEstadoDominio(ErrorCode errorCode, HttpStatus estadoPredeterminado) {
+        String code = errorCode.getCode();
+
+        if (code.contains("_DUPLICATE_") || code.contains("_DELETE_")) {
+            return HttpStatus.CONFLICT;
+        }
+
+        return estadoPredeterminado;
+    }
 
     /**
      * Extrae la ruta del request desde el WebRequest.
