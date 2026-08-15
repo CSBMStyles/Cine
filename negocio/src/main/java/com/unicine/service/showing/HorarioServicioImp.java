@@ -11,19 +11,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.api.response.Respuesta;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.Horario;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.transfer.dto.request.HorarioRequest;
-import com.unicine.transfer.dto.response.FuncionInterseccionResponse;
 import com.unicine.transfer.dto.response.HorarioResponse;
-import com.unicine.transfer.mapper.FuncionInterseccionMapper;
 import com.unicine.transfer.mapper.HorarioMapper;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
@@ -37,15 +35,12 @@ public class HorarioServicioImp implements HorarioServicio {
 
     private final FuncionRepo funcionRepo;
 
-    private final FuncionInterseccionMapper funcionInterseccionMapper;
-
     private final HorarioDescuentoInit descuentoInitializer;
 
-    public HorarioServicioImp(HorarioRepo horarioRepo, HorarioMapper horarioMapper, FuncionRepo funcionRepo, FuncionInterseccionMapper funcionInterseccionMapper, HorarioDescuentoInit descuentoInitializer) {
+    public HorarioServicioImp(HorarioRepo horarioRepo, HorarioMapper horarioMapper, FuncionRepo funcionRepo, HorarioDescuentoInit descuentoInitializer) {
         this.horarioRepo = horarioRepo;
         this.horarioMapper = horarioMapper;
         this.funcionRepo = funcionRepo;
-        this.funcionInterseccionMapper = funcionInterseccionMapper;
         this.descuentoInitializer = descuentoInitializer;
     }
 
@@ -93,28 +88,17 @@ public class HorarioServicioImp implements HorarioServicio {
         }
     }
 
-    /**
-     * Funcion para instanciar la respuesta de la operación fallida
-     * @param funcion solapada
-     * @return respuesta conteniendo el mensaje, funcion y estado de la operación
-     */
-    private Respuesta<?> comprobacionRespuesta(Optional<Funcion> funcionSolapada, Horario horario) {
+    private void validarSolapamiento(Optional<Funcion> funcionSolapada) {
 
         if (funcionSolapada.isPresent()) {
             
-            Funcion funcion = funcionSolapada.get();
-
-            FuncionInterseccionResponse interseccion = funcionInterseccionMapper.convertirDTO(funcion);
-
-            return new Respuesta<>("El horario se solapa con otra función", interseccion, false);
-        } else {
-
-            Horario guardado = horarioRepo.save(horario);
-
-            HorarioResponse response = horarioMapper.toResponse(guardado);
-
-            return new Respuesta<>("Horario registrado exitosamente", response, true);
+            throw new BusinessRuleException(ShowingErrorCatalog.DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP);
         }
+    }
+
+    private HorarioResponse guardarHorario(Horario horario) {
+        Horario guardado = horarioRepo.save(horario);
+        return horarioMapper.toResponse(guardado);
     }
 
     /**
@@ -134,17 +118,18 @@ public class HorarioServicioImp implements HorarioServicio {
     // 2️⃣ Funciones del Administrador de Horario
 
     @Override
-    public Respuesta<?> registrar(HorarioRequest request, Integer salaCodigo) throws Exception {
+    public HorarioResponse registrar(HorarioRequest request, Integer salaCodigo) throws Exception {
 
         Horario horario = horarioMapper.toEntity(request);
 
         Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioSala(salaCodigo, horario.getFechaInicio(), horario.getFechaFin());
 
-        return comprobacionRespuesta(funcionSolapada, horario);
+        validarSolapamiento(funcionSolapada);
+        return guardarHorario(horario);
     }
 
     @Override
-    public Respuesta<?> actualizar(HorarioRequest request) throws Exception {
+    public HorarioResponse actualizar(HorarioRequest request) throws Exception {
 
         Optional<Horario> existente = horarioRepo.findById(request.getCodigo());
         validarExiste(existente);
@@ -158,7 +143,8 @@ public class HorarioServicioImp implements HorarioServicio {
 
         Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioTeatro(salaCodigo, horario.getCodigo(), horario.getFechaInicio(), horario.getFechaFin());
 
-        return comprobacionRespuesta(funcionSolapada, horario);
+        validarSolapamiento(funcionSolapada);
+        return guardarHorario(horario);
     }
 
     @Override

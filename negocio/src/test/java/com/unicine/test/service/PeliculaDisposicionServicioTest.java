@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.api.response.Respuesta;
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.theater.Sala;
 import com.unicine.enums.movie.EstadoPelicula;
@@ -222,14 +221,7 @@ public class PeliculaDisposicionServicioTest {
                     .fechaFin(fechaFin)
                     .build();
 
-            Respuesta<?> repuestaHorario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
-
-            if (!repuestaHorario.isExito()) {
-
-                Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
-            }
-
-            horario = (HorarioResponse) repuestaHorario.getData();
+            horario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
@@ -237,7 +229,7 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
 
-            Assertions.assertTrue(repuestaHorario.isExito());
+            Assertions.assertNotNull(horario);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -355,14 +347,7 @@ public class PeliculaDisposicionServicioTest {
                     .fechaFin(fechaFin)
                     .build();
 
-            Respuesta<?> repuestaHorario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
-
-            if (!repuestaHorario.isExito()) {
-
-                Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
-            }
-
-            horario = (HorarioResponse) repuestaHorario.getData();
+            horario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
@@ -370,7 +355,7 @@ public class PeliculaDisposicionServicioTest {
 
             System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
 
-            Assertions.assertTrue(repuestaHorario.isExito());
+            Assertions.assertNotNull(horario);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());

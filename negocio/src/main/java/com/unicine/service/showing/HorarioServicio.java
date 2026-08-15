@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.api.response.Respuesta;
 import com.unicine.transfer.dto.request.HorarioRequest;
 import com.unicine.transfer.dto.response.HorarioResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
@@ -23,9 +22,9 @@ public interface HorarioServicio {
 
     // 2️⃣ Funciones del Administrador de Teatro
 
-    Respuesta<?> registrar(@Valid HorarioRequest request, @NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer salaCodigo) throws Exception;
+    HorarioResponse registrar(@Valid HorarioRequest request, @NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer salaCodigo) throws Exception;
 
-    Respuesta<?> actualizar(@Valid HorarioRequest request) throws Exception;
+    HorarioResponse actualizar(@Valid HorarioRequest request) throws Exception;
 
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 

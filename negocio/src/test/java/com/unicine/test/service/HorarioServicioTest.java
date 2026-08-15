@@ -12,13 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.api.response.Respuesta;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.repository.theater.SalaRepo;
 import com.unicine.transfer.dto.request.HorarioRequest;
-import com.unicine.transfer.dto.response.FuncionInterseccionResponse;
 import com.unicine.transfer.dto.response.HorarioResponse;
-import com.unicine.transfer.mapper.FuncionInterseccionMapper;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 
 // Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
@@ -31,9 +30,6 @@ public class HorarioServicioTest {
 
     @Autowired
     private SalaRepo salaRepo;
-
-    @Autowired
-    private FuncionInterseccionMapper funcionMapper;
 
     // 🟩
 
@@ -66,24 +62,10 @@ public class HorarioServicioTest {
         }
 
         try {
-            Respuesta<?> actualizado = horarioServicio.registrar(horarioRequest, salaCodigo);
+            HorarioResponse actualizado = horarioServicio.registrar(horarioRequest, salaCodigo);
 
-            if (actualizado.getData() instanceof FuncionInterseccionResponse) {
-
-                FuncionInterseccionResponse funcionRespuesta = (FuncionInterseccionResponse) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
-
-            }
-            
-            if (actualizado.getData() instanceof HorarioResponse) {
-
-                HorarioResponse horarioRespuesta = (HorarioResponse) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-
-            Assertions.assertTrue(actualizado.isExito());
+            Assertions.assertNotNull(actualizado);
+            Assertions.assertEquals(fechaInicio, actualizado.getFechaInicio());
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -123,24 +105,10 @@ public class HorarioServicioTest {
                     .fechaFin(fechaFin)
                     .build();
 
-            Respuesta<?> actualizado = horarioServicio.actualizar(horarioRequest);
+            HorarioResponse actualizado = horarioServicio.actualizar(horarioRequest);
 
-            if (actualizado.getData() instanceof FuncionInterseccionResponse) {
-
-                FuncionInterseccionResponse funcionRespuesta = (FuncionInterseccionResponse) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
-
-            }
-            
-            if (actualizado.getData() instanceof HorarioResponse) {
-
-                HorarioResponse horarioRespuesta = (HorarioResponse) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-
-            Assertions.assertTrue(actualizado.isExito());
+            Assertions.assertNotNull(actualizado);
+            Assertions.assertEquals(fechaInicio, actualizado.getFechaInicio());
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -265,35 +233,12 @@ public class HorarioServicioTest {
 
         }
     
-        try {
-            // Se registra el horario y se obtiene la respuesta
-            Respuesta<?> actualizado = horarioServicio.registrar(horarioRequest, salaCodigo);
-    
-            // Se imprime la respuesta según el tipo de objeto devuelto
-            if (actualizado.getData() instanceof FuncionInterseccionResponse) {
+        BusinessRuleException exception = Assertions.assertThrows(
+                BusinessRuleException.class,
+                () -> horarioServicio.registrar(horarioRequest, salaCodigo));
 
-                FuncionInterseccionResponse funcionSolapado = (FuncionInterseccionResponse) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionSolapado + "\n" + "Exito: " + actualizado.isExito());
-            }
-            if (actualizado.getData() instanceof HorarioResponse) {
-
-                HorarioResponse horarioRespuesta = (HorarioResponse) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-    
-            // Se espera que la registración falle por solapamiento, por lo que se verifica que exito es false
-            Assertions.assertFalse(actualizado.isExito());
-
-        } catch (Exception e) {
-
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        Assertions.assertEquals(
+                ShowingErrorCatalog.DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP.getCode(),
+                exception.getErrorCode());
     }
 }
