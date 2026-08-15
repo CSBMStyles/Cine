@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,7 @@ import io.imagekit.sdk.models.results.ResultList;
 // Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
+@TestPropertySource(properties = "image.identifier.secret=test-image-identifier-secret")
 @Transactional
 public class ImagenServicioTest {
 
@@ -70,6 +72,28 @@ public class ImagenServicioTest {
                 .codigoPropietario(response.getCodigoPropietario())
                 .tipoImagen(response.getTipoImagen())
                 .build();
+    }
+
+    private ImagenResponse registrarImagenPelicula(String ruta, String contentType,
+                                                   TipoImagen tipoImagen) throws Exception {
+        Path path = resolverRutaImagen(ruta);
+        byte[] contenido = Files.readAllBytes(path);
+
+        MultipartFile file = new MockMultipartFile(
+                "imagen",
+                path.getFileName().toString(),
+                contentType,
+                contenido
+        );
+
+        ImagenRequest request = ImagenRequest.builder()
+                .nombre(file.getOriginalFilename())
+                .tipoPropietario(TipoPropietarioImagen.PELICULA)
+                .codigoPropietario(6)
+                .tipoImagen(tipoImagen)
+                .build();
+
+        return imagenServicio.registrar(request, file);
     }
 
     // 🟩
@@ -138,7 +162,8 @@ public class ImagenServicioTest {
             Assertions.assertNotNull(resultado.getCodigo(), "El código de la imagen no debe ser nulo");
             Assertions.assertNotNull(resultado.getUrl(), "La URL de la imagen no debe ser nula");
             Assertions.assertEquals(TipoImagen.AVATAR, resultado.getTipoImagen());
-            Assertions.assertTrue(resultado.getNombre().startsWith("Cristian-Barrera"));
+            Assertions.assertTrue(resultado.getNombre().matches("PER-[0-9A-F]{8}-AVATAR"));
+            Assertions.assertFalse(resultado.getNombre().contains("1001000000"));
 
             System.out.println("Imagen subida: " + resultado);
 
@@ -152,51 +177,23 @@ public class ImagenServicioTest {
     }
 
     @Test
-    @Sql("classpath:dataset.sql")
-    public void subirImagenPelicula() {
+    @Sql({"classpath:dataset.sql", "classpath:ratatouille-dataset.sql"})
+    public void subirImagenPelicula() throws Exception {
+        ImagenResponse poster = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 1.webp", "image/webp", TipoImagen.POSTER);
+        ImagenResponse banner = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 2.webp", "image/jpeg", TipoImagen.BANNER);
+        ImagenResponse galeria = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 3.jpg", "image/jpeg", TipoImagen.GALERIA);
+        ImagenResponse posterRepetido = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 1.webp", "image/webp", TipoImagen.POSTER);
 
-        MultipartFile file;
-
-        try {
-            // Creamos un archivo MultipartFile usando un archivo físico
-            File fileOriginal = resolverRutaImagen("image/pelicula/Ratatouille 1.webp").toFile();
-
-            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
-
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/webp", contenido);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            throw new RuntimeException(e);
-
-        }
-
-        ImagenRequest request = ImagenRequest.builder()
-                .nombre(file.getOriginalFilename())
-                .tipoPropietario(TipoPropietarioImagen.PELICULA)
-                .codigoPropietario(5)
-                .tipoImagen(TipoImagen.POSTER)
-                .build();
-
-        try {
-            ImagenResponse resultado = imagenServicio.registrar(request, file);
-
-            Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
-
-            Assertions.assertNotNull(resultado.getCodigo(), "El código de la imagen no debe ser nulo");
-            Assertions.assertEquals(TipoImagen.POSTER, resultado.getTipoImagen());
-            Assertions.assertTrue(resultado.getNombre().startsWith("Encanto-Poster"));
-            Assertions.assertNotNull(resultado.getOrden(), "La imagen de película debe tener orden");
-
-            System.out.println("Imagen subida: " + resultado);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            throw new RuntimeException(e);
-
-        }
+        Assertions.assertEquals("PEL-6-POSTER-01", poster.getNombre());
+        Assertions.assertEquals("PEL-6-BANNER-02", banner.getNombre());
+        Assertions.assertEquals("PEL-6-GALERIA-03", galeria.getNombre());
+        Assertions.assertEquals(poster.getCodigo(), posterRepetido.getCodigo());
+        Assertions.assertEquals(poster.getNombre(), posterRepetido.getNombre());
+        Assertions.assertNotNull(galeria.getOrden(), "La imagen de galería debe tener orden");
     }
 
     @Test
@@ -260,7 +257,7 @@ public class ImagenServicioTest {
     }
 
     @Test
-    @Sql("classpath:dataset.sql")
+    @Sql({"classpath:dataset.sql", "classpath:ratatouille-dataset.sql"})
     public void actualizar() {
 
         MultipartFile file;
@@ -292,7 +289,7 @@ public class ImagenServicioTest {
             ImagenRequest registro = ImagenRequest.builder()
                     .nombre(file.getOriginalFilename())
                     .tipoPropietario(TipoPropietarioImagen.PELICULA)
-                    .codigoPropietario(5)
+                    .codigoPropietario(6)
                     .build();
 
             imagenAntigua = imagenServicio.registrar(registro, file);
