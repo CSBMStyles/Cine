@@ -33,6 +33,7 @@ import com.unicine.transfer.dto.request.ImagenRequest;
 import com.unicine.transfer.dto.response.ImagenResponse;
 import com.unicine.transfer.dto.response.VersionArchivoResponse;
 import com.unicine.transfer.mapper.ImagenMapper;
+import com.unicine.util.funtional.image.GeneradorNombreImagen;
 import com.unicine.util.funtional.image.RefactorizadorRuta;
 import com.unicine.util.validation.catalog.domain.ImageErrorCatalog;
 
@@ -53,6 +54,7 @@ public class ImagenServicioImp implements ImagenServicio {
     private final ImagenRepo imagenRepo;
     private final ImageKitService imageKitService;
     private final RefactorizadorRuta refactorizadorRuta;
+    private final GeneradorNombreImagen generadorNombreImagen;
     private final ImagenMapper imagenMapper;
     private final ClienteRepo clienteRepo;
     private final AdministradorRepo administradorRepo;
@@ -61,13 +63,15 @@ public class ImagenServicioImp implements ImagenServicio {
     private final ConfiteriaRepo confiteriaRepo;
 
     public ImagenServicioImp(ImagenRepo imagenRepo, ImageKitService imageKitService,
-                             RefactorizadorRuta refactorizadorRuta, ImagenMapper imagenMapper,
+                             RefactorizadorRuta refactorizadorRuta, GeneradorNombreImagen generadorNombreImagen,
+                             ImagenMapper imagenMapper,
                              ClienteRepo clienteRepo, AdministradorRepo administradorRepo,
                              AdministradorTeatroRepo administradorTeatroRepo,
                              PeliculaRepo peliculaRepo, ConfiteriaRepo confiteriaRepo) {
         this.imagenRepo = imagenRepo;
         this.imageKitService = imageKitService;
         this.refactorizadorRuta = refactorizadorRuta;
+        this.generadorNombreImagen = generadorNombreImagen;
         this.imagenMapper = imagenMapper;
         this.clienteRepo = clienteRepo;
         this.administradorRepo = administradorRepo;
@@ -186,6 +190,19 @@ public class ImagenServicioImp implements ImagenServicio {
         imagen.setPrincipal(siguienteOrden == 1);
     }
 
+    private Optional<Imagen> buscarSlotExistente(Imagenable propietario, TipoImagen tipoImagen) {
+        if (!(propietario instanceof Pelicula pelicula) || !esSlotUnico(tipoImagen)) {
+            return Optional.empty();
+        }
+
+        return imagenRepo.findFirstByPeliculaCodigoAndTipoImagenOrderByOrdenAsc(
+                pelicula.getCodigo(), tipoImagen);
+    }
+
+    private boolean esSlotUnico(TipoImagen tipoImagen) {
+        return tipoImagen == TipoImagen.POSTER || tipoImagen == TipoImagen.BANNER;
+    }
+
     private Comparator<Imagen> comparadorOrden() {
         return Comparator.comparing(
                         Imagen::getOrden,
@@ -227,6 +244,21 @@ public class ImagenServicioImp implements ImagenServicio {
         } else if (propietario instanceof Confiteria confiteria) {
             imagen.setConfiteria(confiteria);
         }
+    }
+
+    private ImagenResponse actualizarImagenExistente(Imagen imagen, ImagenRequest request,
+                                                     MultipartFile file, Imagenable propietario,
+                                                     TipoImagen tipoImagen) throws Exception {
+        asignarPropietario(imagen, propietario);
+        imagen.setTipoImagen(tipoImagen);
+
+        String folder = constructorCarpeta(propietario);
+        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario, tipoImagen);
+
+        imagen.setUrl(result.getUrl());
+
+        Imagen actualizada = imagenRepo.save(imagen);
+        return enriquecerResponse(actualizada, result, request.getTipoPropietario(), request.getCodigoPropietario());
     }
 
     private ImagenResponse enriquecerResponse(Imagen imagen, Result result, TipoPropietarioImagen tipoPropietario, Integer codigoPropietario) {
@@ -280,13 +312,35 @@ public class ImagenServicioImp implements ImagenServicio {
 
         TipoImagen tipoImagen = resolverTipoImagen(request, propietario);
 
+        Optional<Imagen> slotExistente = buscarSlotExistente(propietario, tipoImagen);
+        if (slotExistente.isPresent()) {
+            return actualizarImagenExistente(slotExistente.get(), request, file, propietario, tipoImagen);
+        }
+
         Imagen imagen = imagenMapper.toEntity(request);
         asignarPropietario(imagen, propietario);
         imagen.setTipoImagen(tipoImagen);
         asignarMetadatosRegistro(imagen, propietario);
 
         String folder = constructorCarpeta(propietario);
-        Result result = imageKitService.subirImagen(file, folder, propietario, false, request.getNombre(), tipoImagen);
+        String nombreArchivo = generadorNombreImagen.generar(
+                request.getNombre(),
+                request.getTipoPropietario(),
+                request.getCodigoPropietario(),
+                tipoImagen,
+                imagen.getOrden(),
+                propietario
+        );
+        boolean nombreEstable = generadorNombreImagen.usaNombreDeterminista(request.getTipoPropietario());
+        Result result = imageKitService.subirImagen(
+                file,
+                folder,
+                propietario,
+                false,
+                nombreArchivo,
+                tipoImagen,
+                nombreEstable
+        );
 
         imagen.setCodigo(result.getFileId());
         imagen.setUrl(result.getUrl());
@@ -309,15 +363,8 @@ public class ImagenServicioImp implements ImagenServicio {
         TipoImagen tipoImagen = imagen.getTipoImagen() == null
                 ? resolverTipoImagen(request, propietario)
                 : imagen.getTipoImagen();
-        imagen.setTipoImagen(tipoImagen);
 
-        String folder = constructorCarpeta(propietario);
-        Result result = imageKitService.actualizarImagen(file, imagen.getCodigo(), folder, propietario, tipoImagen);
-
-        imagen.setUrl(result.getUrl());
-
-        Imagen actualizada = imagenRepo.save(imagen);
-        return enriquecerResponse(actualizada, result, request.getTipoPropietario(), request.getCodigoPropietario());
+        return actualizarImagenExistente(imagen, request, file, propietario, tipoImagen);
     }
 
     @Override

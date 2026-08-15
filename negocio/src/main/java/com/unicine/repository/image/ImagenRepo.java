@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.unicine.entity.image.Imagen;
+import com.unicine.enums.image.TipoImagen;
 
 @Repository
 public interface ImagenRepo extends JpaRepository<Imagen, String> {
@@ -21,6 +22,9 @@ public interface ImagenRepo extends JpaRepository<Imagen, String> {
     Integer findMaxOrdenByPelicula(Integer codigoPelicula);
 
     long countByPeliculaCodigo(Integer codigoPelicula);
+
+    Optional<Imagen> findFirstByPeliculaCodigoAndTipoImagenOrderByOrdenAsc(
+            Integer codigoPelicula, TipoImagen tipoImagen);
 
     List<Imagen> findByPeliculaCodigo(Integer codigoPelicula);
 }

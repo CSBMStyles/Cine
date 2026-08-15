@@ -63,7 +63,7 @@ public class ImageKitService {
      * @return Resultado de la subida
      */
     public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) {
-        return subirImagen(file, folder, propietario, sobrescribir, nombrePersonalizado, null);
+        return subirImagen(file, folder, propietario, sobrescribir, nombrePersonalizado, null, false);
     }
 
     /**
@@ -74,11 +74,13 @@ public class ImageKitService {
      * @param folder Carpeta donde se guardará la imagen
      * @param propietario Propietario de la imagen
      * @param sobrescribir Si se debe sobrescribir la imagen
-     * @param nombrePersonalizado Nombre personalizado para la imagen
+     * @param nombrePersonalizado Nombre final para la imagen
      * @param tipoImagen Tipo funcional de imagen; puede ser null para usar el perfil del propietario
+     * @param nombreEstable Si el nombre no debe ser generado nuevamente por ImageKit
      * @return Resultado de la subida
      */
-    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado, TipoImagen tipoImagen) {
+    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir,
+                              String nombrePersonalizado, TipoImagen tipoImagen, boolean nombreEstable) {
         // Procesar la imagen según el tipo de propietario y, para películas, su tipo.
         byte[] fileData;
         try {
@@ -91,21 +93,19 @@ public class ImageKitService {
             throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_UPLOAD_ERROR, e, e.getMessage());
         }
 
-        // Obtener el nombre del archivo sin la extensión
-        String name;
+        String name = nombrePersonalizado == null
+                ? refactorizadorRuta.nombrarArchivo(file.getOriginalFilename(), propietario)
+                : nombrePersonalizado;
 
-        if (sobrescribir) {
-            name = nombrePersonalizado;
-        } else {
-            String nombre = nombrePersonalizado == null ? file.getOriginalFilename() : nombrePersonalizado;
-            name = refactorizadorRuta.nombrarArchivo(nombre, propietario, tipoImagen);
+        if (!nombreEstable && !sobrescribir) {
+            name = refactorizadorRuta.nombrarArchivo(name, propietario);
         }
 
         FileCreateRequest request = new FileCreateRequest(fileData, name);
 
         request.setFolder("unicine/" + folder);
-        request.setUseUniqueFileName(!sobrescribir);
-        request.setOverwriteFile(sobrescribir);
+        request.setUseUniqueFileName(!nombreEstable);
+        request.setOverwriteFile(nombreEstable || sobrescribir);
         
         // Realiza la subida
         try {
@@ -134,7 +134,7 @@ public class ImageKitService {
         log.info("Actualizando imagen: nombre actual '{}', fileId '{}'", nombreAntiguo, fileIdAntiguo);
 
         try {
-            return subirImagen(fileActual, folder, propietario, true, nombreAntiguo, tipoImagen);
+            return subirImagen(fileActual, folder, propietario, true, nombreAntiguo, tipoImagen, true);
 
         } catch (Exception e) {
 
