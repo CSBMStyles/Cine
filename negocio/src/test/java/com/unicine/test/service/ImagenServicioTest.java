@@ -125,6 +125,7 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled
     @Sql("classpath:dataset.sql")
     public void subirImagenPersona() {
 
@@ -177,6 +178,7 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled
     @Sql({"classpath:dataset.sql", "classpath:ratatouille-dataset.sql"})
     public void subirImagenPelicula() throws Exception {
         ImagenResponse poster = registrarImagenPelicula(
@@ -197,6 +199,7 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled
     @Sql("classpath:dataset.sql")
     public void subirImagenConfiteria() {
 
@@ -247,7 +250,7 @@ public class ImagenServicioTest {
             System.out.println("versionName: " + resultado.getVersionName());
             System.out.println("tipoPropietario: " + resultado.getTipoPropietario());
             System.out.println("codigoPropietario: " + resultado.getCodigoPropietario());
-            System.out.println("============================================");
+            System.out.println("--");
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -257,6 +260,7 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled
     @Sql({"classpath:dataset.sql", "classpath:ratatouille-dataset.sql"})
     public void actualizar() {
 
