@@ -257,6 +257,46 @@ public class GlobalExceptionHandler {
     }
 
     // !SECTION
+    // SECTION: Excepciones de seguridad Spring
+
+    /**
+     * Maneja denegacion de acceso de Spring Security (403 Forbidden).
+     * Cubre {@code AccessDeniedException} y su subtipo {@code AuthorizationDeniedException}
+     * lanzado por {@code @PreAuthorize} y method security.
+     */
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleSpringAccessDenied(
+            org.springframework.security.access.AccessDeniedException ex, WebRequest request) {
+        log.warn("Spring access denied: {}", ex.getMessage());
+
+        ApiError error = ApiError.of(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                "DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED",
+                "No tiene permisos para realizar esta accion.",
+                extractPath(request),
+                List.of());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(org.springframework.security.authorization.AuthorizationDeniedException.class)
+    public ResponseEntity<ApiError> handleAuthorizationDenied(
+            org.springframework.security.authorization.AuthorizationDeniedException ex, WebRequest request) {
+        log.warn("Authorization denied: {}", ex.getMessage());
+
+        ApiError error = ApiError.of(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                "DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED",
+                "No tiene permisos para realizar esta accion.",
+                extractPath(request),
+                List.of());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    // !SECTION
     // SECTION: Excepciones genericas
 
     /**
