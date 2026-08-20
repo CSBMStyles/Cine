@@ -3,23 +3,27 @@ package com.unicine.service.showing;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.showing.FuncionEsquema;
+import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
+import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface FuncionEsquemaServicio {
 
     // *️⃣ Funciones Automaticas
 
-    FuncionEsquema registrar(@Valid FuncionEsquema funcionEsquema) throws Exception;
+    FuncionEsquemaResponse registrar(@Valid FuncionEsquemaRequest request) throws Exception;
 
-    FuncionEsquema actualizar(@Valid FuncionEsquema funcionEsquema) throws Exception;
+    FuncionEsquemaResponse actualizar(@Valid FuncionEsquemaRequest request) throws Exception;
 
-    void eliminar(@Valid FuncionEsquema funcionEsquema, boolean confirmacion) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Globales
 
-    Optional<FuncionEsquema> obtener(Integer codigo) throws Exception;
+    Optional<FuncionEsquemaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<FuncionEsquema> listar();
+    List<FuncionEsquemaResponse> listar();
 }

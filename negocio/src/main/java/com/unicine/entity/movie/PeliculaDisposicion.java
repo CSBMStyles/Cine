@@ -39,6 +39,7 @@ public class PeliculaDisposicion implements Serializable {
     @Column(nullable = true)
     private LocalDateTime fechaFuncionInicial;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @Id
@@ -51,6 +52,7 @@ public class PeliculaDisposicion implements Serializable {
     @NotNull(message = ValidationMessages.THEATER_CITY_NOT_NULL)
     private Ciudad ciudad;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -58,4 +60,5 @@ public class PeliculaDisposicion implements Serializable {
         this.pelicula = pelicula;
         this.ciudad = ciudad;
     }
+    // !SECTION
 }

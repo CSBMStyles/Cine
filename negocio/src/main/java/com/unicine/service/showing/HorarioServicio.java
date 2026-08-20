@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.api.response.Respuesta;
-import com.unicine.entity.showing.Horario;
-import com.unicine.entity.theater.Sala;
+import com.unicine.transfer.dto.request.HorarioRequest;
+import com.unicine.transfer.dto.response.HorarioResponse;
+import com.unicine.util.validation.catalog.ValidationMessages;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface HorarioServicio {
 
@@ -20,21 +22,21 @@ public interface HorarioServicio {
 
     // 2️⃣ Funciones del Administrador de Teatro
 
-    Respuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception;
+    HorarioResponse registrar(@Valid HorarioRequest request, @NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer salaCodigo) throws Exception;
 
-    Respuesta<?> actualizar(@Valid Horario horario) throws Exception;
+    HorarioResponse actualizar(@Valid HorarioRequest request) throws Exception;
 
-    void eliminar(@Valid Horario horario, boolean confirmacion) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Globales
 
-    Optional<Horario> obtener(Integer codigo) throws Exception;
+    Optional<HorarioResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Horario> listar();
+    List<HorarioResponse> listar();
 
-    List<Horario> listarPaginado();
+    List<HorarioResponse> listarPaginado();
 
-    List<Horario> listarAscendente();
+    List<HorarioResponse> listarAscendente();
 
-    List<Horario> listarDescendente();
+    List<HorarioResponse> listarDescendente();
 }

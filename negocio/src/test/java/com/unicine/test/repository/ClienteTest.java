@@ -22,7 +22,7 @@ public class ClienteTest {
 
     /* NOTE: En las pruebas de unitarias o de integracion se menciona que se debe comprobar el resultado con el Assertions, pero no esta de mas imprimir el resultado para verificar visualmente que se esta obteniendo lo esperado */
 
-    // NOTE: El autowired se utiliza para inyectar dependencias, donde se instancia por si solo la clase que se necesita
+    // Note: El autowired se utiliza para inyectar dependencias, donde se instancia por si solo la clase que se necesita
     @Autowired
     private ClienteRepo clienteRepo;
 
@@ -53,7 +53,7 @@ public class ClienteTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        // NOTE: El or else es para evitar el <NullPointerException> en caso de no existir
+        // Note: El or else es para evitar el <NullPointerException> en caso de no existir
         Cliente guardado = clienteRepo.findById(1009000011).orElse(null);
 
         System.out.println(guardado);
@@ -81,7 +81,7 @@ public class ClienteTest {
 
         Cliente verificacion = clienteRepo.findById(1009000011).orElse(null);
 
-        // NOTE: Verificar que el cliente fue eliminado, donde se usar or else para evitar el <NullPointerException>
+        // Note: Verificar que el cliente fue eliminado, donde se usar or else para evitar el <NullPointerException>
         Assertions.assertNull(verificacion);
 
         System.out.println("\n" + "Registro eliminado:");
@@ -93,8 +93,8 @@ public class ClienteTest {
     @Sql("classpath:dataset.sql")
     public void obtener() {
 
-        // NOTE: El Optional es un contenedor que puede o no contener un valor no nulo, esto para evitar el <NullPointerException>
-        // REVIEW: Se recomienda usar la primera forma, sin el Optional y mejor aplicar el "orElse" para evitar el <NullPointerException>
+        // Note: El Optional es un contenedor que puede o no contener un valor no nulo, esto para evitar el <NullPointerException>
+        // Review: Se recomienda usar la primera forma, sin el Optional y mejor aplicar el "orElse" para evitar el <NullPointerException>
         Optional<Cliente> buscado = clienteRepo.findById(1009000011);
 
         Assertions.assertTrue(buscado.isPresent());
@@ -149,6 +149,7 @@ public class ClienteTest {
         }
     }
 
+    // !SECTION
     // SECTION: Consultas personalizadas para la base de datos
 
     @Test
@@ -176,4 +177,5 @@ public class ClienteTest {
             System.out.println(c);
         }
     }
+    // !SECTION
 }

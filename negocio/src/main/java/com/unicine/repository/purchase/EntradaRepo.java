@@ -1,7 +1,7 @@
 package com.unicine.repository.purchase;
 
 import com.unicine.entity.purchase.Entrada;
-import com.unicine.transfer.data.DetalleSillaDTO;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
 
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
-    // REVIEW: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
-    String direccion = "com.unicine.transfer.data";
+    // Review: La razón de esta variable es para evitar escribir el nombre completo de la clase en la consulta es inutil para una sola consulta para para varios DTO es util
+    String direccion = "com.unicine.transfer.dto.response";
 
     // SECTION: Relacion con compra
 
@@ -26,6 +26,7 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      */
     List<Entrada> findByCompraCodigo(Integer codigoCompra);
 
+    // !SECTION
     // SECTION: Relacion con funcion
 
     /**
@@ -40,8 +41,8 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      * @param codigoFuncion codigo de la funcion
      * @return codigo, fila y columna de las entradas
      */
-    @Query("select new " + direccion + ".DetalleSillaDTO(e.codigo, e.fila, e.columna) from Entrada e where e.funcion.codigo = :codigoFuncion")
-    List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion);
+    @Query("select new " + direccion + ".DetalleSillaResponse(e.codigo, e.fila, e.columna) from Entrada e where e.funcion.codigo = :codigoFuncion")
+    List<DetalleSillaResponse> obtenerSillasOcupadas(Integer codigoFuncion);
 
     /**
      * Consulta para verificar si una silla especifica ya esta ocupada
@@ -64,4 +65,5 @@ public interface EntradaRepo extends JpaRepository<Entrada, Integer> {
      */
     @Query("select count(e) > 0 from Entrada e where e.compra.cliente.cedula = :cedula and e.funcion.pelicula.codigo = :codigoPelicula")
     boolean clienteTieneEntradaParaPelicula(Integer cedula, Integer codigoPelicula);
+    // !SECTION
 }

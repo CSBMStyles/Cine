@@ -17,7 +17,7 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum SystemErrorCatalog implements ErrorCode {
 
-    // VALIDATION - VALIDACION DE PARAMETROS (400 Bad Request)
+    // Validation - Validacion de parametros (400 bad request)
     DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_EMPTY("DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_EMPTY", "El parametro no puede estar vacio"),
     DOMAIN_SYSTEM_VALIDATION_PARAMETER_MUST_BE_POSITIVE_NUMBER("DOMAIN_SYSTEM_VALIDATION_PARAMETER_MUST_BE_POSITIVE_NUMBER", "El parametro debe ser un numero positivo"),
     DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_BLANK("DOMAIN_SYSTEM_VALIDATION_PARAMETER_CANNOT_BE_BLANK", "El parametro no puede estar en blanco"),
@@ -27,7 +27,7 @@ public enum SystemErrorCatalog implements ErrorCode {
     DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_CANNOT_BE_EMPTY("DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_CANNOT_BE_EMPTY", "El codigo de teatro no puede estar vacio"),
     DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_MUST_BE_POSITIVE_NUMBER("DOMAIN_SYSTEM_VALIDATION_THEATER_CODE_MUST_BE_POSITIVE_NUMBER", "El codigo de teatro debe ser un numero positivo"),
 
-    // GENERAL - GENERALES / INTERNOS (500 Internal Server Error)
+    // General - Generales / internos (500 internal server error)
     DOMAIN_SYSTEM_GENERAL_UNEXPECTED_SERVER_ERROR("DOMAIN_SYSTEM_GENERAL_UNEXPECTED_SERVER_ERROR", "Error inesperado del servidor: {0}"),
     DOMAIN_SYSTEM_GENERAL_OPERATION_NOT_SUPPORTED("DOMAIN_SYSTEM_GENERAL_OPERATION_NOT_SUPPORTED", "Operacion no soportada"),
     DOMAIN_SYSTEM_GENERAL_REQUEST_PROCESSING_ERROR("DOMAIN_SYSTEM_GENERAL_REQUEST_PROCESSING_ERROR", "Error al procesar la solicitud"),

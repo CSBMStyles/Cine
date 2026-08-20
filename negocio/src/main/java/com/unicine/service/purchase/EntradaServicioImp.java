@@ -18,13 +18,14 @@ import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionEsquemaRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.data.DetalleSillaDTO;
+import com.unicine.transfer.dto.request.EntradaRequest;
+import com.unicine.transfer.dto.response.DetalleSillaResponse;
+import com.unicine.transfer.dto.response.EntradaResponse;
+import com.unicine.transfer.mapper.EntradaMapper;
 import com.unicine.util.parser.DistribucionSillaParser;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.util.validation.catalog.domain.TheaterErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de entradas con logica de validacion de sillas
@@ -39,14 +40,17 @@ public class EntradaServicioImp implements EntradaServicio {
     private final FuncionRepo funcionRepo;
     private final FuncionEsquemaRepo funcionEsquemaRepo;
     private final DistribucionSillaParser distribucionSillaParser;
+    private final EntradaMapper entradaMapper;
 
     public EntradaServicioImp(EntradaRepo entradaRepo, CompraRepo compraRepo, FuncionRepo funcionRepo,
-            FuncionEsquemaRepo funcionEsquemaRepo, DistribucionSillaParser distribucionSillaParser) {
+            FuncionEsquemaRepo funcionEsquemaRepo, DistribucionSillaParser distribucionSillaParser,
+            EntradaMapper entradaMapper) {
         this.entradaRepo = entradaRepo;
         this.compraRepo = compraRepo;
         this.funcionRepo = funcionRepo;
         this.funcionEsquemaRepo = funcionEsquemaRepo;
         this.distribucionSillaParser = distribucionSillaParser;
+        this.entradaMapper = entradaMapper;
     }
 
     // SECTION: Metodos de soporte
@@ -182,35 +186,41 @@ public class EntradaServicioImp implements EntradaServicio {
         validarSillaNoOcupada(entrada);
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
-    public Entrada registrar(@Valid Entrada entrada) throws Exception {
+    public EntradaResponse registrar(EntradaRequest request) throws Exception {
+        Entrada entrada = entradaMapper.toEntity(request);
         validarRegistro(entrada);
         Entrada guardada = entradaRepo.save(entrada);
         ocuparSilla(obtenerFuncionEsquema(guardada.getFuncion().getCodigo()), guardada);
 
         // TODO: emitir evento de dominio SILLA_OCUPADA para reactividad futura (SSE/WebSockets)
 
-        return guardada;
+        return entradaMapper.toResponse(guardada);
     }
 
     @Override
-    public Entrada actualizar(@Valid Entrada entrada) throws Exception {
-        Optional<Entrada> buscado = entradaRepo.findById(entrada.getCodigo());
+    public EntradaResponse actualizar(EntradaRequest request) throws Exception {
+        Optional<Entrada> buscado = entradaRepo.findById(request.getCodigo());
         validarExiste(buscado);
 
         Entrada existente = buscado.get();
-        existente.setPrecio(entrada.getPrecio());
+        existente.setPrecio(request.getPrecio());
 
-        return entradaRepo.save(existente);
+        Entrada actualizado = entradaRepo.save(existente);
+        return entradaMapper.toResponse(actualizado);
     }
 
     @Override
-    public void eliminar(@Valid Entrada entrada, boolean confirmacion) throws Exception {
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception {
         comprobarConfirmacion(confirmacion);
-        Optional<Entrada> buscado = entradaRepo.findById(entrada.getCodigo());
+
+        Optional<Entrada> buscado = entradaRepo.findById(codigo);
         validarExiste(buscado);
+
+        Entrada entrada = buscado.get();
         entradaRepo.delete(entrada);
         liberarSilla(obtenerFuncionEsquema(entrada.getFuncion().getCodigo()), entrada);
 
@@ -218,43 +228,45 @@ public class EntradaServicioImp implements EntradaServicio {
     }
 
     @Override
-    public Optional<Entrada> obtener(Integer codigo) throws Exception {
+    public Optional<EntradaResponse> obtener(Integer codigo) throws Exception {
         Optional<Entrada> buscado = entradaRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+        return buscado.map(entradaMapper::toResponse);
     }
 
     @Override
-    public List<Entrada> listar() {
-        return entradaRepo.findAll();
+    public List<EntradaResponse> listar() {
+        return entradaMapper.toResponseList(entradaRepo.findAll());
     }
 
     @Override
-    public List<Entrada> listarPaginado() {
-        return entradaRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<EntradaResponse> listarPaginado() {
+        return entradaMapper.toResponseList(entradaRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public List<Entrada> listarPorCompra(Integer codigoCompra) throws Exception {
+    public List<EntradaResponse> listarPorCompra(Integer codigoCompra) throws Exception {
         obtenerCompra(codigoCompra);
         List<Entrada> entradas = entradaRepo.findByCompraCodigo(codigoCompra);
         validarExiste(entradas);
-        return entradas;
+        return entradaMapper.toResponseList(entradas);
     }
 
     @Override
-    public List<Entrada> listarPorFuncion(Integer codigoFuncion) throws Exception {
+    public List<EntradaResponse> listarPorFuncion(Integer codigoFuncion) throws Exception {
         obtenerFuncion(codigoFuncion);
         List<Entrada> entradas = entradaRepo.findByFuncionCodigo(codigoFuncion);
         validarExiste(entradas);
-        return entradas;
+        return entradaMapper.toResponseList(entradas);
     }
 
     @Override
-    public List<DetalleSillaDTO> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception {
+    public List<DetalleSillaResponse> obtenerSillasOcupadas(Integer codigoFuncion) throws Exception {
         obtenerFuncion(codigoFuncion);
         return entradaRepo.obtenerSillasOcupadas(codigoFuncion);
     }
+    // !SECTION
 }

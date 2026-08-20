@@ -45,12 +45,14 @@ public class Horario implements Serializable {
     @Column(nullable = false)
     private LocalDateTime fechaFin;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
     @OneToOne(mappedBy = "horario")
     private Funcion funcion;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -58,4 +60,5 @@ public class Horario implements Serializable {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
+    // !SECTION
 }

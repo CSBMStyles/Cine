@@ -12,8 +12,9 @@ import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.repository.movie.PeliculaDisposicionRepo;
-
-import jakarta.validation.Valid;
+import com.unicine.transfer.dto.request.PeliculaDisposicionRequest;
+import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
+import com.unicine.transfer.mapper.PeliculaDisposicionMapper;
 import com.unicine.util.validation.catalog.domain.MovieErrorCatalog;
 import com.unicine.exception.ResourceNotFoundException;
 
@@ -21,36 +22,30 @@ import com.unicine.exception.ResourceNotFoundException;
 @Validated
 public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final PeliculaDisposicionRepo peliculaDisposicionRepo;
     private final EstadoPeliculaService estadoPeliculaServicio;
+    private final PeliculaDisposicionMapper peliculaDisposicionMapper;
 
-    public PeliculaDisposicionServicioImp(PeliculaDisposicionRepo peliculaDisposicionRepo, EstadoPeliculaService estadoPeliculaServicio) {
+    public PeliculaDisposicionServicioImp(PeliculaDisposicionRepo peliculaDisposicionRepo,
+                                          EstadoPeliculaService estadoPeliculaServicio,
+                                          PeliculaDisposicionMapper peliculaDisposicionMapper) {
         this.peliculaDisposicionRepo = peliculaDisposicionRepo;
         this.estadoPeliculaServicio = estadoPeliculaServicio;
+        this.peliculaDisposicionMapper = peliculaDisposicionMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para asignar el estado inicial a la disposicion de pelicula
-     * @param peliculaDisposicion la clase para ingresar el estado
-     */
     private void ingresoEstadoIncial(PeliculaDisposicion peliculaDisposicion) {
 
-        peliculaDisposicion.setEstadoPelicula(EstadoPelicula.PENDIENTE); // Se asigna el estado inicial a al registrar una disposicion
+        peliculaDisposicion.setEstadoPelicula(EstadoPelicula.PENDIENTE);
     }
 
-    private PeliculaDisposicion disposicionEstadoModificado(PeliculaDisposicion peliculaDisposicion) { 
-        // Se obtiene la disposicion de pelicula y se cambia el estado
+    private PeliculaDisposicion disposicionEstadoModificado(PeliculaDisposicion peliculaDisposicion) {
+
         return estadoPeliculaServicio.actualizarEstado(peliculaDisposicion);
     }
 
-    /**
-     * Metodo para comprobar la presencia de la disposicion que se esta buscando
-     * @param numero
-     * @throws
-     */
     private void validarExiste(Optional<PeliculaDisposicion> peliculaDisposicion) throws Exception {
 
         if (peliculaDisposicion.isEmpty()) {
@@ -58,24 +53,20 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
         }
     }
 
-    /**
-     * Metodo para comprobar la presencia de las relaciones del peliculaDisposicion
-     * @param peliculaDisposicion
-     * @throws
-     */
     private void comprobarConfirmacion(boolean confirmacion) {
 
         if (!confirmacion) {
             throw new RuntimeException("La eliminación no fue confirmada");
         }
-   }
+    }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
-    // 1️⃣ Funcion del Administrador
-
     @Override
-    public PeliculaDisposicion registrar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception { 
+    public PeliculaDisposicionResponse registrar(PeliculaDisposicionRequest request) throws Exception {
+
+        PeliculaDisposicion peliculaDisposicion = peliculaDisposicionMapper.toEntity(request);
 
         ingresoEstadoIncial(peliculaDisposicion);
 
@@ -83,22 +74,22 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
 
         // TODO: emitir evento de dominio PELICULA_DISPOSICION_CREADA para reactividad futura (SSE/WebSockets)
 
-        return guardado;
+        return peliculaDisposicionMapper.toResponse(guardado);
     }
 
     @Override
-    public PeliculaDisposicion actualizar(@Valid PeliculaDisposicion peliculaDisposicion) throws Exception { 
+    public PeliculaDisposicionResponse actualizar(PeliculaDisposicionRequest request) throws Exception {
+
+        PeliculaDisposicion peliculaDisposicion = peliculaDisposicionMapper.toEntity(request);
 
         PeliculaDisposicion actualizado = disposicionEstadoModificado(peliculaDisposicion);
 
         // TODO: emitir evento de dominio PELICULA_DISPOSICION_ESTADO_CAMBIADO para reactividad futura (SSE/WebSockets)
 
-        return actualizado;
+        return peliculaDisposicionMapper.toResponse(actualizado);
     }
 
-    /**
-     * Metodo para actualizar el estado de las peliculas automaticamente
-     */
+    @Override
     public void actualizarEstadoPeliculas() {
         estadoPeliculaServicio.actualizarEstadosAutomaticamente();
 
@@ -106,49 +97,55 @@ public class PeliculaDisposicionServicioImp implements PeliculaDisposicionServic
     }
 
     @Override
-    public void eliminar(@Valid PeliculaDisposicion eliminado, boolean confirmacion) throws Exception { 
-        
+    public void eliminar(Integer peliculaCodigo, Integer ciudadCodigo, boolean confirmacion) throws Exception {
+
         comprobarConfirmacion(confirmacion);
 
-        peliculaDisposicionRepo.delete(eliminado);
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(ciudadCodigo, peliculaCodigo);
+        Optional<PeliculaDisposicion> buscado = peliculaDisposicionRepo.findById(codigo);
+        validarExiste(buscado);
+        peliculaDisposicionRepo.delete(buscado.get());
     }
 
-    // REVIEW: En este caso se utiliza una clase de validacion para obtener el codigo de la peliculaDisposicion usando las anotaciones para validar
-
     @Override
-    public Optional<PeliculaDisposicion> obtener(@Valid PeliculaDisposicionCompuesta codigo) throws Exception {
+    public Optional<PeliculaDisposicionResponse> obtener(Integer peliculaCodigo, Integer ciudadCodigo) throws Exception {
 
+        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(ciudadCodigo, peliculaCodigo);
         Optional<PeliculaDisposicion> buscado = peliculaDisposicionRepo.findById(codigo);
 
         validarExiste(buscado);
 
-        return buscado;
+        return buscado.map(peliculaDisposicionMapper::toResponse);
     }
 
     @Override
-    public List<PeliculaDisposicion> listar() { return peliculaDisposicionRepo.findAll(); }
-
-    @Override
-    public List<PeliculaDisposicion> listarRecomendacionPeliculaEstado(PeliculaDisposicion peliculaDisposicion, EstadoPelicula estadoExcluido) { 
-
-        return peliculaDisposicionRepo.listarDisposicionesPelicula(peliculaDisposicion.getPelicula().getCodigo(), estadoExcluido);
+    public List<PeliculaDisposicionResponse> listar() {
+        return peliculaDisposicionMapper.toResponseList(peliculaDisposicionRepo.findAll());
     }
 
     @Override
-    public List<PeliculaDisposicion> listarPaginado() { 
+    public List<PeliculaDisposicionResponse> listarRecomendacionPeliculaEstado(PeliculaDisposicionRequest request, EstadoPelicula estadoExcluido) {
 
-        return peliculaDisposicionRepo.findAll(PageRequest.of(0, 10)).toList();
+        return peliculaDisposicionMapper.toResponseList(
+                peliculaDisposicionRepo.listarDisposicionesPelicula(request.getPeliculaCodigo(), estadoExcluido));
     }
 
     @Override
-    public List<PeliculaDisposicion> listarAscendente() { 
-        
-        return peliculaDisposicionRepo.findAll(Sort.by("codigo").ascending());
+    public List<PeliculaDisposicionResponse> listarPaginado() {
+
+        return peliculaDisposicionMapper.toResponseList(peliculaDisposicionRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     @Override
-    public List<PeliculaDisposicion> listarDescendente() { 
-        
-        return peliculaDisposicionRepo.findAll(Sort.by("codigo").descending());
+    public List<PeliculaDisposicionResponse> listarAscendente() {
+
+        return peliculaDisposicionMapper.toResponseList(peliculaDisposicionRepo.findAll(Sort.by("codigo").ascending()));
     }
+
+    @Override
+    public List<PeliculaDisposicionResponse> listarDescendente() {
+
+        return peliculaDisposicionMapper.toResponseList(peliculaDisposicionRepo.findAll(Sort.by("codigo").descending()));
+    }
+    // !SECTION
 }

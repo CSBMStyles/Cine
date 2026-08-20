@@ -1,6 +1,7 @@
 package com.unicine.test.service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -10,14 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.Confiteria;
-import com.unicine.entity.confiteria.ConfiteriaPresentacion;
-import com.unicine.entity.confiteria.HistorialPrecioPresentacion;
 import com.unicine.enums.confiteria.TipoCambioPrecioPresentacion;
 import com.unicine.enums.confiteria.UnidadMedida;
 import com.unicine.service.confiteria.ConfiteriaPresentacionServicio;
 import com.unicine.service.confiteria.ConfiteriaServicio;
 import com.unicine.service.confiteria.HistorialPrecioPresentacionServicio;
+import com.unicine.transfer.dto.request.ConfiteriaPresentacionRequest;
+import com.unicine.transfer.dto.response.ConfiteriaResponse;
+import com.unicine.transfer.dto.response.HistorialPrecioPresentacionResponse;
 
 @SpringBootTest
 @Transactional
@@ -32,26 +33,25 @@ public class HistorialPrecioPresentacionServicioTest {
     @Autowired
     private ConfiteriaServicio confiteriaServicio;
 
-    private ConfiteriaPresentacion crearPresentacionActualizacion(Integer codigo, Double precio) throws Exception {
-        Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
+    private ConfiteriaPresentacionRequest crearPresentacionActualizacion(Integer codigo, Double precio) throws Exception {
+        ConfiteriaResponse confiteria = confiteriaServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(confiteria);
 
-        ConfiteriaPresentacion presentacion = ConfiteriaPresentacion.builder()
+        return ConfiteriaPresentacionRequest.builder()
+                .codigo(codigo)
                 .porcion(1.0)
                 .unidadMedida(UnidadMedida.UNIDAD)
                 .precio(precio)
-                .confiteria(confiteria)
+                .confiteriaCodigo(confiteria.getCodigo())
                 .build();
-        presentacion.setCodigo(codigo);
-        return presentacion;
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void obtenerUltimoPorPresentacion() throws Exception {
-        presentacionServicio.actualizar(crearPresentacionActualizacion(1, 25000.0), LocalDateTime.now().plusDays(5).truncatedTo(java.time.temporal.ChronoUnit.MICROS));
+        presentacionServicio.actualizar(crearPresentacionActualizacion(1, 25000.0), LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS));
 
-        HistorialPrecioPresentacion ultimo = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
+        HistorialPrecioPresentacionResponse ultimo = historialServicio.obtenerUltimoPorPresentacion(1).orElse(null);
 
         Assertions.assertNotNull(ultimo);
         Assertions.assertEquals(TipoCambioPrecioPresentacion.DESCUENTO_TEMPORAL, ultimo.getTipoCambio());
@@ -62,10 +62,10 @@ public class HistorialPrecioPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPorPresentacion() throws Exception {
-        presentacionServicio.actualizar(crearPresentacionActualizacion(1, 25000.0), LocalDateTime.now().plusDays(5).truncatedTo(java.time.temporal.ChronoUnit.MICROS));
+        presentacionServicio.actualizar(crearPresentacionActualizacion(1, 25000.0), LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS));
         presentacionServicio.actualizar(crearPresentacionActualizacion(1, 30000.0), null);
 
-        List<HistorialPrecioPresentacion> historial = historialServicio.listarPorPresentacion(1);
+        List<HistorialPrecioPresentacionResponse> historial = historialServicio.listarPorPresentacion(1);
 
         Assertions.assertEquals(2, historial.size());
 
@@ -76,7 +76,7 @@ public class HistorialPrecioPresentacionServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminarPorPresentacion() throws Exception {
-        presentacionServicio.actualizar(crearPresentacionActualizacion(1, 25000.0), LocalDateTime.now().plusDays(5).truncatedTo(java.time.temporal.ChronoUnit.MICROS));
+        presentacionServicio.actualizar(crearPresentacionActualizacion(1, 25000.0), LocalDateTime.now().plusDays(5).truncatedTo(ChronoUnit.MICROS));
 
         Assertions.assertTrue(historialServicio.obtenerUltimoPorPresentacion(1).isPresent());
 

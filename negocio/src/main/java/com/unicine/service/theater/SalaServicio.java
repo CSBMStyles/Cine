@@ -1,11 +1,11 @@
 package com.unicine.service.theater;
 
+import com.unicine.enums.theater.TipoSala;
+import com.unicine.transfer.dto.request.SalaRequest;
+import com.unicine.transfer.dto.response.SalaResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
-
-import com.unicine.entity.theater.Sala;
-import com.unicine.enums.theater.TipoSala;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -20,27 +20,27 @@ public interface SalaServicio {
 
     // 2️⃣ Funciones del Administrador de Teatro
 
-    Sala registrar(@Valid Sala sala) throws Exception;
+    SalaResponse registrar(@Valid SalaRequest request) throws Exception;
 
-    Sala actualizar(@Valid Sala sala) throws Exception;
+    SalaResponse actualizar(@Valid SalaRequest request) throws Exception;
 
-    void eliminar(@Valid Sala sala, boolean confirmacion) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Globales
 
-    Optional<Sala> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+    Optional<SalaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Sala> obtenerNombre(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
+    List<SalaResponse> obtenerNombre(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
 
-    Optional<Sala> obtenerIdTeatro(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
+    Optional<SalaResponse> obtenerIdTeatro(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
 
-    List<Sala> obtenerNombresTeatro(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
+    List<SalaResponse> obtenerNombresTeatro(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
 
-    List<Sala> listar();
+    List<SalaResponse> listar();
 
-    List<Sala> listarPaginado();
+    List<SalaResponse> listarPaginado();
 
-    List<Sala> listarAscendente();
+    List<SalaResponse> listarAscendente();
 
-    List<Sala> listarDescendente();
+    List<SalaResponse> listarDescendente();
 }

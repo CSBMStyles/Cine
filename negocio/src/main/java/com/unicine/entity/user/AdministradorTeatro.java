@@ -23,11 +23,11 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(callSuper = true) // NOTE: El `call super` es para que se muestren los atributos de la clase padre
+    @ToString(callSuper = true) // Note: El `call super` es para que se muestren los atributos de la clase padre
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AdministradorTeatro extends Persona implements Serializable, Imagenable {
 
-    // NOTE: Se agrega la anotación `cascade` para que se realicen las operaciones en cascada osea que si se elimina un administrador se elimina el teatro que construye
+    // Note: Se agrega la anotación `cascade` para que se realicen las operaciones en cascada osea que si se elimina un administrador se elimina el teatro que construye
 
     @ToString.Exclude
     @OneToMany(mappedBy = "administradorTeatro", cascade =  CascadeType.ALL) 

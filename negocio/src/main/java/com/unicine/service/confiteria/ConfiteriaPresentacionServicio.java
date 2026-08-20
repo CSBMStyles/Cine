@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.confiteria.ConfiteriaPresentacion;
+import com.unicine.transfer.dto.request.ConfiteriaPresentacionRequest;
+import com.unicine.transfer.dto.response.ConfiteriaPresentacionResponse;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -18,20 +19,24 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ConfiteriaPresentacionServicio {
 
-    ConfiteriaPresentacion registrar(@Valid ConfiteriaPresentacion presentacion) throws Exception;
+    ConfiteriaPresentacionResponse registrar(@Valid ConfiteriaPresentacionRequest request) throws Exception;
 
-    ConfiteriaPresentacion actualizar(@Valid ConfiteriaPresentacion presentacion, LocalDateTime fechaExpiracionTemporal) throws Exception;
+    ConfiteriaPresentacionResponse actualizar(@Valid ConfiteriaPresentacionRequest request, LocalDateTime fechaExpiracionTemporal) throws Exception;
 
-    void eliminar(@Valid ConfiteriaPresentacion presentacion, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull(message = "El codigo no puede estar vacio")
+            @Positive(message = "El codigo debe ser un numero positivo")
+            Integer codigo,
+            boolean confirmacion) throws Exception;
 
-    Optional<ConfiteriaPresentacion> obtener(
+    Optional<ConfiteriaPresentacionResponse> obtener(
             @NotNull(message = "El codigo no puede estar vacio")
             @Positive(message = "El codigo debe ser un numero positivo")
             Integer codigo) throws Exception;
 
-    List<ConfiteriaPresentacion> listar();
+    List<ConfiteriaPresentacionResponse> listar();
 
-    List<ConfiteriaPresentacion> listarPorConfiteria(Integer codigoConfiteria) throws Exception;
+    List<ConfiteriaPresentacionResponse> listarPorConfiteria(Integer codigoConfiteria) throws Exception;
 
-    List<ConfiteriaPresentacion> listarConDescuentoTemporal();
+    List<ConfiteriaPresentacionResponse> listarConDescuentoTemporal();
 }

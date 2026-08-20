@@ -54,6 +54,7 @@ public class Funcion implements Serializable {
     @Enumerated(EnumType.STRING)
     private FormatoPelicula formato;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ManyToOne
@@ -76,6 +77,7 @@ public class Funcion implements Serializable {
     @OneToMany(mappedBy = "funcion", cascade = CascadeType.ALL)
     private List<Compra> compras;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -85,4 +87,5 @@ public class Funcion implements Serializable {
         this.horario = horario;
         this.pelicula = pelicula;
     }
+    // !SECTION
 }

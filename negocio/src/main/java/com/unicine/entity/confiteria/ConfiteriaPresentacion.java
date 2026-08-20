@@ -69,6 +69,7 @@ public class ConfiteriaPresentacion implements Serializable {
     @Column
     private LocalDateTime fechaExpiracionTemporal;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @NotNull(message = ValidationMessages.CONFECTIONERY_PRESENTATION_CONFECTIONERY_NOT_NULL)
@@ -76,6 +77,7 @@ public class ConfiteriaPresentacion implements Serializable {
     @JoinColumn(nullable = false)
     private Confiteria confiteria;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder

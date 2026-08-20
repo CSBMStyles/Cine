@@ -10,10 +10,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.unicine.entity.theater.DistribucionSilla;
 import com.unicine.service.theater.DistribucionSillaServicio;
-
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+import com.unicine.transfer.dto.request.DistribucionSillaRequest;
+import com.unicine.transfer.dto.response.DistribucionSillaResponse;
 
 @SpringBootTest
 @Transactional
@@ -44,14 +43,19 @@ public class DistribucionSillaServicioTest {
         Gson gson = new Gson();
         String esquema = gson.toJson(matriz);
 
-        DistribucionSilla distribucion = new DistribucionSilla(esquema, 100, 10, 10);
+        DistribucionSillaRequest request = DistribucionSillaRequest.builder()
+                .esquema(esquema)
+                .totalSillas(100)
+                .filas(10)
+                .columnas(10)
+                .build();
 
         try {
-            DistribucionSilla nuevo = distribucionServicio.registrar(distribucion);
+            DistribucionSillaResponse response = distribucionServicio.registrar(request);
             
-            Assertions.assertEquals(esquema, nuevo.getEsquema());
+            Assertions.assertEquals(esquema, response.getEsquema());
 
-            System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
+            System.out.println("\n" + "Registro guardado:" + "\n" + response);
 
         } catch (Exception e) {
 
@@ -84,13 +88,15 @@ public class DistribucionSillaServicioTest {
         String esquema = gson.toJson(matriz);
 
         try{
-            DistribucionSilla distribucion = distribucionServicio.obtener(1).orElse(null);
+            DistribucionSillaRequest request = DistribucionSillaRequest.builder()
+                    .codigo(1)
+                    .esquema(esquema)
+                    .totalSillas(100)
+                    .filas(10)
+                    .columnas(10)
+                    .build();
 
-            System.out.println("\n" + "Registro antigüo:" + "\n" + distribucion);
-
-            distribucion.setEsquema(esquema);
-
-            DistribucionSilla actualizado = distribucionServicio.actualizar(distribucion);
+            DistribucionSillaResponse actualizado = distribucionServicio.actualizar(request);
 
             Assertions.assertEquals(esquema, actualizado.getEsquema());
 
@@ -112,22 +118,8 @@ public class DistribucionSillaServicioTest {
 
         Integer codigo = 1;
 
-        DistribucionSilla distribucion;
-
         try {
-            distribucion = distribucionServicio.obtener(codigo).orElse(null);
-
-        } catch (Exception e) {
-
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            Assertions.assertTrue(false);
-
-            throw new RuntimeException(e);
-        }
-
-        try {
-            distribucionServicio.eliminar(distribucion, true);
+            distribucionServicio.eliminar(codigo, true);
 
         } catch (Exception e) {
 
@@ -145,7 +137,6 @@ public class DistribucionSillaServicioTest {
 
             System.out.println("Mensaje de error: " + e.getMessage());
 
-            // Realizamos una validacion de la prueba para aceptar que el distribucion fue eliminado mendiante la excepcion del metodo de obtener
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -157,7 +148,7 @@ public class DistribucionSillaServicioTest {
     public void obtener() {
 
         try {
-            DistribucionSilla distribucion = distribucionServicio.obtener(1).orElse(null);
+            DistribucionSillaResponse distribucion = distribucionServicio.obtener(1).orElse(null);
 
             Assertions.assertEquals(1, distribucion.getCodigo());
 
@@ -178,7 +169,7 @@ public class DistribucionSillaServicioTest {
     public void listar() {
 
         try {
-            List<DistribucionSilla> lista = distribucionServicio.listar();
+            List<DistribucionSillaResponse> lista = distribucionServicio.listar();
 
             Assertions.assertEquals(5, lista.size());
 

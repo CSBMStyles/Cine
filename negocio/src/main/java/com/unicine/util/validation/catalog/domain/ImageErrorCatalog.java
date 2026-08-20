@@ -19,16 +19,16 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum ImageErrorCatalog implements ErrorCode {
 
-    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    // Entity - Entidad no encontrada (404 not found)
     DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND("DOMAIN_IMAGE_ENTITY_IMAGE_NOT_FOUND", "La imagen no existe"),
 
-    // DUPLICATE - CONFLICTO / DUPLICADO (409 Conflict)
+    // Duplicate - Conflicto / duplicado (409 conflict)
     DOMAIN_IMAGE_DUPLICATE_PERSON_ALREADY_HAS_IMAGE("DOMAIN_IMAGE_DUPLICATE_PERSON_ALREADY_HAS_IMAGE", "La persona ya tiene una imagen, deberia utilizar el metodo actualizar"),
 
-    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    // Business rule - Reglas de negocio (400 bad request)
     DOMAIN_IMAGE_BUSINESS_RULE_IMAGE_SIZE_EXCEEDS_LIMIT("DOMAIN_IMAGE_BUSINESS_RULE_IMAGE_SIZE_EXCEEDS_LIMIT", "El tamano de la imagen excede el limite permitido de {0} MB. Tamano actual: {1} MB"),
 
-    // EXTERNAL - SISTEMA EXTERNO (502 Bad Gateway)
+    // External - Sistema externo (502 bad gateway)
     DOMAIN_IMAGE_EXTERNAL_UPLOAD_ERROR("DOMAIN_IMAGE_EXTERNAL_UPLOAD_ERROR", "Error al subir la imagen: {0}"),
     DOMAIN_IMAGE_EXTERNAL_UPDATE_ERROR("DOMAIN_IMAGE_EXTERNAL_UPDATE_ERROR", "Error al actualizar la imagen: {0}"),
     DOMAIN_IMAGE_EXTERNAL_RESTORE_VERSION_ERROR("DOMAIN_IMAGE_EXTERNAL_RESTORE_VERSION_ERROR", "Error al restaurar la version de la imagen: {0}"),

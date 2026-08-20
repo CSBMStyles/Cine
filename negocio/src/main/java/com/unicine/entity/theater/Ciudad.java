@@ -46,6 +46,7 @@ public class Ciudad implements Serializable {
     @Column(nullable = false, length = 100)
     private String nombre;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
@@ -56,10 +57,12 @@ public class Ciudad implements Serializable {
     @OneToMany(mappedBy = "ciudad", cascade =  CascadeType.ALL)
     private List<PeliculaDisposicion> peliculaDisposicion;
 
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
     public Ciudad(String nombre){
         this.nombre = nombre;
     }
+    // !SECTION
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.entity.image.interfaced.Imagenable;
-import com.unicine.enums.image.TipoImagenPelicula;
+import com.unicine.enums.image.TipoImagen;
 import com.unicine.exception.ExternalServiceException;
 import com.unicine.util.config.ImageKitConfig;
 import com.unicine.util.funtional.image.ProcesadorImagen;
@@ -63,52 +63,49 @@ public class ImageKitService {
      * @return Resultado de la subida
      */
     public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado) {
-        return subirImagen(file, folder, propietario, sobrescribir, nombrePersonalizado, null);
+        return subirImagen(file, folder, propietario, sobrescribir, nombrePersonalizado, null, false);
     }
 
     /**
      * Método para subir una imagen al servidor de imageKit.io usando MultipartFile,
-     * permitiendo especificar el tipo de imagen para películas (poster o banner).
+     * permitiendo especificar el tipo de imagen y su perfil de procesamiento.
      * 
      * @param file Archivo MultipartFile a subir
      * @param folder Carpeta donde se guardará la imagen
      * @param propietario Propietario de la imagen
      * @param sobrescribir Si se debe sobrescribir la imagen
-     * @param nombrePersonalizado Nombre personalizado para la imagen
-     * @param tipoPelicula Tipo de imagen de película; puede ser null para otros propietarios
+     * @param nombrePersonalizado Nombre final para la imagen
+     * @param tipoImagen Tipo funcional de imagen; puede ser null para usar el perfil del propietario
+     * @param nombreEstable Si el nombre no debe ser generado nuevamente por ImageKit
      * @return Resultado de la subida
      */
-    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir, String nombrePersonalizado, TipoImagenPelicula tipoPelicula) {
+    public Result subirImagen(MultipartFile file, String folder, Imagenable propietario, boolean sobrescribir,
+                              String nombrePersonalizado, TipoImagen tipoImagen, boolean nombreEstable) {
         // Procesar la imagen según el tipo de propietario y, para películas, su tipo.
         byte[] fileData;
         try {
-            fileData = tipoPelicula == null
+            fileData = tipoImagen == null
                     ? procesadorImagen.procesar(file, propietario)
-                    : procesadorImagen.procesar(file, propietario, tipoPelicula);
+                    : procesadorImagen.procesar(file, propietario, tipoImagen);
         } catch (Exception e) {
             // El procesamiento local de la imagen se considera parte del flujo de subida
             // y se mapea al mismo codigo que un fallo del SDK remoto.
             throw new ExternalServiceException(ImageErrorCatalog.DOMAIN_IMAGE_EXTERNAL_UPLOAD_ERROR, e, e.getMessage());
         }
 
-        // Obtener el nombre del archivo sin la extensión
-        String name;
+        String name = nombrePersonalizado == null
+                ? refactorizadorRuta.nombrarArchivo(file.getOriginalFilename(), propietario)
+                : nombrePersonalizado;
 
-        if (nombrePersonalizado == null) {
-            name = refactorizadorRuta.nombrarArchivo(file.getOriginalFilename(), propietario);
-        } 
-        else {
-            name = refactorizadorRuta.nombrarArchivo(nombrePersonalizado, propietario);
+        if (!nombreEstable && !sobrescribir) {
+            name = refactorizadorRuta.nombrarArchivo(name, propietario);
         }
 
         FileCreateRequest request = new FileCreateRequest(fileData, name);
 
         request.setFolder("unicine/" + folder);
-        request.setUseUniqueFileName(false);
-
-        if (sobrescribir) {
-            request.setOverwriteFile(true);
-        }
+        request.setUseUniqueFileName(!nombreEstable);
+        request.setOverwriteFile(nombreEstable || sobrescribir);
         
         // Realiza la subida
         try {
@@ -128,7 +125,8 @@ public class ImageKitService {
      * @param propietario Propietario de la imagen
      * @return resultado de la actualización de la imagen
      */
-    public Result actualizarImagen(MultipartFile fileActual, String fileIdAntiguo, String folder, Imagenable propietario) {
+    public Result actualizarImagen(MultipartFile fileActual, String fileIdAntiguo, String folder,
+                                   Imagenable propietario, TipoImagen tipoImagen) {
         Result archivoExitente = obtenerDatos(fileIdAntiguo);
 
         String nombreAntiguo = archivoExitente.getName();
@@ -136,9 +134,7 @@ public class ImageKitService {
         log.info("Actualizando imagen: nombre actual '{}', fileId '{}'", nombreAntiguo, fileIdAntiguo);
 
         try {
-            subirImagen(fileActual, folder, propietario, true, nombreAntiguo);
-
-            return renombrarImagen(fileIdAntiguo, fileActual.getOriginalFilename(), propietario);
+            return subirImagen(fileActual, folder, propietario, true, nombreAntiguo, tipoImagen, true);
 
         } catch (Exception e) {
 

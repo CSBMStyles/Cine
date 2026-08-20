@@ -3,7 +3,8 @@ package com.unicine.service.purchase;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.purchase.CompraConfiteria;
+import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
+import com.unicine.transfer.dto.response.CompraConfiteriaResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 
 import jakarta.validation.Valid;
@@ -18,28 +19,29 @@ import jakarta.validation.constraints.Positive;
  */
 public interface CompraConfiteriaServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
-    CompraConfiteria registrar(@Valid CompraConfiteria compraConfiteria) throws Exception;
+    CompraConfiteriaResponse registrar(@Valid CompraConfiteriaRequest request) throws Exception;
 
-    CompraConfiteria actualizar(@Valid CompraConfiteria compraConfiteria) throws Exception;
+    CompraConfiteriaResponse actualizar(@Valid CompraConfiteriaRequest request) throws Exception;
 
-    void eliminar(@Valid CompraConfiteria compraConfiteria, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigo,
+            boolean confirmacion) throws Exception;
 
-    Optional<CompraConfiteria> obtener(
+    Optional<CompraConfiteriaResponse> obtener(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
 
-    List<CompraConfiteria> listar();
+    List<CompraConfiteriaResponse> listar();
 
-    List<CompraConfiteria> listarPaginado();
+    List<CompraConfiteriaResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista los items de confiteria de una compra especifica.
@@ -48,7 +50,7 @@ public interface CompraConfiteriaServicio {
      * @return Lista de items de confiteria
      * @throws Exception si la compra no existe o no tiene items
      */
-    List<CompraConfiteria> listarPorCompra(
+    List<CompraConfiteriaResponse> listarPorCompra(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigoCompra) throws Exception;
@@ -60,7 +62,7 @@ public interface CompraConfiteriaServicio {
      * @return Lista de items de confiteria
      * @throws Exception si la presentacion no existe o no tiene items
      */
-    List<CompraConfiteria> listarPorPresentacion(
+    List<CompraConfiteriaResponse> listarPorPresentacion(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigoPresentacion) throws Exception;
@@ -76,4 +78,5 @@ public interface CompraConfiteriaServicio {
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigoCompra) throws Exception;
+    // !SECTION
 }

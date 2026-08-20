@@ -16,7 +16,7 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum NotificationErrorCatalog implements ErrorCode {
 
-    // EXTERNAL - SERVICIOS EXTERNOS DE NOTIFICACION (502 Bad Gateway)
+    // External - Servicios externos de notificacion (502 bad gateway)
     DOMAIN_NOTIFICATION_EXTERNAL_SEND_ERROR("DOMAIN_NOTIFICATION_EXTERNAL_SEND_ERROR", "Error al enviar la notificacion: {0}"),
     DOMAIN_NOTIFICATION_EXTERNAL_INVALID_RECIPIENT("DOMAIN_NOTIFICATION_EXTERNAL_INVALID_RECIPIENT", "El destinatario '{0}' no es valido"),
     DOMAIN_NOTIFICATION_EXTERNAL_AUTH_FAILED("DOMAIN_NOTIFICATION_EXTERNAL_AUTH_FAILED", "Fallaron las credenciales SMTP: {0}"),

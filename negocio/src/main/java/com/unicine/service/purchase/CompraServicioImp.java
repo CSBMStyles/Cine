@@ -17,18 +17,22 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
+import com.unicine.repository.purchase.CompraConfiteriaRepo;
 import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.service.purchase.CompraConfiteriaServicio;
-import com.unicine.service.purchase.EntradaServicio;
 import com.unicine.repository.user.ClienteRepo;
+import com.unicine.transfer.dto.request.CompraCompletaRequest;
+import com.unicine.transfer.dto.request.CompraRequest;
+import com.unicine.transfer.dto.request.EntradaRequest;
+import com.unicine.transfer.dto.response.CompraResponse;
+import com.unicine.transfer.mapper.CompraConfiteriaMapper;
+import com.unicine.transfer.mapper.CompraMapper;
+import com.unicine.transfer.mapper.EntradaMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de compras con logica de negocio completa.
@@ -39,53 +43,52 @@ import jakarta.validation.Valid;
 @Validated
 public class CompraServicioImp implements CompraServicio {
 
-    // NOTE: Inyeccion por constructor recomendada sobre @Autowired
     private final CompraRepo compraRepo;
     private final EntradaRepo entradaRepo;
+    private final CompraConfiteriaRepo compraConfiteriaRepo;
     private final CuponClienteRepo cuponClienteRepo;
     private final ClienteRepo clienteRepo;
     private final FuncionRepo funcionRepo;
     private final EntradaServicio entradaServicio;
     private final CompraConfiteriaServicio compraConfiteriaServicio;
+    private final CompraMapper compraMapper;
+    private final EntradaMapper entradaMapper;
+    private final CompraConfiteriaMapper compraConfiteriaMapper;
 
     public CompraServicioImp(CompraRepo compraRepo, EntradaRepo entradaRepo,
+                             CompraConfiteriaRepo compraConfiteriaRepo,
                              CuponClienteRepo cuponClienteRepo, ClienteRepo clienteRepo,
                              FuncionRepo funcionRepo, EntradaServicio entradaServicio,
-                             CompraConfiteriaServicio compraConfiteriaServicio) {
+                             CompraConfiteriaServicio compraConfiteriaServicio,
+                             CompraMapper compraMapper, EntradaMapper entradaMapper,
+                             CompraConfiteriaMapper compraConfiteriaMapper) {
         this.compraRepo = compraRepo;
         this.entradaRepo = entradaRepo;
+        this.compraConfiteriaRepo = compraConfiteriaRepo;
         this.cuponClienteRepo = cuponClienteRepo;
         this.clienteRepo = clienteRepo;
         this.funcionRepo = funcionRepo;
         this.entradaServicio = entradaServicio;
         this.compraConfiteriaServicio = compraConfiteriaServicio;
+        this.compraMapper = compraMapper;
+        this.entradaMapper = entradaMapper;
+        this.compraConfiteriaMapper = compraConfiteriaMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Valida que la compra exista en la base de datos.
-     * Lanza ResourceNotFoundException si no se encuentra.
-     */
     private void validarExiste(Optional<Compra> compra) {
         if (compra.isEmpty()) {
             throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
     }
 
-    /**
-     * Valida que la lista de compras no este vacia.
-     * Lanza ResourceNotFoundException si la lista esta vacia.
-     */
     private void validarExiste(List<Compra> compras) {
         if (compras.isEmpty()) {
             throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND);
         }
     }
 
-    /**
-     * Valida que el cliente exista en la base de datos.
-     */
     private void validarClienteExiste(Integer cedula) {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
@@ -93,9 +96,6 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Valida que la funcion exista en la base de datos.
-     */
     private void validarFuncionExiste(Integer codigo) {
         Optional<Funcion> funcion = funcionRepo.findById(codigo);
         if (funcion.isEmpty()) {
@@ -103,10 +103,6 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Valida que el cupon del cliente este disponible (no usado y no vencido).
-     * Lanza BusinessRuleException si el cupon ya fue usado o si expiro.
-     */
     private void validarCuponDisponible(CuponCliente cuponCliente) {
         if (cuponCliente == null) {
             return;
@@ -121,29 +117,18 @@ public class CompraServicioImp implements CompraServicio {
         }
     }
 
-    /**
-     * Valida que el descuento no supere el valor total de la compra.
-     */
     private void validarDescuentoNoMayorTotal(Double descuento, Double total) {
         if (descuento > total) {
             throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_DISCOUNT_GREATER_THAN_TOTAL);
         }
     }
 
-    /**
-     * Valida que la compra no haya sido procesada (estado false).
-     * Una compra procesada no puede modificarse.
-     */
     private void validarCompraNoProcesada(Compra compra) {
         if (!compra.getEstado()) {
             throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_PURCHASE_ALREADY_PROCESSED);
         }
     }
 
-    /**
-     * Valida que las sillas solicitadas para una funcion esten disponibles.
-     * Lanza BusinessRuleException si alguna silla ya esta ocupada.
-     */
     private void validarSillasDisponibles(List<Entrada> entradas, Integer codigoFuncion) {
         for (Entrada entrada : entradas) {
             boolean ocupada = entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(
@@ -155,124 +140,177 @@ public class CompraServicioImp implements CompraServicio {
     }
 
     /**
-     * Calcula el valor total de la compra sumando entradas, confiteria
-     * y aplicando el descuento del cupon si existe.
+     * Calcula el total de la compra separando entradas, confiteria y descuento.
      */
     private Double calcularValorTotal(List<Entrada> entradas,
-                                       List<CompraConfiteria> confiterias,
-                                       CuponCliente cuponCliente) {
-        double totalEntradas = entradas.stream()
+                                      List<CompraConfiteria> confiterias,
+                                      CuponCliente cuponCliente) {
+        double totalEntradas = calcularTotalEntradas(entradas);
+        double totalConfiteria = calcularTotalConfiteria(confiterias);
+        return aplicarDescuento(totalEntradas + totalConfiteria, cuponCliente);
+    }
+
+    private double calcularTotalEntradas(List<Entrada> entradas) {
+        return entradas.stream()
                 .mapToDouble(Entrada::getPrecio)
                 .sum();
+    }
 
-        double totalConfiteria = confiterias.stream()
-                .mapToDouble(c -> c.getPrecio() * c.getUnidades())
+    private double calcularTotalConfiteria(List<CompraConfiteria> confiterias) {
+        return confiterias.stream()
+                .mapToDouble(confiteria -> confiteria.getPrecio() * confiteria.getUnidades())
                 .sum();
+    }
 
-        double subtotal = totalEntradas + totalConfiteria;
-
-        if (cuponCliente != null) {
-            double descuento = subtotal * cuponCliente.getCupon().getDescuento();
-            validarDescuentoNoMayorTotal(descuento, subtotal);
-            subtotal -= descuento;
+    /**
+     * Aplica el descuento del cupon y evita que el descuento supere el subtotal.
+     */
+    private double aplicarDescuento(double subtotal, CuponCliente cuponCliente) {
+        if (cuponCliente == null) {
+            return subtotal;
         }
 
-        return subtotal;
+        double descuento = subtotal * cuponCliente.getCupon().getDescuento();
+        validarDescuentoNoMayorTotal(descuento, subtotal);
+        return subtotal - descuento;
     }
 
-    // SECTION: Implementacion de servicios CRUD
-
-    @Override
-    public Compra registrar(@Valid Compra compra) {
-        return compraRepo.save(compra);
+    private void validarDatosCompra(CompraRequest request) {
+        validarClienteExiste(request.getClienteCedula());
+        validarFuncionExiste(request.getFuncionCodigo());
     }
 
-    @Override
-    public Compra actualizar(@Valid Compra compra) {
-        Optional<Compra> buscado = compraRepo.findById(compra.getCodigo());
-        validarExiste(buscado);
-        validarCompraNoProcesada(buscado.get());
-        return compraRepo.save(compra);
+    private List<Entrada> prepararEntradas(List<EntradaRequest> requests, Integer codigoFuncion) {
+        List<Entrada> entradas = entradaMapper.toEntityList(requests);
+        validarSillasDisponibles(entradas, codigoFuncion);
+        return entradas;
     }
 
-    @Override
-    public void eliminar(@Valid Compra compra) {
-        compraRepo.delete(compra);
-    }
-
-    @Override
-    public Optional<Compra> obtener(Integer codigo) {
-        Optional<Compra> buscado = compraRepo.findById(codigo);
-        validarExiste(buscado);
-        return buscado;
-    }
-
-    @Override
-    public List<Compra> listar() {
-        return compraRepo.findAll();
-    }
-
-    @Override
-    public List<Compra> listarPaginado() {
-        return compraRepo.findAll(PageRequest.of(0, 10)).toList();
-    }
-
-    // SECTION: Implementacion de metodos de negocio
-
-    @Override
-    public Compra registrarCompraCompleta(Compra compra,
-                                           List<Entrada> entradas,
-                                           List<CompraConfiteria> confiterias) throws Exception {
-        validarClienteExiste(compra.getCliente().getCedula());
-        validarFuncionExiste(compra.getFuncion().getCodigo());
-        validarSillasDisponibles(entradas, compra.getFuncion().getCodigo());
-
-        CuponCliente cuponCliente = compra.getCuponCliente();
-        if (cuponCliente != null) {
-            Optional<CuponCliente> cc = cuponClienteRepo.findById(cuponCliente.getCodigo());
-            if (cc.isEmpty()) {
-                throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND);
-            }
-            cuponCliente = cc.get();
-            validarCuponDisponible(cuponCliente);
-            compra.setCuponCliente(cuponCliente);
+    /**
+     * Obtiene el cupon asignado y comprueba que pueda utilizarse en la compra.
+     */
+    private CuponCliente obtenerCuponCliente(Integer codigo) {
+        if (codigo == null) {
+            return null;
         }
 
-        Double valorTotal = calcularValorTotal(entradas, confiterias, cuponCliente);
+        CuponCliente cuponCliente = cuponClienteRepo.findById(codigo)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND));
+        validarCuponDisponible(cuponCliente);
+        return cuponCliente;
+    }
+
+    private Compra construirCompra(CompraRequest request, Double valorTotal, CuponCliente cuponCliente) {
+        Compra compra = compraMapper.toEntity(request);
         compra.setValorTotal(valorTotal);
         compra.setFechaCompra(LocalDateTime.now(ZoneId.of("America/Bogota")));
         compra.setEstado(true);
-
-        Compra guardada = compraRepo.save(compra);
-
-        for (Entrada entrada : entradas) {
-            entrada.setCompra(guardada);
-            entrada.setFuncion(guardada.getFuncion());
-            entradaServicio.registrar(entrada);
-        }
-
-        for (CompraConfiteria cc : confiterias) {
-            cc.setCompra(guardada);
-            compraConfiteriaServicio.registrar(cc);
-        }
-
         if (cuponCliente != null) {
-            cuponCliente.setEstado(false);
-            cuponClienteRepo.save(cuponCliente);
+            compra.setCuponCliente(cuponCliente);
+        }
+        return compra;
+    }
 
-            // TODO: emitir evento de dominio CUPON_REDIMIDO para reactividad futura (SSE/WebSockets)
+    private void guardarEntradas(List<Entrada> entradas, Compra compra) {
+        for (Entrada entrada : entradas) {
+            entrada.setCompra(compra);
+            entrada.setFuncion(compra.getFuncion());
+            entradaRepo.save(entrada);
+        }
+    }
+
+    private void guardarConfiterias(List<CompraConfiteria> confiterias, Compra compra) {
+        for (CompraConfiteria confiteria : confiterias) {
+            confiteria.setCompra(compra);
+            compraConfiteriaRepo.save(confiteria);
+        }
+    }
+
+    private void consumirCupon(CuponCliente cuponCliente) {
+        if (cuponCliente == null) {
+            return;
         }
 
-        // TODO: emitir evento de dominio COMPRA_CONFIRMADA para reactividad futura (SSE/WebSockets)
+        cuponCliente.setEstado(false);
+        cuponClienteRepo.save(cuponCliente);
+    }
 
-        return guardada;
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
+
+    @Override
+    public CompraResponse registrar(CompraRequest request) {
+        Compra compra = compraMapper.toEntity(request);
+        Compra registro = compraRepo.save(compra);
+        return compraMapper.toResponse(registro);
     }
 
     @Override
-    public List<Compra> obtenerComprasCliente(Integer cedula) {
+    public CompraResponse actualizar(CompraRequest request) {
+        Optional<Compra> buscado = compraRepo.findById(request.getCodigo());
+        validarExiste(buscado);
+        validarCompraNoProcesada(buscado.get());
+
+        Compra compra = compraMapper.toEntity(request);
+        Compra actualizado = compraRepo.save(compra);
+        return compraMapper.toResponse(actualizado);
+    }
+
+    @Override
+    public void eliminar(Integer codigo) {
+        Optional<Compra> buscado = compraRepo.findById(codigo);
+        validarExiste(buscado);
+        compraRepo.delete(buscado.get());
+    }
+
+    @Override
+    public Optional<CompraResponse> obtener(Integer codigo) {
+        Optional<Compra> buscado = compraRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(compraMapper::toResponse);
+    }
+
+    @Override
+    public List<CompraResponse> listar() {
+        return compraMapper.toResponseList(compraRepo.findAll());
+    }
+
+    @Override
+    public List<CompraResponse> listarPaginado() {
+        return compraMapper.toResponseList(compraRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    // !SECTION
+    // SECTION: Implementacion de metodos de negocio
+
+    /**
+     * Registra una compra con sus entradas, productos de confiteria y cupon opcional.
+     */
+    @Override
+    public CompraResponse registrarCompraCompleta(CompraCompletaRequest request) throws Exception {
+        CompraRequest compraRequest = request.getCompra();
+        validarDatosCompra(compraRequest);
+
+        List<Entrada> entradas = prepararEntradas(request.getEntradas(), compraRequest.getFuncionCodigo());
+        CuponCliente cuponCliente = obtenerCuponCliente(compraRequest.getCuponClienteCodigo());
+        List<CompraConfiteria> confiterias = compraConfiteriaMapper.toEntityList(request.getConfiterias());
+
+        Double valorTotal = calcularValorTotal(entradas, confiterias, cuponCliente);
+
+        Compra guardada = compraRepo.save(construirCompra(compraRequest, valorTotal, cuponCliente));
+        guardarEntradas(entradas, guardada);
+        guardarConfiterias(confiterias, guardada);
+        consumirCupon(cuponCliente);
+
+        return compraMapper.toResponse(guardada);
+    }
+
+    @Override
+    public List<CompraResponse> obtenerComprasCliente(Integer cedula) {
         List<Compra> compras = compraRepo.obtenerComprasCedula(cedula);
         validarExiste(compras);
-        return compras;
+        return compraMapper.toResponseList(compras);
     }
 
     @Override
@@ -283,4 +321,5 @@ public class CompraServicioImp implements CompraServicio {
         }
         return total;
     }
+    // !SECTION
 }

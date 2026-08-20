@@ -12,9 +12,10 @@ import com.unicine.entity.purchase.Cupon;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.purchase.CuponRepo;
+import com.unicine.transfer.dto.request.CuponRequest;
+import com.unicine.transfer.dto.response.CuponResponse;
+import com.unicine.transfer.mapper.CuponMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de cupones con logica de negocio completa.
@@ -28,8 +29,11 @@ public class CuponServicioImp implements CuponServicio {
 
     private final CuponRepo cuponRepo;
 
-    public CuponServicioImp(CuponRepo cuponRepo) {
+    private final CuponMapper cuponMapper;
+
+    public CuponServicioImp(CuponRepo cuponRepo, CuponMapper cuponMapper) {
         this.cuponRepo = cuponRepo;
+        this.cuponMapper = cuponMapper;
     }
 
     // SECTION: Metodos de soporte
@@ -64,77 +68,89 @@ public class CuponServicioImp implements CuponServicio {
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
-    public Cupon registrar(@Valid Cupon cupon) throws Exception {
-        return cuponRepo.save(cupon);
+    public CuponResponse registrar(CuponRequest request) throws Exception {
+        Cupon cupon = cuponMapper.toEntity(request);
+        Cupon registro = cuponRepo.save(cupon);
+        return cuponMapper.toResponse(registro);
     }
 
     @Override
-    public Cupon actualizar(@Valid Cupon cupon) throws Exception {
-        Optional<Cupon> buscado = cuponRepo.findById(cupon.getCodigo());
+    public CuponResponse actualizar(CuponRequest request) throws Exception {
+        Optional<Cupon> buscado = cuponRepo.findById(request.getCodigo());
         validarExiste(buscado);
-        return cuponRepo.save(cupon);
+
+        Cupon cupon = cuponMapper.toEntity(request);
+        Cupon actualizado = cuponRepo.save(cupon);
+        return cuponMapper.toResponse(actualizado);
     }
 
     @Override
-    public void eliminar(@Valid Cupon cupon, boolean confirmacion) throws Exception {
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception {
         comprobarConfirmacion(confirmacion);
-        cuponRepo.delete(cupon);
-    }
 
-    @Override
-    public Optional<Cupon> obtener(Integer codigo) throws Exception {
         Optional<Cupon> buscado = cuponRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+
+        cuponRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Cupon> listar() {
-        return cuponRepo.findAll();
+    public Optional<CuponResponse> obtener(Integer codigo) throws Exception {
+        Optional<Cupon> buscado = cuponRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(cuponMapper::toResponse);
     }
 
     @Override
-    public List<Cupon> listarPaginado() {
-        return cuponRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<CuponResponse> listar() {
+        return cuponMapper.toResponseList(cuponRepo.findAll());
     }
 
+    @Override
+    public List<CuponResponse> listarPaginado() {
+        return cuponMapper.toResponseList(cuponRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public List<Cupon> listarActivos() throws Exception {
+    public List<CuponResponse> listarActivos() throws Exception {
         List<Cupon> cupones = cuponRepo.findByFechaVencimientoAfter(LocalDateTime.now());
         validarExiste(cupones);
-        return cupones;
+        return cuponMapper.toResponseList(cupones);
     }
 
     @Override
-    public List<Cupon> listarVencidos() throws Exception {
+    public List<CuponResponse> listarVencidos() throws Exception {
         List<Cupon> cupones = cuponRepo.findByFechaVencimientoBefore(LocalDateTime.now());
         validarExiste(cupones);
-        return cupones;
+        return cuponMapper.toResponseList(cupones);
     }
 
     @Override
-    public List<Cupon> buscarPorCriterio(String criterio) throws Exception {
+    public List<CuponResponse> buscarPorCriterio(String criterio) throws Exception {
         List<Cupon> cupones = cuponRepo.findByCriterioContainingIgnoreCase(criterio);
         validarExiste(cupones);
-        return cupones;
+        return cuponMapper.toResponseList(cupones);
     }
 
     @Override
-    public List<Cupon> listarPorRangoDescuento(Double min, Double max) throws Exception {
+    public List<CuponResponse> listarPorRangoDescuento(Double min, Double max) throws Exception {
         List<Cupon> cupones = cuponRepo.findByDescuentoBetween(min, max);
         validarExiste(cupones);
-        return cupones;
+        return cuponMapper.toResponseList(cupones);
     }
 
     @Override
-    public List<Cupon> listarConAsignaciones() throws Exception {
+    public List<CuponResponse> listarConAsignaciones() throws Exception {
         List<Cupon> cupones = cuponRepo.findConAsignaciones();
         validarExiste(cupones);
-        return cupones;
+        return cuponMapper.toResponseList(cupones);
     }
+    // !SECTION
 }

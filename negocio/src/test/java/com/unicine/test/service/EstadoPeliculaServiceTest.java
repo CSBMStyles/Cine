@@ -1,7 +1,7 @@
 package com.unicine.test.service;
 
-import com.unicine.entity.movie.HistorialEstadoPelicula;
 import com.unicine.entity.movie.PeliculaDisposicion;
+import com.unicine.transfer.dto.response.HistorialEstadoPeliculaResponse;
 import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.Horario;
@@ -109,7 +109,7 @@ public class EstadoPeliculaServiceTest {
 
     // Metodo para verificar que existe historial de cambios
     private void assertHistorialExiste(PeliculaDisposicion disposicion) {
-        List<HistorialEstadoPelicula> historial = historialServicio.obtenerPorPelicula(
+        List<HistorialEstadoPeliculaResponse> historial = historialServicio.obtenerPorPelicula(
             disposicion.getPelicula().getCodigo(),
             disposicion.getCiudad().getCodigo()
         );

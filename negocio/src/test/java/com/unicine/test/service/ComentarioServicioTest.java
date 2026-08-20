@@ -1,5 +1,6 @@
 package com.unicine.test.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,8 @@ import com.unicine.repository.movie.ComentarioRepo;
 import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.repository.user.ClienteRepo;
 import com.unicine.service.movie.ComentarioServicio;
+import com.unicine.transfer.dto.request.ComentarioRequest;
+import com.unicine.transfer.dto.response.ComentarioResponse;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -38,23 +41,40 @@ public class ComentarioServicioTest {
     @Autowired
     private PeliculaRepo peliculaRepo;
 
-    private Comentario crearComentarioValido() {
+    private ComentarioRequest crearComentarioValidoRequest() {
         Cliente cliente = clienteRepo.findById(1008000022).orElse(null);
         Pelicula pelicula = peliculaRepo.findById(4).orElse(null);
 
-        return Comentario.builder()
+        return ComentarioRequest.builder()
                 .texto("Excelente pelicula, muy recomendada")
-                .cliente(cliente)
-                .pelicula(pelicula)
+                .likes(0)
+                .dislikes(0)
+                .fecha(LocalDateTime.now())
+                .clienteCedula(cliente.getCedula())
+                .peliculaCodigo(pelicula.getCodigo())
+                .build();
+    }
+
+    private ComentarioRequest crearComentarioSinEntradaRequest() {
+        Cliente cliente = clienteRepo.findById(1009000011).orElse(null);
+        Pelicula pelicula = peliculaRepo.findById(4).orElse(null);
+
+        return ComentarioRequest.builder()
+                .texto("No deberia poder comentar")
+                .likes(0)
+                .dislikes(0)
+                .fecha(LocalDateTime.now())
+                .clienteCedula(cliente.getCedula())
+                .peliculaCodigo(pelicula.getCodigo())
                 .build();
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() throws Exception {
-        Comentario comentario = crearComentarioValido();
+        ComentarioRequest request = crearComentarioValidoRequest();
 
-        Comentario guardado = comentarioServicio.registrar(comentario);
+        ComentarioResponse guardado = comentarioServicio.registrar(request);
 
         Assertions.assertNotNull(guardado);
         Assertions.assertNotNull(guardado.getFecha());
@@ -68,26 +88,28 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void registrarSinEntrada() {
-        Cliente cliente = clienteRepo.findById(1009000011).orElse(null);
-        Pelicula pelicula = peliculaRepo.findById(4).orElse(null);
+        ComentarioRequest request = crearComentarioSinEntradaRequest();
 
-        Comentario comentario = Comentario.builder()
-                .texto("No deberia poder comentar")
-                .cliente(cliente)
-                .pelicula(pelicula)
-                .build();
-
-        Assertions.assertThrows(BusinessRuleException.class, () -> comentarioServicio.registrar(comentario));
+        Assertions.assertThrows(BusinessRuleException.class, () -> comentarioServicio.registrar(request));
     }
 
     @Test
     @Sql("classpath:dataset.sql")
     public void actualizar() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        Comentario guardado = comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        ComentarioResponse guardado = comentarioServicio.registrar(request);
 
-        guardado.setTexto("Texto actualizado");
-        Comentario actualizado = comentarioServicio.actualizar(guardado);
+        ComentarioRequest actualizacion = ComentarioRequest.builder()
+                .codigo(guardado.getCodigo())
+                .texto("Texto actualizado")
+                .likes(guardado.getLikes())
+                .dislikes(guardado.getDislikes())
+                .fecha(guardado.getFecha())
+                .clienteCedula(guardado.getCliente().getCedula())
+                .peliculaCodigo(guardado.getPelicula().getCodigo())
+                .build();
+
+        ComentarioResponse actualizado = comentarioServicio.actualizar(actualizacion);
 
         Assertions.assertEquals("Texto actualizado", actualizado.getTexto());
 
@@ -98,10 +120,10 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminar() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        Comentario guardado = comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        ComentarioResponse guardado = comentarioServicio.registrar(request);
 
-        comentarioServicio.eliminar(guardado, true);
+        comentarioServicio.eliminar(guardado.getCodigo(), true);
 
         Optional<Comentario> verificacion = comentarioRepo.findById(guardado.getCodigo());
         Assertions.assertTrue(verificacion.isEmpty());
@@ -112,10 +134,10 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminarSinConfirmacion() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        Comentario guardado = comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        ComentarioResponse guardado = comentarioServicio.registrar(request);
 
-        Assertions.assertThrows(BusinessRuleException.class, () -> comentarioServicio.eliminar(guardado, false));
+        Assertions.assertThrows(BusinessRuleException.class, () -> comentarioServicio.eliminar(guardado.getCodigo(), false));
     }
 
     @Test
@@ -127,10 +149,10 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPorPelicula() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        comentarioServicio.registrar(request);
 
-        List<Comentario> comentarios = comentarioServicio.listarPorPelicula(4);
+        List<ComentarioResponse> comentarios = comentarioServicio.listarPorPelicula(4);
 
         Assertions.assertEquals(1, comentarios.size());
 
@@ -141,10 +163,10 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void listarPorCliente() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        comentarioServicio.registrar(request);
 
-        List<Comentario> comentarios = comentarioServicio.listarPorCliente(1008000022);
+        List<ComentarioResponse> comentarios = comentarioServicio.listarPorCliente(1008000022);
 
         Assertions.assertEquals(1, comentarios.size());
 
@@ -155,10 +177,10 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void darLike() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        Comentario guardado = comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        ComentarioResponse guardado = comentarioServicio.registrar(request);
 
-        Comentario actualizado = comentarioServicio.darLike(guardado.getCodigo());
+        ComentarioResponse actualizado = comentarioServicio.darLike(guardado.getCodigo());
 
         Assertions.assertEquals(1, actualizado.getLikes());
 
@@ -169,10 +191,10 @@ public class ComentarioServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void darDislike() throws Exception {
-        Comentario comentario = crearComentarioValido();
-        Comentario guardado = comentarioServicio.registrar(comentario);
+        ComentarioRequest request = crearComentarioValidoRequest();
+        ComentarioResponse guardado = comentarioServicio.registrar(request);
 
-        Comentario actualizado = comentarioServicio.darDislike(guardado.getCodigo());
+        ComentarioResponse actualizado = comentarioServicio.darDislike(guardado.getCodigo());
 
         Assertions.assertEquals(1, actualizado.getDislikes());
 

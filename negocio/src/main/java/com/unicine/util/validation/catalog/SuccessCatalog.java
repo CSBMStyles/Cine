@@ -17,9 +17,7 @@ package com.unicine.util.validation.catalog;
  */
 public enum SuccessCatalog {
 
-    // ============================================================
-    // CREACION / REGISTRO (201 Created)
-    // ============================================================
+    // SECTION: Creacion / registro (201 Created)
     
     SUC001("SUC001", "Registro creado correctamente"),
     SUC002("SUC002", "Administrador registrado correctamente"),
@@ -37,9 +35,8 @@ public enum SuccessCatalog {
     SUC014("SUC014", "Distribucion de sillas registrada correctamente"),
     SUC015("SUC015", "Imagen subida correctamente"),
     
-    // ============================================================
-    // ACTUALIZACION (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Actualizacion (200 Ok)
     
     SUC101("SUC101", "Registro actualizado correctamente"),
     SUC102("SUC102", "Administrador actualizado correctamente"),
@@ -51,9 +48,8 @@ public enum SuccessCatalog {
     SUC108("SUC108", "Imagen actualizada correctamente"),
     SUC109("SUC109", "Estado de la pelicula actualizado correctamente"),
     
-    // ============================================================
-    // ELIMINACION (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Eliminacion (200 Ok)
     
     SUC201("SUC201", "Registro eliminado correctamente"),
     SUC202("SUC202", "Administrador eliminado correctamente"),
@@ -63,9 +59,8 @@ public enum SuccessCatalog {
     SUC206("SUC206", "Sala eliminada correctamente"),
     SUC207("SUC207", "Imagen eliminada correctamente"),
     
-    // ============================================================
-    // AUTENTICACION / AUTORIZACION (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Autenticacion / autorizacion (200 Ok)
     
     SUC301("SUC301", "Inicio de sesion exitoso"),
     SUC302("SUC302", "Cierre de sesion exitoso"),
@@ -74,9 +69,8 @@ public enum SuccessCatalog {
     SUC305("SUC305", "Correo de recuperacion enviado correctamente"),
     SUC306("SUC306", "Contrasena restablecida correctamente"),
     
-    // ============================================================
-    // COMPRAS / TRANSACCIONES (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Compras / transacciones (200 Ok)
     
     SUC401("SUC401", "Compra realizada con exito"),
     SUC402("SUC402", "Pago procesado correctamente"),
@@ -84,17 +78,15 @@ public enum SuccessCatalog {
     SUC404("SUC404", "Cupon aplicado correctamente"),
     SUC405("SUC405", "Descuento aplicado correctamente"),
     
-    // ============================================================
-    // NOTIFICACIONES / EMAIL (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Notificaciones / email (200 Ok)
     
     SUC501("SUC501", "Correo enviado correctamente"),
     SUC502("SUC502", "Notificacion enviada correctamente"),
     SUC503("SUC503", "Recordatorio programado correctamente"),
     
-    // ============================================================
-    // OPERACIONES ESPECIFICAS (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Operaciones especificas (200 Ok)
     
     SUC601("SUC601", "Pelicula agregada a la coleccion correctamente"),
     SUC602("SUC602", "Pelicula removida de la coleccion correctamente"),
@@ -103,17 +95,15 @@ public enum SuccessCatalog {
     SUC605("SUC605", "Imagen restaurada a version anterior correctamente"),
     SUC606("SUC606", "Archivo renombrado correctamente"),
     
-    // ============================================================
-    // GENERALES (200 OK)
-    // ============================================================
+    // !SECTION
+    // SECTION: Generales (200 Ok)
     
     SUC901("SUC901", "Operacion completada con exito"),
     SUC902("SUC902", "Solicitud procesada correctamente"),
     SUC903("SUC903", "Datos recuperados correctamente");
     
-    // ============================================================
-    // ATRIBUTOS
-    // ============================================================
+    // !SECTION
+    // SECTION: Atributos
     
     private final String code;
     private final String message;
@@ -153,4 +143,5 @@ public enum SuccessCatalog {
     public String toString() {
         return String.format("[%s] %s", code, message);
     }
+    // !SECTION
 }

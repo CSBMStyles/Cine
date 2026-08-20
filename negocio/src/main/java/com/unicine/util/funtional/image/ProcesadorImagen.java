@@ -14,7 +14,7 @@ import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.entity.image.interfaced.Imagenable;
 import com.unicine.entity.movie.Pelicula;
 import com.unicine.entity.user.Persona;
-import com.unicine.enums.image.TipoImagenPelicula;
+import com.unicine.enums.image.TipoImagen;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -38,7 +38,7 @@ public class ProcesadorImagen {
     /**
      * Procesa una imagen según el tipo de propietario.
      * <p>
-     * Para películas se utiliza el tipo {@link TipoImagenPelicula#POSTER} por defecto.
+     * Para películas se utiliza el tipo {@link TipoImagen#POSTER} por defecto.
      *
      * @param file Archivo de imagen a procesar.
      * @param propietario Entidad propietaria de la imagen.
@@ -47,7 +47,7 @@ public class ProcesadorImagen {
     public byte[] procesar(MultipartFile file, Imagenable propietario) throws IOException {
 
         if (propietario instanceof Pelicula) {
-            return procesar(file, propietario, TipoImagenPelicula.POSTER);
+            return procesar(file, propietario, TipoImagen.POSTER);
         }
 
         return convertirFormato(file, resolverPerfil(propietario));
@@ -61,7 +61,7 @@ public class ProcesadorImagen {
      * @param tipo Tipo de imagen de película.
      * @return Bytes de la imagen procesada en formato WebP.
      */
-    public byte[] procesar(MultipartFile file, Imagenable propietario, TipoImagenPelicula tipo) throws IOException {
+    public byte[] procesar(MultipartFile file, Imagenable propietario, TipoImagen tipo) throws IOException {
 
         return convertirFormato(file, resolverPerfil(tipo));
     }
@@ -86,9 +86,14 @@ public class ProcesadorImagen {
     /**
      * Resuelve el perfil de procesamiento para una película según su tipo.
      */
-    private PerfilImagen resolverPerfil(TipoImagenPelicula tipo) {
+    private PerfilImagen resolverPerfil(TipoImagen tipo) {
 
-        return tipo == TipoImagenPelicula.BANNER ? PERFIL_PELICULA_BANNER : PERFIL_PELICULA_POSTER;
+        return switch (tipo) {
+            case AVATAR -> PERFIL_PERSONA;
+            case BANNER -> PERFIL_PELICULA_BANNER;
+            case POSTER, GALERIA -> PERFIL_PELICULA_POSTER;
+            case PRODUCTO -> PERFIL_CONFITERIA;
+        };
     }
 
     /**

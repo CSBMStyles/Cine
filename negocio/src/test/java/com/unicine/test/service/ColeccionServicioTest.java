@@ -9,12 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.movie.Coleccion;
-import com.unicine.entity.movie.Pelicula;
-import com.unicine.entity.user.Cliente;
 import com.unicine.enums.movie.EstadoPropio;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.movie.ColeccionServicio;
+import com.unicine.transfer.dto.request.ColeccionRequest;
+import com.unicine.transfer.dto.response.ColeccionResponse;
 import com.unicine.util.validation.catalog.domain.MovieErrorCatalog;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
 
@@ -30,7 +29,7 @@ public class ColeccionServicioTest {
     @Autowired
     private ColeccionServicio coleccionServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -39,19 +38,16 @@ public class ColeccionServicioTest {
         Integer cedula = 1009000011;
         Integer codigoPelicula = 2;
 
-        Cliente cliente = Cliente.builder().cedula(cedula).build();
-        Pelicula pelicula = new Pelicula();
-        pelicula.setCodigo(codigoPelicula);
-
-        Coleccion coleccion = Coleccion.builder()
+        ColeccionRequest request = ColeccionRequest.builder()
                 .puntuacion(5.0)
                 .estadoPeliculaPropio(EstadoPropio.FAVORITO)
-                .cliente(cliente)
-                .pelicula(pelicula)
+                .notificacionActiva(true)
+                .clienteCedula(cedula)
+                .peliculaCodigo(codigoPelicula)
                 .build();
 
         try {
-            Coleccion registrada = coleccionServicio.registrar(coleccion);
+            ColeccionResponse registrada = coleccionServicio.registrar(request);
 
             Assertions.assertNotNull(registrada);
             Assertions.assertEquals(cedula, registrada.getCliente().getCedula());
@@ -75,14 +71,19 @@ public class ColeccionServicioTest {
         Integer codigoPelicula = 1;
 
         try {
-            Coleccion coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
-            Assertions.assertNotNull(coleccion);
-            Assertions.assertEquals(4.0, coleccion.getPuntuacion());
+            ColeccionResponse existente = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
+            Assertions.assertNotNull(existente);
+            Assertions.assertEquals(4.0, existente.getPuntuacion());
 
-            coleccion.setPuntuacion(2.0);
-            coleccion.setEstadoPeliculaPropio(EstadoPropio.EN_ESPERA);
+            ColeccionRequest request = ColeccionRequest.builder()
+                    .puntuacion(2.0)
+                    .estadoPeliculaPropio(EstadoPropio.EN_ESPERA)
+                    .notificacionActiva(existente.getNotificacionActiva())
+                    .clienteCedula(cedula)
+                    .peliculaCodigo(codigoPelicula)
+                    .build();
 
-            Coleccion actualizada = coleccionServicio.actualizar(coleccion);
+            ColeccionResponse actualizada = coleccionServicio.actualizar(request);
 
             Assertions.assertEquals(2.0, actualizada.getPuntuacion());
             Assertions.assertEquals(EstadoPropio.EN_ESPERA, actualizada.getEstadoPeliculaPropio());
@@ -103,7 +104,7 @@ public class ColeccionServicioTest {
         Integer codigoPelicula = 1;
 
         try {
-            Coleccion coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
+            ColeccionResponse coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
 
             Assertions.assertNotNull(coleccion);
             Assertions.assertEquals(4.0, coleccion.getPuntuacion());
@@ -122,7 +123,7 @@ public class ColeccionServicioTest {
     public void listar() {
 
         try {
-            List<Coleccion> colecciones = coleccionServicio.listar();
+            List<ColeccionResponse> colecciones = coleccionServicio.listar();
 
             Assertions.assertEquals(5, colecciones.size());
 
@@ -139,7 +140,7 @@ public class ColeccionServicioTest {
     public void listarPaginado() {
 
         try {
-            List<Coleccion> colecciones = coleccionServicio.listarPaginado();
+            List<ColeccionResponse> colecciones = coleccionServicio.listarPaginado();
 
             Assertions.assertEquals(5, colecciones.size());
 
@@ -158,7 +159,7 @@ public class ColeccionServicioTest {
         Integer cedula = 1008000022;
 
         try {
-            List<Coleccion> colecciones = coleccionServicio.listarPorCliente(cedula);
+            List<ColeccionResponse> colecciones = coleccionServicio.listarPorCliente(cedula);
 
             Assertions.assertEquals(2, colecciones.size());
 
@@ -177,7 +178,7 @@ public class ColeccionServicioTest {
         Integer codigoPelicula = 3;
 
         try {
-            List<Coleccion> colecciones = coleccionServicio.listarPorPelicula(codigoPelicula);
+            List<ColeccionResponse> colecciones = coleccionServicio.listarPorPelicula(codigoPelicula);
 
             Assertions.assertEquals(2, colecciones.size());
 
@@ -237,7 +238,7 @@ public class ColeccionServicioTest {
         Double nuevaPuntuacion = 1.0;
 
         try {
-            Coleccion actualizada = coleccionServicio.calificarPelicula(cedula, codigoPelicula, nuevaPuntuacion);
+            ColeccionResponse actualizada = coleccionServicio.calificarPelicula(cedula, codigoPelicula, nuevaPuntuacion);
 
             Assertions.assertEquals(nuevaPuntuacion, actualizada.getPuntuacion());
 
@@ -258,7 +259,7 @@ public class ColeccionServicioTest {
         EstadoPropio nuevoEstado = EstadoPropio.EN_ESPERA;
 
         try {
-            Coleccion actualizada = coleccionServicio.cambiarEstadoPelicula(cedula, codigoPelicula, nuevoEstado);
+            ColeccionResponse actualizada = coleccionServicio.cambiarEstadoPelicula(cedula, codigoPelicula, nuevoEstado);
 
             Assertions.assertEquals(nuevoEstado, actualizada.getEstadoPeliculaPropio());
 
@@ -278,10 +279,10 @@ public class ColeccionServicioTest {
         Integer codigoPelicula = 1;
 
         try {
-            Coleccion coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
+            ColeccionResponse coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
             Assertions.assertNotNull(coleccion);
 
-            coleccionServicio.eliminar(coleccion, true);
+            coleccionServicio.eliminar(cedula, codigoPelicula, true);
 
             // Verificar que ya no existe
             try {
@@ -297,7 +298,7 @@ public class ColeccionServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -329,10 +330,10 @@ public class ColeccionServicioTest {
         Integer codigoPelicula = 1;
 
         try {
-            Coleccion coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
+            ColeccionResponse coleccion = coleccionServicio.obtener(cedula, codigoPelicula).orElse(null);
             Assertions.assertNotNull(coleccion);
 
-            coleccionServicio.eliminar(coleccion, false);
+            coleccionServicio.eliminar(cedula, codigoPelicula, false);
 
             Assertions.fail("Deberia lanzar RuntimeException por falta de confirmacion");
 

@@ -10,10 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.purchase.Cupon;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CuponServicio;
+import com.unicine.transfer.dto.request.CuponRequest;
+import com.unicine.transfer.dto.response.CuponResponse;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
@@ -27,21 +28,21 @@ public class CuponServicioTest {
     @Autowired
     private CuponServicio cuponServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
         try {
-            Cupon cupon = Cupon.builder()
+            CuponRequest request = CuponRequest.builder()
                     .descripcion("Cupon del 20% de descuento")
                     .descuento(0.2)
                     .criterio("Cumpleanos")
                     .fechaVencimiento(LocalDateTime.now().plusMonths(1))
                     .build();
 
-            Cupon registrado = cuponServicio.registrar(cupon);
+            CuponResponse registrado = cuponServicio.registrar(request);
 
             Assertions.assertNotNull(registrado);
             Assertions.assertNotNull(registrado.getCodigo());
@@ -62,12 +63,18 @@ public class CuponServicioTest {
     public void actualizar() {
 
         try {
-            Cupon cupon = cuponServicio.obtener(1).orElse(null);
+            CuponResponse cupon = cuponServicio.obtener(1).orElse(null);
             Assertions.assertNotNull(cupon);
 
-            cupon.setDescuento(0.2);
+            CuponRequest request = CuponRequest.builder()
+                    .codigo(cupon.getCodigo())
+                    .descripcion(cupon.getDescripcion())
+                    .descuento(0.2)
+                    .criterio(cupon.getCriterio())
+                    .fechaVencimiento(cupon.getFechaVencimiento())
+                    .build();
 
-            Cupon actualizado = cuponServicio.actualizar(cupon);
+            CuponResponse actualizado = cuponServicio.actualizar(request);
 
             Assertions.assertEquals(0.2, actualizado.getDescuento());
 
@@ -84,7 +91,7 @@ public class CuponServicioTest {
     public void obtener() {
 
         try {
-            Cupon cupon = cuponServicio.obtener(1).orElse(null);
+            CuponResponse cupon = cuponServicio.obtener(1).orElse(null);
 
             Assertions.assertNotNull(cupon);
             Assertions.assertEquals("Primer registro", cupon.getCriterio());
@@ -103,7 +110,7 @@ public class CuponServicioTest {
     public void listar() {
 
         try {
-            List<Cupon> cupones = cuponServicio.listar();
+            List<CuponResponse> cupones = cuponServicio.listar();
 
             Assertions.assertEquals(3, cupones.size());
 
@@ -120,7 +127,7 @@ public class CuponServicioTest {
     public void listarPaginado() {
 
         try {
-            List<Cupon> cupones = cuponServicio.listarPaginado();
+            List<CuponResponse> cupones = cuponServicio.listarPaginado();
 
             Assertions.assertEquals(3, cupones.size());
 
@@ -137,7 +144,7 @@ public class CuponServicioTest {
     public void listarActivos() {
 
         try {
-            List<Cupon> cupones = cuponServicio.listarActivos();
+            List<CuponResponse> cupones = cuponServicio.listarActivos();
 
             Assertions.assertEquals(3, cupones.size());
 
@@ -154,7 +161,7 @@ public class CuponServicioTest {
     public void listarVencidos() {
 
         try {
-            List<Cupon> cupones = cuponServicio.listarVencidos();
+            List<CuponResponse> cupones = cuponServicio.listarVencidos();
 
             Assertions.assertEquals(1, cupones.size());
             Assertions.assertEquals("Cupon expirado para test", cupones.get(0).getCriterio());
@@ -172,7 +179,7 @@ public class CuponServicioTest {
     public void buscarPorCriterio() {
 
         try {
-            List<Cupon> resultados = cuponServicio.buscarPorCriterio("Primer");
+            List<CuponResponse> resultados = cuponServicio.buscarPorCriterio("Primer");
 
             Assertions.assertEquals(2, resultados.size());
 
@@ -189,7 +196,7 @@ public class CuponServicioTest {
     public void listarPorRangoDescuento() {
 
         try {
-            List<Cupon> cupones = cuponServicio.listarPorRangoDescuento(0.1, 0.2);
+            List<CuponResponse> cupones = cuponServicio.listarPorRangoDescuento(0.1, 0.2);
 
             Assertions.assertEquals(2, cupones.size());
 
@@ -206,7 +213,7 @@ public class CuponServicioTest {
     public void listarConAsignaciones() {
 
         try {
-            List<Cupon> cupones = cuponServicio.listarConAsignaciones();
+            List<CuponResponse> cupones = cuponServicio.listarConAsignaciones();
 
             Assertions.assertEquals(2, cupones.size());
 
@@ -223,10 +230,10 @@ public class CuponServicioTest {
     public void eliminar() {
 
         try {
-            Cupon cupon = cuponServicio.obtener(4).orElse(null);
+            CuponResponse cupon = cuponServicio.obtener(4).orElse(null);
             Assertions.assertNotNull(cupon);
 
-            cuponServicio.eliminar(cupon, true);
+            cuponServicio.eliminar(cupon.getCodigo(), true);
 
             try {
                 cuponServicio.obtener(4);
@@ -241,7 +248,7 @@ public class CuponServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -267,11 +274,11 @@ public class CuponServicioTest {
     @Test
     @Sql("classpath:dataset.sql")
     public void eliminarSinConfirmacion() throws Exception {
-        Cupon cupon = cuponServicio.obtener(1).orElse(null);
+        CuponResponse cupon = cuponServicio.obtener(1).orElse(null);
         Assertions.assertNotNull(cupon);
 
         Assertions.assertThrows(BusinessRuleException.class,
-                () -> cuponServicio.eliminar(cupon, false));
+                () -> cuponServicio.eliminar(cupon.getCodigo(), false));
     }
 
     @Test

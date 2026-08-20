@@ -1,19 +1,22 @@
 package com.unicine.service.movie;
 
-import com.unicine.entity.movie.HistorialEstadoPelicula;
-import com.unicine.entity.movie.PeliculaDisposicion;
-import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
-import com.unicine.enums.movie.EstadoPelicula;
-import com.unicine.repository.movie.HistorialEstadoPeliculaRepo;
-import com.unicine.repository.movie.PeliculaDisposicionRepo;
-import com.unicine.service.notification.EmailService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.unicine.entity.movie.HistorialEstadoPelicula;
+import com.unicine.entity.movie.PeliculaDisposicion;
+import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
+import com.unicine.repository.movie.HistorialEstadoPeliculaRepo;
+import com.unicine.repository.movie.PeliculaDisposicionRepo;
+import com.unicine.service.notification.EmailService;
+import com.unicine.transfer.dto.request.HistorialEstadoPeliculaRequest;
+import com.unicine.transfer.dto.response.HistorialEstadoPeliculaResponse;
+import com.unicine.transfer.mapper.HistorialEstadoPeliculaMapper;
 
 @Service
 public class HistorialEstadoPeliculaServicioImp implements HistorialEstadoPeliculaServicio {
@@ -21,38 +24,39 @@ public class HistorialEstadoPeliculaServicioImp implements HistorialEstadoPelicu
     private final HistorialEstadoPeliculaRepo historialRepo;
     private final PeliculaDisposicionRepo disposicionRepo;
     private final EmailService emailService;
+    private final HistorialEstadoPeliculaMapper historialMapper;
 
     public HistorialEstadoPeliculaServicioImp(HistorialEstadoPeliculaRepo historialRepo,
                                               PeliculaDisposicionRepo disposicionRepo,
-                                              EmailService emailService) {
+                                              EmailService emailService,
+                                              HistorialEstadoPeliculaMapper historialMapper) {
         this.historialRepo = historialRepo;
         this.disposicionRepo = disposicionRepo;
         this.emailService = emailService;
+        this.historialMapper = historialMapper;
     }
 
     @Override
     @Transactional
-    public HistorialEstadoPelicula registrar(Integer peliculaId, Integer ciudadId, EstadoPelicula anterior, EstadoPelicula nuevo) {
-        PeliculaDisposicionCompuesta id = new PeliculaDisposicionCompuesta(ciudadId, peliculaId);
+    public HistorialEstadoPeliculaResponse registrar(HistorialEstadoPeliculaRequest request) {
+        PeliculaDisposicionCompuesta id = new PeliculaDisposicionCompuesta(
+                request.getCiudadCodigo(), request.getPeliculaCodigo());
         PeliculaDisposicion disposicion = disposicionRepo.findById(id).orElse(null);
         if (disposicion == null) {
             return null;
         }
 
-        HistorialEstadoPelicula historial = HistorialEstadoPelicula.builder()
-                .estadoAnterior(anterior)
-                .estadoNuevo(nuevo)
-                .fechaCambio(LocalDateTime.now(ZoneId.of("America/Bogota")))
-                .peliculaDisposicion(disposicion)
-                .build();
+        HistorialEstadoPelicula historial = historialMapper.toEntity(request);
+        historial.setPeliculaDisposicion(disposicion);
 
-        return historialRepo.save(historial);
+        return historialMapper.toResponse(historialRepo.save(historial));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<HistorialEstadoPelicula> obtenerPorPelicula(Integer peliculaId, Integer ciudadId) {
-        return historialRepo.findByPeliculaDisposicion_Pelicula_CodigoAndPeliculaDisposicion_Ciudad_Codigo(peliculaId, ciudadId);
+    public List<HistorialEstadoPeliculaResponse> obtenerPorPelicula(Integer peliculaId, Integer ciudadId) {
+        return historialMapper.toResponseList(
+                historialRepo.findByPeliculaDisposicion_Pelicula_CodigoAndPeliculaDisposicion_Ciudad_Codigo(peliculaId, ciudadId));
     }
 
     @Override

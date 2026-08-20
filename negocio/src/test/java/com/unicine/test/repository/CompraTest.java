@@ -23,7 +23,7 @@ import com.unicine.repository.purchase.CompraRepo;
 import com.unicine.repository.purchase.CuponClienteRepo;
 import com.unicine.repository.purchase.CuponRepo;
 import com.unicine.repository.showing.FuncionRepo;
-import com.unicine.transfer.data.DetalleCompraDTO;
+import com.unicine.transfer.dto.response.DetalleCompraResponse;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -56,6 +56,7 @@ public class CompraTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
+    // !SECTION
         // SECTION: Se obtienen los datos necesarios para la creación de la compra
         MedioPago pago = MedioPago.valueOf("VISA");
 
@@ -69,6 +70,7 @@ public class CompraTest {
 
         CuponCliente cuponClienteSave = cuponClienteRepo.save(cuponCliente);
 
+        // !SECTION
         // SECTION: Se construye la compra
         Compra compra = new Compra(true, pago, cuponClienteSave, cliente, funcion);
 
@@ -181,6 +183,7 @@ public class CompraTest {
         }
     }
 
+        // !SECTION
     // SECTION: Consultas personalizadas para la base de datos
 
     @Test
@@ -230,14 +233,14 @@ public class CompraTest {
     @Sql("classpath:dataset.sql")
     public void obtenerInformacionCompra() {
 
-        List<DetalleCompraDTO> detallesCompra = compraRepo.obtenerInformacionCompra(1008000022);
+        List<DetalleCompraResponse> detallesCompra = compraRepo.obtenerInformacionCompra(1008000022);
 
         // Verifica que los detalles de la c sean correctos
         Assertions.assertFalse(detallesCompra.isEmpty(), "No se encontraron detalles de la c");
 
         System.out.println("Resultado: \n");
 
-        for (DetalleCompraDTO detalle : detallesCompra) {
+        for (DetalleCompraResponse detalle : detallesCompra) {
             System.out.println(detalle);
         }
     }
@@ -299,4 +302,5 @@ public class CompraTest {
             System.out.println("Correo: " + mayorCompra[0] + "\n" + "Compra: " + mayorCompra[1]);
         }
     }
+    // !SECTION
 }

@@ -12,23 +12,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.api.response.Respuesta;
-import com.unicine.entity.showing.Funcion;
-import com.unicine.entity.showing.FuncionEsquema;
-import com.unicine.entity.showing.Horario;
 import com.unicine.entity.movie.Pelicula;
-import com.unicine.entity.movie.PeliculaDisposicion;
 import com.unicine.entity.theater.Sala;
-import com.unicine.entity.movie.composed.PeliculaDisposicionCompuesta;
 import com.unicine.enums.movie.FormatoPelicula;
+import com.unicine.repository.movie.PeliculaRepo;
+import com.unicine.repository.theater.SalaRepo;
 import com.unicine.service.showing.FuncionEsquemaServicio;
 import com.unicine.service.showing.FuncionServicio;
 import com.unicine.service.showing.HorarioServicio;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
-import com.unicine.service.movie.PeliculaServicio;
-import com.unicine.service.theater.SalaServicio;
+import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
+import com.unicine.transfer.dto.request.FuncionRequest;
+import com.unicine.transfer.dto.request.HorarioRequest;
+import com.unicine.transfer.dto.request.PeliculaDisposicionRequest;
+import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
+import com.unicine.transfer.dto.response.FuncionResponse;
+import com.unicine.transfer.dto.response.HorarioResponse;
+import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
@@ -38,10 +40,10 @@ public class FuncionServicioTest {
     private FuncionServicio funcionServicio;
 
     @Autowired
-    private SalaServicio salaServicio;
+    private SalaRepo salaRepo;
 
     @Autowired
-    private PeliculaServicio peliculaServicio;
+    private PeliculaRepo peliculaRepo;
 
     @Autowired
     private HorarioServicio horarioServicio;
@@ -63,7 +65,7 @@ public class FuncionServicioTest {
         Sala sala;
 
         try {
-            sala = salaServicio.obtener(5).orElse(null);
+            sala = salaRepo.findById(5).orElse(null);
 
             System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -72,10 +74,7 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         // El horario se crea exclusivamente para la funcion deseada, donde es primero antes del registro de la funcion.
@@ -83,17 +82,15 @@ public class FuncionServicioTest {
         LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
         LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 22, 00);
 
-        Horario horario = null;
+        HorarioResponse horario;
 
         try {
-            Respuesta<?> repuestaHorario = horarioServicio.registrar(new Horario(fechaInicio, fechaFin), sala);
+            HorarioRequest horarioRequest = HorarioRequest.builder()
+                    .fechaInicio(fechaInicio)
+                    .fechaFin(fechaFin)
+                    .build();
 
-            if (!repuestaHorario.isExito()) {
-
-                Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
-            }
-
-            horario = (Horario) repuestaHorario.getData();
+            horario = horarioServicio.registrar(horarioRequest, sala.getCodigo());
 
             String dia = horarioServicio.obtenerDia(fechaInicio);
 
@@ -101,15 +98,12 @@ public class FuncionServicioTest {
 
             System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
 
-            Assertions.assertTrue(repuestaHorario.isExito());
+            Assertions.assertNotNull(horario);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         // Selecciona entre una lista la pelicula que se desea registrar en la funcion.
@@ -117,7 +111,7 @@ public class FuncionServicioTest {
         Pelicula pelicula;
 
         try {
-            pelicula = peliculaServicio.obtener(1).orElse(null);
+            pelicula = peliculaRepo.findById(1).orElse(null);
 
             System.out.println("\n" + "Pelicula seleccionada:" + "\n" + pelicula);
 
@@ -126,20 +120,18 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
 
-        PeliculaDisposicion peliculaDisposicion;
+        PeliculaDisposicionResponse peliculaDisposicion;
 
-        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(sala.getTeatro().getCiudad().getCodigo(), pelicula.getCodigo());
+        Integer ciudadCodigo = sala.getTeatro().getCiudad().getCodigo();
+        Integer peliculaCodigo = pelicula.getCodigo();
 
         try {
-            peliculaDisposicion = disposicionServicio.obtener(codigo).orElse(null);
+            peliculaDisposicion = disposicionServicio.obtener(ciudadCodigo, peliculaCodigo).orElse(null);
 
             System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
 
@@ -148,23 +140,25 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
 
         // Se registra la funcion, donde se le asigna el formato de la pelicula, sala, horario y pelicula.
 
-        Funcion funcion;
+        FuncionResponse funcion;
         
         try {
 
-            Funcion funcionNueva = new Funcion(FormatoPelicula.DOBLADO, sala, horario, pelicula);
-            funcionNueva.setPrecio(0.0);
+            FuncionRequest funcionRequest = FuncionRequest.builder()
+                    .precio(0.0)
+                    .formato(FormatoPelicula.DOBLADO)
+                    .salaCodigo(sala.getCodigo())
+                    .horarioCodigo(horario.getCodigo())
+                    .peliculaCodigo(pelicula.getCodigo())
+                    .build();
 
-            funcion = funcionServicio.registrar(funcionNueva);
+            funcion = funcionServicio.registrar(funcionRequest);
 
             System.out.println("\n" + "Funcion registrada:" + "\n" + funcion);
 
@@ -173,37 +167,40 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         // Una vez registrada la funcion, se procede a crear automaticamente la funcion esquema que contiene la distribucion de silla usada para la funcion.
 
         try {
             
-            disposicionServicio.actualizar(peliculaDisposicion);
+            PeliculaDisposicionRequest request = PeliculaDisposicionRequest.builder()
+                    .estadoPelicula(peliculaDisposicion.getEstadoPelicula())
+                    .peliculaCodigo(peliculaDisposicion.getPelicula().getCodigo())
+                    .ciudadCodigo(peliculaDisposicion.getCiudad().getCodigo())
+                    .fechaFuncionInicial(peliculaDisposicion.getFechaFuncionInicial())
+                    .build();
+
+            disposicionServicio.actualizar(request);
 
             System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         try {
             
-            FuncionEsquema esquemaNuevo = new FuncionEsquema(funcion);
-            esquemaNuevo.setDisponibles(0);
-            esquemaNuevo.setOcupadas(0);
-            esquemaNuevo.setMantenimiento(0);
+            FuncionEsquemaRequest esquemaRequest = FuncionEsquemaRequest.builder()
+                    .funcionCodigo(funcion.getCodigo())
+                    .disponibles(0)
+                    .ocupadas(0)
+                    .mantenimiento(0)
+                    .build();
 
-            FuncionEsquema funcionEsquema = funcionEsquemaServicio.registrar(esquemaNuevo);
+            FuncionEsquemaResponse funcionEsquema = funcionEsquemaServicio.registrar(esquemaRequest);
 
             System.out.println("\n" + "Funcion esquema registrado:" + "\n" + funcionEsquema);
 
@@ -214,12 +211,7 @@ public class FuncionServicioTest {
 
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
-
             throw new RuntimeException(e);
-
-
         }
 
     }
@@ -228,11 +220,11 @@ public class FuncionServicioTest {
     @Sql("classpath:dataset.sql")
     public void actualizar() {
 
-        // NOTE: El administrador cuando actualiza tiene la posibilidad de modificar la referencia del horario, sala y pelicula, entonces en una interfaz tenemos una lista y selecciona una que lo reemplaza.
+        // Note: El administrador cuando actualiza tiene la posibilidad de modificar la referencia del horario, sala y pelicula, entonces en una interfaz tenemos una lista y selecciona una que lo reemplaza.
         
         // Primero obtenemos la funcion a actualizar.
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
             funcion = funcionServicio.obtener(1).orElse(null);
@@ -244,27 +236,28 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         boolean modificarSala = true; // Tomamos el codigo de la sala que se desea cambiar.
 
         boolean modificaHorario = true; // En caso que modifique el horario
 
+        Integer salaCodigo = funcion.getSala().getCodigo();
+        Integer horarioCodigo = funcion.getHorario().getCodigo();
+        Integer peliculaCodigo = funcion.getPelicula().getCodigo();
+
         // En caso que modifique el la sala necesitamos recalcular el precio de la funcion.
 
-        funcion.setFormato(FormatoPelicula.SUBTITULADO);
+        FormatoPelicula formato = FormatoPelicula.SUBTITULADO;
 
         if (modificarSala) {
 
             try {
                 
-                Sala sala = salaServicio.obtener(3).orElse(null);
+                Sala sala = salaRepo.findById(3).orElse(null);
 
-                funcion.setSala(sala);
+                salaCodigo = sala.getCodigo();
 
                 System.out.println("\n" + "Sala seleccionada:" + "\n" + sala);
 
@@ -273,16 +266,13 @@ public class FuncionServicioTest {
             } catch (Exception e) {
                 System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
                 throw new RuntimeException(e);
-
             }
         }
 
         if (modificaHorario) {
 
-            Horario horario = funcion.getHorario();
+            HorarioResponse horario = funcion.getHorario();
 
             System.out.println("\n" + "Horario antes de modificar:" + "\n" + horario);
 
@@ -290,45 +280,39 @@ public class FuncionServicioTest {
 
                 LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 14, 05, 30);
 
-                horario.setFechaInicio(fechaInicio);
+                HorarioRequest horarioRequest = HorarioRequest.builder()
+                        .codigo(horario.getCodigo())
+                        .fechaInicio(fechaInicio)
+                        .fechaFin(horario.getFechaFin())
+                        .build();
 
-                Respuesta<?> repuestaHorario = horarioServicio.actualizar(horario);
+                HorarioResponse horarioActualizado = horarioServicio.actualizar(horarioRequest);
     
-                if (!repuestaHorario.isExito()) {
+                String dia = horarioServicio.obtenerDia(horarioActualizado.getFechaInicio());
     
-                    Assertions.fail(repuestaHorario.getMensaje() + "\n" + repuestaHorario.getData());
-                }
-    
-                horario = (Horario) repuestaHorario.getData();
-    
-                String dia = horarioServicio.obtenerDia(horario.getFechaInicio());
-    
-                System.out.println("\n" + "Horario actualizado:" + "\n" + horario);
+                System.out.println("\n" + "Horario actualizado:" + "\n" + horarioActualizado);
     
                 System.out.println("\n" + "Dia de la semana:" + "\n" + dia);
     
-                funcion.setHorario(horario);
+                horarioCodigo = horarioActualizado.getCodigo();
     
-                Assertions.assertTrue(repuestaHorario.isExito());
+                Assertions.assertNotNull(horarioActualizado);
     
             } catch (Exception e) {
                 System.out.println("Mensaje de error: " + e.getMessage());
 
-
-    
                 throw new RuntimeException(e);
-    
             }
         }
 
         // Comprobamos si la disposicion existe para la pelicula y ciudad seleccionada
 
-        PeliculaDisposicion peliculaDisposicion;
+        PeliculaDisposicionResponse peliculaDisposicion;
 
-        PeliculaDisposicionCompuesta codigo = new PeliculaDisposicionCompuesta(funcion.getSala().getTeatro().getCiudad().getCodigo(), funcion.getPelicula().getCodigo());
+        Integer ciudadCodigo = funcion.getSala().getTeatro().getCiudad().getCodigo();
 
         try {
-            peliculaDisposicion = disposicionServicio.obtener(codigo).orElse(null);
+            peliculaDisposicion = disposicionServicio.obtener(ciudadCodigo, peliculaCodigo).orElse(null);
 
             System.out.println("\n" + "Disposicion seleccionada:" + "\n" + peliculaDisposicion);
 
@@ -337,15 +321,21 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         try {
 
-            Funcion actualizado = funcionServicio.actualizar(funcion);
+            FuncionRequest funcionRequest = FuncionRequest.builder()
+                    .codigo(funcion.getCodigo())
+                    .precio(0.0)
+                    .formato(formato)
+                    .salaCodigo(salaCodigo)
+                    .horarioCodigo(horarioCodigo)
+                    .peliculaCodigo(peliculaCodigo)
+                    .build();
+
+            FuncionResponse actualizado = funcionServicio.actualizar(funcionRequest);
 
             Assertions.assertNotNull(actualizado);
 
@@ -354,25 +344,26 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         try {
             
-            disposicionServicio.actualizar(peliculaDisposicion);
+            PeliculaDisposicionRequest request = PeliculaDisposicionRequest.builder()
+                    .estadoPelicula(peliculaDisposicion.getEstadoPelicula())
+                    .peliculaCodigo(peliculaDisposicion.getPelicula().getCodigo())
+                    .ciudadCodigo(peliculaDisposicion.getCiudad().getCodigo())
+                    .fechaFuncionInicial(peliculaDisposicion.getFechaFuncionInicial())
+                    .build();
+
+            disposicionServicio.actualizar(request);
 
             System.out.println("\n" + "Disposicion actualizada:" + "\n" + peliculaDisposicion);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
     }
 
@@ -386,7 +377,7 @@ public class FuncionServicioTest {
 
         Integer codigoEsquema;
 
-        Funcion funcion;
+        FuncionResponse funcion;
 
         try {
             funcion = funcionServicio.obtener(codigoFuncion).orElse(null);
@@ -404,22 +395,16 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         try {
-            funcionServicio.eliminar(funcion, true);
+            funcionServicio.eliminar(codigoFuncion, true);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
 
         try {
@@ -428,7 +413,6 @@ public class FuncionServicioTest {
         } catch (Exception e) {
 
             System.out.println("Mensaje de error: " + e.getMessage());
-
 
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -442,7 +426,6 @@ public class FuncionServicioTest {
 
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
             System.out.println(e.getMessage());
@@ -454,7 +437,6 @@ public class FuncionServicioTest {
         } catch (Exception e) {
 
             System.out.println("Mensaje de error: " + e.getMessage());
-
 
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -469,7 +451,7 @@ public class FuncionServicioTest {
         Integer codigo = 1;
 
         try {
-            Funcion funcion = funcionServicio.obtener(1).orElse(null);
+            FuncionResponse funcion = funcionServicio.obtener(1).orElse(null);
 
             Assertions.assertEquals(codigo, funcion.getCodigo());
 
@@ -478,10 +460,7 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
     }
 
@@ -490,7 +469,7 @@ public class FuncionServicioTest {
     public void listar() {
 
         try {
-            List<Funcion> lista = funcionServicio.listar();
+            List<FuncionResponse> lista = funcionServicio.listar();
 
             Assertions.assertEquals(8, lista.size());
 
@@ -501,10 +480,7 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
     }
 
@@ -513,7 +489,7 @@ public class FuncionServicioTest {
     public void listarPaginado() {
 
         try {
-            List<Funcion> lista = funcionServicio.listarPaginado();
+            List<FuncionResponse> lista = funcionServicio.listarPaginado();
 
             Assertions.assertEquals(5, lista.size());
 
@@ -524,10 +500,7 @@ public class FuncionServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
-
         }
     }
     

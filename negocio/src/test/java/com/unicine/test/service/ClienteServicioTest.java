@@ -19,20 +19,26 @@ import com.unicine.entity.user.Cliente;
 import com.unicine.entity.user.Administrador;
 import com.unicine.entity.user.AdministradorTeatro;
 import com.unicine.entity.user.Persona;
-import com.unicine.service.user.PersonaServicio;
+import com.unicine.repository.user.ClienteRepo;
+import com.unicine.service.user.ClienteServicio;
 import com.unicine.service.user.AuthenticationService;
 import com.unicine.service.notification.EmailService;
+import com.unicine.transfer.dto.request.ClienteRequest;
+import com.unicine.transfer.dto.response.ClienteResponse;
 
 import jakarta.validation.ConstraintViolationException;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
 public class ClienteServicioTest {
 
     @Autowired
-    private PersonaServicio<Cliente> clienteServicio;
+    private ClienteServicio clienteServicio;
+
+    @Autowired
+    private ClienteRepo clienteRepo;
 
     @Autowired
     private AuthenticationService authService;
@@ -100,19 +106,26 @@ public class ClienteServicioTest {
 
         Integer cedula = 1004000066;
 
-        // Crear la lista de teléfonos
         ArrayList<String> telefonos = new ArrayList<>();
         telefonos.add("3160369165");
 
         LocalDate fechaNacimiento = LocalDate.of(1990, 10, 10);
 
-        Cliente cliente = new Cliente(cedula, "Juan", "Parra", "juan@gmail.com", "78!Kz9'Aovr1>`A5", false, fechaNacimiento, telefonos);
+        ClienteRequest request = ClienteRequest.builder()
+            .cedula(cedula)
+            .nombre("Juan")
+            .apellido("Parra")
+            .correo("juan@gmail.com")
+            .password("78!Kz9'Aovr1>`A5")
+            .estado(false)
+            .fechaNacimiento(fechaNacimiento)
+            .telefonos(telefonos)
+            .build();
 
         try {
-            Cliente nuevo = clienteServicio.registrar(cliente);
+            ClienteResponse nuevo = clienteServicio.registrar(request);
             
             Assertions.assertEquals(cedula, nuevo.getCedula());
-            Assertions.assertNotEquals("78!Kz9'Aovr1>`A5", nuevo.getPassword());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
@@ -141,26 +154,26 @@ public class ClienteServicioTest {
         ArrayList<String> telefonos = new ArrayList<>();
         telefonos.add("3160369165");
 
-        Cliente cliente = new Cliente(
-            1004000077,
-            "Juan",
-            "Parra",
-            "juan2@gmail.com",
-            password,
-            true,
-            LocalDate.of(1990, 10, 10),
-            telefonos
-        );
+        ClienteRequest request = ClienteRequest.builder()
+            .cedula(1004000077)
+            .nombre("Juan")
+            .apellido("Parra")
+            .correo("juan2@gmail.com")
+            .password(password)
+            .estado(true)
+            .fechaNacimiento(LocalDate.of(1990, 10, 10))
+            .telefonos(telefonos)
+            .build();
 
         ConstraintViolationException excepcion = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            clienteServicio.registrar(cliente);
+            clienteServicio.registrar(request);
         });
 
         String errores = excepcion.getConstraintViolations().stream()
             .map(v -> "→ " + v.getMessage())
             .collect(Collectors.joining("\n"));
 
-        System.out.println("Errores de validación: '" + password + "':\n" + errores);
+        System.out.println("Errores de validación: '" + password + ":\n" + errores);
 
         Assertions.assertFalse(excepcion.getConstraintViolations().isEmpty());
 
@@ -184,7 +197,7 @@ public class ClienteServicioTest {
 
         Assertions.assertTrue(
             excepcion.getConstraintViolations().stream().anyMatch(v ->
-                "password".equals(v.getPropertyPath().toString()) && v.getMessage().contains(mensajeEsperado)
+                v.getPropertyPath().toString().endsWith("password") && v.getMessage().contains(mensajeEsperado)
             )
         );
     }
@@ -194,13 +207,25 @@ public class ClienteServicioTest {
     public void actualizar() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            ClienteResponse existente = clienteServicio.obtener(1009000011).orElse(null);
 
-            cliente.setCorreo("josefinas@gmail.com");
+            Assertions.assertNotNull(existente);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            ClienteRequest request = ClienteRequest.builder()
+                .cedula(existente.getCedula())
+                .nombre(existente.getNombre())
+                .apellido(existente.getApellido())
+                .correo("josefinas@gmail.com")
+                .password("78!Kz9'Aovr1>`A5")
+                .estado(existente.getEstado())
+                .fechaNacimiento(existente.getFechaNacimiento())
+                .telefonos(existente.getTelefonos())
+                .build();
+
+            ClienteResponse actualizado = clienteServicio.actualizar(request);
 
             Assertions.assertEquals(true, actualizado.getEstado());
+            Assertions.assertEquals("josefinas@gmail.com", actualizado.getCorreo());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
@@ -221,7 +246,9 @@ public class ClienteServicioTest {
         Cliente cliente;
 
         try {
-            cliente = clienteServicio.obtener(1009000011).orElse(null);
+            cliente = clienteRepo.findById(1009000011).orElse(null);
+
+            Assertions.assertNotNull(cliente);
 
         } catch (Exception e) {
 
@@ -269,10 +296,8 @@ public class ClienteServicioTest {
         
         Integer cedula = 1009000011;
 
-        Cliente cliente;
-
         try {
-            cliente = clienteServicio.obtener(cedula).orElse(null);
+            ClienteResponse cliente = clienteServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, cliente.getCedula());
 
@@ -287,7 +312,7 @@ public class ClienteServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            clienteServicio.eliminar(cliente, true);
+            clienteServicio.eliminar(cedula, true);
 
         } catch (Exception e) {
 
@@ -318,7 +343,7 @@ public class ClienteServicioTest {
         Integer cedula = 1009000011;
 
         try {
-            Cliente cliente = clienteServicio.obtener(cedula).orElse(null);
+            ClienteResponse cliente = clienteServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, cliente.getCedula());
 
@@ -339,7 +364,7 @@ public class ClienteServicioTest {
     public void listar() {
 
         try {
-            List<Cliente> lista = clienteServicio.listar();
+            List<ClienteResponse> lista = clienteServicio.listar();
 
             Assertions.assertEquals(5, lista.size());
 
@@ -359,8 +384,6 @@ public class ClienteServicioTest {
 
     // 🟥
 
-    // NOTE: La siguiente prueba es interesante aparte de buscar que falle exitosamente, se realiza la prueba de forma parametrizada para probar con diferentes valores, esto es importante para en una sola prueba probar diferentes casos para el mismo enfoque y no tener que realizar multiples pruebas
-
     @ParameterizedTest
     @ValueSource(strings = {
         "", // Caso vacío
@@ -378,11 +401,22 @@ public class ClienteServicioTest {
         System.out.println("Correo: " + correo);
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            ClienteResponse existente = clienteServicio.obtener(1009000011).orElse(null);
 
-            cliente.setCorreo(correo);
+            Assertions.assertNotNull(existente);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            ClienteRequest request = ClienteRequest.builder()
+                .cedula(existente.getCedula())
+                .nombre(existente.getNombre())
+                .apellido(existente.getApellido())
+                .correo(correo)
+                .password("78!Kz9'Aovr1>`A5")
+                .estado(existente.getEstado())
+                .fechaNacimiento(existente.getFechaNacimiento())
+                .telefonos(existente.getTelefonos())
+                .build();
+
+            ClienteResponse actualizado = clienteServicio.actualizar(request);
 
             Assertions.assertEquals(correo, actualizado.getCorreo());
 
@@ -403,11 +437,22 @@ public class ClienteServicioTest {
     public void validacionEstado() {
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            ClienteResponse existente = clienteServicio.obtener(1009000011).orElse(null);
 
-            cliente.setEstado(null);
+            Assertions.assertNotNull(existente);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            ClienteRequest request = ClienteRequest.builder()
+                .cedula(existente.getCedula())
+                .nombre(existente.getNombre())
+                .apellido(existente.getApellido())
+                .correo(existente.getCorreo())
+                .password("78!Kz9'Aovr1>`A5")
+                .estado(null)
+                .fechaNacimiento(existente.getFechaNacimiento())
+                .telefonos(existente.getTelefonos())
+                .build();
+
+            ClienteResponse actualizado = clienteServicio.actualizar(request);
 
             Assertions.assertEquals(null, actualizado.getEstado());
 
@@ -431,16 +476,26 @@ public class ClienteServicioTest {
     @Sql("classpath:dataset.sql")
     public void validacionTelefono(String telefono) {
 
-        // Crear la lista de teléfonos
         ArrayList<String> telefonos = new ArrayList<>();
         telefonos.add(telefono);
 
         try{
-            Cliente cliente = clienteServicio.obtener(1009000011).orElse(null);
+            ClienteResponse existente = clienteServicio.obtener(1009000011).orElse(null);
 
-            cliente.setTelefonos(telefonos);
+            Assertions.assertNotNull(existente);
 
-            Cliente actualizado = clienteServicio.actualizar(cliente);
+            ClienteRequest request = ClienteRequest.builder()
+                .cedula(existente.getCedula())
+                .nombre(existente.getNombre())
+                .apellido(existente.getApellido())
+                .correo(existente.getCorreo())
+                .password("78!Kz9'Aovr1>`A5")
+                .estado(existente.getEstado())
+                .fechaNacimiento(existente.getFechaNacimiento())
+                .telefonos(telefonos)
+                .build();
+
+            ClienteResponse actualizado = clienteServicio.actualizar(request);
 
             Assertions.assertEquals(1, actualizado.getTelefonos().size());
 

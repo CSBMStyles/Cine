@@ -3,7 +3,8 @@ package com.unicine.service.purchase;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.purchase.CuponCliente;
+import com.unicine.transfer.dto.request.CuponClienteRequest;
+import com.unicine.transfer.dto.response.CuponClienteResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 
 import jakarta.validation.Valid;
@@ -18,28 +19,29 @@ import jakarta.validation.constraints.Positive;
  */
 public interface CuponClienteServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
-    CuponCliente registrar(@Valid CuponCliente cuponCliente) throws Exception;
+    CuponClienteResponse registrar(@Valid CuponClienteRequest request) throws Exception;
 
-    CuponCliente actualizar(@Valid CuponCliente cuponCliente) throws Exception;
+    CuponClienteResponse actualizar(@Valid CuponClienteRequest request) throws Exception;
 
-    void eliminar(@Valid CuponCliente cuponCliente, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigo,
+            boolean confirmacion) throws Exception;
 
-    Optional<CuponCliente> obtener(
+    Optional<CuponClienteResponse> obtener(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
 
-    List<CuponCliente> listar();
+    List<CuponClienteResponse> listar();
 
-    List<CuponCliente> listarPaginado();
+    List<CuponClienteResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista las asignaciones de cupones de un cliente especifico.
@@ -48,7 +50,7 @@ public interface CuponClienteServicio {
      * @return Lista de asignaciones del cliente
      * @throws Exception si el cliente no existe o no tiene asignaciones
      */
-    List<CuponCliente> listarPorCliente(
+    List<CuponClienteResponse> listarPorCliente(
             @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
             @Positive(message = ValidationMessages.CEDULA_POSITIVE)
             Integer cedula) throws Exception;
@@ -60,7 +62,7 @@ public interface CuponClienteServicio {
      * @return Lista de asignaciones activas del cliente
      * @throws Exception si el cliente no tiene asignaciones activas
      */
-    List<CuponCliente> listarActivosPorCliente(
+    List<CuponClienteResponse> listarActivosPorCliente(
             @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
             @Positive(message = ValidationMessages.CEDULA_POSITIVE)
             Integer cedula) throws Exception;
@@ -72,7 +74,7 @@ public interface CuponClienteServicio {
      * @return Lista de asignaciones inactivas del cliente
      * @throws Exception si el cliente no tiene asignaciones inactivas
      */
-    List<CuponCliente> listarInactivosPorCliente(
+    List<CuponClienteResponse> listarInactivosPorCliente(
             @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
             @Positive(message = ValidationMessages.CEDULA_POSITIVE)
             Integer cedula) throws Exception;
@@ -85,7 +87,7 @@ public interface CuponClienteServicio {
      * @return Asignacion encontrada
      * @throws Exception si no se encuentra la asignacion
      */
-    Optional<CuponCliente> obtenerPorCuponYCliente(
+    Optional<CuponClienteResponse> obtenerPorCuponYCliente(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigoCupon,
@@ -104,4 +106,5 @@ public interface CuponClienteServicio {
             @NotNull(message = ValidationMessages.CEDULA_NOT_NULL)
             @Positive(message = ValidationMessages.CEDULA_POSITIVE)
             Integer cedula) throws Exception;
+    // !SECTION
 }

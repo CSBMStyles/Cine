@@ -1,10 +1,10 @@
 package com.unicine.service.theater;
 
+import com.unicine.transfer.dto.request.CiudadRequest;
+import com.unicine.transfer.dto.response.CiudadResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
-
-import com.unicine.entity.theater.Ciudad;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -15,23 +15,23 @@ public interface CiudadServicio {
 
     // 1️⃣ Funciones del Administrador
 
-    Ciudad registrar(@Valid Ciudad ciudad) throws Exception;
+    CiudadResponse registrar(@Valid CiudadRequest request) throws Exception;
 
-    Ciudad actualizar(@Valid Ciudad ciudad) throws Exception;
+    CiudadResponse actualizar(@Valid CiudadRequest request) throws Exception;
 
-    void eliminar(@Valid Ciudad ciudad) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
     // *️⃣ Funciones Generales
 
-    Optional<Ciudad> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+    Optional<CiudadResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Ciudad> obtenerNombre(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
+    List<CiudadResponse> obtenerNombre(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
 
-    List<Ciudad> listar();
+    List<CiudadResponse> listar();
 
-    List<Ciudad> listarPaginado();
+    List<CiudadResponse> listarPaginado();
 
-    List<Ciudad> listarAscendenteNombre();
+    List<CiudadResponse> listarAscendenteNombre();
 
-    List<Ciudad> listarDescendenteNombre();
+    List<CiudadResponse> listarDescendenteNombre();
 }

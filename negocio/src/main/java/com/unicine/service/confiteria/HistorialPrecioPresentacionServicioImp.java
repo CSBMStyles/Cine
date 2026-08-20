@@ -13,6 +13,9 @@ import com.unicine.enums.confiteria.TipoCambioPrecioPresentacion;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.confiteria.HistorialPrecioPresentacionRepo;
+import com.unicine.transfer.dto.request.HistorialPrecioPresentacionRequest;
+import com.unicine.transfer.dto.response.HistorialPrecioPresentacionResponse;
+import com.unicine.transfer.mapper.HistorialPrecioPresentacionMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
@@ -28,12 +31,20 @@ import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 public class HistorialPrecioPresentacionServicioImp implements HistorialPrecioPresentacionServicio {
 
     private final HistorialPrecioPresentacionRepo historialRepo;
+    private final HistorialPrecioPresentacionMapper historialMapper;
 
-    public HistorialPrecioPresentacionServicioImp(HistorialPrecioPresentacionRepo historialRepo) {
+    public HistorialPrecioPresentacionServicioImp(HistorialPrecioPresentacionRepo historialRepo, HistorialPrecioPresentacionMapper historialMapper) {
         this.historialRepo = historialRepo;
+        this.historialMapper = historialMapper;
     }
 
     // SECTION: Metodos de soporte
+
+    private ConfiteriaPresentacion crearPresentacionReferencia(Integer codigo) {
+        ConfiteriaPresentacion presentacion = new ConfiteriaPresentacion();
+        presentacion.setCodigo(codigo);
+        return presentacion;
+    }
 
     private void validarExiste(Optional<HistorialPrecioPresentacion> historial) {
         if (historial.isEmpty()) {
@@ -53,52 +64,52 @@ public class HistorialPrecioPresentacionServicioImp implements HistorialPrecioPr
         return (int) Math.round((diferencia / precioBase) * 100);
     }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     @Override
-    public HistorialPrecioPresentacion registrarCambio(ConfiteriaPresentacion presentacion,
-                                                        Double precioAnterior,
-                                                        Double precioNuevo,
-                                                        Double precioBaseAnterior) throws Exception {
+    public HistorialPrecioPresentacionResponse registrar(HistorialPrecioPresentacionRequest request) throws Exception {
 
-        if (precioAnterior.equals(precioNuevo)) {
+        if (request.getPrecioAnterior().equals(request.getPrecioNuevo())) {
             return null;
         }
 
-        if (precioBaseAnterior == null) {
+        if (request.getPrecioNuevo() == null) {
             throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED);
         }
 
-        TipoCambioPrecioPresentacion tipo = precioNuevo > precioBaseAnterior
+        TipoCambioPrecioPresentacion tipo = request.getPrecioNuevo() > request.getPrecioAnterior()
                 ? TipoCambioPrecioPresentacion.AUMENTO
                 : TipoCambioPrecioPresentacion.DESCUENTO_TEMPORAL;
 
-        Integer porcentaje = calcularPorcentaje(precioBaseAnterior, precioNuevo, tipo);
+        Integer porcentaje = calcularPorcentaje(request.getPrecioAnterior(), request.getPrecioNuevo(), tipo);
 
         HistorialPrecioPresentacion historial = HistorialPrecioPresentacion.builder()
-                .precioAnterior(precioAnterior)
-                .precioNuevo(precioNuevo)
+                .precioAnterior(request.getPrecioAnterior())
+                .precioNuevo(request.getPrecioNuevo())
                 .tipoCambio(tipo)
                 .porcentaje(porcentaje)
                 .fechaCambio(LocalDateTime.now())
-                .presentacion(presentacion)
+                .presentacion(crearPresentacionReferencia(request.getPresentacionCodigo()))
                 .build();
 
-        return historialRepo.save(historial);
+        HistorialPrecioPresentacion registro = historialRepo.save(historial);
+        return historialMapper.toResponse(registro);
     }
 
     @Override
-    public List<HistorialPrecioPresentacion> listarPorPresentacion(Integer codigoPresentacion) throws Exception {
+    public List<HistorialPrecioPresentacionResponse> listarPorPresentacion(Integer codigoPresentacion) throws Exception {
         List<HistorialPrecioPresentacion> historial = historialRepo.findByPresentacionCodigoOrderByFechaCambioDesc(codigoPresentacion);
         if (historial.isEmpty()) {
             throw new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_NOT_FOUND);
         }
-        return historial;
+        return historialMapper.toResponseList(historial);
     }
 
     @Override
-    public Optional<HistorialPrecioPresentacion> obtenerUltimoPorPresentacion(Integer codigoPresentacion) throws Exception {
-        return historialRepo.findTopByPresentacionCodigoOrderByFechaCambioDesc(codigoPresentacion);
+    public Optional<HistorialPrecioPresentacionResponse> obtenerUltimoPorPresentacion(Integer codigoPresentacion) throws Exception {
+        return historialRepo.findTopByPresentacionCodigoOrderByFechaCambioDesc(codigoPresentacion)
+                .map(historialMapper::toResponse);
     }
 
     @Override
@@ -113,9 +124,10 @@ public class HistorialPrecioPresentacionServicioImp implements HistorialPrecioPr
     }
 
     @Override
-    public Optional<HistorialPrecioPresentacion> obtener(Integer codigo) throws Exception {
+    public Optional<HistorialPrecioPresentacionResponse> obtener(Integer codigo) throws Exception {
         Optional<HistorialPrecioPresentacion> buscado = historialRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+        return buscado.map(historialMapper::toResponse);
     }
+    // !SECTION
 }

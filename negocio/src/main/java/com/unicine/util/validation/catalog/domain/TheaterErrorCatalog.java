@@ -17,7 +17,7 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum TheaterErrorCatalog implements ErrorCode {
 
-    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    // Entity - Entidad no encontrada (404 not found)
     DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND("DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND", "La ciudad no existe"),
     DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND_BY_NAME("DOMAIN_THEATER_ENTITY_CITY_NOT_FOUND_BY_NAME", "No existe ciudad con ese nombre"),
     DOMAIN_THEATER_ENTITY_THEATER_NOT_FOUND("DOMAIN_THEATER_ENTITY_THEATER_NOT_FOUND", "El teatro no existe"),
@@ -27,11 +27,11 @@ public enum TheaterErrorCatalog implements ErrorCode {
     DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_NOT_FOUND("DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_NOT_FOUND", "El esquema de sillas no existe"),
     DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_INVALID("DOMAIN_THEATER_ENTITY_SEAT_SCHEMA_INVALID", "El esquema de sillas es invalido"),
 
-    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    // Business rule - Reglas de negocio (400 bad request)
     DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION("DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_FOUND_IN_ROOM_DISTRIBUTION", "La silla no existe en la distribucion de la sala"),
     DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_AVAILABLE_FOR_FUNCTION("DOMAIN_THEATER_BUSINESS_RULE_SEAT_NOT_AVAILABLE_FOR_FUNCTION", "La silla no esta disponible para esta funcion"),
 
-    // DUPLICATE - CONFLICTO / DUPLICADO (409 Conflict)
+    // Duplicate - Conflicto / duplicado (409 conflict)
     DOMAIN_THEATER_DUPLICATE_ROOM_NAME_ALREADY_EXISTS_IN_THEATER("DOMAIN_THEATER_DUPLICATE_ROOM_NAME_ALREADY_EXISTS_IN_THEATER", "El nombre de la sala ya existe en el teatro"),
     DOMAIN_THEATER_DUPLICATE_THEATER_ADDRESS_ALREADY_EXISTS_IN_CITY("DOMAIN_THEATER_DUPLICATE_THEATER_ADDRESS_ALREADY_EXISTS_IN_CITY", "La direccion del teatro ya existe en la ciudad");
 

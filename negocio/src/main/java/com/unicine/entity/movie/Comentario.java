@@ -62,6 +62,7 @@ public class Comentario {
     @Column(nullable = false)
     private LocalDateTime fecha = LocalDateTime.now();
 
+    // !SECTION
     // SECTION: Relaciones
 
     @NotNull(message = ValidationMessages.CLIENT_COUPON_CLIENT_NOT_NULL)
@@ -74,4 +75,5 @@ public class Comentario {
     @JoinColumn(nullable = false)
     private Pelicula pelicula;
 
+    // !SECTION
 }

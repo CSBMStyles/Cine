@@ -45,6 +45,7 @@ public class CompraConfiteria implements Serializable {
     @Column(nullable = false)
     private Integer unidades;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ManyToOne
@@ -57,6 +58,7 @@ public class CompraConfiteria implements Serializable {
     @JoinColumn(nullable = false)
     private ConfiteriaPresentacion presentacion;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -67,4 +69,5 @@ public class CompraConfiteria implements Serializable {
         this.presentacion = presentacion;
     }
     
+    // !SECTION
 }

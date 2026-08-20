@@ -10,7 +10,7 @@ import com.unicine.entity.movie.Comentario;
 @Repository
 public interface ComentarioRepo extends JpaRepository<Comentario, Integer> {
 
-    // NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+    // Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // SECTION: Relacion con pelicula
 
@@ -21,6 +21,7 @@ public interface ComentarioRepo extends JpaRepository<Comentario, Integer> {
      */
     List<Comentario> findByPeliculaCodigo(Integer codigoPelicula);
 
+    // !SECTION
     // SECTION: Relacion con cliente
 
     /**
@@ -29,4 +30,5 @@ public interface ComentarioRepo extends JpaRepository<Comentario, Integer> {
      * @return lista de comentarios
      */
     List<Comentario> findByClienteCedula(Integer cedula);
+    // !SECTION
 }

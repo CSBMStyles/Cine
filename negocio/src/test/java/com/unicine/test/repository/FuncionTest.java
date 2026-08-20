@@ -26,7 +26,7 @@ import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.showing.HorarioRepo;
 import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.repository.theater.SalaRepo;
-import com.unicine.transfer.data.DetalleFuncionesDTO;
+import com.unicine.transfer.dto.response.DetalleFuncionesResponse;
 import com.unicine.transfer.mapper.DetalleFuncionMapper;
 import com.unicine.transfer.projetion.DetalleFuncionesProjection;
 
@@ -260,7 +260,7 @@ public class FuncionTest {
         Assertions.assertEquals(2, detalle.size());
 
         // Mapeamos manualmente cada proyección a nuestro DTO
-        List<DetalleFuncionesDTO> dtos = detalle.stream().map(funcionMapper::convertirDTO).collect(Collectors.toList());
+        List<DetalleFuncionesResponse> dtos = detalle.stream().map(funcionMapper::convertirDTO).collect(Collectors.toList());
 
         System.out.println("\nListado de detalles de funciones (DTO):");
         
@@ -301,4 +301,5 @@ public class FuncionTest {
         }
     }
 
+    // !SECTION
 }

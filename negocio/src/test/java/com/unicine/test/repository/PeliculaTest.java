@@ -23,7 +23,7 @@ import com.unicine.entity.movie.Pelicula;
 import com.unicine.enums.movie.EstadoPelicula;
 import com.unicine.enums.movie.GeneroPelicula;
 import com.unicine.repository.movie.PeliculaRepo;
-import com.unicine.transfer.data.DetallePeliculaHorarioDTO;
+import com.unicine.transfer.dto.response.PeliculaHorarioResponse;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -122,7 +122,7 @@ public class PeliculaTest {
 
         Assertions.assertEquals(5, peliculas.size());
 
-        // NOTE: En este caso se usa el logger para imprimir el resultado ya que si se usar el sout para mostrarlo omite las tildes y caracteres especiales usando el ? en lugar de la letra, cuando se muestrs en la consola debug
+        // Note: En este caso se usa el logger para imprimir el resultado ya que si se usar el sout para mostrarlo omite las tildes y caracteres especiales usando el ? en lugar de la letra, cuando se muestrs en la consola debug
         for (Pelicula p : peliculas) {
             logger.info("Pelicula: ", p);
         }
@@ -265,14 +265,20 @@ public class PeliculaTest {
     @Sql("classpath:dataset.sql")
     public void peliculaHorariosSalas() {
 
-        List<DetallePeliculaHorarioDTO> peliculas = peliculaRepo.peliculaHorariosSalas(1, 2);
+        List<PeliculaHorarioResponse> peliculas = peliculaRepo.peliculaHorariosSalas(1, 2);
 
         Assertions.assertEquals(1, peliculas.size());
 
         System.out.println("\n" + "Listado de registros obtenidos por pelicula, horario y sala:");
 
-        for (DetallePeliculaHorarioDTO p : peliculas) {
+        for (PeliculaHorarioResponse p : peliculas) {
             System.out.println(p);
+            Assertions.assertNotNull(p.getCodigoPelicula());
+            Assertions.assertNotNull(p.getNombrePelicula());
+            Assertions.assertNotNull(p.getCodigoHorario());
+            Assertions.assertNotNull(p.getFechaInicio());
+            Assertions.assertNotNull(p.getCodigoSala());
+            Assertions.assertNotNull(p.getNombreSala());
         }
     }
 
@@ -290,4 +296,5 @@ public class PeliculaTest {
             System.out.println("Pelicula: " + o[0] + "\n" + "Cantidad de compras: " + o[1]);
         });
     }
+    // !SECTION
 }

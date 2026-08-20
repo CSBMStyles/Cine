@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.unicine.entity.user.Persona;
 import com.unicine.entity.image.interfaced.Imagenable;
+import com.unicine.entity.movie.Pelicula;
+import com.unicine.enums.image.TipoImagen;
 
 @Service
 public class RefactorizadorRuta {
@@ -28,6 +30,19 @@ public class RefactorizadorRuta {
 
             return renombrarArchivoExtension(fileName);
         }
+    }
+
+    /**
+     * Genera un nombre base estable para el registro de una imagen de película.
+     * ImageKit añade la parte única del nombre durante la subida.
+     */
+    public String nombrarArchivo(String fileName, Imagenable propietario, TipoImagen tipoImagen) {
+        if (propietario instanceof Pelicula pelicula && tipoImagen != null) {
+            String nombrePelicula = renombrarArchivoExtension(pelicula.getNombre());
+            return nombrePelicula + "-" + remplazarDenominacion(tipoImagen.name());
+        }
+
+        return nombrarArchivo(fileName, propietario);
     }
 
     /**

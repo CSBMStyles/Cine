@@ -11,15 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.theater.DistribucionSilla;
-import com.unicine.entity.theater.Sala;
-import com.unicine.entity.theater.Teatro;
 import com.unicine.enums.theater.TipoSala;
-import com.unicine.service.theater.DistribucionSillaServicio;
 import com.unicine.service.theater.SalaServicio;
-import com.unicine.service.theater.TeatroServicio;
-
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+import com.unicine.transfer.dto.request.SalaRequest;
+import com.unicine.transfer.dto.response.SalaResponse;
 
 @SpringBootTest
 @Transactional
@@ -28,62 +23,28 @@ public class SalaServicioTest {
     @Autowired
     private SalaServicio salaServicio;
 
-    @Autowired
-    private TeatroServicio teatroServicio;
-
-    @Autowired
-    private DistribucionSillaServicio distribucionServicio;
-
     // 🟩
 
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() {
         
-        Teatro teatro;
+        SalaRequest request = SalaRequest.builder()
+                .nombre("ARX-01")
+                .tipoSala(TipoSala.valueOf("DX4"))
+                .teatroCodigo(1)
+                .distribucionSillaCodigo(1)
+                .build();
 
         try {
-            teatro = teatroServicio.obtener(1).orElse(null);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-
-        DistribucionSilla distribucionSilla;
-        
-        try {
-            distribucionSilla = distribucionServicio.obtener(1).orElse(null);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-
-
-        // Creacion del sala
-
-        Sala sala = new Sala("ARX-01", TipoSala.valueOf("DX4"), teatro, distribucionSilla);
-
-        try {
-            Sala nuevo = salaServicio.registrar(sala);
+            SalaResponse response = salaServicio.registrar(request);
             
-            Assertions.assertEquals("ARX-01", nuevo.getNombre());
+            Assertions.assertEquals("ARX-01", response.getNombre());
 
-            System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
+            System.out.println("\n" + "Registro guardado:" + "\n" + response);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -97,11 +58,15 @@ public class SalaServicioTest {
         String nombre = "P-01: Premier Dorada";
 
         try{
-            Sala sala = salaServicio.obtener(1).orElse(null);
+            SalaRequest request = SalaRequest.builder()
+                    .codigo(1)
+                    .nombre(nombre)
+                    .tipoSala(TipoSala.DX4)
+                    .teatroCodigo(1)
+                    .distribucionSillaCodigo(1)
+                    .build();
 
-            sala.setNombre(nombre);
-
-            Sala actualizado = salaServicio.actualizar(sala);
+            SalaResponse actualizado = salaServicio.actualizar(request);
 
             Assertions.assertEquals(nombre, actualizado.getNombre());
 
@@ -109,8 +74,6 @@ public class SalaServicioTest {
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -122,27 +85,11 @@ public class SalaServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        Sala sala;
-
         try {
-            sala = salaServicio.obtener(1).orElse(null);
+            salaServicio.eliminar(1, true);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-
-        try {
-            salaServicio.eliminar(sala, true);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -154,7 +101,6 @@ public class SalaServicioTest {
         } catch (Exception e) {
 
             System.out.println("Mensaje de error: " + e.getMessage());
-
 
             Assertions.assertThrows(Exception.class, () -> {throw e;});
 
@@ -169,7 +115,7 @@ public class SalaServicioTest {
         Integer codigo = 1;
 
         try {
-            Sala sala = salaServicio.obtener(codigo).orElse(null);
+            SalaResponse sala = salaServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, sala.getCodigo());
 
@@ -177,8 +123,6 @@ public class SalaServicioTest {
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -190,7 +134,7 @@ public class SalaServicioTest {
     public void listar() {
 
         try {
-            List<Sala> lista = salaServicio.listar();
+            List<SalaResponse> lista = salaServicio.listar();
 
             Assertions.assertEquals(8, lista.size());
 
@@ -200,8 +144,6 @@ public class SalaServicioTest {
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -223,7 +165,7 @@ public class SalaServicioTest {
 
         System.out.println("\n" + nombre);
         try{
-            List<Sala> salas = salaServicio.obtenerNombresTeatro(nombre, 5);
+            List<SalaResponse> salas = salaServicio.obtenerNombresTeatro(nombre, 5);
 
             Assertions.assertEquals(1, salas.size());
 

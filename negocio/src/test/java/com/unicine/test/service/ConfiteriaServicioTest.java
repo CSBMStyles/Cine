@@ -9,10 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.enums.confiteria.CategoriaConfiteria;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.confiteria.ConfiteriaServicio;
+import com.unicine.transfer.dto.request.ConfiteriaRequest;
+import com.unicine.transfer.dto.response.ConfiteriaResponse;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
@@ -26,20 +27,20 @@ public class ConfiteriaServicioTest {
     @Autowired
     private ConfiteriaServicio confiteriaServicio;
 
-    // 🟩 CASOS POSITIVOS
+    // 🟩 Casos positivos
 
     @Test
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
         try {
-            Confiteria confiteria = Confiteria.builder()
+            ConfiteriaRequest request = ConfiteriaRequest.builder()
                     .nombre("Combo Familiar")
                     .descripcion("Combo familiar para compartir")
                     .categoria(CategoriaConfiteria.COMBO)
                     .build();
 
-            Confiteria registrada = confiteriaServicio.registrar(confiteria);
+            ConfiteriaResponse registrada = confiteriaServicio.registrar(request);
 
             Assertions.assertNotNull(registrada);
             Assertions.assertNotNull(registrada.getCodigo());
@@ -60,12 +61,17 @@ public class ConfiteriaServicioTest {
     public void actualizar() {
 
         try {
-            Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
-            Assertions.assertNotNull(confiteria);
+            ConfiteriaResponse existente = confiteriaServicio.obtener(1).orElse(null);
+            Assertions.assertNotNull(existente);
 
-            confiteria.setDescripcion("Nueva descripcion del combo");
+            ConfiteriaRequest request = ConfiteriaRequest.builder()
+                    .codigo(existente.getCodigo())
+                    .nombre(existente.getNombre())
+                    .descripcion("Nueva descripcion del combo")
+                    .categoria(existente.getCategoria())
+                    .build();
 
-            Confiteria actualizada = confiteriaServicio.actualizar(confiteria);
+            ConfiteriaResponse actualizada = confiteriaServicio.actualizar(request);
 
             Assertions.assertEquals("Nueva descripcion del combo", actualizada.getDescripcion());
 
@@ -82,7 +88,7 @@ public class ConfiteriaServicioTest {
     public void obtener() {
 
         try {
-            Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
+            ConfiteriaResponse confiteria = confiteriaServicio.obtener(1).orElse(null);
 
             Assertions.assertNotNull(confiteria);
             Assertions.assertEquals("Combo Mega", confiteria.getNombre());
@@ -101,7 +107,7 @@ public class ConfiteriaServicioTest {
     public void listar() {
 
         try {
-            List<Confiteria> confiterias = confiteriaServicio.listar();
+            List<ConfiteriaResponse> confiterias = confiteriaServicio.listar();
 
             Assertions.assertEquals(15, confiterias.size());
 
@@ -118,7 +124,7 @@ public class ConfiteriaServicioTest {
     public void listarPaginado() {
 
         try {
-            List<Confiteria> confiterias = confiteriaServicio.listarPaginado();
+            List<ConfiteriaResponse> confiterias = confiteriaServicio.listarPaginado();
 
             Assertions.assertEquals(10, confiterias.size());
 
@@ -135,7 +141,7 @@ public class ConfiteriaServicioTest {
     public void listarPorCategoria() {
 
         try {
-            List<Confiteria> combos = confiteriaServicio.listarPorCategoria(CategoriaConfiteria.COMBO);
+            List<ConfiteriaResponse> combos = confiteriaServicio.listarPorCategoria(CategoriaConfiteria.COMBO);
 
             Assertions.assertEquals(3, combos.size());
 
@@ -152,7 +158,7 @@ public class ConfiteriaServicioTest {
     public void buscarPorNombre() {
 
         try {
-            List<Confiteria> resultados = confiteriaServicio.buscarPorNombre("Crispeta");
+            List<ConfiteriaResponse> resultados = confiteriaServicio.buscarPorNombre("Crispeta");
 
             Assertions.assertEquals(2, resultados.size());
 
@@ -169,10 +175,10 @@ public class ConfiteriaServicioTest {
     public void eliminar() {
 
         try {
-            Confiteria confiteria = confiteriaServicio.obtener(14).orElse(null);
+            ConfiteriaResponse confiteria = confiteriaServicio.obtener(14).orElse(null);
             Assertions.assertNotNull(confiteria);
 
-            confiteriaServicio.eliminar(confiteria, true);
+            confiteriaServicio.eliminar(confiteria.getCodigo(), true);
 
             try {
                 confiteriaServicio.obtener(14);
@@ -187,7 +193,7 @@ public class ConfiteriaServicioTest {
         }
     }
 
-    // 🟥 CASOS NEGATIVOS
+    // 🟥 Casos negativos
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -215,10 +221,10 @@ public class ConfiteriaServicioTest {
     public void eliminarSinConfirmacion() {
 
         try {
-            Confiteria confiteria = confiteriaServicio.obtener(1).orElse(null);
+            ConfiteriaResponse confiteria = confiteriaServicio.obtener(1).orElse(null);
             Assertions.assertNotNull(confiteria);
 
-            confiteriaServicio.eliminar(confiteria, false);
+            confiteriaServicio.eliminar(confiteria.getCodigo(), false);
 
             Assertions.fail("Deberia lanzar RuntimeException por falta de confirmacion");
 

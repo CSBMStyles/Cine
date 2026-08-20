@@ -18,7 +18,7 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum PurchaseErrorCatalog implements ErrorCode {
 
-    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    // Entity - Entidad no encontrada (404 not found)
     DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND("DOMAIN_PURCHASE_ENTITY_COUPON_NOT_FOUND", "El cupon no existe"),
     DOMAIN_PURCHASE_ENTITY_TICKET_NOT_FOUND("DOMAIN_PURCHASE_ENTITY_TICKET_NOT_FOUND", "La entrada no existe"),
     DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND("DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND", "La compra no existe"),
@@ -26,7 +26,7 @@ public enum PurchaseErrorCatalog implements ErrorCode {
     DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRESENTATION_NOT_FOUND("DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRESENTATION_NOT_FOUND", "La presentacion de confiteria no existe"),
     DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_NOT_FOUND("DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_NOT_FOUND", "El historial de precios no existe"),
 
-    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    // Business rule - Reglas de negocio (400 bad request)
     DOMAIN_PURCHASE_BUSINESS_RULE_ROOM_NOT_ENOUGH_AVAILABLE_SEATS("DOMAIN_PURCHASE_BUSINESS_RULE_ROOM_NOT_ENOUGH_AVAILABLE_SEATS", "La sala no tiene suficientes sillas disponibles"),
     DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_ALREADY_USED("DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_ALREADY_USED", "El cupon ya fue utilizado"),
     DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_EXPIRED("DOMAIN_PURCHASE_BUSINESS_RULE_COUPON_EXPIRED", "El cupon ha expirado"),
@@ -36,10 +36,10 @@ public enum PurchaseErrorCatalog implements ErrorCode {
     DOMAIN_PURCHASE_BUSINESS_RULE_TICKET_FUNCTION_MISMATCH("DOMAIN_PURCHASE_BUSINESS_RULE_TICKET_FUNCTION_MISMATCH", "La funcion de la entrada no coincide con la funcion de la compra"),
     DOMAIN_PURCHASE_BUSINESS_RULE_COMMENT_NOT_ALLOWED_WITHOUT_ATTENDING("DOMAIN_PURCHASE_BUSINESS_RULE_COMMENT_NOT_ALLOWED_WITHOUT_ATTENDING", "El cliente no puede comentar sin haber asistido a una funcion de la pelicula"),
 
-    // DELETE - ELIMINACION NO CONFIRMADA (409 Conflict)
+    // Delete - Eliminacion no confirmada (409 conflict)
     DOMAIN_PURCHASE_DELETE_DELETE_NOT_CONFIRMED("DOMAIN_PURCHASE_DELETE_DELETE_NOT_CONFIRMED", "La eliminacion no fue confirmada"),
 
-    // BUSINESS_RULE - HISTORIAL DE PRECIOS
+    // Business rule - historial de precios
     DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED("DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED", "El precio base es requerido para registrar el cambio de precio");
 
     private final String code;

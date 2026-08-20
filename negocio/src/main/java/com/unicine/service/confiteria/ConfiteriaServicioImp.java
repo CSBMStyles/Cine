@@ -11,9 +11,10 @@ import com.unicine.entity.confiteria.Confiteria;
 import com.unicine.enums.confiteria.CategoriaConfiteria;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.confiteria.ConfiteriaRepo;
+import com.unicine.transfer.dto.request.ConfiteriaRequest;
+import com.unicine.transfer.dto.response.ConfiteriaResponse;
+import com.unicine.transfer.mapper.ConfiteriaMapper;
 import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
-
-import jakarta.validation.Valid;
 
 /**
  * Implementacion del servicio de confiteria con logica de negocio completa.
@@ -27,8 +28,11 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
 
     private final ConfiteriaRepo confiteriaRepo;
 
-    public ConfiteriaServicioImp(ConfiteriaRepo confiteriaRepo) {
+    private final ConfiteriaMapper confiteriaMapper;
+
+    public ConfiteriaServicioImp(ConfiteriaRepo confiteriaRepo, ConfiteriaMapper confiteriaMapper) {
         this.confiteriaRepo = confiteriaRepo;
+        this.confiteriaMapper = confiteriaMapper;
     }
 
     // SECTION: Metodos de soporte
@@ -62,56 +66,68 @@ public class ConfiteriaServicioImp implements ConfiteriaServicio {
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
-    public Confiteria registrar(@Valid Confiteria confiteria) throws Exception {
-        return confiteriaRepo.save(confiteria);
+    public ConfiteriaResponse registrar(ConfiteriaRequest request) throws Exception {
+        Confiteria confiteria = confiteriaMapper.toEntity(request);
+        Confiteria registro = confiteriaRepo.save(confiteria);
+        return confiteriaMapper.toResponse(registro);
     }
 
     @Override
-    public Confiteria actualizar(@Valid Confiteria confiteria) throws Exception {
-        Optional<Confiteria> buscado = confiteriaRepo.findById(confiteria.getCodigo());
+    public ConfiteriaResponse actualizar(ConfiteriaRequest request) throws Exception {
+        Optional<Confiteria> buscado = confiteriaRepo.findById(request.getCodigo());
         validarExiste(buscado);
-        return confiteriaRepo.save(confiteria);
+
+        Confiteria confiteria = confiteriaMapper.toEntity(request);
+        Confiteria actualizado = confiteriaRepo.save(confiteria);
+        return confiteriaMapper.toResponse(actualizado);
     }
 
     @Override
-    public void eliminar(@Valid Confiteria confiteria, boolean confirmacion) throws Exception {
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception {
         comprobarConfirmacion(confirmacion);
-        confiteriaRepo.delete(confiteria);
-    }
 
-    @Override
-    public Optional<Confiteria> obtener(Integer codigo) throws Exception {
         Optional<Confiteria> buscado = confiteriaRepo.findById(codigo);
         validarExiste(buscado);
-        return buscado;
+
+        confiteriaRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Confiteria> listar() {
-        return confiteriaRepo.findAll();
+    public Optional<ConfiteriaResponse> obtener(Integer codigo) throws Exception {
+        Optional<Confiteria> buscado = confiteriaRepo.findById(codigo);
+        validarExiste(buscado);
+        return buscado.map(confiteriaMapper::toResponse);
     }
 
     @Override
-    public List<Confiteria> listarPaginado() {
-        return confiteriaRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<ConfiteriaResponse> listar() {
+        return confiteriaMapper.toResponseList(confiteriaRepo.findAll());
     }
 
+    @Override
+    public List<ConfiteriaResponse> listarPaginado() {
+        return confiteriaMapper.toResponseList(confiteriaRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public List<Confiteria> listarPorCategoria(CategoriaConfiteria categoria) throws Exception {
+    public List<ConfiteriaResponse> listarPorCategoria(CategoriaConfiteria categoria) throws Exception {
         List<Confiteria> confiterias = confiteriaRepo.findByCategoria(categoria);
         validarExiste(confiterias);
-        return confiterias;
+        return confiteriaMapper.toResponseList(confiterias);
     }
 
     @Override
-    public List<Confiteria> buscarPorNombre(String nombre) throws Exception {
+    public List<ConfiteriaResponse> buscarPorNombre(String nombre) throws Exception {
         List<Confiteria> confiterias = confiteriaRepo.buscarPorNombre(nombre);
         validarExiste(confiterias);
-        return confiterias;
+        return confiteriaMapper.toResponseList(confiterias);
     }
+    // !SECTION
 }

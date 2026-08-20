@@ -13,18 +13,24 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.entity.user.AdministradorTeatro;
-import com.unicine.service.user.PersonaServicio;
+import com.unicine.repository.user.AdministradorTeatroRepo;
+import com.unicine.service.user.AdministradorTeatroServicio;
+import com.unicine.transfer.dto.request.AdministradorTeatroRequest;
+import com.unicine.transfer.dto.response.AdministradorTeatroResponse;
 
 import jakarta.validation.ConstraintViolationException;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
 public class AdministradorTeatroServicioTest {
 
     @Autowired
-    private PersonaServicio<AdministradorTeatro> administradorTeatroServicio;
+    private AdministradorTeatroServicio administradorTeatroServicio;
+
+    @Autowired
+    private AdministradorTeatroRepo administradorTeatroRepo;
 
     @Test
     @Sql("classpath:dataset.sql")
@@ -51,13 +57,18 @@ public class AdministradorTeatroServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrar() {
 
-        AdministradorTeatro administrador = new AdministradorTeatro(1773000000, "Mariana", "Carta", "mariana@gmail.com", "78!Kz9'Aovr1>`A5");
+        AdministradorTeatroRequest request = AdministradorTeatroRequest.builder()
+            .cedula(1773000000)
+            .nombre("Mariana")
+            .apellido("Carta")
+            .correo("mariana@gmail.com")
+            .password("78!Kz9'Aovr1>`A5")
+            .build();
 
         try {
-            AdministradorTeatro nuevo = administradorTeatroServicio.registrar(administrador);
+            AdministradorTeatroResponse nuevo = administradorTeatroServicio.registrar(request);
             
             Assertions.assertEquals(1773000000, nuevo.getCedula());
-            Assertions.assertNotEquals("78!Kz9'Aovr1>`A5", nuevo.getPassword());
 
             System.out.println("\n" + "Registro guardado:" + "\n" + nuevo);
 
@@ -83,17 +94,23 @@ public class AdministradorTeatroServicioTest {
     @Sql("classpath:dataset.sql")
     public void registrarContraseñaInvalida(String password) {
 
-        AdministradorTeatro administrador = new AdministradorTeatro(1773000001, "Mariana", "Carta", "mariana2@gmail.com", password);
+        AdministradorTeatroRequest request = AdministradorTeatroRequest.builder()
+            .cedula(1773000001)
+            .nombre("Mariana")
+            .apellido("Carta")
+            .correo("mariana2@gmail.com")
+            .password(password)
+            .build();
 
         ConstraintViolationException excepcion = Assertions.assertThrows(ConstraintViolationException.class, () -> {
-            administradorTeatroServicio.registrar(administrador);
+            administradorTeatroServicio.registrar(request);
         });
 
         String errores = excepcion.getConstraintViolations().stream()
             .map(v -> "→ " + v.getMessage())
             .collect(Collectors.joining("\n"));
 
-        System.out.println("Errores de validación: '" + password + "':\n" + errores);
+        System.out.println("Errores de validación: '" + password + ":\n" + errores);
 
         Assertions.assertFalse(excepcion.getConstraintViolations().isEmpty());
 
@@ -117,7 +134,7 @@ public class AdministradorTeatroServicioTest {
 
         Assertions.assertTrue(
             excepcion.getConstraintViolations().stream().anyMatch(v ->
-                "password".equals(v.getPropertyPath().toString()) && v.getMessage().contains(mensajeEsperado)
+                v.getPropertyPath().toString().endsWith("password") && v.getMessage().contains(mensajeEsperado)
             )
         );
     }
@@ -127,11 +144,19 @@ public class AdministradorTeatroServicioTest {
     public void actualizar() {
 
         try{
-            AdministradorTeatro administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
+            AdministradorTeatroResponse existente = administradorTeatroServicio.obtener(1119000000).orElse(null);
 
-            administrador.setNombre("Daniela");
+            Assertions.assertNotNull(existente);
 
-            AdministradorTeatro actualizado = administradorTeatroServicio.actualizar(administrador);
+            AdministradorTeatroRequest request = AdministradorTeatroRequest.builder()
+                .cedula(existente.getCedula())
+                .nombre("Daniela")
+                .apellido(existente.getApellido())
+                .correo(existente.getCorreo())
+                .password("78!Kz9'Aovr1>`A5")
+                .build();
+
+            AdministradorTeatroResponse actualizado = administradorTeatroServicio.actualizar(request);
 
             Assertions.assertEquals("Daniela", actualizado.getNombre());
 
@@ -154,7 +179,9 @@ public class AdministradorTeatroServicioTest {
         AdministradorTeatro administrador;
 
         try {
-            administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
+            administrador = administradorTeatroRepo.findById(1119000000).orElse(null);
+
+            Assertions.assertNotNull(administrador);
 
         } catch (Exception e) {
 
@@ -202,10 +229,8 @@ public class AdministradorTeatroServicioTest {
         
         Integer cedula = 1119000000;
 
-        AdministradorTeatro administrador;
-
         try {
-            administrador = administradorTeatroServicio.obtener(cedula).orElse(null);
+            AdministradorTeatroResponse administrador = administradorTeatroServicio.obtener(cedula).orElse(null);
 
             Assertions.assertEquals(cedula, administrador.getCedula());
 
@@ -218,8 +243,7 @@ public class AdministradorTeatroServicioTest {
             throw new RuntimeException(e);
         }
         try {
-            administradorTeatroServicio.eliminar(administrador
-            , true);
+            administradorTeatroServicio.eliminar(cedula, true);
 
         } catch (Exception e) {
 
@@ -250,7 +274,7 @@ public class AdministradorTeatroServicioTest {
     public void obtener() {
 
         try {
-            AdministradorTeatro administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
+            AdministradorTeatroResponse administrador = administradorTeatroServicio.obtener(1119000000).orElse(null);
 
             Assertions.assertEquals(1119000000, administrador.getCedula());
 
@@ -271,7 +295,7 @@ public class AdministradorTeatroServicioTest {
     public void listar() {
 
         try {
-            List<AdministradorTeatro> lista = administradorTeatroServicio.listar();
+            List<AdministradorTeatroResponse> lista = administradorTeatroServicio.listar();
 
             Assertions.assertEquals(6, lista.size());
 

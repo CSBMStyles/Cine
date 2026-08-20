@@ -1,10 +1,10 @@
 package com.unicine.service.movie;
 
+import com.unicine.transfer.dto.request.PeliculaRequest;
+import com.unicine.transfer.dto.response.PeliculaResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
-
-import com.unicine.entity.movie.Pelicula;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -15,23 +15,23 @@ public interface PeliculaServicio {
 
     // 1️⃣ Funciones del Administrador
 
-    Pelicula registrar(@Valid Pelicula pelicula) throws Exception;
+    PeliculaResponse registrar(@Valid PeliculaRequest request) throws Exception;
 
-    Pelicula actualizar(@Valid Pelicula pelicula) throws Exception;
+    PeliculaResponse actualizar(@Valid PeliculaRequest request) throws Exception;
 
-    void eliminar(@Valid Pelicula pelicula, boolean confirmacion) throws Exception;
+    void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Generales
 
-    Optional<Pelicula> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+    Optional<PeliculaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    List<Pelicula> obtenerNombrePeliculas(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
+    List<PeliculaResponse> obtenerNombrePeliculas(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre) throws Exception;
 
-    List<Pelicula> listar();
+    List<PeliculaResponse> listar();
 
-    List<Pelicula> listarPaginado();
+    List<PeliculaResponse> listarPaginado();
 
-    List<Pelicula> listarAscendente();
+    List<PeliculaResponse> listarAscendente();
 
-    List<Pelicula> listarDescendente();
+    List<PeliculaResponse> listarDescendente();
 }

@@ -12,16 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unicine.api.response.Respuesta;
-import com.unicine.entity.showing.Funcion;
-import com.unicine.entity.showing.Horario;
-import com.unicine.entity.theater.Sala;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.service.showing.HorarioServicio;
-import com.unicine.service.theater.SalaServicio;
-import com.unicine.transfer.data.FuncionInterseccionDTO;
-import com.unicine.transfer.mapper.FuncionInterseccionMapper;
+import com.unicine.repository.theater.SalaRepo;
+import com.unicine.transfer.dto.request.HorarioRequest;
+import com.unicine.transfer.dto.response.HorarioResponse;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
 @Transactional
@@ -31,10 +29,7 @@ public class HorarioServicioTest {
     private HorarioServicio horarioServicio;
 
     @Autowired
-    private SalaServicio salaServicio;
-
-    @Autowired
-    private FuncionInterseccionMapper funcionMapper;
+    private SalaRepo salaRepo;
 
     // 🟩
 
@@ -45,14 +40,17 @@ public class HorarioServicioTest {
         LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 30, 20, 00);
         LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 30, 22, 00);
 
-        Horario horario = new Horario(fechaInicio, fechaFin);
+        HorarioRequest horarioRequest = HorarioRequest.builder()
+                .fechaInicio(fechaInicio)
+                .fechaFin(fechaFin)
+                .build();
 
-        Sala sala;
+        Integer salaCodigo;
 
         try {
-            sala = salaServicio.obtener(2).orElse(null);
+            salaCodigo = salaRepo.findById(2).orElse(null).getCodigo();
 
-            System.out.println("Sala encontrada: " + sala);
+            System.out.println("Sala encontrada con codigo: " + salaCodigo);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -64,24 +62,10 @@ public class HorarioServicioTest {
         }
 
         try {
-            Respuesta<?> actualizado = horarioServicio.registrar(horario, sala);
+            HorarioResponse actualizado = horarioServicio.registrar(horarioRequest, salaCodigo);
 
-            if (actualizado.getData() instanceof FuncionInterseccionDTO) {
-
-                FuncionInterseccionDTO funcionRespuesta = (FuncionInterseccionDTO) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
-
-            }
-            
-            if (actualizado.getData() instanceof Horario) {
-
-                Horario horarioRespuesta = (Horario) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-
-            Assertions.assertTrue(actualizado.isExito());
+            Assertions.assertNotNull(actualizado);
+            Assertions.assertEquals(fechaInicio, actualizado.getFechaInicio());
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -100,13 +84,10 @@ public class HorarioServicioTest {
         LocalDateTime fechaInicio = LocalDateTime.of(2026, 12, 24, 15, 00);
         LocalDateTime fechaFin = LocalDateTime.of(2026, 12, 24, 16, 00);
 
-        Horario horario;
+        HorarioResponse horario;
 
         try {
             horario = horarioServicio.obtener(7).orElse(null);
-
-            horario.setFechaInicio(fechaInicio);
-            horario.setFechaFin(fechaFin);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -118,24 +99,16 @@ public class HorarioServicioTest {
         }
         
         try {
-            Respuesta<?> actualizado = horarioServicio.actualizar(horario);
+            HorarioRequest horarioRequest = HorarioRequest.builder()
+                    .codigo(horario.getCodigo())
+                    .fechaInicio(fechaInicio)
+                    .fechaFin(fechaFin)
+                    .build();
 
-            if (actualizado.getData() instanceof FuncionInterseccionDTO) {
+            HorarioResponse actualizado = horarioServicio.actualizar(horarioRequest);
 
-                FuncionInterseccionDTO funcionRespuesta = (FuncionInterseccionDTO) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
-
-            }
-            
-            if (actualizado.getData() instanceof Horario) {
-
-                Horario horarioRespuesta = (Horario) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-
-            Assertions.assertTrue(actualizado.isExito());
+            Assertions.assertNotNull(actualizado);
+            Assertions.assertEquals(fechaInicio, actualizado.getFechaInicio());
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -151,22 +124,8 @@ public class HorarioServicioTest {
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
-        Horario horario;
-
         try {
-            horario = horarioServicio.obtener(1).orElse(null);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-
-        try {
-            horarioServicio.eliminar(horario, true);
+            horarioServicio.eliminar(1, true);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -195,7 +154,7 @@ public class HorarioServicioTest {
         Integer codigo = 1;
 
         try {
-            Horario horario = horarioServicio.obtener(codigo).orElse(null);
+            HorarioResponse horario = horarioServicio.obtener(codigo).orElse(null);
 
             Assertions.assertEquals(codigo, horario.getCodigo());
 
@@ -216,7 +175,7 @@ public class HorarioServicioTest {
     public void listar() {
 
         try {
-            List<Horario> lista = horarioServicio.listar();
+            List<HorarioResponse> lista = horarioServicio.listar();
 
             Assertions.assertEquals(8, lista.size());
 
@@ -253,14 +212,17 @@ public class HorarioServicioTest {
         LocalDateTime fechaFin = LocalDateTime.parse(finStr);
 
         // Se crea el objeto Horario con los tiempos parametrizados
-        Horario horario = new Horario(fechaInicio, fechaFin);
+        HorarioRequest horarioRequest = HorarioRequest.builder()
+                .fechaInicio(fechaInicio)
+                .fechaFin(fechaFin)
+                .build();
     
-        Sala sala;
+        Integer salaCodigo;
         try {
             // Se obtiene la sala usando el validator en este caso se usa el id 2 para ejemplificar
-            sala = salaServicio.obtener(2).orElse(null);
+            salaCodigo = salaRepo.findById(2).orElse(null).getCodigo();
 
-            System.out.println("Sala encontrada: " + sala);
+            System.out.println("Sala encontrada con codigo: " + salaCodigo);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -271,37 +233,12 @@ public class HorarioServicioTest {
 
         }
     
-        try {
-            // Se registra el horario y se obtiene la respuesta
-            Respuesta<?> actualizado = horarioServicio.registrar(horario, sala);
-    
-            // Se imprime la respuesta según el tipo de objeto devuelto
-            if (actualizado.getData() instanceof Funcion) {
+        BusinessRuleException exception = Assertions.assertThrows(
+                BusinessRuleException.class,
+                () -> horarioServicio.registrar(horarioRequest, salaCodigo));
 
-                Funcion funcionSolapado = (Funcion) actualizado.getData();
-
-                FuncionInterseccionDTO funcionRespuesta = funcionMapper.convertirDTO(funcionSolapado);
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Función: " + funcionRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-            if (actualizado.getData() instanceof Horario) {
-
-                Horario horarioRespuesta = (Horario) actualizado.getData();
-
-                System.out.println("Mensaje: " + actualizado.getMensaje() + "\n" + "Horario: " + horarioRespuesta + "\n" + "Exito: " + actualizado.isExito());
-            }
-    
-            // Se espera que la registración falle por solapamiento, por lo que se verifica que exito es false
-            Assertions.assertFalse(actualizado.isExito());
-
-        } catch (Exception e) {
-
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-            Assertions.fail(e);
-
-            throw new RuntimeException(e);
-        }
+        Assertions.assertEquals(
+                ShowingErrorCatalog.DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP.getCode(),
+                exception.getErrorCode());
     }
 }

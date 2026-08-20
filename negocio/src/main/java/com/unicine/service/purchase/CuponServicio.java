@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.unicine.entity.purchase.Cupon;
+import com.unicine.transfer.dto.request.CuponRequest;
+import com.unicine.transfer.dto.response.CuponResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 
 import jakarta.validation.Valid;
@@ -20,28 +21,29 @@ import jakarta.validation.constraints.PositiveOrZero;
  */
 public interface CuponServicio {
 
-    // ============================================================
-    // CRUD BASE
-    // ============================================================
+    // SECTION: Crud base
 
-    Cupon registrar(@Valid Cupon cupon) throws Exception;
+    CuponResponse registrar(@Valid CuponRequest request) throws Exception;
 
-    Cupon actualizar(@Valid Cupon cupon) throws Exception;
+    CuponResponse actualizar(@Valid CuponRequest request) throws Exception;
 
-    void eliminar(@Valid Cupon cupon, boolean confirmacion) throws Exception;
+    void eliminar(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigo,
+            boolean confirmacion) throws Exception;
 
-    Optional<Cupon> obtener(
+    Optional<CuponResponse> obtener(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
 
-    List<Cupon> listar();
+    List<CuponResponse> listar();
 
-    List<Cupon> listarPaginado();
+    List<CuponResponse> listarPaginado();
 
-    // ============================================================
-    // METODOS DE NEGOCIO
-    // ============================================================
+    // !SECTION
+    // SECTION: Metodos de negocio
 
     /**
      * Lista los cupones cuya fecha de vencimiento aun no ha pasado.
@@ -49,7 +51,7 @@ public interface CuponServicio {
      * @return Lista de cupones activos
      * @throws Exception si no hay cupones activos
      */
-    List<Cupon> listarActivos() throws Exception;
+    List<CuponResponse> listarActivos() throws Exception;
 
     /**
      * Lista los cupones cuya fecha de vencimiento ya paso.
@@ -57,7 +59,7 @@ public interface CuponServicio {
      * @return Lista de cupones vencidos
      * @throws Exception si no hay cupones vencidos
      */
-    List<Cupon> listarVencidos() throws Exception;
+    List<CuponResponse> listarVencidos() throws Exception;
 
     /**
      * Busca cupones cuyo criterio contenga el texto dado.
@@ -66,7 +68,7 @@ public interface CuponServicio {
      * @return Lista de cupones que coinciden
      * @throws Exception si no se encuentran coincidencias
      */
-    List<Cupon> buscarPorCriterio(String criterio) throws Exception;
+    List<CuponResponse> buscarPorCriterio(String criterio) throws Exception;
 
     /**
      * Lista los cupones cuyo descuento este dentro del rango indicado.
@@ -76,7 +78,7 @@ public interface CuponServicio {
      * @return Lista de cupones dentro del rango
      * @throws Exception si no hay cupones en el rango
      */
-    List<Cupon> listarPorRangoDescuento(
+    List<CuponResponse> listarPorRangoDescuento(
             @NotNull(message = ValidationMessages.DISCOUNT_NOT_NULL)
             @PositiveOrZero(message = ValidationMessages.DISCOUNT_POSITIVE_OR_ZERO)
             Double min,
@@ -90,5 +92,6 @@ public interface CuponServicio {
      * @return Lista de cupones con asignaciones
      * @throws Exception si no hay cupones con asignaciones
      */
-    List<Cupon> listarConAsignaciones() throws Exception;
+    List<CuponResponse> listarConAsignaciones() throws Exception;
+    // !SECTION
 }

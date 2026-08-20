@@ -16,14 +16,15 @@ import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.repository.movie.ColeccionRepo;
 import com.unicine.repository.movie.PeliculaRepo;
 import com.unicine.repository.user.ClienteRepo;
+import com.unicine.transfer.dto.request.ColeccionRequest;
+import com.unicine.transfer.dto.response.ColeccionResponse;
+import com.unicine.transfer.mapper.ColeccionMapper;
 import com.unicine.util.validation.catalog.domain.MovieErrorCatalog;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
 
-import jakarta.validation.Valid;
-
 /**
  * Implementacion del servicio de colecciones con logica de negocio completa.
- * 
+ *
  * Gestiona la relacion cliente-pelicula incluyendo puntuaciones,
  * estados de visionado y consultas por cliente o pelicula.
  */
@@ -34,38 +35,30 @@ public class ColeccionServicioImp implements ColeccionServicio {
     private final ColeccionRepo coleccionRepo;
     private final ClienteRepo clienteRepo;
     private final PeliculaRepo peliculaRepo;
+    private final ColeccionMapper coleccionMapper;
 
-    public ColeccionServicioImp(ColeccionRepo coleccionRepo, ClienteRepo clienteRepo, PeliculaRepo peliculaRepo) {
+    public ColeccionServicioImp(ColeccionRepo coleccionRepo, ClienteRepo clienteRepo,
+                                PeliculaRepo peliculaRepo, ColeccionMapper coleccionMapper) {
         this.coleccionRepo = coleccionRepo;
         this.clienteRepo = clienteRepo;
         this.peliculaRepo = peliculaRepo;
+        this.coleccionMapper = coleccionMapper;
     }
 
     // SECTION: Metodos de soporte
 
-    /**
-     * Metodo para comprobar la presencia de la coleccion que se esta buscando.
-     * Lanza ResourceNotFoundException si no se encuentra.
-     */
     private void validarExiste(Optional<Coleccion> coleccion) throws Exception {
         if (coleccion.isEmpty()) {
             throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND);
         }
     }
 
-    /**
-     * Metodo para comprobar que la lista de colecciones no este vacia.
-     * Lanza ResourceNotFoundException si la lista esta vacia.
-     */
     private void validarExiste(List<Coleccion> colecciones) throws Exception {
         if (colecciones.isEmpty()) {
             throw new ResourceNotFoundException(MovieErrorCatalog.DOMAIN_MOVIE_ENTITY_COLLECTION_NOT_FOUND);
         }
     }
 
-    /**
-     * Valida que el cliente exista en la base de datos.
-     */
     private void validarClienteExiste(Integer cedula) throws Exception {
         Optional<Cliente> cliente = clienteRepo.findById(cedula);
         if (cliente.isEmpty()) {
@@ -73,9 +66,6 @@ public class ColeccionServicioImp implements ColeccionServicio {
         }
     }
 
-    /**
-     * Valida que la pelicula exista en la base de datos.
-     */
     private void validarPeliculaExiste(Integer codigo) throws Exception {
         Optional<Pelicula> pelicula = peliculaRepo.findById(codigo);
         if (pelicula.isEmpty()) {
@@ -83,19 +73,23 @@ public class ColeccionServicioImp implements ColeccionServicio {
         }
     }
 
-    /**
-     * Metodo para validar la confirmacion de la eliminacion.
-     */
     private void comprobarConfirmacion(boolean confirmacion) throws Exception {
         if (!confirmacion) {
             throw new RuntimeException("La eliminacion no fue confirmada");
         }
     }
 
-    // SECTION: Implementacion de servicios CRUD
+    private ColeccionCompuesta construirId(Integer cedula, Integer codigoPelicula) {
+        return new ColeccionCompuesta(cedula, codigoPelicula);
+    }
+
+    // !SECTION
+    // SECTION: Implementacion de servicios Crud
 
     @Override
-    public Coleccion registrar(@Valid Coleccion coleccion) throws Exception {
+    public ColeccionResponse registrar(ColeccionRequest request) throws Exception {
+        Coleccion coleccion = coleccionMapper.toEntity(request);
+
         validarClienteExiste(coleccion.getCliente().getCedula());
         validarPeliculaExiste(coleccion.getPelicula().getCodigo());
 
@@ -103,14 +97,17 @@ public class ColeccionServicioImp implements ColeccionServicio {
 
         // TODO: emitir evento de dominio COLECCION_CREADA para reactividad futura (SSE/WebSockets)
 
-        return guardada;
+        return coleccionMapper.toResponse(guardada);
     }
 
     @Override
-    public Coleccion actualizar(@Valid Coleccion coleccion) throws Exception {
-        ColeccionCompuesta id = new ColeccionCompuesta(
+    public ColeccionResponse actualizar(ColeccionRequest request) throws Exception {
+        Coleccion coleccion = coleccionMapper.toEntity(request);
+
+        ColeccionCompuesta id = construirId(
                 coleccion.getCliente().getCedula(),
                 coleccion.getPelicula().getCodigo());
+
         Optional<Coleccion> buscado = coleccionRepo.findById(id);
         validarExiste(buscado);
 
@@ -118,49 +115,54 @@ public class ColeccionServicioImp implements ColeccionServicio {
 
         // TODO: emitir evento de dominio COLECCION_ACTUALIZADA para reactividad futura (SSE/WebSockets)
 
-        return actualizada;
+        return coleccionMapper.toResponse(actualizada);
     }
 
     @Override
-    public void eliminar(@Valid Coleccion coleccion, boolean confirmacion) throws Exception {
+    public void eliminar(Integer cedula, Integer codigoPelicula, boolean confirmacion) throws Exception {
         comprobarConfirmacion(confirmacion);
-        coleccionRepo.delete(coleccion);
-    }
 
-    @Override
-    public Optional<Coleccion> obtener(Integer cedula, Integer codigoPelicula) throws Exception {
-        ColeccionCompuesta id = new ColeccionCompuesta(cedula, codigoPelicula);
+        ColeccionCompuesta id = construirId(cedula, codigoPelicula);
         Optional<Coleccion> buscado = coleccionRepo.findById(id);
         validarExiste(buscado);
-        return buscado;
+        coleccionRepo.delete(buscado.get());
     }
 
     @Override
-    public List<Coleccion> listar() {
-        return coleccionRepo.findAll();
+    public Optional<ColeccionResponse> obtener(Integer cedula, Integer codigoPelicula) throws Exception {
+        ColeccionCompuesta id = construirId(cedula, codigoPelicula);
+        Optional<Coleccion> buscado = coleccionRepo.findById(id);
+        validarExiste(buscado);
+        return buscado.map(coleccionMapper::toResponse);
     }
 
     @Override
-    public List<Coleccion> listarPaginado() {
-        return coleccionRepo.findAll(PageRequest.of(0, 10)).toList();
+    public List<ColeccionResponse> listar() {
+        return coleccionMapper.toResponseList(coleccionRepo.findAll());
     }
 
+    @Override
+    public List<ColeccionResponse> listarPaginado() {
+        return coleccionMapper.toResponseList(coleccionRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    // !SECTION
     // SECTION: Implementacion de metodos de negocio
 
     @Override
-    public List<Coleccion> listarPorCliente(Integer cedula) throws Exception {
+    public List<ColeccionResponse> listarPorCliente(Integer cedula) throws Exception {
         validarClienteExiste(cedula);
         List<Coleccion> colecciones = coleccionRepo.listarPorCliente(cedula);
         validarExiste(colecciones);
-        return colecciones;
+        return coleccionMapper.toResponseList(colecciones);
     }
 
     @Override
-    public List<Coleccion> listarPorPelicula(Integer codigoPelicula) throws Exception {
+    public List<ColeccionResponse> listarPorPelicula(Integer codigoPelicula) throws Exception {
         validarPeliculaExiste(codigoPelicula);
         List<Coleccion> colecciones = coleccionRepo.listarPorPelicula(codigoPelicula);
         validarExiste(colecciones);
-        return colecciones;
+        return coleccionMapper.toResponseList(colecciones);
     }
 
     @Override
@@ -180,18 +182,26 @@ public class ColeccionServicioImp implements ColeccionServicio {
     }
 
     @Override
-    public Coleccion calificarPelicula(Integer cedula, Integer codigoPelicula, Double puntuacion) throws Exception {
-        Optional<Coleccion> buscado = obtener(cedula, codigoPelicula);
+    public ColeccionResponse calificarPelicula(Integer cedula, Integer codigoPelicula, Double puntuacion) throws Exception {
+        Optional<Coleccion> buscado = obtenerEntidad(cedula, codigoPelicula);
         Coleccion coleccion = buscado.get();
         coleccion.setPuntuacion(puntuacion);
-        return coleccionRepo.save(coleccion);
+        return coleccionMapper.toResponse(coleccionRepo.save(coleccion));
     }
 
     @Override
-    public Coleccion cambiarEstadoPelicula(Integer cedula, Integer codigoPelicula, EstadoPropio estado) throws Exception {
-        Optional<Coleccion> buscado = obtener(cedula, codigoPelicula);
+    public ColeccionResponse cambiarEstadoPelicula(Integer cedula, Integer codigoPelicula, EstadoPropio estado) throws Exception {
+        Optional<Coleccion> buscado = obtenerEntidad(cedula, codigoPelicula);
         Coleccion coleccion = buscado.get();
         coleccion.setEstadoPeliculaPropio(estado);
-        return coleccionRepo.save(coleccion);
+        return coleccionMapper.toResponse(coleccionRepo.save(coleccion));
     }
+
+    private Optional<Coleccion> obtenerEntidad(Integer cedula, Integer codigoPelicula) throws Exception {
+        ColeccionCompuesta id = construirId(cedula, codigoPelicula);
+        Optional<Coleccion> buscado = coleccionRepo.findById(id);
+        validarExiste(buscado);
+        return buscado;
+    }
+    // !SECTION
 }

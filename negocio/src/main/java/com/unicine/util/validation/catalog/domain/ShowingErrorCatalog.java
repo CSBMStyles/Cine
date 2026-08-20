@@ -17,12 +17,12 @@ import com.unicine.util.validation.catalog.ErrorCode;
  */
 public enum ShowingErrorCatalog implements ErrorCode {
 
-    // ENTITY - ENTIDAD NO ENCONTRADA (404 Not Found)
+    // Entity - Entidad no encontrada (404 not found)
     DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND("DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND", "La funcion no existe"),
     DOMAIN_SHOWING_ENTITY_FUNCTION_SCHEMA_NOT_FOUND("DOMAIN_SHOWING_ENTITY_FUNCTION_SCHEMA_NOT_FOUND", "El esquema de la funcion no existe"),
     DOMAIN_SHOWING_ENTITY_SCHEDULE_NOT_FOUND("DOMAIN_SHOWING_ENTITY_SCHEDULE_NOT_FOUND", "El horario no existe"),
 
-    // BUSINESS_RULE - REGLAS DE NEGOCIO (400 Bad Request)
+    // Business rule - Reglas de negocio (400 bad request)
     DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP("DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP", "El horario se solapa con uno existente"),
     DOMAIN_SHOWING_BUSINESS_RULE_FUNCTION_NO_SCHEDULES_AVAILABLE("DOMAIN_SHOWING_BUSINESS_RULE_FUNCTION_NO_SCHEDULES_AVAILABLE", "La funcion no tiene horarios disponibles");
 

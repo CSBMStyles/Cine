@@ -11,7 +11,7 @@ import com.unicine.entity.user.Administrador;
 @Repository
 public interface AdministradorRepo extends JpaRepository<Administrador, Integer> {
     
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     /**
      * Consulta para obtener un administrador por su correo

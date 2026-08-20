@@ -9,7 +9,7 @@ import com.unicine.entity.theater.DistribucionSilla;
 @Repository
 public interface DistribucionSillaRepo extends JpaRepository<DistribucionSilla, Integer> {
     
-// NOTE: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
+// Note: En la creacion del repositorio se extiende de jpa repository, se le pasa la entidad y el tipo de dato de la llave primaria
 
     // SECTION: Relacion con funcion
 
@@ -20,4 +20,5 @@ public interface DistribucionSillaRepo extends JpaRepository<DistribucionSilla, 
      */
     @Query("select ds.esquema from DistribucionSilla ds join ds.salas s join s.funciones f where f.codigo = :codigoFuncion")
     String obtenerEsquemaFuncion(Integer codigoFuncion);
+    // !SECTION
 }

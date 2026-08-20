@@ -14,29 +14,27 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.unicine.entity.user.Cliente;
-import com.unicine.entity.confiteria.Confiteria;
-import com.unicine.entity.image.Imagen;
-import com.unicine.entity.movie.Pelicula;
-import com.unicine.service.confiteria.ConfiteriaServicio;
+import com.unicine.enums.image.TipoPropietarioImagen;
+import com.unicine.enums.image.TipoImagen;
 import com.unicine.service.image.ImagenServicio;
-import com.unicine.service.movie.PeliculaServicio;
-import com.unicine.service.user.PersonaServicio;
 import com.unicine.service.image.ImageKitService;
-import com.unicine.transfer.record.VersionArchivo;
+import com.unicine.transfer.dto.request.ImagenRequest;
+import com.unicine.transfer.dto.response.ImagenResponse;
+import com.unicine.transfer.dto.response.VersionArchivoResponse;
 
 import io.imagekit.sdk.models.results.Result;
 import io.imagekit.sdk.models.results.ResultList;
 
-// IMPORTANT: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
+// Important: El @Transactional se utiliza para que las pruebas no afecten la base de datos, es decir, que no se guarden los cambios realizados en las pruebas
 
 @SpringBootTest
+@TestPropertySource(properties = "image.identifier.secret=test-image-identifier-secret")
 @Transactional
-@Disabled("Tests depend on external ImageKit service and local file paths not available in test environment")
 public class ImagenServicioTest {
 
     @Autowired
@@ -45,14 +43,58 @@ public class ImagenServicioTest {
     @Autowired
     private ImageKitService imagenKitIo;
 
-    @Autowired
-    private PersonaServicio<Cliente> clienteServicio;
+    /**
+     * Resuelve la ruta de una imagen del proyecto independientemente del
+     * directorio de trabajo (raiz del proyecto o modulo 'negocio').
+     */
+    private static Path resolverRutaImagen(String rutaRelativa) {
 
-    @Autowired
-    private PeliculaServicio peliculaServicio;
+        Path base = Paths.get(System.getProperty("user.dir"));
 
-    @Autowired
-    private ConfiteriaServicio confiteriaServicio;
+        Path candidata = base.resolve(rutaRelativa);
+
+        if (!Files.exists(candidata)) {
+            candidata = base.getParent().resolve(rutaRelativa);
+        }
+
+        return candidata.toAbsolutePath().normalize();
+    }
+
+    /**
+     * Construye un ImagenRequest a partir de un ImagenResponse obtenido del servicio.
+     */
+    private static ImagenRequest construirRequestDesde(ImagenResponse response) {
+
+        return ImagenRequest.builder()
+                .codigo(response.getCodigo())
+                .nombre(response.getNombre())
+                .tipoPropietario(TipoPropietarioImagen.valueOf(response.getTipoPropietario()))
+                .codigoPropietario(response.getCodigoPropietario())
+                .tipoImagen(response.getTipoImagen())
+                .build();
+    }
+
+    private ImagenResponse registrarImagenPelicula(String ruta, String contentType,
+                                                   TipoImagen tipoImagen) throws Exception {
+        Path path = resolverRutaImagen(ruta);
+        byte[] contenido = Files.readAllBytes(path);
+
+        MultipartFile file = new MockMultipartFile(
+                "imagen",
+                path.getFileName().toString(),
+                contentType,
+                contenido
+        );
+
+        ImagenRequest request = ImagenRequest.builder()
+                .nombre(file.getOriginalFilename())
+                .tipoPropietario(TipoPropietarioImagen.PELICULA)
+                .codigoPropietario(6)
+                .tipoImagen(tipoImagen)
+                .build();
+
+        return imagenServicio.registrar(request, file);
+    }
 
     // 🟩
 
@@ -60,7 +102,7 @@ public class ImagenServicioTest {
     @Sql("classpath:dataset.sql")
     public void comprobarLectura(){
 
-        Path path = Paths.get("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+        Path path = resolverRutaImagen("image/confiteria/snaks/De Toditos Rojo.png");
 
         // Leer el archivo en un array de bytes
         byte[] content;
@@ -70,7 +112,7 @@ public class ImagenServicioTest {
 
         } catch (IOException e) { throw new RuntimeException("Error leyendo el archivo", e); }
 
-        MockMultipartFile multipartFile = new MockMultipartFile("file", path.getFileName().toString(), "image/jpg", content);
+        MockMultipartFile multipartFile = new MockMultipartFile("file", path.getFileName().toString(), "image/png", content);
 
         System.out.println("Formato: " + multipartFile.getName());
 
@@ -79,127 +121,56 @@ public class ImagenServicioTest {
         System.out.println("Tamaño: " + multipartFile.getSize() / Math.pow(1024.0, 2));
 
         System.out.println("Tamaño maximo: " + 5);
-        
+
     }
 
     @Test
+    @Disabled
     @Sql("classpath:dataset.sql")
-    public void subirImagenCliente() {
+    public void subirImagenPersona() {
 
         MultipartFile file;
 
         try {
-            // TODO: Colocar imagen en proyecto y actualizar ruta relativa
             // Creamos un archivo MultipartFile usando un archivo físico
-            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
+            File fileOriginal = resolverRutaImagen("image/persona/Camila.png").toFile();
 
             byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
 
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/png", contenido);
 
-            // IMPORTANT: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-        
-
-        Cliente cliente;
-
-        try {
-            cliente = clienteServicio.obtener(1005000055).orElse(null);
+            // Important: Cuando este realizando las APIs tengo que validar el formato, en interfaz eso se limita
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
         }
 
-        Imagen imagen = new Imagen();
-        
-        imagen.setCliente(cliente);
+        ImagenRequest request = ImagenRequest.builder()
+                .nombre(file.getOriginalFilename())
+                .tipoPropietario(TipoPropietarioImagen.ADMINISTRADOR)
+                .codigoPropietario(1001000000)
+                .tipoImagen(TipoImagen.AVATAR)
+                .build();
 
         try {
 
-            imagenServicio.registrar(imagen, file, cliente);
+            ImagenResponse resultado = imagenServicio.registrar(request, file);
 
-            System.out.println("Imagen subida: " + imagen);
-            
-        } catch (Exception e) {
-            
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            
-            throw new RuntimeException(e);
-            
-        }
-    }
-
-    @Test
-    @Sql("classpath:dataset.sql")
-    public void subirImagenPelicula() {
-
-        MultipartFile file;
-
-        try {
-            // TODO: Colocar imagen en proyecto y actualizar ruta relativa
-            // Creamos un archivo MultipartFile usando un archivo físico
-            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3672 M.JPG");
-
-            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
-
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
-        
-        Pelicula pelicula;
-
-        try {
-            pelicula = peliculaServicio.obtener(5).orElse(null);
-            
-            Assertions.assertNotNull(pelicula, "La película no debe ser nula");
-            
-        } catch (Exception e) {
-            
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            
-            throw new RuntimeException(e);
-            
-        }
-
-        Imagen imagen = new Imagen();
-
-        imagen.setPelicula(pelicula);
-
-        try {
-            Imagen resultado = imagenServicio.registrar(imagen, file, pelicula);
-            
             Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
-
             Assertions.assertNotNull(resultado.getCodigo(), "El código de la imagen no debe ser nulo");
+            Assertions.assertNotNull(resultado.getUrl(), "La URL de la imagen no debe ser nula");
+            Assertions.assertEquals(TipoImagen.AVATAR, resultado.getTipoImagen());
+            Assertions.assertTrue(resultado.getNombre().matches("PER-[0-9A-F]{8}-AVATAR"));
+            Assertions.assertFalse(resultado.getNombre().contains("1001000000"));
 
             System.out.println("Imagen subida: " + resultado);
 
         } catch (Exception e) {
+
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -207,13 +178,35 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled
+    @Sql({"classpath:dataset.sql", "classpath:ratatouille-dataset.sql"})
+    public void subirImagenPelicula() throws Exception {
+        ImagenResponse poster = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 1.webp", "image/webp", TipoImagen.POSTER);
+        ImagenResponse banner = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 2.webp", "image/jpeg", TipoImagen.BANNER);
+        ImagenResponse galeria = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 3.jpg", "image/jpeg", TipoImagen.GALERIA);
+        ImagenResponse posterRepetido = registrarImagenPelicula(
+                "image/pelicula/Ratatouille 1.webp", "image/webp", TipoImagen.POSTER);
+
+        Assertions.assertEquals("PEL-6-POSTER-01", poster.getNombre());
+        Assertions.assertEquals("PEL-6-BANNER-02", banner.getNombre());
+        Assertions.assertEquals("PEL-6-GALERIA-03", galeria.getNombre());
+        Assertions.assertEquals(poster.getCodigo(), posterRepetido.getCodigo());
+        Assertions.assertEquals(poster.getNombre(), posterRepetido.getNombre());
+        Assertions.assertNotNull(galeria.getOrden(), "La imagen de galería debe tener orden");
+    }
+
+    @Test
+    @Disabled
     @Sql("classpath:dataset.sql")
     public void subirImagenConfiteria() {
 
         MultipartFile file;
 
         try {
-            File fileOriginal = new File("../image/confiteria/snaks/DE TODITOS ROJO 45G.png");
+            File fileOriginal = resolverRutaImagen("image/confiteria/snaks/De Toditos Rojo.png").toFile();
 
             byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
 
@@ -225,32 +218,39 @@ public class ImagenServicioTest {
             throw new RuntimeException(e);
         }
 
-        Confiteria confiteria;
+        ImagenRequest request = ImagenRequest.builder()
+                .nombre(file.getOriginalFilename())
+                .tipoPropietario(TipoPropietarioImagen.CONFITERIA)
+                .codigoPropietario(15)
+                .tipoImagen(TipoImagen.PRODUCTO)
+                .build();
 
         try {
-            confiteria = confiteriaServicio.obtener(15).orElse(null);
-
-            Assertions.assertNotNull(confiteria, "La confiteria no debe ser nula");
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-            throw new RuntimeException(e);
-        }
-
-        Imagen imagen = new Imagen();
-
-        imagen.setConfiteria(confiteria);
-
-        try {
-            Imagen resultado = imagenServicio.registrar(imagen, file, confiteria);
+            ImagenResponse resultado = imagenServicio.registrar(request, file);
 
             Assertions.assertNotNull(resultado, "La imagen resultante no debe ser nula");
 
             Assertions.assertNotNull(resultado.getCodigo(), "El codigo de la imagen no debe ser nulo");
+            Assertions.assertEquals(TipoImagen.PRODUCTO, resultado.getTipoImagen());
+            Assertions.assertTrue(resultado.getNombre().startsWith("De-Toditos-Rojo"));
 
-            System.out.println("ID IMAGEN: " + resultado.getCodigo());
-            System.out.println("URL IMAGEN: " + resultado.getUrl());
+            System.out.println("===== ImagenResponse (objeto completo) =====");
+            System.out.println(resultado);
+            System.out.println("===== ImagenResponse (campo por campo) =====");
+            System.out.println("codigo: " + resultado.getCodigo());
+            System.out.println("nombre: " + resultado.getNombre());
+            System.out.println("url: " + resultado.getUrl());
+            System.out.println("filePath: " + resultado.getFilePath());
+            System.out.println("thumbnailUrl: " + resultado.getThumbnailUrl());
+            System.out.println("fileType: " + resultado.getFileType());
+            System.out.println("altura: " + resultado.getAltura());
+            System.out.println("anchura: " + resultado.getAnchura());
+            System.out.println("tamanio: " + resultado.getTamanio());
+            System.out.println("versionId: " + resultado.getVersionId());
+            System.out.println("versionName: " + resultado.getVersionName());
+            System.out.println("tipoPropietario: " + resultado.getTipoPropietario());
+            System.out.println("codigoPropietario: " + resultado.getCodigoPropietario());
+            System.out.println("--");
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
@@ -260,35 +260,43 @@ public class ImagenServicioTest {
     }
 
     @Test
-    @Sql("classpath:dataset.sql")
+    @Disabled
+    @Sql({"classpath:dataset.sql", "classpath:ratatouille-dataset.sql"})
     public void actualizar() {
 
         MultipartFile file;
+        byte[] contenido;
 
         try {
             // Preparamos el archivo MultipartFile para actualizar
-            File fileOriginal = new File("C:/Users/ASUS/Pictures/Camera Roll/DSC_3929 M.JPG");
+            File fileOriginal = resolverRutaImagen("image/pelicula/Ratatouille 1.webp").toFile();
 
-            byte[] contenido = Files.readAllBytes(fileOriginal.toPath());
+            contenido = Files.readAllBytes(fileOriginal.toPath());
 
-            file = new MockMultipartFile("imagen", fileOriginal.getName(), "image/jpg", contenido);
+            file = new MockMultipartFile(
+                    "imagen",
+                    "Ratatouille-" + System.nanoTime() + ".webp",
+                    "image/webp",
+                    contenido
+            );
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
         }
 
-            // Obtenemos la imagen a actualizar
-            String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
-
-            Imagen imagenAntigua;
+        ImagenResponse imagenAntigua;
 
         try {
-            imagenAntigua = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
+            ImagenRequest registro = ImagenRequest.builder()
+                    .nombre(file.getOriginalFilename())
+                    .tipoPropietario(TipoPropietarioImagen.PELICULA)
+                    .codigoPropietario(6)
+                    .build();
+
+            imagenAntigua = imagenServicio.registrar(registro, file);
 
             Assertions.assertNotNull(imagenAntigua, "La imagen antigua no debe estar vacía");
 
@@ -297,17 +305,26 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
 
 
         try {
-            Imagen actualizado = imagenServicio.actualizar(imagenAntigua, file, imagenAntigua.getPelicula());
+            ImagenRequest request = construirRequestDesde(imagenAntigua);
 
-            Assertions.assertEquals(fileIdSeleccionado, actualizado.getCodigo());
+            MultipartFile archivoActualizado = new MockMultipartFile(
+                    "imagen",
+                    "Ratatouille-actualizada-" + System.nanoTime() + ".webp",
+                    "image/webp",
+                    contenido
+            );
+
+            ImagenResponse actualizado = imagenServicio.actualizar(request, archivoActualizado);
+
+            Assertions.assertEquals(imagenAntigua.getCodigo(), actualizado.getCodigo());
+            Assertions.assertEquals(imagenAntigua.getNombre(), actualizado.getNombre());
+            Assertions.assertEquals(imagenAntigua.getTipoImagen(), actualizado.getTipoImagen());
 
             System.out.println("\n" + "Registro actualizado:" + "\n" + actualizado);
 
@@ -319,15 +336,16 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void recuperarVersion(){
 
-        Imagen imagenAntigua;
+        ImagenResponse imagenAntigua;
 
         String fileIdSeleccionado = "67cca0f3432c47641676174c";
 
-        // NOTE: Listamos las versiones de la imagen y seleccionamos el versionId de la version que queremos recuperar
-        
+        // Note: Listamos las versiones de la imagen y seleccionamos el versionId de la version que queremos recuperar
+
         String versionIdSeleccionado = "----";
 
         try {
@@ -340,33 +358,33 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
 
         try {
 
-            Imagen imagenRecuperada = imagenServicio.restaurar(imagenAntigua, versionIdSeleccionado);
+            ImagenRequest request = construirRequestDesde(imagenAntigua);
+
+            ImagenResponse imagenRecuperada = imagenServicio.restaurar(request, versionIdSeleccionado);
 
             System.out.println("\n" + "Registro recuperado:" + "\n" + imagenRecuperada);
-            
+
         } catch (Exception e) {
-            
+
             System.out.println("Mensaje de error: " + e.getMessage());
 
-            
             throw new RuntimeException(e);
-            
+
         }
     }
-    
+
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void renombrar(){
 
-        Imagen imagenAntigua;
+        ImagenResponse imagenAntigua;
 
         String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
@@ -382,21 +400,19 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
 
         try {
-            Imagen renombrado = imagenServicio.renombrar(imagenAntigua, nuevoNombre, imagenAntigua.getPelicula());
+            ImagenRequest request = construirRequestDesde(imagenAntigua);
+
+            ImagenResponse renombrado = imagenServicio.renombrar(request, nuevoNombre);
 
             System.out.println("Imagen renombrada: " + renombrado);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -405,12 +421,13 @@ public class ImagenServicioTest {
 
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void eliminar() {
 
         String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
-        Imagen imagen;
+        ImagenResponse imagen;
 
         try {
             imagen = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
@@ -422,19 +439,15 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
 
         try {
-            imagenServicio.eliminar(imagen, true);
+            imagenServicio.eliminar(fileIdSeleccionado, true);
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 
@@ -455,6 +468,7 @@ public class ImagenServicioTest {
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void eliminarDiversos() {
 
@@ -462,23 +476,21 @@ public class ImagenServicioTest {
 
         fileIds.add("67ccc3e2432c47641609d9e1");
 
-        List<Imagen> imagenes = new ArrayList<>();
-
-        int posicion = imagenes.size() - 1;
+        List<ImagenResponse> imagenes = new ArrayList<>();
 
         for (String fileId : fileIds) {
 
             try {
-                imagenes.add(imagenServicio.obtener(fileId).orElse(null));
+                ImagenResponse imagen = imagenServicio.obtener(fileId).orElse(null);
 
-                Assertions.assertNotNull(imagenes.get(posicion), "La imagen antigua no debe estar vacía");
+                imagenes.add(imagen);
 
-                System.out.println("\n" + "Registro encontrado:" + "\n" + imagenes.get(posicion));
+                Assertions.assertNotNull(imagen, "La imagen antigua no debe estar vacía");
+
+                System.out.println("\n" + "Registro encontrado:" + "\n" + imagen);
 
             } catch (Exception e) {
                 System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
                 throw new RuntimeException(e);
 
@@ -486,7 +498,7 @@ public class ImagenServicioTest {
         }
 
         try {
-            imagenServicio.eliminarMultiple(imagenes, true);
+            imagenServicio.eliminarMultiple(fileIds, true);
 
         } catch (Exception e) {
 
@@ -498,9 +510,9 @@ public class ImagenServicioTest {
         for (String fileId : fileIds) {
             try {
                 imagenServicio.obtener(fileId);
-    
+
             } catch (Exception e) {
-    
+
                 System.out.println("Mensaje de error: " + e.getMessage());
 
                 // Realizamos una validacion de la prueba para aceptar que la imagen fue
@@ -508,20 +520,21 @@ public class ImagenServicioTest {
                 Assertions.assertThrows(Exception.class, () -> {
                     throw e;
                 });
-    
+
                 System.out.println(e.getMessage());
             }
         }
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void obtener() {
 
         String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         try {
-            Imagen imagen = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
+            ImagenResponse imagen = imagenServicio.obtener(fileIdSeleccionado).orElse(null);
 
             Assertions.assertNotNull(imagen, "La imagen no debe estar vacía");
 
@@ -530,14 +543,13 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void obtenerOrigen() {
 
@@ -553,35 +565,20 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void listarImagenesPelicula() {
-
-        Pelicula pelicula;
-
-        try {
-            pelicula = peliculaServicio.obtener(5).orElse(null);
-
-        } catch (Exception e) {
-            System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-            throw new RuntimeException(e);
-
-        }
 
         List<String> listaIds;
 
         try {
-            listaIds = imagenServicio.listar(pelicula);
+            listaIds = imagenServicio.listar(TipoPropietarioImagen.PELICULA, 5);
 
             Assertions.assertEquals(3, listaIds.size());
 
@@ -592,43 +589,17 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
 
-        // NOTE: Esto se puede eliminar es para obtener los datos de las imagenes de la base de datos, lo digo a causa de que hay metodos que solo necesitan el fileId como el test listar versiones imagen o eliminar diversos
+        // Note: Esto se puede eliminar es para obtener los datos de las imagenes de la base de datos, lo digo a causa de que hay metodos que solo necesitan el fileId como el test listar versiones imagen o eliminar diversos
 
-        //REVIEW: En el caso de obtener, es necesario que tengamos el elemento ya que apartir de ese podemos hacer modificaciones a la imagen como actualizar, renombrar o otras
-
-        /* List<Imagen> lista = new ArrayList<>();
-
-        for (String fileId : listaIds) {
-
-            try {
-
-                // Variable para obtener la posicion de la lista 
-                int posicion = lista.size() - 1;
-
-                lista.add(imagenServicio.obtener(fileId).orElse(null));
-
-                Assertions.assertNotNull(lista.get(posicion), "La imagen antigua no debe estar vacía");
-
-                System.out.println("\n" + "Registro encontrado:" + "\n" + lista.get(posicion));
-
-            } catch (Exception e) {
-                System.out.println("Mensaje de error: " + e.getMessage());
-
-
-
-                throw new RuntimeException(e);
-
-            }
-        } */
+        //Review: En el caso de obtener, es necesario que tengamos el elemento ya que apartir de ese podemos hacer modificaciones a la imagen como actualizar, renombrar o otras
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void listarImagenesOrigen() {
 
@@ -644,21 +615,20 @@ public class ImagenServicioTest {
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
 
-
-
             throw new RuntimeException(e);
 
         }
     }
 
     @Test
+    @Disabled("Depende del servicio externo ImageKit")
     @Sql("classpath:dataset.sql")
     public void listarVersionesImagen() {
 
         String fileIdSeleccionado = "67ccc3e2432c47641609d9e1";
 
         try {
-            List<VersionArchivo> imagen = imagenServicio.listarVersiones(fileIdSeleccionado);
+            List<VersionArchivoResponse> imagen = imagenServicio.listarVersiones(fileIdSeleccionado);
 
             Assertions.assertNotNull(imagen, "La imagen no debe estar vacía");
 
@@ -666,8 +636,6 @@ public class ImagenServicioTest {
 
         } catch (Exception e) {
             System.out.println("Mensaje de error: " + e.getMessage());
-
-
 
             throw new RuntimeException(e);
 

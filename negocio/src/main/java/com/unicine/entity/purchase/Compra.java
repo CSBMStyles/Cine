@@ -70,6 +70,7 @@ public class Compra implements Serializable {
     @Column(nullable = false)
     private Double valorTotal;
 
+    // !SECTION
     // SECTION: Relaciones
 
     @ToString.Exclude
@@ -91,6 +92,7 @@ public class Compra implements Serializable {
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL)
     private List<Entrada> entradas;
     
+    // !SECTION
     // SECTION: Constructor
 
     @Builder
@@ -102,4 +104,5 @@ public class Compra implements Serializable {
         this.cliente = cliente;
         this.funcion = funcion;
     }
+    // !SECTION
 }

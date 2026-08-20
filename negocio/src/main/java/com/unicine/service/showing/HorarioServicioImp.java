@@ -11,31 +11,35 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.unicine.api.response.Respuesta;
 import com.unicine.entity.showing.Funcion;
 import com.unicine.entity.showing.Horario;
-import com.unicine.entity.theater.Sala;
 import com.unicine.repository.showing.FuncionRepo;
 import com.unicine.repository.showing.HorarioRepo;
+import com.unicine.transfer.dto.request.HorarioRequest;
+import com.unicine.transfer.dto.response.HorarioResponse;
+import com.unicine.transfer.mapper.HorarioMapper;
 import com.unicine.util.initializer.HorarioDescuentoInit;
 
-import jakarta.validation.Valid;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 
 @Service
 @Validated
 public class HorarioServicioImp implements HorarioServicio {
 
-    // NOTE: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
+    // Note: Teoricamente se uitlizaria el @Autowired para inyectar dependencias, donde se instancia por si solo la clase que se necesita, pero se recomienda utilizar el constructor para eso, ya que el @Service no es va a instanciar
     private final HorarioRepo horarioRepo;
+
+    private final HorarioMapper horarioMapper;
 
     private final FuncionRepo funcionRepo;
 
     private final HorarioDescuentoInit descuentoInitializer;
 
-    public HorarioServicioImp(HorarioRepo horarioRepo, FuncionRepo funcionRepo, HorarioDescuentoInit descuentoInitializer) {
+    public HorarioServicioImp(HorarioRepo horarioRepo, HorarioMapper horarioMapper, FuncionRepo funcionRepo, HorarioDescuentoInit descuentoInitializer) {
         this.horarioRepo = horarioRepo;
+        this.horarioMapper = horarioMapper;
         this.funcionRepo = funcionRepo;
         this.descuentoInitializer = descuentoInitializer;
     }
@@ -84,24 +88,17 @@ public class HorarioServicioImp implements HorarioServicio {
         }
     }
 
-    /**
-     * Funcion para instanciar la respuesta de la operación fallida
-     * @param funcion solapada
-     * @return respuesta conteniendo el mensaje, funcion y estado de la operación
-     */
-    private Respuesta<?> comprobacionRespuesta(Optional<Funcion> funcionSolapada, Horario horario) {
+    private void validarSolapamiento(Optional<Funcion> funcionSolapada) {
 
         if (funcionSolapada.isPresent()) {
             
-            Funcion funcion = funcionSolapada.get();
-
-            return new Respuesta<Funcion>("El horario se solapa con otra función", funcion, false);
-        } else {
-
-            Horario guardado = horarioRepo.save(horario);
-
-            return new Respuesta<Horario>("Horario registrado exitosamente", guardado, true);
+            throw new BusinessRuleException(ShowingErrorCatalog.DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP);
         }
+    }
+
+    private HorarioResponse guardarHorario(Horario horario) {
+        Horario guardado = horarioRepo.save(horario);
+        return horarioMapper.toResponse(guardado);
     }
 
     /**
@@ -115,65 +112,80 @@ public class HorarioServicioImp implements HorarioServicio {
         }
    }
 
+    // !SECTION
     // SECTION: Implementacion de servicios
 
     // 2️⃣ Funciones del Administrador de Horario
 
     @Override
-    public Respuesta<?> registrar(@Valid Horario horario, Sala sala) throws Exception {
+    public HorarioResponse registrar(HorarioRequest request, Integer salaCodigo) throws Exception {
 
-        Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioSala(sala.getCodigo(), horario.getFechaInicio(), horario.getFechaFin());
+        Horario horario = horarioMapper.toEntity(request);
 
-        return comprobacionRespuesta(funcionSolapada, horario);
+        Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioSala(salaCodigo, horario.getFechaInicio(), horario.getFechaFin());
+
+        validarSolapamiento(funcionSolapada);
+        return guardarHorario(horario);
     }
 
     @Override
-    public Respuesta<?> actualizar(@Valid Horario horario) throws Exception {
+    public HorarioResponse actualizar(HorarioRequest request) throws Exception {
+
+        Optional<Horario> existente = horarioRepo.findById(request.getCodigo());
+        validarExiste(existente);
+
+        Horario horario = existente.get();
+        horario.setFechaInicio(request.getFechaInicio());
+        horario.setFechaFin(request.getFechaFin());
 
         // Se extrae el código de la sala de la función para mayor claridad
         Integer salaCodigo = horario.getFuncion().getSala().getCodigo();
 
         Optional<Funcion> funcionSolapada = funcionRepo.solapaHorarioTeatro(salaCodigo, horario.getCodigo(), horario.getFechaInicio(), horario.getFechaFin());
 
-        return comprobacionRespuesta(funcionSolapada, horario);
+        validarSolapamiento(funcionSolapada);
+        return guardarHorario(horario);
     }
 
     @Override
-    public void eliminar(@Valid Horario eliminado, boolean confirmacion) throws Exception { 
+    public void eliminar(Integer codigo, boolean confirmacion) throws Exception { 
         
         comprobarConfirmacion(confirmacion);
 
-        horarioRepo.delete(eliminado);
+        Optional<Horario> buscado = horarioRepo.findById(codigo);
+        validarExiste(buscado);
+        horarioRepo.delete(buscado.get());
     }
 
     @Override
-    public Optional<Horario> obtener(Integer codigo) throws Exception {
+    public Optional<HorarioResponse> obtener(Integer codigo) throws Exception {
 
         Optional<Horario> buscado = horarioRepo.findById(codigo);
 
         validarExiste(buscado);
 
-        return buscado;
+        return buscado.map(horarioMapper::toResponse);
     }
 
     @Override
-    public List<Horario> listar() { return horarioRepo.findAll(); }
+    public List<HorarioResponse> listar() { return horarioMapper.toResponseList(horarioRepo.findAll()); }
 
     @Override
-    public List<Horario> listarPaginado() { 
+    public List<HorarioResponse> listarPaginado() { 
 
-        return horarioRepo.findAll(PageRequest.of(0, 10)).toList();
+        return horarioMapper.toResponseList(horarioRepo.findAll(PageRequest.of(0, 10)).toList());
     }
 
     @Override
-    public List<Horario> listarAscendente() { 
+    public List<HorarioResponse> listarAscendente() { 
         
-        return horarioRepo.findAll(Sort.by("codigo").ascending());
+        return horarioMapper.toResponseList(horarioRepo.findAll(Sort.by("codigo").ascending()));
     }
 
     @Override
-    public List<Horario> listarDescendente() { 
+    public List<HorarioResponse> listarDescendente() { 
         
-        return horarioRepo.findAll(Sort.by("codigo").descending());
+        return horarioMapper.toResponseList(horarioRepo.findAll(Sort.by("codigo").descending()));
     }
+    // !SECTION
 }
