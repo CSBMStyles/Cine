@@ -1,0 +1,36 @@
+meta {
+  name: registro - POST /api/auth/registro
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/auth/registro
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "cedula": 1009000099,
+    "nombre": "Pepe",
+    "apellido": "Perez",
+    "correo": "pepe99@test.com",
+    "password": "Aa1!aaaaaa",
+    "estado": true,
+    "fechaNacimiento": "2001-12-14",
+    "telefonos": ["+573001234567"]
+  }
+}
+
+docs {
+  201 sin password en response. 409 si duplicado, 400 si password sin mayuscula.
+}
