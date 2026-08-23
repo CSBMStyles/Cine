@@ -1,0 +1,30 @@
+meta {
+  name: QUERY demo - POST /api/peliculas/query
+  type: http
+  seq: 10
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/peliculas/query
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombreParcial": "Avengers",
+    "restriccionEdad": 12
+  }
+}
+
+docs {
+  Hoy POST por compat Spring. Futuro QUERY: duplica request, cambia metodo escribiendo QUERY a mano (Bruno permite custom), misma URL y body. QUERY es safe/idempotente/cacheable como GET con body. curl -X QUERY {{baseUrl}}/api/peliculas/query -H "Content-Type: application/json" -d '{"nombreParcial":"Avengers"}'
+}

@@ -40,6 +40,8 @@ public interface SalaServicio {
 
     List<SalaResponse> listarPaginado();
 
+    List<SalaResponse> listarPaginado(org.springframework.data.domain.Pageable pageable);
+
     List<SalaResponse> listarAscendente();
 
     List<SalaResponse> listarDescendente();

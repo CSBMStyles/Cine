@@ -1,0 +1,32 @@
+meta {
+  name: crear - POST /api/salas
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/salas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombre": "Sala 3D",
+    "tipoSala": "VIP",
+    "teatroCodigo": 1,
+    "distribucionSillaCodigo": 1
+  }
+}
+
+docs {
+  Tipos validos: DOS_DIMENSIONES, TRES_DIMENSIONES, IMAX, VIP, DX4, XD
+}

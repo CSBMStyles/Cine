@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -157,9 +158,14 @@ public class SalaServicioImp implements SalaServicio {
     }
 
     @Override
-    public List<SalaResponse> listarPaginado() { 
+    public List<SalaResponse> listarPaginado() {
 
         return salaMapper.toResponseList(salaRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    @Override
+    public List<SalaResponse> listarPaginado(Pageable pageable) {
+        return salaMapper.toResponseList(salaRepo.findAll(pageable).toList());
     }
 
     @Override

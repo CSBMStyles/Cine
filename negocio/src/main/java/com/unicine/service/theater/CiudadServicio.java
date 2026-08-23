@@ -31,6 +31,9 @@ public interface CiudadServicio {
 
     List<CiudadResponse> listarPaginado();
 
+    // Paginado con Pageable — usado por CiudadController (task 4.2)
+    List<CiudadResponse> listarPaginado(org.springframework.data.domain.Pageable pageable);
+
     List<CiudadResponse> listarAscendenteNombre();
 
     List<CiudadResponse> listarDescendenteNombre();

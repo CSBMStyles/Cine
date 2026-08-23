@@ -297,6 +297,50 @@ public class GlobalExceptionHandler {
     }
 
     // !SECTION
+    // SECTION: Errores de request incompleta (400)
+
+    /**
+     * Parametro de query faltante, p. ej. DELETE sin ?confirmacion=true.
+     */
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> handleMissingParam(
+            org.springframework.web.bind.MissingServletRequestParameterException ex, WebRequest request) {
+        log.warn("Missing request param: {}", ex.getParameterName());
+
+        ValidationErrorDetail detail = new ValidationErrorDetail(ex.getParameterName(),
+                "Parametro requerido no presente: " + ex.getParameterName());
+
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                null,
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                List.of(detail));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleTypeMismatch(
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex, WebRequest request) {
+        log.warn("Type mismatch: {}", ex.getMessage());
+
+        ValidationErrorDetail detail = new ValidationErrorDetail(ex.getName(),
+                ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage());
+
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                null,
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                List.of(detail));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // !SECTION
     // SECTION: Excepciones genericas
 
     /**

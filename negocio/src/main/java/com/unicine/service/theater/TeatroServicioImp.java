@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -111,9 +112,14 @@ public class TeatroServicioImp implements TeatroServicio {
     }
 
     @Override
-    public List<TeatroResponse> listarPaginado() { 
+    public List<TeatroResponse> listarPaginado() {
 
         return teatroMapper.toResponseList(teatroRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    @Override
+    public List<TeatroResponse> listarPaginado(Pageable pageable) {
+        return teatroMapper.toResponseList(teatroRepo.findAll(pageable).toList());
     }
 
     @Override

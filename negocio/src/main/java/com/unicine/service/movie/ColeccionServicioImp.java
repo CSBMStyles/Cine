@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -144,6 +145,11 @@ public class ColeccionServicioImp implements ColeccionServicio {
     @Override
     public List<ColeccionResponse> listarPaginado() {
         return coleccionMapper.toResponseList(coleccionRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    @Override
+    public List<ColeccionResponse> listarPaginado(Pageable pageable) {
+        return coleccionMapper.toResponseList(coleccionRepo.findAll(pageable).toList());
     }
 
     // !SECTION
