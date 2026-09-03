@@ -153,6 +153,13 @@ public class SalaServicioImp implements SalaServicio {
     }
 
     @Override
+    public List<SalaResponse> listarPorTeatro(Integer teatro) throws Exception {
+        List<Sala> salas = salaRepo.buscarPorTeatro(teatro);
+        validarExiste(salas);
+        return salaMapper.toResponseList(salas);
+    }
+
+    @Override
     public List<SalaResponse> listar() { 
         return salaMapper.toResponseList(salaRepo.findAll()); 
     }

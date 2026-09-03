@@ -88,6 +88,41 @@ class PeliculaControllerTest {
         sout("registrarPelicula201", result);
     }
 
+    @Test
+    void registrarSinAuth401() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/peliculas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Dune\"}"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+        sout("registrarSinAuth401", result);
+    }
+
+    @Test
+    void obtenerInexistente404() throws Exception {
+        when(peliculaServicio.obtener(999)).thenReturn(Optional.empty());
+
+        MvcResult result = mockMvc.perform(get("/api/peliculas/999"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        sout("obtenerInexistente404", result);
+    }
+
+    @Test
+    @WithMockUser
+    void registrarBodyInvalido400() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/peliculas").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.details").isArray())
+                .andReturn();
+
+        sout("registrarBodyInvalido400", result);
+    }
+
     // SECTION: Demo QUERY (RFC 10008)
 
     @Test

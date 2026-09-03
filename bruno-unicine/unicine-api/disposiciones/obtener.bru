@@ -1,0 +1,22 @@
+meta {
+  name: obtener - GET /api/pelicula-disposiciones/{pelicula}/{ciudad}
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/pelicula-disposiciones/1/1
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+docs {
+  Clave compuesta (peliculaCodigo, ciudadCodigo). 200 si existe, 404 si no.
+}

@@ -1,0 +1,18 @@
+meta {
+  name: obtener - GET /api/peliculas/{codigo}
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/peliculas/1
+  auth: none
+}
+
+docs {
+  Publico sin auth. 200 con PeliculaResponse, 404 si no existe.
+}

@@ -86,4 +86,81 @@ class SalaControllerTest {
 
         sout("registrarSalaBodyInvalido400", result);
     }
+
+    // SECTION: Filtros y paginacion 4.2.1
+
+    @Test
+    void filtrarPorTeatro200() throws Exception {
+        when(salaServicio.listarPorTeatro(1)).thenReturn(List.of(
+                SalaResponse.builder().codigo(1).nombre("Atlantis").tipoSala(TipoSala.XD).build()));
+
+        MvcResult result = mockMvc.perform(get("/api/salas").param("teatro", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nombre").value("Atlantis"))
+                .andReturn();
+
+        sout("filtrarPorTeatro200", result);
+    }
+
+    @Test
+    void filtrarPorNombreYTeatro200() throws Exception {
+        when(salaServicio.obtenerNombresTeatro("Atlantis", 5)).thenReturn(List.of(
+                SalaResponse.builder().codigo(1).nombre("Atlantis").tipoSala(TipoSala.XD).build()));
+
+        MvcResult result = mockMvc.perform(get("/api/salas").param("nombre", "Atlantis").param("teatro", "5"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        sout("filtrarPorNombreYTeatro200", result);
+    }
+
+    @Test
+    void listarPaginado200() throws Exception {
+        when(salaServicio.listarPaginado(any())).thenReturn(List.of(
+                SalaResponse.builder().codigo(1).nombre("Sala 1").tipoSala(TipoSala.VIP).build()));
+
+        MvcResult result = mockMvc.perform(get("/api/salas").param("page", "0").param("size", "5").param("sort", "nombre"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        sout("listarPaginado200", result);
+    }
+
+    @Test
+    void obtenerPorTeatro200() throws Exception {
+        when(salaServicio.obtenerIdTeatro(1, 5)).thenReturn(java.util.Optional.of(
+                SalaResponse.builder().codigo(1).nombre("Atlantis").tipoSala(TipoSala.XD).build()));
+
+        MvcResult result = mockMvc.perform(get("/api/salas/teatro/5/sala/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombre").value("Atlantis"))
+                .andReturn();
+
+        sout("obtenerPorTeatro200", result);
+    }
+
+    @Test
+    void obtenerPorTeatro404() throws Exception {
+        when(salaServicio.obtenerIdTeatro(99, 99)).thenReturn(java.util.Optional.empty());
+
+        MvcResult result = mockMvc.perform(get("/api/salas/teatro/99/sala/99"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        sout("obtenerPorTeatro404", result);
+    }
+
+    @Test
+    void registrarSinAuth401() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/salas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Sala X\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("DOMAIN_USER_AUTH_INVALID_CREDENTIALS"))
+                .andReturn();
+
+        sout("registrarSinAuth401", result);
+    }
+
+    // !SECTION
 }

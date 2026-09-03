@@ -1,0 +1,18 @@
+meta {
+  name: filtrar por teatro - GET /api/salas?teatro=1
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/salas?teatro=1
+  auth: none
+}
+
+docs {
+  Filtra salas por teatro. Requiere ?teatro= codigo existente. Respuesta 200 con lista filtrada o 404 si no hay salas.
+}

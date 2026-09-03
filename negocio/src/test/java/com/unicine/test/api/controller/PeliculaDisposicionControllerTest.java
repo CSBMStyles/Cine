@@ -99,4 +99,39 @@ class PeliculaDisposicionControllerTest {
 
         sout("eliminarDisposicion204", result);
     }
+
+    @Test
+    void registrarSinAuth401() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/pelicula-disposiciones")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"peliculaCodigo\":1,\"ciudadCodigo\":1}"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+        sout("registrarSinAuth401", result);
+    }
+
+    @Test
+    void obtenerInexistente404() throws Exception {
+        when(disposicionServicio.obtener(99, 99)).thenReturn(Optional.empty());
+
+        MvcResult result = mockMvc.perform(get("/api/pelicula-disposiciones/99/99").with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("user")))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        sout("obtenerInexistente404", result);
+    }
+
+    @Test
+    @WithMockUser
+    void registrarBodyInvalido400() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/pelicula-disposiciones").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.details").isArray())
+                .andReturn();
+
+        sout("registrarBodyInvalido400", result);
+    }
 }

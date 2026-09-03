@@ -100,7 +100,7 @@ public class SalaController {
             return ResponseEntity.ok(salaServicio.obtenerNombre(nombre));
         }
         if (teatro != null) {
-            return ResponseEntity.ok(salaServicio.listar());
+            return ResponseEntity.ok(salaServicio.listarPorTeatro(teatro));
         }
 
         if (page != null || size != null || (sort != null && !sort.isBlank())) {

@@ -1,0 +1,18 @@
+meta {
+  name: obtener por teatro - GET /api/salas/teatro/{teatro}/sala/{codigo}
+  type: http
+  seq: 5
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/salas/teatro/5/sala/1
+  auth: none
+}
+
+docs {
+  Obtiene sala por clave compuesta codigo + teatro. 200 si existe, 404 si no.
+}

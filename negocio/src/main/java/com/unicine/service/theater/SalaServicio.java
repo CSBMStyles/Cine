@@ -36,6 +36,8 @@ public interface SalaServicio {
 
     List<SalaResponse> obtenerNombresTeatro(@NotBlank(message = ValidationMessages.NAME_NOT_BLANK) String nombre, @NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
 
+    List<SalaResponse> listarPorTeatro(@NotNull(message = ValidationMessages.THEATER_ID_NOT_NULL) @Positive(message = ValidationMessages.THEATER_ID_POSITIVE) Integer teatro) throws Exception;
+
     List<SalaResponse> listar();
 
     List<SalaResponse> listarPaginado();

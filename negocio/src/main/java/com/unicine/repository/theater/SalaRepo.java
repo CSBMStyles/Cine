@@ -50,10 +50,16 @@ public interface SalaRepo extends JpaRepository<Sala, Integer> {
     List<Sala> buscarNombreTeatro(String nombreSala, Integer codigoTeatro);
 
     /**
-     * Consulta para obtener una sala apartir de su codigo del teatro al que pertenece
-     * @param atributo: nombre de la sala, codigo del teatro
-     * @return Sala
-     */
+      * Consulta para obtener una sala apartir de su codigo del teatro al que pertenece
+      * @param atributo: nombre de la sala, codigo del teatro
+      * @return Sala
+      */
     @Query("select s from Sala s where s.codigo = :codigoSala and s.teatro.codigo = :codigoTeatro")
     Optional<Sala> buscarIdTeatro(Integer codigoSala, Integer codigoTeatro);
+
+    /**
+     * Lista salas de un teatro específico.
+     */
+    @Query("select s from Sala s where s.teatro.codigo = :codigoTeatro")
+    List<Sala> buscarPorTeatro(Integer codigoTeatro);
 }
