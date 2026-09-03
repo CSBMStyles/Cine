@@ -1,0 +1,29 @@
+meta {
+  name: crear invalido - 400 con details
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/ciudades
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nombre": ""
+  }
+}
+
+docs {
+  Debe responder 400 ApiError { status:400, details:[{field:"nombre"}] }
+}

@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/ciudades
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/ciudades
+  auth: none
+}
+
+docs {
+  Publico sin auth - debe dar 200. Para paginado usa: {{baseUrl}}/api/ciudades?page=0&size=5&sort=nombre&direction=asc
+}

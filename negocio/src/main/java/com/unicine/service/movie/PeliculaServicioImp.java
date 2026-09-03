@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -147,6 +148,11 @@ public class PeliculaServicioImp implements PeliculaServicio {
     public List<PeliculaResponse> listarPaginado() {
 
         return peliculaMapper.toResponseList(peliculaRepo.findAll(PageRequest.of(0, 10)).toList());
+    }
+
+    @Override
+    public List<PeliculaResponse> listarPaginado(Pageable pageable) {
+        return peliculaMapper.toResponseList(peliculaRepo.findAll(pageable).toList());
     }
 
     @Override

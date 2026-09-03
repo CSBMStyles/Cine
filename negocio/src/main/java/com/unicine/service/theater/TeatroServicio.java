@@ -26,6 +26,8 @@ public interface TeatroServicio {
 
     List<TeatroResponse> listarPaginado();
 
+    List<TeatroResponse> listarPaginado(org.springframework.data.domain.Pageable pageable);
+
     List<TeatroResponse> listarAscendente();
 
     List<TeatroResponse> listarDescendente();

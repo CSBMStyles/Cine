@@ -47,6 +47,8 @@ public interface PeliculaDisposicionServicio {
 
     List<PeliculaDisposicionResponse> listarPaginado();
 
+    List<PeliculaDisposicionResponse> listarPaginado(org.springframework.data.domain.Pageable pageable);
+
     List<PeliculaDisposicionResponse> listarAscendente();
 
     List<PeliculaDisposicionResponse> listarDescendente();

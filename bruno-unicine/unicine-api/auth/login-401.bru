@@ -1,0 +1,30 @@
+meta {
+  name: login 401 - credenciales invalidas
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "correo": "bad@test.com",
+    "password": "Aa1!aaaaa"
+  }
+}
+
+docs {
+  401 DOMAIN_USER_AUTH_INVALID_CREDENTIALS
+}

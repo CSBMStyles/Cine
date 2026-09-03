@@ -51,6 +51,8 @@ public interface ColeccionServicio {
 
     List<ColeccionResponse> listarPaginado();
 
+    List<ColeccionResponse> listarPaginado(org.springframework.data.domain.Pageable pageable);
+
     // !SECTION
     // SECTION: Metodos de negocio
 

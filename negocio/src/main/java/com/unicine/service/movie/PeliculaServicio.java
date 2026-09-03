@@ -31,6 +31,8 @@ public interface PeliculaServicio {
 
     List<PeliculaResponse> listarPaginado();
 
+    List<PeliculaResponse> listarPaginado(org.springframework.data.domain.Pageable pageable);
+
     List<PeliculaResponse> listarAscendente();
 
     List<PeliculaResponse> listarDescendente();

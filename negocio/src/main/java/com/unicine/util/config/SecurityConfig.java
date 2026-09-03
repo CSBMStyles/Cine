@@ -77,6 +77,14 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/security/public", "/security/public/**")
                         .permitAll()
+                        // OpenAPI / Swagger UI — tarea 4.6 adelantada para 4.2
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
                 .exceptionHandling(ex -> ex
@@ -173,7 +181,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         // Para baseline permisivo; endurecer en Fase 5 cuando el frontend tenga origen fijo
         config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // QUERY añadido para forward-compat RFC 10008; Spring lo trata como método no estándar hasta soporte nativo
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "QUERY", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(false);
         config.setMaxAge(3600L);
