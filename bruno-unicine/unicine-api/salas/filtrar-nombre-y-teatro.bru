@@ -1,0 +1,18 @@
+meta {
+  name: filtrar nombre y teatro - GET /api/salas?nombre=Atlantis&teatro=5
+  type: http
+  seq: 4
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/salas?nombre=Atlantis&teatro=5
+  auth: none
+}
+
+docs {
+  Filtra por nombre parcial y teatro. Ambos params deben coincidir.
+}
