@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.unicine.api.controller.ClienteController;
 import com.unicine.enums.user.TipoUsuario;
 import com.unicine.security.UsuarioPrincipal;
+import com.unicine.service.purchase.CompraServicio;
 import com.unicine.service.user.ClienteServicio;
 import com.unicine.transfer.dto.response.ClienteResponse;
 import com.unicine.util.config.SecurityConfig;
@@ -42,6 +43,9 @@ class ClienteControllerTest {
 
     @MockitoBean
     private ClienteServicio clienteServicio;
+
+    @MockitoBean
+    private CompraServicio compraServicio;
 
     private UsuarioPrincipal principalCliente(Integer cedula) {
         // password dummy, authorities ROLE_CLIENTE

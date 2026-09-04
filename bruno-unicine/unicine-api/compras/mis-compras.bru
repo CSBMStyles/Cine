@@ -1,0 +1,18 @@
+meta {
+  name: mis compras - GET /api/compras?cliente=me
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/compras?cliente=1009000011
+  auth: inherit
+}
+
+docs {
+  Lista solo mis compras. 403 si pides cliente distinto sin ADMIN. Con dev, usa pepe cedula 1009000011.
+}

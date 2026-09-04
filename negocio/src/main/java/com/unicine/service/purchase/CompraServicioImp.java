@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.purchase.Compra;
@@ -286,13 +287,27 @@ public class CompraServicioImp implements CompraServicio {
 
     /**
      * Registra una compra con sus entradas, productos de confiteria y cupon opcional.
+     * Invariantes: ignora valorTotal y precio de entradas del cliente, calcula server-side,
+     * valida sillas atomico, idempotente por codigo, transaccional.
      */
     @Override
+    @Transactional
     public CompraResponse registrarCompraCompleta(CompraCompletaRequest request) throws Exception {
         CompraRequest compraRequest = request.getCompra();
+
+        // Idempotencia por codigo cliente (reintento seguro)
+        if (compraRequest.getCodigo() != null && compraRepo.existsById(compraRequest.getCodigo())) {
+            return compraRepo.findById(compraRequest.getCodigo())
+                    .map(compraMapper::toResponse)
+                    .orElseThrow(() -> new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+        }
+
         validarDatosCompra(compraRequest);
 
-        List<Entrada> entradas = prepararEntradas(request.getEntradas(), compraRequest.getFuncionCodigo());
+        // Precio server-side: forzar precio de funcion para cada entrada
+        Funcion funcion = funcionRepo.findById(compraRequest.getFuncionCodigo())
+                .orElseThrow(() -> new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND));
+        List<Entrada> entradas = prepararEntradasConPrecioFuncion(request.getEntradas(), funcion);
         CuponCliente cuponCliente = obtenerCuponCliente(compraRequest.getCuponClienteCodigo());
         List<CompraConfiteria> confiterias = compraConfiteriaMapper.toEntityList(request.getConfiterias());
 
@@ -304,6 +319,17 @@ public class CompraServicioImp implements CompraServicio {
         consumirCupon(cuponCliente);
 
         return compraMapper.toResponse(guardada);
+    }
+
+    private List<Entrada> prepararEntradasConPrecioFuncion(List<EntradaRequest> requests, Funcion funcion) {
+        List<Entrada> entradas = entradaMapper.toEntityList(requests);
+        // Sobrescribir precio cliente con precio real de funcion
+        for (Entrada entrada : entradas) {
+            entrada.setPrecio(funcion.getPrecio());
+            entrada.setFuncion(funcion);
+        }
+        validarSillasDisponibles(entradas, funcion.getCodigo());
+        return entradas;
     }
 
     @Override

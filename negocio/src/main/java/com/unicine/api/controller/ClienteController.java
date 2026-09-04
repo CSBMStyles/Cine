@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unicine.security.UsuarioPrincipal;
+import com.unicine.service.purchase.CompraServicio;
 import com.unicine.service.user.ClienteServicio;
 import com.unicine.transfer.dto.request.ClienteRequest;
 import com.unicine.transfer.dto.response.ClienteResponse;
+import com.unicine.transfer.dto.response.CompraResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,9 +37,11 @@ import jakarta.validation.constraints.Positive;
 public class ClienteController {
 
     private final ClienteServicio clienteServicio;
+    private final CompraServicio compraServicio;
 
-    public ClienteController(ClienteServicio clienteServicio) {
+    public ClienteController(ClienteServicio clienteServicio, CompraServicio compraServicio) {
         this.clienteServicio = clienteServicio;
+        this.compraServicio = compraServicio;
     }
 
     // SECTION: Perfil propio
@@ -120,6 +124,20 @@ public class ClienteController {
         }
         clienteServicio.eliminar(cedula, confirmacion);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me/compras")
+    @Operation(summary = "Historial de mis compras", description = "Alias de GET /api/compras?cliente=me")
+    public ResponseEntity<List<CompraResponse>> misCompras(
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        try {
+            return ResponseEntity.ok(compraServicio.obtenerComprasCliente(principal.getCedula()));
+        } catch (Exception e) {
+            return ResponseEntity.ok(List.of());
+        }
     }
 
     // !SECTION
