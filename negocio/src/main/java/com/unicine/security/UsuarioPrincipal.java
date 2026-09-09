@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.unicine.entity.user.AdministradorTeatro;
 import com.unicine.enums.user.TipoUsuario;
 import com.unicine.entity.user.Persona;
 
@@ -26,20 +28,44 @@ public class UsuarioPrincipal implements UserDetails {
 
     private final TipoUsuario tipo;
 
+    @JsonIgnore
     private final String password;
+
+    private final List<Integer> teatroIds;
 
     private final Collection<? extends GrantedAuthority> authorities;
 
     public UsuarioPrincipal(Integer cedula, String correo, String password, TipoUsuario tipo) {
+        this(cedula, correo, password, tipo, List.of());
+    }
+
+    public UsuarioPrincipal(Integer cedula, String correo, String password, TipoUsuario tipo,
+            List<Integer> teatroIds) {
         this.cedula = cedula;
         this.correo = correo;
         this.password = password;
         this.tipo = tipo;
+        this.teatroIds = teatroIds == null ? List.of() : List.copyOf(teatroIds);
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + tipo.name()));
     }
 
     public static UsuarioPrincipal desdePersona(Persona persona, TipoUsuario tipo) {
-        return new UsuarioPrincipal(persona.getCedula(), persona.getCorreo(), persona.getPassword(), tipo);
+        return desdePersona(persona, tipo, List.of());
+    }
+
+    public static UsuarioPrincipal desdePersona(Persona persona, TipoUsuario tipo, List<Integer> teatroIds) {
+        List<Integer> ids = teatroIds;
+        if ((ids == null || ids.isEmpty()) && persona instanceof AdministradorTeatro adminTeatro
+                && adminTeatro.getTeatros() != null) {
+            ids = adminTeatro.getTeatros().stream()
+                    .filter(t -> t != null && t.getCodigo() != null)
+                    .map(t -> t.getCodigo())
+                    .toList();
+        }
+        if (ids == null) {
+            ids = List.of();
+        }
+        return new UsuarioPrincipal(persona.getCedula(), persona.getCorreo(), persona.getPassword(), tipo, ids);
     }
 
     @Override
@@ -48,6 +74,7 @@ public class UsuarioPrincipal implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

@@ -89,7 +89,7 @@ public class ClienteServicioImp implements ClienteServicio {
         Optional<Cliente> existe = clienteRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
+            throw new ValidationException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED);
         }
     }
 
@@ -98,7 +98,7 @@ public class ClienteServicioImp implements ClienteServicio {
         Optional<Cliente> existe = clienteRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
+            throw new ValidationException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED);
         }
     }
 

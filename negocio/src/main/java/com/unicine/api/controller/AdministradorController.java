@@ -70,18 +70,28 @@ public class AdministradorController {
     // SECTION: Administración
 
     @GetMapping
-    @Operation(summary = "Listar administradores")
-    public ResponseEntity<List<AdministradorResponse>> listar() {
+    @Operation(summary = "Listar administradores", description = "Solo rol ADMINISTRADOR. 401 sin auth, 403 sin rol.")
+    public ResponseEntity<List<AdministradorResponse>> listar(
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!esAdministrador(principal)) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(administradorServicio.listar());
     }
 
     @GetMapping("/{cedula}")
-    @Operation(summary = "Obtener administrador por cédula")
+    @Operation(summary = "Obtener administrador por cédula", description = "Solo propio o ADMINISTRADOR.")
     public ResponseEntity<AdministradorResponse> obtenerPorCedula(
             @PathVariable @Positive Integer cedula,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(401).build();
+        }
+        if (!esAdministrador(principal) && !principal.getCedula().equals(cedula)) {
+            return ResponseEntity.status(403).build();
         }
         return administradorServicio.obtener(cedula)
                 .map(ResponseEntity::ok)
@@ -89,7 +99,7 @@ public class AdministradorController {
     }
 
     @DeleteMapping("/{cedula}")
-    @Operation(summary = "Eliminar administrador — requiere ?confirmacion=true")
+    @Operation(summary = "Eliminar administrador — requiere ?confirmacion=true", description = "Solo propio o ADMINISTRADOR.")
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer cedula,
             @RequestParam boolean confirmacion,
@@ -97,13 +107,19 @@ public class AdministradorController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin && !principal.getCedula().equals(cedula)) {
+        if (!esAdministrador(principal) && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         administradorServicio.eliminar(cedula, confirmacion);
         return ResponseEntity.noContent().build();
+    }
+
+    // !SECTION
+    // SECTION: Metodos de soporte
+
+    private boolean esAdministrador(UsuarioPrincipal principal) {
+        return principal.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
     }
 
     // !SECTION

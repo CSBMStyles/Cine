@@ -3,7 +3,6 @@ package com.unicine.api.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,9 +71,17 @@ public class ClienteController {
     // SECTION: Administración protegida
 
     @GetMapping
-    @Operation(summary = "Listar clientes", description = "Requiere rol ADMIN. Por ahora authenticated().")
-    public ResponseEntity<List<ClienteResponse>> listar(Authentication auth) {
-        // TODO 5.2: @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @Operation(summary = "Listar clientes", description = "Solo rol ADMINISTRADOR. 401 sin auth, 403 sin rol.")
+    public ResponseEntity<List<ClienteResponse>> listar(
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        boolean esAdmin = principal.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
+        if (!esAdmin) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(clienteServicio.listar());
     }
 
