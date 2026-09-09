@@ -48,6 +48,10 @@ class ClienteControllerTest {
         return new UsuarioPrincipal(cedula, "pepe@test.com", "hashed", TipoUsuario.CLIENTE);
     }
 
+    private UsuarioPrincipal principalAdmin(Integer cedula) {
+        return new UsuarioPrincipal(cedula, "admin@test.com", "hashed", TipoUsuario.ADMINISTRADOR);
+    }
+
     private void sout(String titulo, MvcResult result) throws Exception {
         String body = result.getResponse().getContentAsString();
         System.out.println("\n>>> " + titulo + " | status=" + result.getResponse().getStatus());
@@ -94,6 +98,48 @@ class ClienteControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andReturn();
         sout("listarSinAuth401", result);
+    }
+
+    @Test
+    void listarComoCliente403() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/clientes")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isForbidden())
+                .andReturn();
+        sout("listarComoCliente403", result);
+    }
+
+    @Test
+    void listarComoAdmin200() throws Exception {
+        ClienteResponse mock = ClienteResponse.builder().cedula(1009000011).nombre("Pepe").correo("pepe@test.com").estado(true).build();
+        when(clienteServicio.listar()).thenReturn(List.of(mock));
+
+        MvcResult result = mockMvc.perform(get("/api/clientes")
+                        .with(user(principalAdmin(2001))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].cedula").value(1009000011))
+                .andReturn();
+        sout("listarComoAdmin200", result);
+    }
+
+    @Test
+    void actualizarMeIgnoraCedulaYFuerzaEstado() throws Exception {
+        ClienteResponse mock = ClienteResponse.builder().cedula(1009000011).nombre("Pepe").correo("nuevo@test.com").estado(true).build();
+        when(clienteServicio.actualizar(any())).thenReturn(mock);
+
+        String body = """
+                {"cedula":9999,"nombre":"Pepe","apellido":"Perez","correo":"nuevo@test.com","password":"Aa1!aaaaa","estado":false,"fechaNacimiento":"2000-01-01"}
+                """;
+
+        MvcResult result = mockMvc.perform(put("/api/clientes/me")
+                        .with(user(principalCliente(1009000011)))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cedula").value(1009000011))
+                .andExpect(jsonPath("$.estado").value(true))
+                .andReturn();
+        sout("actualizarMeIgnoraCedula", result);
     }
 
     @Test

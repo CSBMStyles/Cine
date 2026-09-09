@@ -25,6 +25,8 @@ import com.unicine.transfer.dto.response.ClienteResponse;
 import com.unicine.util.config.SecurityConfig;
 import com.unicine.util.validation.catalog.domain.UserErrorCatalog;
 import com.unicine.exception.AuthenticationException;
+import com.unicine.exception.BusinessRuleException;
+import com.unicine.exception.ValidationException;
 
 /**
  * Tests slice para AuthController — registro y login.
@@ -108,6 +110,63 @@ class AuthControllerTest {
                 .andReturn();
 
         sout("registroNoExponePassword", result);
+    }
+
+    @Test
+    void registroCorreoDuplicado409() throws Exception {
+        when(clienteServicio.registrar(any()))
+                .thenThrow(new ValidationException(
+                        UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED));
+
+        String body = """
+                {"cedula":1009000011,"nombre":"Pepe","apellido":"Perez","correo":"pepe@test.com","password":"Aa1!aaaaa","estado":true,"fechaNacimiento":"2001-12-14","telefonos":["+573001234567"]}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/auth/registro").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED"))
+                .andReturn();
+
+        sout("registroCorreoDuplicado409", result);
+    }
+
+    @Test
+    void registroCedulaDuplicada409() throws Exception {
+        when(clienteServicio.registrar(any()))
+                .thenThrow(new ValidationException(
+                        UserErrorCatalog.DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED));
+
+        String body = """
+                {"cedula":1009000011,"nombre":"Pepe","apellido":"Perez","correo":"otro@test.com","password":"Aa1!aaaaa","estado":true,"fechaNacimiento":"2001-12-14","telefonos":["+573001234567"]}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/auth/registro").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("DOMAIN_USER_DUPLICATE_ID_ALREADY_REGISTERED"))
+                .andReturn();
+
+        sout("registroCedulaDuplicada409", result);
+    }
+
+    @Test
+    void registroMenorEdad400() throws Exception {
+        when(clienteServicio.registrar(any()))
+                .thenThrow(new BusinessRuleException(
+                        UserErrorCatalog.DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE));
+
+        String body = """
+                {"cedula":1009000011,"nombre":"Pepe","apellido":"Perez","correo":"pepe@test.com","password":"Aa1!aaaaa","estado":true,"fechaNacimiento":"2015-01-01","telefonos":["+573001234567"]}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/auth/registro").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE"))
+                .andReturn();
+
+        sout("registroMenorEdad400", result);
     }
 
     // !SECTION
