@@ -43,5 +43,5 @@ body:json {
 }
 
 docs {
-  Requiere auth (cedula == clienteCedula) -> 201 con total server-side (ignora 999). Reintento mismo codigo -> 200 existente sin duplicar. Sin auth 401, cliente distinto 403, silla ocupada 409, fecha pasada 400.
+  Requiere auth (cedula == clienteCedula) -> 201 con total server-side (ignora 999). Reintento mismo codigo -> 200 existente sin duplicar. Sin auth 401, cliente distinto 403, silla ocupada 400 (BUSINESS_RULE), fecha pasada 400.
 }
