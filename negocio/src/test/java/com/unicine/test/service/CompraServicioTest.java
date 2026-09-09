@@ -438,6 +438,8 @@ public class CompraServicioTest {
 
     @Test
     @Sql("classpath:dataset.sql")
+    @Sql(scripts = "classpath:cleanup-compra-concurrente.sql",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void compraConcurrenteMismaSillaPersisteUnaSola() throws Exception {
         // NOT_SUPPORTED: @Sql commitea el dataset para que los hilos
