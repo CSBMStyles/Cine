@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.unicine.util.validation.catalog.ErrorCode;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -29,42 +30,51 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@Schema(name = "ApiError", description = "Error uniforme de la API: status HTTP + codigo de catalogo UniCine")
 public class ApiError {
 
     /**
      * Fecha y hora en que ocurrio el error (ISO-8601).
      */
+    @Schema(description = "Fecha y hora del error (ISO-8601)", example = "2026-05-23T10:15:30")
     private LocalDateTime timestamp;
 
     /**
      * Codigo HTTP de la respuesta (ej: 404, 400, 401).
      */
+    @Schema(description = "Codigo HTTP", example = "404")
     private int status;
 
     /**
      * Nombre del error HTTP (ej: "Not Found", "Bad Request").
      */
+    @Schema(description = "Nombre del error HTTP", example = "Not Found")
     private String error;
 
     /**
      * Codigo de error del catalogo UniCine (ej: "DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND", "DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED").
      * Null si el error no esta catalogado.
      */
+    @Schema(description = "Codigo de catalogo UniCine, null si no catalogado",
+            example = "DOMAIN_USER_ENTITY_ADMIN_NOT_FOUND", nullable = true)
     private String code;
 
     /**
      * Mensaje humano-legible del error.
      */
+    @Schema(description = "Mensaje humano-legible", example = "El administrador no existe")
     private String message;
 
     /**
      * Ruta del endpoint donde ocurrio el error.
      */
+    @Schema(description = "Ruta del endpoint", example = "/api/administradores/123")
     private String path;
 
     /**
      * Detalles de validacion sin incluir valores rechazados o datos sensibles.
      */
+    @Schema(description = "Detalles de validacion, sin valores rechazados ni sensibles")
     private List<ValidationErrorDetail> details;
 
     /**
