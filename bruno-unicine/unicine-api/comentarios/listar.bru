@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/comentarios
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/comentarios?pelicula=4&page=0&size=10
+  auth: none
+}
+
+docs {
+  Publico sin auth. ?pelicula=&cliente=&page=&size=. POST fuerza cedula del principal (salvo ADMIN). POST /{codigo}/like|dislike requiere auth. PUT/DELETE propio o ADMIN.
+}
