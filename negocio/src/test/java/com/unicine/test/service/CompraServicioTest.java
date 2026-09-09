@@ -3,18 +3,27 @@ package com.unicine.test.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unicine.enums.purchase.MedioPago;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.service.purchase.CompraServicio;
+import com.unicine.repository.purchase.CompraRepo;
+import com.unicine.repository.purchase.CuponClienteRepo;
+import com.unicine.repository.purchase.EntradaRepo;
 import com.unicine.transfer.dto.request.CompraCompletaRequest;
 import com.unicine.transfer.dto.request.CompraConfiteriaRequest;
 import com.unicine.transfer.dto.request.CompraRequest;
@@ -34,6 +43,15 @@ public class CompraServicioTest {
 
     @Autowired
     private CompraServicio compraServicio;
+
+    @Autowired
+    private CompraRepo compraRepo;
+
+    @Autowired
+    private CuponClienteRepo cuponClienteRepo;
+
+    @Autowired
+    private EntradaRepo entradaRepo;
 
     // 🟩 Casos positivos
 
@@ -82,7 +100,9 @@ public class CompraServicioTest {
         try {
             CompraResponse registrada = compraServicio.registrarCompraCompleta(request);
 
-            Double esperado = 20000.0;
+            // Precio server-side: entrada toma precio de funcion(1)=7000 (ignora 10000 del body)
+            // + confiteria 2x5000 = 17000.0
+            Double esperado = 17000.0;
             Assertions.assertEquals(esperado, registrada.getValorTotal());
             Assertions.assertNotNull(registrada.getCodigo());
             Assertions.assertTrue(registrada.getEstado());
@@ -356,4 +376,128 @@ public class CompraServicioTest {
             Assertions.fail("Error inesperado: " + e.getMessage());
         }
     }
+
+    // SECTION: 4.4.1 invariantes transaccionales
+
+    private CompraCompletaRequest compraCompleta(Integer clienteCedula, Integer funcionCodigo,
+                                                 int fila, int columna, Integer cuponClienteCodigo) {
+        CompraRequest compraRequest = CompraRequest.builder()
+                .estado(true)
+                .medioPago(MedioPago.NEQUI)
+                .fechaCompra(LocalDateTime.now())
+                .fechaPelicula(LocalDateTime.now().plusDays(1))
+                .valorTotal(0.0)
+                .clienteCedula(clienteCedula)
+                .funcionCodigo(funcionCodigo)
+                .cuponClienteCodigo(cuponClienteCodigo)
+                .build();
+
+        List<EntradaRequest> entradas = List.of(
+                EntradaRequest.builder()
+                        .precio(999.0)
+                        .fila(fila)
+                        .columna(columna)
+                        .compraCodigo(1)
+                        .funcionCodigo(funcionCodigo)
+                        .build()
+        );
+
+        return CompraCompletaRequest.builder()
+                .compra(compraRequest)
+                .entradas(entradas)
+                .confiterias(new ArrayList<>())
+                .build();
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    public void sillaOcupadaHaceRollbackTotal() {
+        long comprasAntes = compraRepo.count();
+
+        try {
+            // Funcion 6, silla (2,5) ocupada en dataset + cupon 1 valido de Luisa
+            compraServicio.registrarCompraCompleta(
+                    compraCompleta(1005000055, 6, 2, 5, 1));
+
+            Assertions.fail("Deberia lanzar BusinessRuleException por silla ocupada");
+
+        } catch (BusinessRuleException e) {
+            System.out.println("Rollback esperado: " + e.getMessage());
+            Assertions.assertEquals(
+                    PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED.getCode(),
+                    e.getErrorCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assertions.fail("Error inesperado: " + e.getMessage());
+        }
+
+        // Nada persistido y cupon intacto (no consumido)
+        Assertions.assertEquals(comprasAntes, compraRepo.count());
+        Assertions.assertTrue(cuponClienteRepo.findById(1).orElseThrow().getEstado());
+    }
+
+    @Test
+    @Sql("classpath:dataset.sql")
+    @Sql(scripts = "classpath:cleanup-compra-concurrente.sql",
+            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void compraConcurrenteMismaSillaPersisteUnaSola() throws Exception {
+        // NOT_SUPPORTED: @Sql commitea el dataset para que los hilos
+        // (transacciones propias) vean los datos; limpieza explicita al final.
+        ExecutorService pool = Executors.newFixedThreadPool(2);
+        CountDownLatch listo = new CountDownLatch(1);
+        Integer funcion = 1;
+        Integer codigoGanadora = null;
+
+        try {
+            var tarea = (java.util.concurrent.Callable<Object>) () -> {
+                listo.await(10, TimeUnit.SECONDS);
+                try {
+                    // Cliente 1005000055 existe en dataset; sin cupon para aislar la carrera
+                    return compraServicio.registrarCompraCompleta(
+                            compraCompleta(1005000055, funcion, 3, 3, null));
+                } catch (Exception e) {
+                    return e;
+                }
+            };
+
+            Future<Object> f1 = pool.submit(tarea);
+            Future<Object> f2 = pool.submit(tarea);
+            listo.countDown();
+
+            Object r1 = f1.get(60, TimeUnit.SECONDS);
+            Object r2 = f2.get(60, TimeUnit.SECONDS);
+
+            long exitos = java.util.stream.Stream.of(r1, r2)
+                    .filter(r -> r instanceof CompraResponse).count();
+            long conflictos = java.util.stream.Stream.of(r1, r2)
+                    .filter(r -> r instanceof BusinessRuleException
+                            && PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED
+                                    .getCode().equals(((BusinessRuleException) r).getErrorCode()))
+                    .count();
+
+            System.out.println("\nExitos=" + exitos + " conflictos=" + conflictos);
+
+            Assertions.assertEquals(1, exitos);
+            Assertions.assertEquals(1, conflictos);
+            Assertions.assertTrue(entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(3, 3, funcion));
+
+            // Limpieza explicita (sin rollback: NOT_SUPPORTED + hilos commitean)
+            codigoGanadora = java.util.stream.Stream.of(r1, r2)
+                    .filter(r -> r instanceof CompraResponse)
+                    .map(r -> ((CompraResponse) r).getCodigo())
+                    .findFirst()
+                    .orElse(null);
+
+        } finally {
+            pool.shutdownNow();
+        }
+
+        if (codigoGanadora != null) {
+            entradaRepo.deleteAll(entradaRepo.findByCompraCodigo(codigoGanadora));
+            compraRepo.deleteById(codigoGanadora);
+        }
+    }
+
+    // !SECTION
 }

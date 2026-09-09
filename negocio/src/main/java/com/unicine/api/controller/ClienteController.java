@@ -1,5 +1,7 @@
 package com.unicine.api.controller;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -15,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unicine.security.UsuarioPrincipal;
+import com.unicine.service.purchase.CompraServicio;
 import com.unicine.service.user.ClienteServicio;
 import com.unicine.transfer.dto.request.ClienteRequest;
 import com.unicine.transfer.dto.response.ClienteResponse;
+import com.unicine.transfer.dto.response.CompraResponse;
+import com.unicine.util.pagination.PaginadoManual;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,9 +40,11 @@ import jakarta.validation.constraints.Positive;
 public class ClienteController {
 
     private final ClienteServicio clienteServicio;
+    private final CompraServicio compraServicio;
 
-    public ClienteController(ClienteServicio clienteServicio) {
+    public ClienteController(ClienteServicio clienteServicio, CompraServicio compraServicio) {
         this.clienteServicio = clienteServicio;
+        this.compraServicio = compraServicio;
     }
 
     // SECTION: Perfil propio
@@ -77,9 +84,7 @@ public class ClienteController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin) {
+        if (!principal.esAdministrador()) {
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(clienteServicio.listar());
@@ -94,9 +99,7 @@ public class ClienteController {
             return ResponseEntity.status(401).build();
         }
         // Si no es ADMIN y pide otro cedula -> 403
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin && !principal.getCedula().equals(cedula)) {
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         return clienteServicio.obtener(cedula)
@@ -113,13 +116,40 @@ public class ClienteController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin && !principal.getCedula().equals(cedula)) {
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         clienteServicio.eliminar(cedula, confirmacion);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me/compras")
+    @Operation(summary = "Historial de mis compras",
+            description = "Alias de GET /api/compras?cliente=me. ?page=&size=&direction=asc|desc. "
+                    + "Orden fechaCompra DESC. Vacío → 200 [].")
+    public ResponseEntity<List<CompraResponse>> misCompras(
+            @AuthenticationPrincipal UsuarioPrincipal principal,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String direction) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        try {
+            List<CompraResponse> mias = compraServicio.obtenerComprasCliente(principal.getCedula()).stream()
+                    .sorted(ordenHistorial(direction))
+                    .toList();
+            return ResponseEntity.ok(PaginadoManual.paginar(mias, page, size));
+        } catch (com.unicine.exception.ResourceNotFoundException e) {
+            return ResponseEntity.ok(List.of());
+        }
+    }
+
+    private Comparator<CompraResponse> ordenHistorial(String direction) {
+        Comparator<CompraResponse> porFecha = Comparator.comparing(
+                CompraResponse::getFechaCompra, Comparator.nullsLast(LocalDateTime::compareTo))
+                .thenComparing(CompraResponse::getCodigo, Comparator.nullsLast(Integer::compareTo));
+        return "asc".equalsIgnoreCase(direction) ? porFecha : porFecha.reversed();
     }
 
     // !SECTION

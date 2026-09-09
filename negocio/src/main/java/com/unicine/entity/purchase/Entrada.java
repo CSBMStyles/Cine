@@ -2,6 +2,8 @@ package com.unicine.entity.purchase;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -20,6 +22,7 @@ import com.unicine.util.validation.catalog.ValidationMessages;
 import java.io.Serializable;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"fila", "columna", "funcion_id"}))
 @Getter
 @Setter
 @ToString

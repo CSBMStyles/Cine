@@ -76,7 +76,7 @@ public class AdministradorController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        if (!esAdministrador(principal)) {
+        if (!principal.esAdministrador()) {
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(administradorServicio.listar());
@@ -90,7 +90,7 @@ public class AdministradorController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        if (!esAdministrador(principal) && !principal.getCedula().equals(cedula)) {
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         return administradorServicio.obtener(cedula)
@@ -107,19 +107,11 @@ public class AdministradorController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        if (!esAdministrador(principal) && !principal.getCedula().equals(cedula)) {
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         administradorServicio.eliminar(cedula, confirmacion);
         return ResponseEntity.noContent().build();
-    }
-
-    // !SECTION
-    // SECTION: Metodos de soporte
-
-    private boolean esAdministrador(UsuarioPrincipal principal) {
-        return principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
     }
 
     // !SECTION

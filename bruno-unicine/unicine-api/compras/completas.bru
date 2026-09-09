@@ -1,0 +1,47 @@
+meta {
+  name: completas - POST /api/compras/completas
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/compras/completas
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "compra": {
+      "clienteCedula": 1009000011,
+      "funcionCodigo": 1,
+      "medioPago": "NEQUI",
+      "estado": true,
+      "fechaCompra": "2030-01-01T10:00:00",
+      "fechaPelicula": "2030-01-02T18:00:00",
+      "valorTotal": 999
+    },
+    "entradas": [
+      {
+        "fila": 1,
+        "columna": 1,
+        "precio": 999,
+        "compraCodigo": 1,
+        "funcionCodigo": 1
+      }
+    ],
+    "confiterias": []
+  }
+}
+
+docs {
+  Requiere auth (cedula == clienteCedula) -> 201 con total server-side (ignora 999). Reintento mismo codigo -> 200 existente sin duplicar. Sin auth 401, cliente distinto 403, silla ocupada 400 (BUSINESS_RULE), fecha pasada 400.
+}

@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.purchase.Compra;
@@ -134,7 +136,7 @@ public class CompraServicioImp implements CompraServicio {
             boolean ocupada = entradaRepo.existsByFilaAndColumnaAndFuncionCodigo(
                     entrada.getFila(), entrada.getColumna(), codigoFuncion);
             if (ocupada) {
-                throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_ROOM_NOT_ENOUGH_AVAILABLE_SEATS);
+                throw new BusinessRuleException(PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED);
             }
         }
     }
@@ -206,9 +208,9 @@ public class CompraServicioImp implements CompraServicio {
         compra.setValorTotal(valorTotal);
         compra.setFechaCompra(LocalDateTime.now(ZoneId.of("America/Bogota")));
         compra.setEstado(true);
-        if (cuponCliente != null) {
-            compra.setCuponCliente(cuponCliente);
-        }
+        // Siempre fijar (null incluido): el mapper puede dejar un CuponCliente
+        // transitorio cuando cuponClienteCodigo es null y romperia el flush.
+        compra.setCuponCliente(cuponCliente);
         return compra;
     }
 
@@ -240,9 +242,14 @@ public class CompraServicioImp implements CompraServicio {
     // SECTION: Implementacion de servicios Crud
 
     @Override
+    @Transactional
     public CompraResponse registrar(CompraRequest request) {
-        Compra compra = compraMapper.toEntity(request);
+        validarDatosCompra(request);
+        CuponCliente cuponCliente = obtenerCuponCliente(request.getCuponClienteCodigo());
+        Double valorTotal = calcularValorTotal(List.of(), List.of(), cuponCliente);
+        Compra compra = construirCompra(request, valorTotal, cuponCliente);
         Compra registro = compraRepo.save(compra);
+        consumirCupon(cuponCliente);
         return compraMapper.toResponse(registro);
     }
 
@@ -286,24 +293,58 @@ public class CompraServicioImp implements CompraServicio {
 
     /**
      * Registra una compra con sus entradas, productos de confiteria y cupon opcional.
+     * Invariantes: ignora valorTotal y precio de entradas del cliente, calcula server-side,
+     * valida sillas atomico, idempotente por codigo, transaccional.
      */
     @Override
+    @Transactional
     public CompraResponse registrarCompraCompleta(CompraCompletaRequest request) throws Exception {
         CompraRequest compraRequest = request.getCompra();
+
+        // Idempotencia por codigo cliente (reintento seguro)
+        if (compraRequest.getCodigo() != null && compraRepo.existsById(compraRequest.getCodigo())) {
+            return compraRepo.findById(compraRequest.getCodigo())
+                    .map(compraMapper::toResponse)
+                    .orElseThrow(() -> new ResourceNotFoundException(PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+        }
+
         validarDatosCompra(compraRequest);
 
-        List<Entrada> entradas = prepararEntradas(request.getEntradas(), compraRequest.getFuncionCodigo());
+        // Precio server-side: forzar precio de funcion para cada entrada
+        Funcion funcion = funcionRepo.findById(compraRequest.getFuncionCodigo())
+                .orElseThrow(() -> new ResourceNotFoundException(ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND));
+        List<Entrada> entradas = prepararEntradasConPrecioFuncion(request.getEntradas(), funcion);
         CuponCliente cuponCliente = obtenerCuponCliente(compraRequest.getCuponClienteCodigo());
         List<CompraConfiteria> confiterias = compraConfiteriaMapper.toEntityList(request.getConfiterias());
 
         Double valorTotal = calcularValorTotal(entradas, confiterias, cuponCliente);
 
-        Compra guardada = compraRepo.save(construirCompra(compraRequest, valorTotal, cuponCliente));
-        guardarEntradas(entradas, guardada);
-        guardarConfiterias(confiterias, guardada);
-        consumirCupon(cuponCliente);
+        // Conflicto concurrente (silla tomada entre validacion e insercion,
+        // o mismo codigo en carrera): el unique fila+columna+funcion lo frena
+        // en flush y se traduce a 400 en vez de 500. Hace rollback total.
+        try {
+            Compra guardada = compraRepo.save(construirCompra(compraRequest, valorTotal, cuponCliente));
+            guardarEntradas(entradas, guardada);
+            entradaRepo.flush();
+            guardarConfiterias(confiterias, guardada);
+            consumirCupon(cuponCliente);
 
-        return compraMapper.toResponse(guardada);
+            return compraMapper.toResponse(guardada);
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessRuleException(
+                    PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED);
+        }
+    }
+
+    private List<Entrada> prepararEntradasConPrecioFuncion(List<EntradaRequest> requests, Funcion funcion) {
+        List<Entrada> entradas = entradaMapper.toEntityList(requests);
+        // Sobrescribir precio cliente con precio real de funcion
+        for (Entrada entrada : entradas) {
+            entrada.setPrecio(funcion.getPrecio());
+            entrada.setFuncion(funcion);
+        }
+        validarSillasDisponibles(entradas, funcion.getCodigo());
+        return entradas;
     }
 
     @Override

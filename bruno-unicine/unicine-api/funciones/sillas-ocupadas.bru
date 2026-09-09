@@ -1,0 +1,18 @@
+meta {
+  name: sillas ocupadas - GET /api/funciones/{id}/sillas-ocupadas
+  type: http
+  seq: 2
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/funciones/1/sillas-ocupadas
+  auth: none
+}
+
+docs {
+  200 [{codigoEntrada, filaEntrada, columnaEntrada}] o 404 si funcion no existe
+}
