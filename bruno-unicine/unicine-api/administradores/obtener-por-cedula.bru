@@ -1,0 +1,18 @@
+meta {
+  name: obtener-por-cedula - GET /api/administradores/:cedula
+  type: http
+  seq: 2
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/administradores/2001
+  auth: inherit
+}
+
+docs {
+  Solo propio o ADMINISTRADOR. 401 sin auth, 403 si pide otro sin rol, 404 si no existe, 200 sin password.
+}

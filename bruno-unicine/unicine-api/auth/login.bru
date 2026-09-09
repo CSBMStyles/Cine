@@ -26,5 +26,5 @@ body:json {
 }
 
 docs {
-  200 {cedula, correo, tipo: CLIENTE, mensaje}. 401 si credenciales malas. Usa dataset dev: pepe@hotmail.com / 78!Kz9...
+  200 {cedula, correo, tipo: CLIENTE|ADMINISTRADOR|ADMINISTRADOR_TEATRO, teatroIds: []|[codigos], mensaje}. 401 si credenciales malas. Usa dataset dev: pepe@hotmail.com / 78!Kz9...
 }
