@@ -323,11 +323,54 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiError> handleTypeMismatch(
-            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex, WebRequest request) {
-        log.warn("Type mismatch: {}", ex.getMessage());
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex, WebRequest request) {        log.warn("Type mismatch: {}", ex.getMessage());
 
         ValidationErrorDetail detail = new ValidationErrorDetail(ex.getName(),
                 ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage());
+
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                null,
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                List.of(detail));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Parte multipart faltante, p. ej. POST /api/imagenes sin "file" (4.5.3).
+     */
+    @ExceptionHandler(org.springframework.web.multipart.support.MissingServletRequestPartException.class)
+    public ResponseEntity<ApiError> handleMissingPart(
+            org.springframework.web.multipart.support.MissingServletRequestPartException ex, WebRequest request) {
+        log.warn("Missing multipart part: {}", ex.getRequestPartName());
+
+        ValidationErrorDetail detail = new ValidationErrorDetail(ex.getRequestPartName(),
+                "Parte requerida no presente: " + ex.getRequestPartName());
+
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                null,
+                "La solicitud contiene errores de validacion",
+                extractPath(request),
+                List.of(detail));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    /**
+     * Archivo excede el maximo configurado (spring.servlet.multipart.max-file-size).
+     */
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiError> handleMaxUploadSize(
+            org.springframework.web.multipart.MaxUploadSizeExceededException ex, WebRequest request) {
+        log.warn("Max upload size exceeded: {}", ex.getMessage());
+
+        ValidationErrorDetail detail = new ValidationErrorDetail("file",
+                "El archivo excede el tamano maximo permitido");
 
         ApiError error = ApiError.of(
                 HttpStatus.BAD_REQUEST.value(),
