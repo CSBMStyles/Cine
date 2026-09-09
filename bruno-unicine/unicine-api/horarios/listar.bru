@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/horarios
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/horarios?page=0&size=10
+  auth: none
+}
+
+docs {
+  Publico sin auth. POST requiere ?salaCodigo= y rol ADMIN o ADMINISTRADOR_TEATRO. Solape -> 400 con DOMAIN_SHOWING_BUSINESS_RULE_SCHEDULE_OVERLAP (contrato 4.0).
+}

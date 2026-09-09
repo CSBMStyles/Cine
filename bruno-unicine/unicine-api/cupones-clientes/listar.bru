@@ -1,0 +1,18 @@
+meta {
+  name: por-cliente - GET /api/cupones-clientes
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/cupones-clientes?cliente=1009000011&estado=activos
+  auth: inherit
+}
+
+docs {
+  Propio o ADMIN (?estado=activos|inactivos). /por-cupon?cupon=&cliente=, /redimidos/count?cliente=. Asignacion solo ADMIN.
+}
