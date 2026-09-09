@@ -81,9 +81,7 @@ public class ClienteController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin) {
+        if (!principal.esAdministrador()) {
             return ResponseEntity.status(403).build();
         }
         return ResponseEntity.ok(clienteServicio.listar());
@@ -98,9 +96,7 @@ public class ClienteController {
             return ResponseEntity.status(401).build();
         }
         // Si no es ADMIN y pide otro cedula -> 403
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin && !principal.getCedula().equals(cedula)) {
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         return clienteServicio.obtener(cedula)
@@ -117,9 +113,7 @@ public class ClienteController {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin && !principal.getCedula().equals(cedula)) {
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
             return ResponseEntity.status(403).build();
         }
         clienteServicio.eliminar(cedula, confirmacion);
@@ -127,7 +121,7 @@ public class ClienteController {
     }
 
     @GetMapping("/me/compras")
-    @Operation(summary = "Historial de mis compras", description = "Alias de GET /api/compras?cliente=me")
+    @Operation(summary = "Historial de mis compras", description = "Alias de GET /api/compras?cliente=me. Vacío → 200 [].")
     public ResponseEntity<List<CompraResponse>> misCompras(
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
@@ -135,7 +129,7 @@ public class ClienteController {
         }
         try {
             return ResponseEntity.ok(compraServicio.obtenerComprasCliente(principal.getCedula()));
-        } catch (Exception e) {
+        } catch (com.unicine.exception.ResourceNotFoundException e) {
             return ResponseEntity.ok(List.of());
         }
     }

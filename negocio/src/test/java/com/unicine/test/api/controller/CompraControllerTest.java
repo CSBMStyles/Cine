@@ -1,6 +1,8 @@
 package com.unicine.test.api.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -23,10 +25,12 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.CompraController;
 import com.unicine.enums.user.TipoUsuario;
+import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.purchase.CompraServicio;
 import com.unicine.transfer.dto.response.CompraResponse;
 import com.unicine.util.config.SecurityConfig;
+import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
  * Tests slice para CompraController — checkout transaccional, ownership, idempotencia.
@@ -177,7 +181,6 @@ class CompraControllerTest {
 
     @Test
     void idempotenciaCodigoExistente200() throws Exception {
-        // Si el cliente manda codigo que ya existe, registrar debe devolver existente 200 no duplicar
         CompraResponse existente = CompraResponse.builder().codigo(99).valorTotal(10000.0).build();
         when(compraServicio.obtener(99)).thenReturn(Optional.of(existente));
 
@@ -194,6 +197,62 @@ class CompraControllerTest {
                 .andReturn();
 
         sout("idempotencia99 200 existente", result);
+    }
+
+    @Test
+    void registrarCompraCompletaReintento200() throws Exception {
+        CompraResponse existente = CompraResponse.builder().codigo(7).valorTotal(35000.0).build();
+        when(compraServicio.obtener(7)).thenReturn(Optional.of(existente));
+
+        String body = """
+                {
+                  "compra": {"codigo":7,"clienteCedula":1009000011,"funcionCodigo":1,"medioPago":"NEQUI","estado":true,"fechaCompra":"2030-01-01T10:00:00","fechaPelicula":"2030-01-02T18:00:00","valorTotal":999},
+                  "entradas": [{"fila":1,"columna":1,"precio":999,"compraCodigo":7,"funcionCodigo":1}],
+                  "confiterias": []
+                }
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/compras/completas")
+                        .with(user(principalCliente(1009000011)))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value(7))
+                .andReturn();
+
+        verify(compraServicio, never()).registrarCompraCompleta(any());
+        sout("reintentoCompletas200 sin duplicar", result);
+    }
+
+    @Test
+    void obtenerSinHistorialPropio403() throws Exception {
+        CompraResponse otra = CompraResponse.builder().codigo(5).valorTotal(10000.0).build();
+        when(compraServicio.obtener(5)).thenReturn(Optional.of(otra));
+        when(compraServicio.obtenerComprasCliente(1009000011))
+                .thenThrow(new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+
+        MvcResult result = mockMvc.perform(get("/api/compras/5")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("obtenerSinHistorial403", result);
+    }
+
+    @Test
+    void listarHistorialVacio200() throws Exception {
+        when(compraServicio.obtenerComprasCliente(1009000011))
+                .thenThrow(new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+
+        MvcResult result = mockMvc.perform(get("/api/compras")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andReturn();
+
+        sout("historialVacio200", result);
     }
 
     // !SECTION

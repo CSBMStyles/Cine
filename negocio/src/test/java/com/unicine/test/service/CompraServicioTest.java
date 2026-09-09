@@ -82,7 +82,9 @@ public class CompraServicioTest {
         try {
             CompraResponse registrada = compraServicio.registrarCompraCompleta(request);
 
-            Double esperado = 20000.0;
+            // Precio server-side: entrada toma precio de funcion(1)=7000 (ignora 10000 del body)
+            // + confiteria 2x5000 = 17000.0
+            Double esperado = 17000.0;
             Assertions.assertEquals(esperado, registrada.getValorTotal());
             Assertions.assertNotNull(registrada.getCodigo());
             Assertions.assertTrue(registrada.getEstado());

@@ -25,11 +25,14 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.ClienteController;
 import com.unicine.enums.user.TipoUsuario;
+import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.purchase.CompraServicio;
 import com.unicine.service.user.ClienteServicio;
 import com.unicine.transfer.dto.response.ClienteResponse;
+import com.unicine.transfer.dto.response.CompraResponse;
 import com.unicine.util.config.SecurityConfig;
+import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 
 /**
  * Tests slice para ClienteController — perfil /me y ownership.
@@ -145,9 +148,9 @@ class ClienteControllerTest {
                 .andReturn();
         sout("actualizarMeIgnoraCedula", result);
     }
-
     @Test
     void eliminarOwnConConfirmacion204() throws Exception {
+
         MvcResult result = mockMvc.perform(delete("/api/clientes/1009000011")
                         .param("confirmacion", "true")
                         .with(user(principalCliente(1009000011)))
@@ -155,5 +158,40 @@ class ClienteControllerTest {
                 .andExpect(status().isNoContent())
                 .andReturn();
         sout("eliminarOwn204", result);
+    }
+
+    @Test
+    void misComprasConAuth200() throws Exception {
+        CompraResponse mock = CompraResponse.builder().codigo(1).valorTotal(35000.0).build();
+        when(compraServicio.obtenerComprasCliente(1009000011)).thenReturn(List.of(mock));
+
+        MvcResult result = mockMvc.perform(get("/api/clientes/me/compras")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].codigo").value(1))
+                .andReturn();
+        sout("misCompras200", result);
+    }
+
+    @Test
+    void misComprasVacias200() throws Exception {
+        when(compraServicio.obtenerComprasCliente(1009000011))
+                .thenThrow(new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+
+        MvcResult result = mockMvc.perform(get("/api/clientes/me/compras")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andReturn();
+        sout("misComprasVacias200", result);
+    }
+
+    @Test
+    void misComprasSinAuth401() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/clientes/me/compras"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+        sout("misCompras401", result);
     }
 }

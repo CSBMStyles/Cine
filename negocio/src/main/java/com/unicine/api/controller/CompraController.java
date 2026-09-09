@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.purchase.CompraServicio;
 import com.unicine.transfer.dto.request.CompraCompletaRequest;
 import com.unicine.transfer.dto.request.CompraRequest;
 import com.unicine.transfer.dto.response.CompraResponse;
+import com.unicine.util.pagination.PaginadoManual;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,7 +68,7 @@ public class CompraController {
     }
 
     @PostMapping("/completas")
-    @Operation(summary = "Registrar compra completa", description = "Transacción: compra + entradas + confitería + cupón. Ignora precios/valorTotal del body, sillas atómicas, idempotente por codigo.")
+    @Operation(summary = "Registrar compra completa", description = "Transacción: compra + entradas + confitería + cupón. Ignora precios/valorTotal del body, sillas atómicas. Idempotente por codigo: reintento devuelve 200 con la existente.")
     public ResponseEntity<CompraResponse> registrarCompleta(
             @Valid @RequestBody CompraCompletaRequest request,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
@@ -75,15 +77,18 @@ public class CompraController {
         }
         Integer clienteCedula = request.getCompra().getClienteCedula();
         if (!principal.getCedula().equals(clienteCedula)) {
-            boolean esAdmin = principal.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-            if (!esAdmin) {
+            if (!principal.esAdministrador()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
+        // Idempotencia: si codigo ya existe, devolver existente con 200
+        if (request.getCompra().getCodigo() != null) {
+            var existente = compraServicio.obtener(request.getCompra().getCodigo());
+            if (existente.isPresent()) {
+                return ResponseEntity.ok(existente.get());
+            }
+        }
         CompraResponse response = compraServicio.registrarCompraCompleta(request);
-        // Si fue idempotente (ya existia), el servicio devuelve existente -> 200, sino 201
-        // Detectar por si request.codigo ya existia antes: simplificar a 201
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -102,16 +107,12 @@ public class CompraController {
         if (compra.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        // Ownership check: compra.clienteCedula vs principal
-        // Como CompraResponse no expone cliente directo en este corte, permitimos si es ADMIN o si el historial lo valida
-        // Para 4.4.5 simple: si no es ADMIN y la compra no es suya via obtenerComprasCliente, devolver 403
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
-        if (!esAdmin) {
+        // Ownership: solo ADMIN o compras propias. Sin historial propio -> 403.
+        if (!principal.esAdministrador()) {
             List<CompraResponse> misCompras;
             try {
                 misCompras = compraServicio.obtenerComprasCliente(principal.getCedula());
-            } catch (Exception e) {
+            } catch (ResourceNotFoundException e) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             boolean esMia = misCompras.stream().anyMatch(c -> codigo.equals(c.getCodigo()));
@@ -123,7 +124,7 @@ public class CompraController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar compras", description = "Filtros: ?cliente= (solo propio o ADMIN), ?page=&size=")
+    @Operation(summary = "Listar compras", description = "Filtros: ?cliente= (solo propio o ADMIN), ?page=&size=. Vacío → 200 [].")
     public ResponseEntity<List<CompraResponse>> listar(
             @RequestParam(required = false) Integer cliente,
             @RequestParam(required = false) Integer page,
@@ -132,8 +133,7 @@ public class CompraController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        boolean esAdmin = principal.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
+        boolean esAdmin = principal.esAdministrador();
 
         if (cliente != null) {
             if (!esAdmin && !principal.getCedula().equals(cliente)) {
@@ -142,29 +142,18 @@ public class CompraController {
             return ResponseEntity.ok(compraServicio.obtenerComprasCliente(cliente));
         }
 
-        // Sin filtro cliente: si es admin lista todo, si no solo suyas
+        // Sin filtro cliente: si es admin lista todo, si no solo suyas (vacío → 200 []).
         if (esAdmin) {
             List<CompraResponse> todas = compraServicio.listar();
-            return ResponseEntity.ok(aplicarPaginado(todas, page, size));
+            return ResponseEntity.ok(PaginadoManual.paginar(todas, page, size));
         } else {
             try {
                 List<CompraResponse> mias = compraServicio.obtenerComprasCliente(principal.getCedula());
-                return ResponseEntity.ok(aplicarPaginado(mias, page, size));
-            } catch (Exception e) {
+                return ResponseEntity.ok(PaginadoManual.paginar(mias, page, size));
+            } catch (ResourceNotFoundException e) {
                 return ResponseEntity.ok(List.of());
             }
         }
-    }
-
-    private List<CompraResponse> aplicarPaginado(List<CompraResponse> lista, Integer page, Integer size) {
-        if (page == null && size == null) {
-            return lista;
-        }
-        int p = page != null ? page : 0;
-        int s = size != null ? size : 10;
-        int from = Math.min(p * s, lista.size());
-        int to = Math.min(from + s, lista.size());
-        return lista.subList(from, to);
     }
 
     // !SECTION
