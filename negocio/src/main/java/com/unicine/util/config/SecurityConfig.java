@@ -50,6 +50,9 @@ public class SecurityConfig {
      * <p>Rutas publicas temporales (catalogo lectura):</p>
      * <ul>
      *   <li>GET /api/peliculas/**, /api/funciones/**, /api/ciudades/**, /api/teatros/**, /api/salas/**</li>
+     *   <li>GET /api/confiterias/**, /api/presentaciones/** (catalogo comercial 4.5.1)</li>
+     *   <li>GET /api/horarios/**, /api/funcion-esquemas/** (programacion 4.5.2)</li>
+     *   <li>GET /api/comentarios/** (resenas publicas)</li>
      *   <li>GET /actuator/health</li>
      *   <li>POST /api/auth/** (placeholder para registro/login 4.3.2)</li>
      * </ul>
@@ -69,7 +72,12 @@ public class SecurityConfig {
                                 "/api/funciones/**",
                                 "/api/ciudades/**",
                                 "/api/teatros/**",
-                                "/api/salas/**")
+                                "/api/salas/**",
+                                "/api/confiterias/**",
+                                "/api/presentaciones/**",
+                                "/api/horarios/**",
+                                "/api/funcion-esquemas/**",
+                                "/api/comentarios/**")
                         .permitAll()
                         .requestMatchers("/actuator/health")
                         .permitAll()

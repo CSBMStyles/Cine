@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/distribuciones-silla
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/distribuciones-silla
+  auth: inherit
+}
+
+docs {
+  Requiere auth (layouts de sala, uso administrativo). Escritura solo ADMIN o ADMINISTRADOR_TEATRO.
+}

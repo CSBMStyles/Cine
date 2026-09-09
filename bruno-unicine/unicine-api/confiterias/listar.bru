@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/confiterias
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/confiterias?categoria=SNACK&page=0&size=10
+  auth: none
+}
+
+docs {
+  Publico sin auth. Filtros: ?categoria=COMBO|BEBIDA|SNACK|DULCE|OTROS&nombre=&page=&size=. Escritura solo ADMIN o ADMINISTRADOR_TEATRO.
+}

@@ -1,0 +1,18 @@
+meta {
+  name: ultimo - GET /api/historial-precios/ultimo
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/historial-precios/ultimo?presentacion=5
+  auth: inherit
+}
+
+docs {
+  Requiere auth. Completo ?presentacion= solo ADMIN. Registrar y DELETE ?presentacion=&confirmacion=true solo ADMIN.
+}

@@ -1,0 +1,24 @@
+meta {
+  name: subir - POST /api/imagenes
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/imagenes
+  body: multipart-form
+  auth: inherit
+}
+
+body:form-data {
+  datos: {"codigo":"tmp-1","nombre":"foto","tipoPropietario":"PELICULA","codigoPropietario":1}
+  file: @file(foto.jpg)
+}
+
+docs {
+  Requiere auth. Partes: datos (JSON) + file (JPG/PNG/WEBP, max 5MB). Sin file -> 400. PUT /{codigo} reemplaza, POST /{codigo}/restaurar?versionId=, POST /{codigo}/renombrar?nombre=, DELETE ?confirmacion=true. SDK nunca en responses.
+}

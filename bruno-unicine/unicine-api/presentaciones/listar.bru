@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/presentaciones
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/presentaciones?confiteria=5&page=0&size=10
+  auth: none
+}
+
+docs {
+  Publico sin auth. ?confiteria= filtra. /con-descuento lista descuento temporal activo. PUT acepta ?fechaExpiracion= ISO opcional. Escritura solo ADMIN o ADMINISTRADOR_TEATRO.
+}

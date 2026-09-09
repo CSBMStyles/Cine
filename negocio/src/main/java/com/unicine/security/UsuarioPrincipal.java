@@ -98,6 +98,16 @@ public class UsuarioPrincipal implements UserDetails {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
     }
 
+    /**
+     * Indica si el principal puede gestionar catalogos y programacion
+     * (confiteria, presentaciones, horarios, esquemas, sillas): ADMIN o ADMINISTRADOR_TEATRO.
+     */
+    public boolean esGestorCatalogo() {
+        return authorities.stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR")
+                        || a.getAuthority().equals("ROLE_ADMINISTRADOR_TEATRO"));
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -1,0 +1,18 @@
+meta {
+  name: listar - GET /api/administradores-teatro
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+get {
+  url: {{baseUrl}}/api/administradores-teatro
+  auth: inherit
+}
+
+docs {
+  Solo ADMIN. POST alta solo ADMIN. /me perfil propio. GET /{cedula} propio o ADMIN.
+}
