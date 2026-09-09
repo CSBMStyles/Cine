@@ -28,6 +28,7 @@ public class LoginRequest {
     @Email(message = ValidationMessages.EMAIL_INVALID)
     private String correo;
 
+    @ToString.Exclude
     @NotBlank(message = ValidationMessages.PASSWORD_NOT_BLANK)
     @Size(min = 8, max = 200, message = ValidationMessages.PASSWORD_SIZE_MIN_EIGHT)
     private String password;

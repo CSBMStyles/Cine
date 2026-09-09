@@ -78,7 +78,7 @@ public class AdministradorTeatroServicioImp implements AdministradorTeatroServic
         Optional<AdministradorTeatro> existe = administradorTeatroRepo.findByCorreo(correo);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
+            throw new ValidationException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED);
         }
     }
 
@@ -87,7 +87,7 @@ public class AdministradorTeatroServicioImp implements AdministradorTeatroServic
         Optional<AdministradorTeatro> existe = administradorTeatroRepo.buscarCorreoExcluido(correoModificar, cedula);
        
         if (existe.isPresent()) {
-            throw new RuntimeException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED.getMessage());
+            throw new ValidationException(UserErrorCatalog.DOMAIN_USER_DUPLICATE_EMAIL_ALREADY_REGISTERED);
         }
     }
 

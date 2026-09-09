@@ -91,10 +91,22 @@ public class AuthController {
                 .nombre(persona.getNombre())
                 .correo(persona.getCorreo())
                 .tipo(tipo)
+                .teatroIds(extraerTeatroIds(persona))
                 .mensaje("Autenticado correctamente. JWT pendiente Fase 5.")
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    private java.util.List<Integer> extraerTeatroIds(Persona persona) {
+        if (persona instanceof com.unicine.entity.user.AdministradorTeatro adminTeatro
+                && adminTeatro.getTeatros() != null) {
+            return adminTeatro.getTeatros().stream()
+                    .filter(t -> t != null && t.getCodigo() != null)
+                    .map(t -> t.getCodigo())
+                    .toList();
+        }
+        return java.util.List.of();
     }
 
     // !SECTION

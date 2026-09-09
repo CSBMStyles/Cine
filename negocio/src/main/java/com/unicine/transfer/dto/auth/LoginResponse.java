@@ -29,5 +29,7 @@ public class LoginResponse {
 
     private TipoUsuario tipo;
 
+    private java.util.List<Integer> teatroIds;
+
     private String mensaje;
 }
