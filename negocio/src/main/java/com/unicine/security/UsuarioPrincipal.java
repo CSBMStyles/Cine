@@ -89,6 +89,15 @@ public class UsuarioPrincipal implements UserDetails {
         return correo;
     }
 
+    /**
+     * Indica si el principal tiene rol administrador general.
+     * Punto unico para el chequeo de rol — evita repetir el stream en controllers.
+     */
+    public boolean esAdministrador() {
+        return authorities.stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
