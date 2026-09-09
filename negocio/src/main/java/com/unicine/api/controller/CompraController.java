@@ -1,5 +1,7 @@
 package com.unicine.api.controller;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -68,7 +70,10 @@ public class CompraController {
     }
 
     @PostMapping("/completas")
-    @Operation(summary = "Registrar compra completa", description = "Transacción: compra + entradas + confitería + cupón. Ignora precios/valorTotal del body, sillas atómicas. Idempotente por codigo: reintento devuelve 200 con la existente.")
+    @Operation(summary = "Registrar compra completa (reserva atómica)",
+            description = "ES la reserva: compra + entradas + confitería + cupón en una transacción. "
+                    + "Ignora precios/valorTotal del body, sillas atómicas. Idempotente por codigo: "
+                    + "reintento devuelve 200 con la existente. Conflicto concurrente → 400.")
     public ResponseEntity<CompraResponse> registrarCompleta(
             @Valid @RequestBody CompraCompletaRequest request,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
@@ -124,11 +129,15 @@ public class CompraController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar compras", description = "Filtros: ?cliente= (solo propio o ADMIN), ?page=&size=. Vacío → 200 [].")
+    @Operation(summary = "Listar compras",
+            description = "Filtros: ?cliente= (solo propio o ADMIN), ?page=&size=&sort=fechaCompra&direction=asc|desc. "
+                    + "Orden por defecto fechaCompra DESC. Vacío → 200 [].")
     public ResponseEntity<List<CompraResponse>> listar(
             @RequestParam(required = false) Integer cliente,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String direction,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -139,21 +148,38 @@ public class CompraController {
             if (!esAdmin && !principal.getCedula().equals(cliente)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
-            return ResponseEntity.ok(compraServicio.obtenerComprasCliente(cliente));
+            try {
+                List<CompraResponse> compras =
+                        ordenar(compraServicio.obtenerComprasCliente(cliente), sort, direction);
+                return ResponseEntity.ok(PaginadoManual.paginar(compras, page, size));
+            } catch (ResourceNotFoundException e) {
+                return ResponseEntity.ok(List.of());
+            }
         }
 
         // Sin filtro cliente: si es admin lista todo, si no solo suyas (vacío → 200 []).
         if (esAdmin) {
-            List<CompraResponse> todas = compraServicio.listar();
+            List<CompraResponse> todas = ordenar(compraServicio.listar(), sort, direction);
             return ResponseEntity.ok(PaginadoManual.paginar(todas, page, size));
         } else {
             try {
-                List<CompraResponse> mias = compraServicio.obtenerComprasCliente(principal.getCedula());
+                List<CompraResponse> mias =
+                        ordenar(compraServicio.obtenerComprasCliente(principal.getCedula()), sort, direction);
                 return ResponseEntity.ok(PaginadoManual.paginar(mias, page, size));
             } catch (ResourceNotFoundException e) {
                 return ResponseEntity.ok(List.of());
             }
         }
+    }
+
+    private List<CompraResponse> ordenar(List<CompraResponse> compras, String sort, String direction) {
+        Comparator<CompraResponse> porFecha = Comparator.comparing(
+                CompraResponse::getFechaCompra, Comparator.nullsLast(LocalDateTime::compareTo))
+                .thenComparing(CompraResponse::getCodigo, Comparator.nullsLast(Integer::compareTo));
+        if ("asc".equalsIgnoreCase(direction)) {
+            return compras.stream().sorted(porFecha).toList();
+        }
+        return compras.stream().sorted(porFecha.reversed()).toList();
     }
 
     // !SECTION

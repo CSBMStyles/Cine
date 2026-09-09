@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.CompraController;
 import com.unicine.enums.user.TipoUsuario;
+import com.unicine.exception.BusinessRuleException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.purchase.CompraServicio;
@@ -253,6 +254,68 @@ class CompraControllerTest {
                 .andReturn();
 
         sout("historialVacio200", result);
+    }
+
+    @Test
+    void sillaOcupadaDevuelve400ConCodigo() throws Exception {
+        when(compraServicio.registrarCompraCompleta(any()))
+                .thenThrow(new BusinessRuleException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED));
+
+        String body = """
+                {
+                  "compra": {"clienteCedula":1009000011,"funcionCodigo":1,"medioPago":"NEQUI","estado":true,"fechaCompra":"2030-01-01T10:00:00","fechaPelicula":"2030-01-02T18:00:00","valorTotal":999},
+                  "entradas": [{"fila":1,"columna":1,"precio":999,"compraCodigo":1,"funcionCodigo":1}],
+                  "confiterias": []
+                }
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/compras/completas")
+                        .with(user(principalCliente(1009000011)))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("DOMAIN_PURCHASE_BUSINESS_RULE_SELECTED_SEAT_ALREADY_OCCUPIED"))
+                .andReturn();
+
+        sout("sillaOcupada400", result);
+    }
+
+    @Test
+    void historialPorClienteOrdenadoYPaginado200() throws Exception {
+        CompraResponse vieja = CompraResponse.builder()
+                .codigo(1).fechaCompra(java.time.LocalDateTime.parse("2026-01-01T10:00:00")).build();
+        CompraResponse nueva = CompraResponse.builder()
+                .codigo(2).fechaCompra(java.time.LocalDateTime.parse("2026-06-01T10:00:00")).build();
+        when(compraServicio.obtenerComprasCliente(1009000011)).thenReturn(List.of(vieja, nueva));
+
+        MvcResult result = mockMvc.perform(get("/api/compras")
+                        .param("cliente", "1009000011")
+                        .param("page", "0")
+                        .param("size", "1")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].codigo").value(2))
+                .andReturn();
+
+        sout("historialOrdenadoPaginado200", result);
+    }
+
+    @Test
+    void historialPorClienteVacio200() throws Exception {
+        when(compraServicio.obtenerComprasCliente(1009000011))
+                .thenThrow(new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+
+        MvcResult result = mockMvc.perform(get("/api/compras")
+                        .param("cliente", "1009000011")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0))
+                .andReturn();
+
+        sout("historialPorClienteVacio200", result);
     }
 
     // !SECTION

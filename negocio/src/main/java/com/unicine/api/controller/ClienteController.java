@@ -1,5 +1,7 @@
 package com.unicine.api.controller;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import com.unicine.service.user.ClienteServicio;
 import com.unicine.transfer.dto.request.ClienteRequest;
 import com.unicine.transfer.dto.response.ClienteResponse;
 import com.unicine.transfer.dto.response.CompraResponse;
+import com.unicine.util.pagination.PaginadoManual;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -121,17 +124,32 @@ public class ClienteController {
     }
 
     @GetMapping("/me/compras")
-    @Operation(summary = "Historial de mis compras", description = "Alias de GET /api/compras?cliente=me. Vacío → 200 [].")
+    @Operation(summary = "Historial de mis compras",
+            description = "Alias de GET /api/compras?cliente=me. ?page=&size=&direction=asc|desc. "
+                    + "Orden fechaCompra DESC. Vacío → 200 [].")
     public ResponseEntity<List<CompraResponse>> misCompras(
-            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+            @AuthenticationPrincipal UsuarioPrincipal principal,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String direction) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
         try {
-            return ResponseEntity.ok(compraServicio.obtenerComprasCliente(principal.getCedula()));
+            List<CompraResponse> mias = compraServicio.obtenerComprasCliente(principal.getCedula()).stream()
+                    .sorted(ordenHistorial(direction))
+                    .toList();
+            return ResponseEntity.ok(PaginadoManual.paginar(mias, page, size));
         } catch (com.unicine.exception.ResourceNotFoundException e) {
             return ResponseEntity.ok(List.of());
         }
+    }
+
+    private Comparator<CompraResponse> ordenHistorial(String direction) {
+        Comparator<CompraResponse> porFecha = Comparator.comparing(
+                CompraResponse::getFechaCompra, Comparator.nullsLast(LocalDateTime::compareTo))
+                .thenComparing(CompraResponse::getCodigo, Comparator.nullsLast(Integer::compareTo));
+        return "asc".equalsIgnoreCase(direction) ? porFecha : porFecha.reversed();
     }
 
     // !SECTION

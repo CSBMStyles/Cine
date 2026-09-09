@@ -194,4 +194,23 @@ class ClienteControllerTest {
                 .andReturn();
         sout("misCompras401", result);
     }
+
+    @Test
+    void misComprasOrdenadasDescPorDefecto200() throws Exception {
+        CompraResponse vieja = CompraResponse.builder()
+                .codigo(1).fechaCompra(java.time.LocalDateTime.parse("2026-01-01T10:00:00")).build();
+        CompraResponse nueva = CompraResponse.builder()
+                .codigo(2).fechaCompra(java.time.LocalDateTime.parse("2026-06-01T10:00:00")).build();
+        when(compraServicio.obtenerComprasCliente(1009000011)).thenReturn(List.of(vieja, nueva));
+
+        MvcResult result = mockMvc.perform(get("/api/clientes/me/compras")
+                        .param("page", "0")
+                        .param("size", "1")
+                        .with(user(principalCliente(1009000011))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].codigo").value(2))
+                .andReturn();
+        sout("misComprasOrdenadas200", result);
+    }
 }
