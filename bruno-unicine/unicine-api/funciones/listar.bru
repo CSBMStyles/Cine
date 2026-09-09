@@ -9,10 +9,10 @@ vars:pre-request {
 }
 
 get {
-  url: {{baseUrl}}/api/funciones
+  url: {{baseUrl}}/api/funciones?pelicula=1&ciudad=1&fecha=2026-09-10&page=0&size=10&sort=codigo&direction=asc
   auth: none
 }
 
 docs {
-  Publico sin auth. Filtros: ?pelicula=1&sala=1&page=0&size=10
+  Publico sin auth. Filtros: ?pelicula=&sala=&ciudad=&fecha=YYYY-MM-DD (America/Bogota). Paginado ?page=&size=&sort=codigo&direction=asc|desc. Vacio -> 200 []. Fecha invalida -> 400.
 }
