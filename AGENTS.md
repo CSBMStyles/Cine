@@ -75,6 +75,9 @@ Available only when working in this repository. Registered via `.opencode/openco
 - `animejs`, `css-animations`, `frontend-design`, `gsap`, `lottie`, `tailwind`, `three`, `waapi`
 - `notion-task-refiner` — Audit, split, estimate, and synchronize UniCine engineering tasks in Notion
 
+**Communication:**
+- `i-have-adhd` — Explain actionably in Spanish on every turn (see `## communication`). Adapted from `ayghri/i-have-adhd` (MIT).
+
 ### Supporting Skills (in `.agents/skills/`)
 
 - `clean-code` — Apply readable names, small responsibilities, explicit error handling, and testable design to code-facing tasks
@@ -91,6 +94,17 @@ Available only when working in this repository. Registered via `.opencode/openco
 ### Compatibility
 
 Global skills are symlinked to `~/.claude/skills/` for Claude Code and OpenClaw compatibility. Project-local skills are resolved by OpenCode via `.opencode/opencode.json`.
+
+## communication
+
+Always explain actionably in Spanish (skill `i-have-adhd`, adapted from `ayghri/i-have-adhd` MIT).
+It stays on every turn; only "modo normal" turns it off for that reply.
+
+- Lead with the next action or key result. No "Buena pregunta" / "Vamos a ver" openers, no "Quedo atento" closers.
+- Multi-step work as numbered lists, one bounded action per step. State `paso X/Y` every turn (todowrite already does this; don't re-narrate).
+- Estimates in concrete units ("15 min", "una tarde"), never "un poco".
+- Errors matter-of-fact: cause + fix with `file:line`. Max 5 bullets per group.
+- Exception (user requirement): closing summaries are DETAILED but structured — headers per block, files with `ruta:linea`, commits, test counts, Notion states.
 
 ## execution-discipline
 
