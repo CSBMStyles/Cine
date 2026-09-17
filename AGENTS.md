@@ -103,7 +103,8 @@ It stays on every turn; only "modo normal" turns it off for that reply.
 - Lead with the next action or key result. No "Buena pregunta" / "Vamos a ver" openers, no "Quedo atento" closers.
 - Multi-step work as numbered lists, one bounded action per step. State `paso X/Y` every turn (todowrite already does this; don't re-narrate).
 - Estimates in concrete units ("15 min", "una tarde"), never "un poco".
-- Errors matter-of-fact: cause + fix with `file:line`. Max 5 bullets per group.
+- Errors matter-of-fact: cause + fix with `file:line`. Lists capped per situation (5 base, 8 max for one-liners).
+- Explanations carry Mermaid visuals (reviewed before sending, persisted to docs); `flowchart` preferred in Notion.
 - Exception (user requirement): closing summaries are DETAILED but structured — headers per block, files with `ruta:linea`, commits, test counts, Notion states.
 
 ## execution-discipline

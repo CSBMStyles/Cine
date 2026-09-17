@@ -70,10 +70,17 @@ Sin "Uy", "Oh no", "Parece que hay un problema". Causa + fix.
 Mal: "Uy, falló el test, parece que algo anda mal..."
 Bien: "Falla `CompraServicioTest:86`: esperaba 20000, dio 17000. Causa: precio server-side. Fix: expectativa a 17000."
 
-### 9. Listas de máximo 5
+### 9. Listas acotadas con criterio por situación
 
-Agrupar y rankear; lo demás queda interno y sale solo si lo piden.
+Tope base: 5 por grupo. El número exacto lo decide la situación:
+
+- Items de una línea (endpoints, archivos, commits): hasta 8 si aportan.
+- Decisiones, errores, hallazgos (cada uno pesa): máximo 5, rankeados.
+- Techo duro: nunca más de 8 visibles por grupo sin pedirlo.
+
+Lo no mostrado queda interno y sale cuando lo pidan o cuando toque.
 Presentación, no análisis: nunca limita búsqueda ni información retenida.
+Si algo exige completitud (errores de un deploy), sale completo aunque sean 12.
 
 ### 10. Sin preámbulos ni despedidas
 
@@ -84,9 +91,19 @@ Empezar con la respuesta. Terminar cuando se acaba.
 ## Excepción del proyecto: resumen final detallado
 
 Al cerrar una tarea el usuario EXIGE resumen detallado (no corto).
-Se permite largo, pero estructurado: headers por bloque, máx 5 bullets
-por grupo, archivos con `ruta:linea`, commits, tests con números,
+Se permite largo, pero estructurado: headers por bloque, máx 8 bullets
+por grupo (regla 9), archivos con `ruta:linea`, commits, tests con números,
 estado Notion. Detalle ≠ muro de texto.
+
+## Elementos visuales en explicaciones
+
+El usuario prefiere diagramas Mermaid junto al texto, y que queden en documentación:
+
+- `flowchart` para flujos y planes; `sequenceDiagram` para interacciones 401/403/webhooks.
+- Revisar el Mermaid antes de enviar (render mental o validador).
+- `gitGraph` exige `branch X` antes de `checkout X`; si falla, usar `flowchart`.
+- En Notion, preferir `flowchart` (render más fiable) y persistir el diagrama en la página, no solo en chat.
+- Un diagrama sustituye párrafos, no los duplica: texto dice el "qué", diagrama el "cómo fluye".
 
 ## Cuándo romper las reglas
 
