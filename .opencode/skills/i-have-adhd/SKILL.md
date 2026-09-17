@@ -104,11 +104,11 @@ El usuario prefiere diagramas Mermaid junto al texto, y que queden en documentac
 - `gitGraph` exige `branch X` antes de `checkout X`; si falla, usar `flowchart`.
 - En Notion, preferir `flowchart` (render más fiable) y persistir el diagrama en la página, no solo en chat.
 - Un diagrama sustituye párrafos, no los duplica: texto dice el "qué", diagrama el "cómo fluye".
-- Ver el gráfico en el chat: el cliente muestra Mermaid como código. Cuando el
-  usuario quiera verlo aquí, renderizarlo a imagen y adjuntarla:
-  base64-urlsafe del código → `curl https://mermaid.ink/img/<b64>?theme=dark`
-  a `/tmp/*.png` → leerlo con `read` (lo adjunta a la respuesta).
-  Requiere internet; si falla, avisar y dejar el código + link `mermaid.live`.
+- Ver el gráfico en el chat: por defecto se entrega el CODIGO Mermaid en bloque
+  (el usuario lo prefiere asi). Solo renderizar a imagen adjunta si lo pide
+  ("muestrame el grafico"): base64-urlsafe del código →
+  `curl https://mermaid.ink/img/<b64>?theme=dark` a `/tmp/*.png` → leerlo
+  con `read` (lo adjunta). Requiere internet; si falla, dejar código + link.
 
 ## Cuándo romper las reglas
 
