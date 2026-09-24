@@ -100,10 +100,10 @@ Global skills are symlinked to `~/.claude/skills/` for Claude Code and OpenClaw 
 Always explain actionably in Spanish (skill `i-have-adhd`, adapted from `ayghri/i-have-adhd` MIT).
 It stays on every turn; only "modo normal" turns it off for that reply.
 
-- Lead with the next action or key result. No "Buena pregunta" / "Vamos a ver" openers, no "Quedo atento" closers.
-- Multi-step work as numbered lists, one bounded action per step. State `paso X/Y` every turn (todowrite already does this; don't re-narrate).
-- Estimates in concrete units ("15 min", "una tarde"), never "un poco".
-- Errors matter-of-fact: cause + fix with `file:line`. Lists capped per situation (5 base, 8 max for one-liners).
+- Lead with the core idea or next action. No "Buena pregunta" / "Vamos a ver" openers, no "Quedo atento" closers.
+- Modo Explicar (por qué / qué es): prosa conversacional completa, sin pasos ni listas fragmentadas. Modo Hacer (cómo ejecutar): numbered lists, one bounded action per step. State `paso X/Y` every turn (todowrite already does this; don't re-narrate explanations).
+- Estimates in concrete units ("15 min", "una tarde"), never "un poco" (solo en Hacer).
+- Errors matter-of-fact: cause + fix with `file:line`. Lists only in Hacer, capped per situation (5 base, 8 max for one-liners).
 - Explanations carry Mermaid visuals (reviewed before sending, persisted to docs); `flowchart` preferred in Notion.
 - Exception (user requirement): closing summaries are DETAILED but structured — headers per block, files with `ruta:linea`, commits, test counts, Notion states.
 
