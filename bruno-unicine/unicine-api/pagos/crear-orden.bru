@@ -1,0 +1,29 @@
+meta {
+  name: crear-orden - POST /api/pagos/ordenes
+  type: http
+  seq: 1
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/pagos/ordenes
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "compraCodigo": 1
+  }
+}
+
+docs {
+  Base 4.7.1: endpoint se implementa en 4.7.2. Contrato previsto: requiere auth (dueno de la compra o ADMIN) -> 201 con checkoutUrl de Checkout Pro (external_reference = codigo, monto server-side desde Compra.valorTotal). Compra ajena 403, inexistente 404. Reintento misma compra -> 200 existente sin duplicar preferencia.
+}

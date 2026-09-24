@@ -6,6 +6,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'com.github.imagekit-developer:imagekit-java:2.0.1'
+    // Pasarela Mercado Pago — tarea 4.7.1 (ultima estable verificada 2026-09-24: 3.7.0)
+    implementation 'com.mercadopago:sdk-java:3.7.0'
     implementation 'com.github.usefulness:webp-imageio:0.10.0'
     implementation 'net.coobird:thumbnailator:0.4.20'
     implementation 'com.google.code.gson:gson:2.10.1'

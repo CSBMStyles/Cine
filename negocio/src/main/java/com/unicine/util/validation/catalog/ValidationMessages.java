@@ -201,6 +201,15 @@ public final class ValidationMessages {
     public static final String CLIENT_COUPON_CLIENT_NOT_NULL = "El cliente no puede estar vacio";
 
     // !SECTION
+    // SECTION: Pago con pasarela
+
+    public static final String PAYMENT_PURCHASE_NOT_NULL = "La compra del pago no puede estar vacia";
+    public static final String PAYMENT_AMOUNT_NOT_NULL = "El monto esperado no puede estar vacio";
+    public static final String PAYMENT_AMOUNT_POSITIVE = "El monto esperado debe ser un numero positivo o cero";
+    public static final String PAYMENT_STATUS_NOT_NULL = "El estado del pago no puede estar vacio";
+    public static final String PAYMENT_IDEMPOTENCY_NOT_BLANK = "La clave de idempotencia no puede estar en blanco";
+
+    // !SECTION
     // SECTION: Entrada
 
     public static final String TICKET_PRICE_NOT_NULL = "El precio no puede estar vacio";

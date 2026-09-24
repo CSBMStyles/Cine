@@ -4,5 +4,6 @@ public enum MedioPago {
     NEQUI,
     VISA,
     MASTERCARD,
-    DAVIPLATA
+    DAVIPLATA,
+    MERCADOPAGO
 }

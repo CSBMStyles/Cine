@@ -52,7 +52,7 @@ public class Compra implements Serializable {
     private Boolean estado;
 
     @NotNull(message = ValidationMessages.PURCHASE_PAYMENT_NOT_NULL)
-    @Column (nullable = false, length = 10)
+    @Column (nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private MedioPago medioPago;
 
