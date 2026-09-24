@@ -104,8 +104,11 @@ En Hacer: tope base 5 por grupo, hasta 8 si son items de una línea
 (endpoints, archivos, commits), techo duro 8 sin pedirlo. En Explicar: nada
 de listas de pasos; el cuerpo va en prosa con conectores (primero, porque,
 también, por eso). Excepción que el lector exige: las preguntas al usuario
-siempre van puntuadas en lista numerada, rankeadas con la recomendada
-primero, una línea cada una.
+siempre van puntuadas en lista numerada con este formato exacto: primero la
+pregunta como duda concreta de decisión de código, debajo las opciones con
+"Recomiendo: <opción> porque <razón corta>". Prohibido el tag vacío
+"(Recomendada)" sin decir qué se recomienda ni por qué. Las preguntas son
+para decidir juntos, nunca para colar explicaciones dentro.
 
 Lo no mostrado queda interno y sale cuando lo pidan. Si algo exige
 completitud (errores de un deploy, explicación pedida), sale completo
