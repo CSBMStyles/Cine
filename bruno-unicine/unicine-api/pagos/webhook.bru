@@ -1,0 +1,35 @@
+meta {
+  name: webhook - POST /api/pagos/webhooks
+  type: http
+  seq: 2
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/pagos/webhooks?data.id=ORD-1&type=order
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-signature: ts=1,v1=firma-de-prueba
+  x-request-id: prueba-1
+}
+
+body:json {
+  {
+    "action": "order.created",
+    "type": "order",
+    "data": {
+      "id": "ORD-1"
+    }
+  }
+}
+
+docs {
+  4.7.3: ruta publica (permitAll), defensa por HMAC con secreto del dashboard. Firma falsa -> 401 sin tocar base. Firma valida -> 200 siempre: tipo distinto u orden ajena se ignoran, redelivery y evento viejo no degradan, monto distinto no confirma, aprobada confirma PAGADA y publica PagoConfirmadoEvent (costura Factus 3.B y futuros correos). El secreto real y la URL HTTPS con ngrok se configuran en 4.7.5.
+}
