@@ -55,6 +55,7 @@ public class SecurityConfig {
      *   <li>GET /api/comentarios/** (resenas publicas)</li>
      *   <li>GET /actuator/health</li>
      *   <li>POST /api/auth/** (placeholder para registro/login 4.3.2)</li>
+     *   <li>POST /api/pagos/webhooks (webhook MP 4.7.3, defensa por HMAC)</li>
      * </ul>
      * <p>El resto requiere autenticacion. Metodos protegidos con @PreAuthorize se validan
      * via {@code @EnableMethodSecurity}.</p>
@@ -82,6 +83,9 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health")
                         .permitAll()
                         .requestMatchers("/api/auth/**")
+                        .permitAll()
+                        // Webhook Mercado Pago 4.7.3: MP no tiene JWT, se defiende con HMAC
+                        .requestMatchers(HttpMethod.POST, "/api/pagos/webhooks")
                         .permitAll()
                         .requestMatchers("/security/public", "/security/public/**")
                         .permitAll()

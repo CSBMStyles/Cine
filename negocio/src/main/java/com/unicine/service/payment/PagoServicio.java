@@ -32,5 +32,8 @@ public interface PagoServicio {
 
     OrdenPagoResponse crearOrden(@Valid OrdenPagoRequest request) throws Exception;
 
+    Optional<OrdenPagoResponse> procesarNotificacion(String dataId, String tipo,
+                                                     String firma, String requestId) throws Exception;
+
     // !SECTION
 }

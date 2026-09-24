@@ -6,9 +6,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercadopago.exceptions.MPInvalidWebhookSignatureException;
 import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.payment.PagoServicio;
@@ -73,6 +76,26 @@ public class PagoController {
         }
         OrdenPagoResponse response = pagoServicio.crearOrden(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // !SECTION
+    // SECTION: Webhooks
+
+    @PostMapping("/webhooks")
+    @Operation(summary = "Webhook de Mercado Pago",
+            description = "Valida firma HMAC y confirma el pago con la orden remota. "
+                    + "Firma falsa → 401 sin tocar la base. Lo demas siempre 200.")
+    public ResponseEntity<Void> recibirWebhook(
+            @RequestParam(value = "data.id", required = false) String dataId,
+            @RequestParam(value = "type", required = false) String tipo,
+            @RequestHeader(value = "x-signature", required = false) String firma,
+            @RequestHeader(value = "x-request-id", required = false) String requestId) throws Exception {
+        try {
+            pagoServicio.procesarNotificacion(dataId, tipo, firma, requestId);
+        } catch (MPInvalidWebhookSignatureException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok().build();
     }
 
     // !SECTION
