@@ -1,9 +1,12 @@
 package com.unicine.service.payment;
 
 import com.unicine.entity.payment.Pago;
+import com.unicine.transfer.dto.request.OrdenPagoRequest;
+import com.unicine.transfer.dto.response.OrdenPagoResponse;
 import com.unicine.util.validation.catalog.ValidationMessages;
 import java.util.List;
 import java.util.Optional;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -26,6 +29,8 @@ public interface PagoServicio {
             @Positive(message = ValidationMessages.ID_POSITIVE) Integer compraCodigo) throws Exception;
 
     List<Pago> listar();
+
+    OrdenPagoResponse crearOrden(@Valid OrdenPagoRequest request) throws Exception;
 
     // !SECTION
 }

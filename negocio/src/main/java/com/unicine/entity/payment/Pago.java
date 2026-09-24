@@ -51,9 +51,14 @@ public class Pago implements Serializable {
     @Column(nullable = false, unique = true)
     private Integer compraCodigo;
 
-    // Nulo hasta que 4.7.2 crea la preferencia en Mercado Pago.
+    // Nulo hasta que 4.7.2 crea la orden en Mercado Pago.
     @Column(unique = true, length = 100)
     private String mercadoPagoId;
+
+    // URL de Checkout Pro para redirigir al comprador; se guarda para que el
+    // reintento devuelva la misma sin crear otra orden (idempotencia 200).
+    @Column(length = 500)
+    private String checkoutUrl;
 
     @NotBlank(message = ValidationMessages.PAYMENT_IDEMPOTENCY_NOT_BLANK)
     @Column(nullable = false, unique = true, length = 100)
@@ -80,9 +85,10 @@ public class Pago implements Serializable {
     // SECTION: Constructor
 
     @Builder
-    public Pago(Integer compraCodigo, String mercadoPagoId, String idempotencyKey, Double montoEsperado, EstadoPago estado) {
+    public Pago(Integer compraCodigo, String mercadoPagoId, String checkoutUrl, String idempotencyKey, Double montoEsperado, EstadoPago estado) {
         this.compraCodigo = compraCodigo;
         this.mercadoPagoId = mercadoPagoId;
+        this.checkoutUrl = checkoutUrl;
         this.idempotencyKey = idempotencyKey;
         this.montoEsperado = montoEsperado;
         this.estado = estado;

@@ -9,6 +9,7 @@ import com.unicine.util.validation.catalog.ErrorCode;
  * - Entidades no encontradas (DOMAIN_PURCHASE_ENTITY_*)
  * - Reglas de negocio de compra (DOMAIN_PURCHASE_BUSINESS_RULE_*)
  * - Eliminacion no confirmada (DOMAIN_PURCHASE_DELETE_*)
+ * - Servicios externos de pago (DOMAIN_PURCHASE_EXTERNAL_*)
  * 
  * NOTA: El HTTP status se define en el {@code @ControllerAdvice},
  * no en este enum, para mantener la capa de negocio desacoplada de HTTP.
@@ -40,7 +41,10 @@ public enum PurchaseErrorCatalog implements ErrorCode {
     DOMAIN_PURCHASE_DELETE_DELETE_NOT_CONFIRMED("DOMAIN_PURCHASE_DELETE_DELETE_NOT_CONFIRMED", "La eliminacion no fue confirmada"),
 
     // Business rule - historial de precios
-    DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED("DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED", "El precio base es requerido para registrar el cambio de precio");
+    DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED("DOMAIN_PURCHASE_ENTITY_CONFECTIONERY_PRICE_HISTORY_BASE_PRICE_REQUIRED", "El precio base es requerido para registrar el cambio de precio"),
+
+    // External - pasarela de pago (502 bad gateway)
+    DOMAIN_PURCHASE_EXTERNAL_ORDER_CREATE_ERROR("DOMAIN_PURCHASE_EXTERNAL_ORDER_CREATE_ERROR", "Error al crear la orden de pago: {0}");
 
     private final String code;
     private final String message;

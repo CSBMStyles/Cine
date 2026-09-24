@@ -20,10 +20,10 @@ headers {
 
 body:json {
   {
-    "compraCodigo": 1
+    "compraCodigo": 7
   }
 }
 
 docs {
-  Base 4.7.1: endpoint se implementa en 4.7.2. Contrato previsto: requiere auth (dueno de la compra o ADMIN) -> 201 con checkoutUrl de Checkout Pro (external_reference = codigo, monto server-side desde Compra.valorTotal). Compra ajena 403, inexistente 404. Reintento misma compra -> 200 existente sin duplicar preferencia.
+  4.7.2: requiere auth (dueno de la compra o ADMIN). 201 con checkoutUrl de Checkout Pro Orders API (external_reference = codigo, monto server-side desde Compra.valorTotal, payer = Cliente.correo). Sin auth 401, compra ajena 403, inexistente 404, procesada 400. Reintento misma compra -> 200 existente sin crear otra orden (idempotencyKey + UNIQUE).
 }
