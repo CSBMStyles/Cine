@@ -35,5 +35,9 @@ public interface PagoServicio {
     Optional<OrdenPagoResponse> procesarNotificacion(String dataId, String tipo,
                                                      String firma, String requestId) throws Exception;
 
+    OrdenPagoResponse conciliarEstado(
+            @NotNull(message = ValidationMessages.PAYMENT_PURCHASE_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE) Integer compraCodigo) throws Exception;
+
     // !SECTION
 }

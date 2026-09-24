@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,6 +26,7 @@ import com.unicine.util.validation.catalog.domain.PurchaseErrorCatalog;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 
 /**
  * Controller de pagos — orden Checkout Pro sobre compras registradas.
@@ -96,6 +98,30 @@ public class PagoController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok().build();
+    }
+
+    // !SECTION
+    // SECTION: Estado
+
+    @GetMapping("/estado")
+    @Operation(summary = "Conciliar estado de pago",
+            description = "Sincroniza el pago con la orden remota cuando el usuario no volvio "
+                    + "por back_urls. Estados finales se devuelven sin llamar a la red.")
+    public ResponseEntity<OrdenPagoResponse> conciliarEstado(
+            @RequestParam @Positive Integer compra,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        CompraResponse compraResponse = compraServicio.obtener(compra)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PURCHASE_NOT_FOUND));
+        if (!principal.getCedula().equals(compraResponse.getCliente().getCedula())) {
+            if (!principal.esAdministrador()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+        return ResponseEntity.ok(pagoServicio.conciliarEstado(compra));
     }
 
     // !SECTION

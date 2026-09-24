@@ -174,16 +174,56 @@ public class PagoServicioImp implements PagoServicio {
                 || (actual == EstadoPago.PENDIENTE && destino == EstadoPago.PAGADA);
     }
 
-    private Order obtenerOrdenRemota(String mercadoPagoId) {
-        MPRequestOptions opciones = MPRequestOptions.builder()
+    // Lecturas remotas con retry topado y explicito: 3 intentos con backoff
+    // solo ante 429 y 5xx. Las escrituras nunca reintentan.
+    private MPRequestOptions opcionesLectura() {
+        return MPRequestOptions.builder()
                 .accessToken(exigirToken())
+                .maxRetries(3)
+                .retryOn(List.of(429, 502, 503, 504))
+                .initialDelayMs(500L)
+                .maxDelayMs(4000L)
                 .build();
+    }
+
+    private Order obtenerOrdenRemota(String mercadoPagoId) {
         try {
-            return orderClient.get(mercadoPagoId, opciones);
+            return orderClient.get(mercadoPagoId, opcionesLectura());
         } catch (MPApiException | MPException e) {
             throw new ExternalServiceException(
                     PurchaseErrorCatalog.DOMAIN_PURCHASE_EXTERNAL_ORDER_CREATE_ERROR, e.getMessage());
         }
+    }
+
+    private boolean esFinal(EstadoPago estado) {
+        return estado == EstadoPago.PAGADA
+                || estado == EstadoPago.FALLIDA
+                || estado == EstadoPago.EXPIRADA;
+    }
+
+    // Núcleo compartido por webhook y reconciliacion: lee la verdad remota,
+    // compara montos, avanza con guardia y publica el evento al confirmar.
+    private OrdenPagoResponse sincronizarConOrden(Pago pago) {
+        Order orden = obtenerOrdenRemota(pago.getMercadoPagoId());
+        String totalOrden = orden.getTotalAmount();
+        String totalEsperado = String.format(Locale.ROOT, "%.2f", pago.getMontoEsperado());
+        if (totalOrden != null && !totalOrden.equals(totalEsperado)) {
+            log.warn("Monto {} distinto al esperado {} en pago {}", totalOrden, totalEsperado, pago.getCodigo());
+            return pagoMapper.toResponse(pago);
+        }
+        EstadoPago destino = mapearEstado(orden.getStatus());
+        if (pago.getEstado() == destino || !puedeAvanzar(pago.getEstado(), destino)) {
+            return pagoMapper.toResponse(pago);
+        }
+        pago.setEstado(destino);
+        pago.setFechaActualizacion(LocalDateTime.now(ZoneId.of("America/Bogota")));
+        Pago guardado = pagoRepo.save(pago);
+        if (destino == EstadoPago.PAGADA) {
+            eventPublisher.publishEvent(new PagoConfirmadoEvent(
+                    guardado.getCompraCodigo(), guardado.getMercadoPagoId(),
+                    guardado.getMontoEsperado(), guardado.getFechaActualizacion()));
+        }
+        return pagoMapper.toResponse(guardado);
     }
 
     // !SECTION
@@ -232,27 +272,20 @@ public class PagoServicioImp implements PagoServicio {
             log.warn("Webhook de orden ajena {} ignorado", dataId);
             return Optional.empty();
         }
-        Pago pago = buscado.get();
-        Order orden = obtenerOrdenRemota(dataId);
-        String totalOrden = orden.getTotalAmount();
-        String totalEsperado = String.format(Locale.ROOT, "%.2f", pago.getMontoEsperado());
-        if (totalOrden != null && !totalOrden.equals(totalEsperado)) {
-            log.warn("Monto {} distinto al esperado {} en pago {}", totalOrden, totalEsperado, pago.getCodigo());
-            return Optional.of(pagoMapper.toResponse(pago));
+        return Optional.of(sincronizarConOrden(buscado.get()));
+    }
+
+    // Estado final se devuelve sin red: la red no puede cambiarlo.
+    @Override
+    @Transactional
+    public OrdenPagoResponse conciliarEstado(Integer compraCodigo) {
+        Pago pago = pagoRepo.findByCompraCodigo(compraCodigo)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        PurchaseErrorCatalog.DOMAIN_PURCHASE_ENTITY_PAYMENT_NOT_FOUND));
+        if (esFinal(pago.getEstado())) {
+            return pagoMapper.toResponse(pago);
         }
-        EstadoPago destino = mapearEstado(orden.getStatus());
-        if (pago.getEstado() == destino || !puedeAvanzar(pago.getEstado(), destino)) {
-            return Optional.of(pagoMapper.toResponse(pago));
-        }
-        pago.setEstado(destino);
-        pago.setFechaActualizacion(LocalDateTime.now(ZoneId.of("America/Bogota")));
-        Pago guardado = pagoRepo.save(pago);
-        if (destino == EstadoPago.PAGADA) {
-            eventPublisher.publishEvent(new PagoConfirmadoEvent(
-                    guardado.getCompraCodigo(), guardado.getMercadoPagoId(),
-                    guardado.getMontoEsperado(), guardado.getFechaActualizacion()));
-        }
-        return Optional.of(pagoMapper.toResponse(guardado));
+        return sincronizarConOrden(pago);
     }
 
     // !SECTION

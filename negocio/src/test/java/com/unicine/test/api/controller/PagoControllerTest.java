@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -157,6 +158,42 @@ class PagoControllerTest {
                 .andReturn();
 
         sout("crearOrden404", result);
+    }
+
+    // !SECTION
+    // SECTION: Estado
+
+    @Test
+    void conciliarEstado200() throws Exception {
+        when(compraServicio.obtener(7)).thenReturn(Optional.of(compraPropia(7, 1009000011)));
+        OrdenPagoResponse mock = OrdenPagoResponse.builder().compraCodigo(7)
+                .mercadoPagoId("ORD-1").checkoutUrl("https://mp/checkout/1")
+                .estado(com.unicine.enums.payment.EstadoPago.PAGADA).build();
+        when(pagoServicio.conciliarEstado(7)).thenReturn(mock);
+
+        MvcResult result = mockMvc.perform(get("/api/pagos/estado")
+                        .queryParam("compra", "7")
+                        .with(user(principalCliente(1009000011)))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.mercadoPagoId").value("ORD-1"))
+                .andReturn();
+
+        sout("conciliarEstado200", result);
+    }
+
+    @Test
+    void conciliarEstadoCompraAjena403() throws Exception {
+        when(compraServicio.obtener(7)).thenReturn(Optional.of(compraPropia(7, 999)));
+
+        MvcResult result = mockMvc.perform(get("/api/pagos/estado")
+                        .queryParam("compra", "7")
+                        .with(user(principalCliente(1009000011)))
+                        .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("conciliarEstado403 compra ajena", result);
     }
 
     // !SECTION
