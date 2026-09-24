@@ -160,4 +160,45 @@ class PagoControllerTest {
     }
 
     // !SECTION
+    // SECTION: Webhooks
+
+    @Test
+    void webhookFirmaInvalida401() throws Exception {
+        com.mercadopago.exceptions.MPInvalidWebhookSignatureException fallo =
+                org.mockito.Mockito.mock(com.mercadopago.exceptions.MPInvalidWebhookSignatureException.class);
+        when(pagoServicio.procesarNotificacion(any(), any(), any(), any())).thenThrow(fallo);
+
+        MvcResult result = mockMvc.perform(post("/api/pagos/webhooks")
+                        .queryParam("data.id", "ORD-1")
+                        .queryParam("type", "order")
+                        .header("x-signature", "falsa")
+                        .header("x-request-id", "r1")
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+
+        sout("webhook401 firma falsa", result);
+    }
+
+    @Test
+    void webhookValido200() throws Exception {
+        OrdenPagoResponse mock = OrdenPagoResponse.builder().compraCodigo(7)
+                .mercadoPagoId("ORD-1").checkoutUrl("https://mp/checkout/1")
+                .estado(com.unicine.enums.payment.EstadoPago.PAGADA).build();
+        when(pagoServicio.procesarNotificacion(any(), any(), any(), any()))
+                .thenReturn(Optional.of(mock));
+
+        MvcResult result = mockMvc.perform(post("/api/pagos/webhooks")
+                        .queryParam("data.id", "ORD-1")
+                        .queryParam("type", "order")
+                        .header("x-signature", "ts=1,v1=abc")
+                        .header("x-request-id", "r1")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        sout("webhook200", result);
+    }
+
+    // !SECTION
 }
