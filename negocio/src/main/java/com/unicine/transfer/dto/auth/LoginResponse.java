@@ -10,8 +10,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * DTO de salida para login sin JWT aun.
- * En 5.1 se añadirá token; hoy devuelve identidad verificada.
+ * DTO de salida para login con access token JWT (5.1.1).
+ * El refresh token llega en 5.1.3.
  */
 @Getter
 @Setter
@@ -30,6 +30,10 @@ public class LoginResponse {
     private TipoUsuario tipo;
 
     private java.util.List<Integer> teatroIds;
+
+    private String accessToken;
+
+    private String refreshToken;
 
     private String mensaje;
 }
