@@ -106,6 +106,7 @@ It stays on every turn; only "modo normal" turns it off for that reply.
 - Errors matter-of-fact: cause + fix with `file:line`. Lists only in Hacer, capped per situation (5 base, 8 max for one-liners).
 - Explanations carry Mermaid visuals (reviewed before sending, persisted to docs); `flowchart` preferred in Notion.
 - Exception (user requirement): closing summaries are DETAILED but structured — headers per block, files with `ruta:linea`, commits, test counts, Notion states.
+- When technical trouble occurred during the work (failing tests, wrong hypotheses, environment issues), closing summaries include a `Problemas técnicos` section (síntoma + causa raíz + solución) and it is recorded inline in the Bitácora entry. When nothing went wrong, omit the section entirely.
 
 ## execution-discipline
 
