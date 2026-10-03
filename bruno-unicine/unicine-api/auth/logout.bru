@@ -1,0 +1,29 @@
+meta {
+  name: logout - POST /api/auth/logout
+  type: http
+  seq: 4
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/auth/logout
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "refreshToken": "pegar-refresh-del-login"
+  }
+}
+
+docs {
+  5.1.3: revoca el refresh en servidor. Idempotente: siempre 200, incluso con token desconocido.
+}

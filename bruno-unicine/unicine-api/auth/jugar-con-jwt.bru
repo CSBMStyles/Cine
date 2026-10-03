@@ -1,0 +1,20 @@
+meta {
+  name: jugar - GET /api/clientes/me/compras con JWT
+  type: http
+  seq: 5
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
+}
+
+get {
+  url: {{baseUrl}}/api/clientes/me/compras
+  auth: bearer
+  token: {{bearer}}
+}
+
+docs {
+  Ruta para jugar con JWT (5.1): 1) corre login.bru y copia accessToken. 2) pegalo en la variable bearer de este request (sin comillas, sin "Bearer", solo el token). 200 con token valido; 401 sin token o con token roto/refresh. Nota: GET /api/clientes/me devuelve 500 por bug preexistente del mapper/servicio fuera de 5.1; usa /me/compras u otras rutas protegidas.
+}

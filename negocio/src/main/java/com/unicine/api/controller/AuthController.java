@@ -13,7 +13,12 @@ import com.unicine.enums.user.TipoUsuario;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.user.AdministradorServicio;
 import com.unicine.service.user.ClienteServicio;
+import com.unicine.security.JwtServicio;
+import com.unicine.security.UsuarioPrincipal;
+import com.unicine.service.auth.RefrescoServicio;
 import com.unicine.service.user.AuthenticationService;
+import com.unicine.transfer.dto.auth.ParTokensResponse;
+import com.unicine.transfer.dto.auth.RefreshRequest;
 import com.unicine.transfer.dto.auth.LoginRequest;
 import com.unicine.transfer.dto.auth.LoginResponse;
 import com.unicine.transfer.dto.request.ClienteRequest;
@@ -30,19 +35,25 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 @Validated
-@Tag(name = "Autenticación", description = "Registro y login — sin JWT aún (Fase 5)")
+@Tag(name = "Autenticación", description = "Registro y login con access token JWT (5.1)")
 public class AuthController {
 
     private final ClienteServicio clienteServicio;
     private final AdministradorServicio administradorServicio;
     private final AuthenticationService authenticationService;
+    private final JwtServicio jwtServicio;
+    private final RefrescoServicio refrescoServicio;
 
     public AuthController(ClienteServicio clienteServicio,
                           AdministradorServicio administradorServicio,
-                          AuthenticationService authenticationService) {
+                          AuthenticationService authenticationService,
+                          JwtServicio jwtServicio,
+                          RefrescoServicio refrescoServicio) {
         this.clienteServicio = clienteServicio;
         this.administradorServicio = administradorServicio;
         this.authenticationService = authenticationService;
+        this.jwtServicio = jwtServicio;
+        this.refrescoServicio = refrescoServicio;
     }
 
     // SECTION: Registro
@@ -64,7 +75,7 @@ public class AuthController {
     // SECTION: Login
 
     @PostMapping("/login")
-    @Operation(summary = "Login", description = "Un solo formulario correo+password. Resuelve tipo CLIENTE/ADMIN/ADMIN_TEATRO. Sin token hasta Fase 5.")
+    @Operation(summary = "Login", description = "Un solo formulario correo+password. Resuelve tipo CLIENTE/ADMIN/ADMIN_TEATRO y crea sesion con par access+refresh.")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
 
         Persona persona = authenticationService.login(request.getCorreo(), request.getPassword());
@@ -86,17 +97,43 @@ public class AuthController {
                 break;
         }
 
+        java.util.List<Integer> teatroIds = extraerTeatroIds(persona);
+        UsuarioPrincipal principal = new UsuarioPrincipal(
+                persona.getCedula(), persona.getCorreo(), null, tipo, teatroIds);
+
+        ParTokensResponse par = refrescoServicio.crearSesion(principal);
+
         LoginResponse response = LoginResponse.builder()
                 .cedula(persona.getCedula())
                 .nombre(persona.getNombre())
                 .correo(persona.getCorreo())
                 .tipo(tipo)
-                .teatroIds(extraerTeatroIds(persona))
-                .mensaje("Autenticado correctamente. JWT pendiente Fase 5.")
+                .teatroIds(teatroIds)
+                .accessToken(par.getAccessToken())
+                .refreshToken(par.getRefreshToken())
+                .mensaje("Autenticado correctamente.")
                 .build();
 
         return ResponseEntity.ok(response);
     }
+
+    // !SECTION
+    // SECTION: Refresh y logout
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Rotar sesion", description = "Revoca el refresh usado y emite un par nuevo. Reusar un refresh revocado revoca todas las sesiones.")
+    public ResponseEntity<ParTokensResponse> refresh(@Valid @RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(refrescoServicio.rotar(request.getRefreshToken()));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Cerrar sesion", description = "Revoca el refresh en servidor. Idempotente: siempre 200.")
+    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshRequest request) {
+        refrescoServicio.cerrarSesion(request.getRefreshToken());
+        return ResponseEntity.ok().build();
+    }
+
+    // !SECTION
 
     private java.util.List<Integer> extraerTeatroIds(Persona persona) {
         if (persona instanceof com.unicine.entity.user.AdministradorTeatro adminTeatro

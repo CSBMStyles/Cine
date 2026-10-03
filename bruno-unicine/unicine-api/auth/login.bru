@@ -26,5 +26,5 @@ body:json {
 }
 
 docs {
-  200 {cedula, correo, tipo: CLIENTE|ADMINISTRADOR|ADMINISTRADOR_TEATRO, teatroIds: []|[codigos], mensaje}. 401 si credenciales malas. Usa dataset dev: pepe@hotmail.com / 78!Kz9...
+  200 {cedula, correo, tipo: CLIENTE|ADMINISTRADOR|ADMINISTRADOR_TEATRO, teatroIds: []|[codigos], accessToken, mensaje}. 401 si credenciales malas. Usa dataset dev: pepe@hotmail.com / 78!Kz9... 5.1.2: usa accessToken como header Authorization: Bearer <token> en rutas protegidas (compras, pagos).
 }

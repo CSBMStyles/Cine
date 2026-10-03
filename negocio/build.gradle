@@ -4,6 +4,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    // JWT 5.1: resource server + Nimbus para emision/validacion de access tokens
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'com.github.imagekit-developer:imagekit-java:2.0.1'
     // Pasarela Mercado Pago — tarea 4.7.1 (ultima estable verificada 2026-09-24: 3.7.0)
@@ -40,4 +42,8 @@ test {
         events "passed", "failed", "skipped"
         exceptionFormat = "full"
     }
+    // JWT 5.1: secreto ficticio solo para tests (32+ bytes) — nunca credencial real.
+    // No usar application.properties en tests: un documento extra suprime el
+    // spring.profiles.include de main y rompe datasource/mail (verificado).
+    environment "JWT_SECRET", "test-jwt-secret-32-bytes-minimo-1234"
 }

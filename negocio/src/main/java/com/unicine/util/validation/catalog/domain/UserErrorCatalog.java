@@ -36,6 +36,9 @@ public enum UserErrorCatalog implements ErrorCode {
     DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT("DOMAIN_USER_AUTH_NEW_PASSWORD_SAME_AS_CURRENT", "La nueva contrasena no puede ser igual a la actual"),
     DOMAIN_USER_AUTH_CLIENT_INACTIVE("DOMAIN_USER_AUTH_CLIENT_INACTIVE", "El cliente no esta activo, debe activarla con el enlace que fue enviado a su correo"),
     DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED("DOMAIN_USER_AUTH_ACTION_NOT_PERMITTED", "El usuario no tiene permisos para realizar esta accion"),
+    DOMAIN_USER_AUTH_TOKEN_INVALID("DOMAIN_USER_AUTH_TOKEN_INVALID", "Token invalido"),
+    DOMAIN_USER_AUTH_TOKEN_EXPIRED("DOMAIN_USER_AUTH_TOKEN_EXPIRED", "Token expirado"),
+    DOMAIN_USER_AUTH_TOKEN_REVOKED("DOMAIN_USER_AUTH_TOKEN_REVOKED", "Sesion revocada, inicie sesion de nuevo"),
 
     // Business rule - Reglas de negocio (400 bad request)
     DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE("DOMAIN_USER_BUSINESS_RULE_CLIENT_UNDERAGE", "El cliente debe ser mayor de edad para registrarse");

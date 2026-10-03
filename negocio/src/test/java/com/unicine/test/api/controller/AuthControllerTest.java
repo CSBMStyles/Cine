@@ -48,6 +48,12 @@ class AuthControllerTest {
     @MockitoBean
     private AuthenticationService authenticationService;
 
+    @MockitoBean
+    private com.unicine.security.JwtServicio jwtServicio;
+
+    @MockitoBean
+    private com.unicine.service.auth.RefrescoServicio refrescoServicio;
+
     private void sout(String titulo, MvcResult result) throws Exception {
         String body = result.getResponse().getContentAsString();
         System.out.println("\n>>> " + titulo + " | status=" + result.getResponse().getStatus());
@@ -180,6 +186,10 @@ class AuthControllerTest {
         cliente.setCorreo("pepe@test.com");
         cliente.setPassword("hashed");
         when(authenticationService.login("pepe@test.com", "Aa1!aaaaa")).thenReturn(cliente);
+        when(jwtServicio.emitirAcceso(any())).thenReturn("test-access-token");
+        when(refrescoServicio.crearSesion(any())).thenReturn(
+                com.unicine.transfer.dto.auth.ParTokensResponse.builder()
+                        .accessToken("test-access-token").refreshToken("test-refresh-token").build());
 
         String body = """
                 {"correo":"pepe@test.com","password":"Aa1!aaaaa"}
@@ -190,6 +200,8 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tipo").value("CLIENTE"))
                 .andExpect(jsonPath("$.correo").value("pepe@test.com"))
+                .andExpect(jsonPath("$.accessToken").value("test-access-token"))
+                .andExpect(jsonPath("$.refreshToken").value("test-refresh-token"))
                 .andReturn();
 
         sout("loginValido200", result);
@@ -225,6 +237,35 @@ class AuthControllerTest {
                 .andReturn();
 
         sout("loginBodyInvalido400", result);
+    }
+
+    // !SECTION
+    // SECTION: Refresh y logout
+
+    @Test
+    void refreshRota200() throws Exception {
+        when(refrescoServicio.rotar("viejo")).thenReturn(
+                com.unicine.transfer.dto.auth.ParTokensResponse.builder()
+                        .accessToken("nuevo-access").refreshToken("nuevo-refresh").build());
+
+        MvcResult result = mockMvc.perform(post("/api/auth/refresh").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"refreshToken\":\"viejo\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("nuevo-access"))
+                .andExpect(jsonPath("$.refreshToken").value("nuevo-refresh"))
+                .andReturn();
+
+        sout("refreshRota200", result);
+    }
+
+    @Test
+    void logoutSiempre200() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/auth/logout").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"refreshToken\":\"cualquiera\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        sout("logout200", result);
     }
 
     // !SECTION

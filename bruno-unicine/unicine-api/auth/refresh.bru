@@ -1,0 +1,29 @@
+meta {
+  name: refresh - POST /api/auth/refresh
+  type: http
+  seq: 3
+}
+
+vars:pre-request {
+  baseUrl: http://localhost:8080
+}
+
+post {
+  url: {{baseUrl}}/api/auth/refresh
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "refreshToken": "pegar-refresh-del-login"
+  }
+}
+
+docs {
+  5.1.3: revoca el refresh usado y devuelve par nuevo. Reusar un refresh revocado revoca TODAS las sesiones (401 TOKEN_REVOKED). Refresh desconocido o de acceso 401 TOKEN_INVALID.
+}

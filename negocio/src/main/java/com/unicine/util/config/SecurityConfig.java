@@ -1,7 +1,13 @@
 package com.unicine.util.config;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +21,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -61,7 +70,9 @@ public class SecurityConfig {
      * via {@code @EnableMethodSecurity}.</p>
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            org.springframework.beans.factory.ObjectProvider<com.unicine.security.JwtPrincipalConverter> conversor) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
@@ -102,11 +113,40 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authenticationEntryPoint())
                         .accessDeniedHandler(accessDeniedHandler()))
+                // JWT 5.1.2: resource server valida Bearer y convierte a UsuarioPrincipal.
+                // Fallos usan los handlers ApiError de arriba, sin detalles de firma.
+                // El conversor es opcional para que los slices @WebMvcTest (que no cargan
+                // @Service) sigan funcionando: sin bean se niega por defecto (fail-closed).
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(conversor.getIfAvailable(
+                                com.unicine.security.JwtPrincipalConverter::denegado)))
+                        .authenticationEntryPoint(authenticationEntryPoint())
+                        .accessDeniedHandler(accessDeniedHandler()))
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout.disable());
 
         return http.build();
+    }
+
+    // !SECTION
+    // SECTION: Decodificador JWT
+
+    /**
+     * Decodificador HS256 del resource server (5.1.2).
+     * Vive aqui y no en JwtConfig porque los slices @WebMvcTest importan
+     * esta clase y el DSL oauth2ResourceServer exige el bean.
+     * Comparte secreto y exigencia de 32 bytes con JwtServicio.
+     */
+    @Bean
+    public JwtDecoder jwtDecoder(@Value("${jwt.secret:}") String secreto) {
+        byte[] bytes = secreto == null ? new byte[0] : secreto.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length < 32) {
+            throw new IllegalStateException(
+                    "JWT_SECRET debe tener minimo 32 bytes para HS256; configure la variable JWT_SECRET");
+        }
+        SecretKey llave = new SecretKeySpec(bytes, "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(llave).macAlgorithm(MacAlgorithm.HS256).build();
     }
 
     // !SECTION

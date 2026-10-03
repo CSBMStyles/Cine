@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.unicine.entity.user.Cliente;
@@ -218,6 +219,7 @@ public class ClienteServicioImp implements ClienteServicio {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ClienteResponse> obtener(Integer cedula) throws Exception {
 
         Optional<Cliente> buscado = clienteRepo.findById(cedula);
