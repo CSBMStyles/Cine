@@ -89,8 +89,27 @@ public class PagoServicioConciliacionTest {
         Pago pago = pagoEn(EstadoPago.PENDIENTE);
         when(pagoRepo.findByCompraCodigo(7)).thenReturn(Optional.of(pago));
         when(mercadoPagoConfig.getAccessToken()).thenReturn("TEST-xxx");
-        Order ordenAprobada = ordenRemota("17000.00", "approved");
+        Order ordenAprobada = ordenRemota("17000", "approved");
         when(orderClient.get(anyString(), any())).thenReturn(ordenAprobada);
+        when(pagoRepo.save(any(Pago.class))).thenAnswer(inv -> inv.getArgument(0));
+        OrdenPagoResponse esperado = OrdenPagoResponse.builder().compraCodigo(7)
+                .mercadoPagoId("ORD-1").checkoutUrl("https://mp/checkout/1")
+                .estado(EstadoPago.PAGADA).build();
+        when(pagoMapper.toResponse(any(Pago.class))).thenReturn(esperado);
+
+        OrdenPagoResponse respuesta = pagoServicio.conciliarEstado(7);
+
+        Assertions.assertEquals(EstadoPago.PAGADA, respuesta.getEstado());
+        verify(eventPublisher).publishEvent(any(PagoConfirmadoEvent.class));
+    }
+
+    @Test
+    public void procesadaRemotaConfirma() throws Exception {
+        Pago pago = pagoEn(EstadoPago.PENDIENTE);
+        when(pagoRepo.findByCompraCodigo(7)).thenReturn(Optional.of(pago));
+        when(mercadoPagoConfig.getAccessToken()).thenReturn("TEST-xxx");
+        Order ordenProcesada = ordenRemota("17000", "processed");
+        when(orderClient.get(anyString(), any())).thenReturn(ordenProcesada);
         when(pagoRepo.save(any(Pago.class))).thenAnswer(inv -> inv.getArgument(0));
         OrdenPagoResponse esperado = OrdenPagoResponse.builder().compraCodigo(7)
                 .mercadoPagoId("ORD-1").checkoutUrl("https://mp/checkout/1")

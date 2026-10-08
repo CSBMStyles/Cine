@@ -98,8 +98,14 @@ public class PagoServicioImp implements PagoServicio {
         return token;
     }
 
+    // MP exige monto entero en string para COP ("7000", no "7000.00").
+    // Invariante: los precios son pesos enteros, el total server-side siempre es entero.
+    static String formatoMontoMp(Double valor) {
+        return String.valueOf(Math.round(valor));
+    }
+
     private OrderCreateRequest construirOrden(Compra compra) {
-        String total = String.format(Locale.ROOT, "%.2f", compra.getValorTotal());
+        String total = formatoMontoMp(compra.getValorTotal());
         OrderItemRequest item = OrderItemRequest.builder()
                 .title("Compra UniCine #" + compra.getCodigo())
                 .unitPrice(total)
@@ -155,14 +161,14 @@ public class PagoServicioImp implements PagoServicio {
         }
     }
 
-    // Mapea el status de la orden al estado local. Valores por doc MP a
-    // verificar en sandbox 4.7.5: approved confirma, el resto espera o falla.
+    // Mapea el status de la orden al estado local. Verificado en sandbox
+    // 4.7.5: pagada con tarjeta llega como "processed" y confirma.
     private EstadoPago mapearEstado(String statusOrden) {
         if (statusOrden == null) {
             return EstadoPago.EN_VERIFICACION;
         }
         return switch (statusOrden.toLowerCase(Locale.ROOT)) {
-            case "approved", "authorized" -> EstadoPago.PAGADA;
+            case "approved", "authorized", "processed" -> EstadoPago.PAGADA;
             case "expired" -> EstadoPago.EXPIRADA;
             case "cancelled", "canceled", "rejected", "refunded", "charged_back" -> EstadoPago.FALLIDA;
             default -> EstadoPago.EN_VERIFICACION;
@@ -206,7 +212,7 @@ public class PagoServicioImp implements PagoServicio {
     private OrdenPagoResponse sincronizarConOrden(Pago pago) {
         Order orden = obtenerOrdenRemota(pago.getMercadoPagoId());
         String totalOrden = orden.getTotalAmount();
-        String totalEsperado = String.format(Locale.ROOT, "%.2f", pago.getMontoEsperado());
+        String totalEsperado = formatoMontoMp(pago.getMontoEsperado());
         if (totalOrden != null && !totalOrden.equals(totalEsperado)) {
             log.warn("Monto {} distinto al esperado {} en pago {}", totalOrden, totalEsperado, pago.getCodigo());
             return pagoMapper.toResponse(pago);

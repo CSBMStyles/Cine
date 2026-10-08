@@ -125,7 +125,7 @@ public class PagoServicioWebhookTest {
         when(mercadoPagoConfig.getWebhookSecret()).thenReturn("sec");
         when(mercadoPagoConfig.getAccessToken()).thenReturn("TEST-xxx");
         when(pagoRepo.findByMercadoPagoId("ORD-1")).thenReturn(Optional.of(pago));
-        Order ordenAprobada = ordenRemota("17000.00", "approved");
+        Order ordenAprobada = ordenRemota("17000", "approved");
         when(orderClient.get(anyString(), any())).thenReturn(ordenAprobada);
         when(pagoRepo.save(any(Pago.class))).thenAnswer(inv -> inv.getArgument(0));
         when(pagoMapper.toResponse(any(Pago.class))).thenReturn(respuesta(EstadoPago.PAGADA));
@@ -152,7 +152,7 @@ public class PagoServicioWebhookTest {
         when(mercadoPagoConfig.getWebhookSecret()).thenReturn("sec");
         when(mercadoPagoConfig.getAccessToken()).thenReturn("TEST-xxx");
         when(pagoRepo.findByMercadoPagoId("ORD-1")).thenReturn(Optional.of(pago));
-        Order ordenAprobada = ordenRemota("17000.00", "approved");
+        Order ordenAprobada = ordenRemota("17000", "approved");
         when(orderClient.get(anyString(), any())).thenReturn(ordenAprobada);
         when(pagoMapper.toResponse(pago)).thenReturn(respuesta(EstadoPago.PAGADA));
         try (MockedStatic<WebhookSignatureValidator> validador =
