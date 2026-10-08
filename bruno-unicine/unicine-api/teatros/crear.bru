@@ -5,13 +5,15 @@ meta {
 }
 
 vars:pre-request {
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
   baseUrl: http://localhost:8080
 }
 
 post {
   url: {{baseUrl}}/api/teatros
   body: json
-  auth: none
+  auth: bearer
+  token: {{bearer}}
 }
 
 headers {

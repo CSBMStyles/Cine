@@ -5,12 +5,14 @@ meta {
 }
 
 vars:pre-request {
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
   baseUrl: http://localhost:8080
 }
 
 delete {
   url: {{baseUrl}}/api/teatros/1?confirmacion=true
-  auth: none
+  auth: bearer
+  token: {{bearer}}
 }
 
 docs {

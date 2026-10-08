@@ -6,11 +6,13 @@ meta {
 
 vars:pre-request {
   baseUrl: http://localhost:8080
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
 }
 
 get {
   url: {{baseUrl}}/api/pagos/estado?compra=7
-  auth: none
+  auth: bearer
+  token: {{bearer}}
 }
 
 docs {

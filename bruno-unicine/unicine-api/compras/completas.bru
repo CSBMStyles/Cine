@@ -6,12 +6,14 @@ meta {
 
 vars:pre-request {
   baseUrl: http://localhost:8080
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
 }
 
 post {
   url: {{baseUrl}}/api/compras/completas
   body: json
-  auth: none
+  auth: bearer
+  token: {{bearer}}
 }
 
 headers {

@@ -5,12 +5,14 @@ meta {
 }
 
 vars:pre-request {
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
   baseUrl: http://localhost:8080
 }
 
 get {
   url: {{baseUrl}}/api/clientes
-  auth: inherit
+  auth: bearer
+  token: {{bearer}}
 }
 
 docs {

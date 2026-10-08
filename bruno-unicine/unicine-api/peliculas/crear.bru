@@ -5,6 +5,7 @@ meta {
 }
 
 vars:pre-request {
+  bearer: PEGAR_ACCESS_TOKEN_DEL_LOGIN
   baseUrl: http://localhost:8080
 }
 
@@ -15,7 +16,7 @@ post {
 }
 
 auth:bearer {
-  token: {{authToken}}
+  token: {{bearer}}
 }
 
 headers {
