@@ -272,6 +272,7 @@ public class CompraServicioImp implements CompraServicio {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<CompraResponse> obtener(Integer codigo) {
         Optional<Compra> buscado = compraRepo.findById(codigo);
         validarExiste(buscado);
