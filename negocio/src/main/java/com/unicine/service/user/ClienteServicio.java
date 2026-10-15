@@ -13,9 +13,13 @@ import jakarta.validation.constraints.Positive;
 
 public interface ClienteServicio {
 
+    // *️⃣ Funciones Generales
+
     Cliente login(String correo, String password) throws Exception;
 
     ClienteResponse registrar(@Valid ClienteRequest request) throws Exception;
+
+    // 2️⃣ Funciones del Cliente
 
     ClienteResponse actualizar(@Valid ClienteRequest request) throws Exception;
 
@@ -24,6 +28,8 @@ public interface ClienteServicio {
     void eliminar(@NotNull @Positive Integer cedula, boolean confirmacion) throws Exception;
 
     Optional<ClienteResponse> obtener(@NotNull @Positive Integer cedula) throws Exception;
+
+    // 1️⃣ Funciones del Administrador
 
     List<ClienteResponse> listar();
 }

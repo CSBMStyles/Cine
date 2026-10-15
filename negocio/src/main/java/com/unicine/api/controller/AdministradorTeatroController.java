@@ -43,7 +43,7 @@ public class AdministradorTeatroController {
         this.administradorTeatroServicio = administradorTeatroServicio;
     }
 
-    // SECTION: Alta ADMIN
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar administrador de teatro", description = "Solo ADMIN.")
@@ -61,7 +61,7 @@ public class AdministradorTeatroController {
     }
 
     // !SECTION
-    // SECTION: Perfil propio
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @GetMapping("/me")
     @Operation(summary = "Obtener mi perfil administrador de teatro")
@@ -87,22 +87,6 @@ public class AdministradorTeatroController {
         return ResponseEntity.ok(administradorTeatroServicio.actualizar(request));
     }
 
-    // !SECTION
-    // SECTION: Administración
-
-    @GetMapping
-    @Operation(summary = "Listar administradores de teatro", description = "Solo ADMIN.")
-    public ResponseEntity<List<AdministradorTeatroResponse>> listar(
-            @AuthenticationPrincipal UsuarioPrincipal principal) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (!principal.esAdministrador()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok(administradorTeatroServicio.listar());
-    }
-
     @GetMapping("/{cedula}")
     @Operation(summary = "Obtener administrador de teatro por cédula", description = "Solo propio o ADMIN.")
     public ResponseEntity<AdministradorTeatroResponse> obtenerPorCedula(
@@ -117,6 +101,22 @@ public class AdministradorTeatroController {
         return administradorTeatroServicio.obtener(cedula)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
+    @GetMapping
+    @Operation(summary = "Listar administradores de teatro", description = "Solo ADMIN.")
+    public ResponseEntity<List<AdministradorTeatroResponse>> listar(
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.ok(administradorTeatroServicio.listar());
     }
 
     @DeleteMapping("/{cedula}")

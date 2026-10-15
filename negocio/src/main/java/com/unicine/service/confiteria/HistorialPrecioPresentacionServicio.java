@@ -20,15 +20,19 @@ import jakarta.validation.constraints.Positive;
  */
 public interface HistorialPrecioPresentacionServicio {
 
+    // 1️⃣ Funciones del Administrador
+
     HistorialPrecioPresentacionResponse registrar(@Valid HistorialPrecioPresentacionRequest request) throws Exception;
 
     List<HistorialPrecioPresentacionResponse> listarPorPresentacion(Integer codigoPresentacion) throws Exception;
 
-    Optional<HistorialPrecioPresentacionResponse> obtenerUltimoPorPresentacion(Integer codigoPresentacion) throws Exception;
-
     void eliminarPorPresentacion(@NotNull @Positive Integer codigoPresentacion) throws Exception;
 
     void eliminarTodo() throws Exception;
+
+    // 2️⃣ Funciones del Cliente
+
+    Optional<HistorialPrecioPresentacionResponse> obtenerUltimoPorPresentacion(Integer codigoPresentacion) throws Exception;
 
     Optional<HistorialPrecioPresentacionResponse> obtener(
             @NotNull(message = "El codigo no puede estar vacio")

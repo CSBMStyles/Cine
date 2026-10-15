@@ -14,19 +14,19 @@ import jakarta.validation.constraints.Positive;
 
 public interface SalaServicio {
 
-    // *️⃣ Funciones de Soporte
-
-    Double obtenerPrecioBase(TipoSala tipoSala);
-
-    // 2️⃣ Funciones del Administrador de Teatro
+    // 3️⃣ Funciones del Administrador Teatro
 
     SalaResponse registrar(@Valid SalaRequest request) throws Exception;
 
     SalaResponse actualizar(@Valid SalaRequest request) throws Exception;
 
+    // 1️⃣ Funciones del Administrador
+
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
-    // *️⃣ Funciones Globales
+    // *️⃣ Funciones Generales
+
+    Double obtenerPrecioBase(TipoSala tipoSala);
 
     Optional<SalaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 

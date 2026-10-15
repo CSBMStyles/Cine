@@ -50,7 +50,7 @@ public class PagoController {
         this.pagoMapper = pagoMapper;
     }
 
-    // SECTION: Ordenes
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @PostMapping("/ordenes")
     @Operation(summary = "Crear orden de pago",
@@ -81,7 +81,7 @@ public class PagoController {
     }
 
     // !SECTION
-    // SECTION: Webhooks
+    // SECTION: *️⃣ Funciones Generales
 
     @PostMapping("/webhooks")
     @Operation(summary = "Webhook de Mercado Pago",
@@ -101,7 +101,7 @@ public class PagoController {
     }
 
     // !SECTION
-    // SECTION: Estado
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/estado")
     @Operation(summary = "Conciliar estado de pago",

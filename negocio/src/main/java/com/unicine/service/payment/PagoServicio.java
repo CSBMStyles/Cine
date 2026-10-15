@@ -16,6 +16,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 // PagoServicioImp, asi Wompi entrara despues sin tocar controllers.
 public interface PagoServicio {
 
+    // 2️⃣ Funciones del Cliente
+
     // SECTION: Metodos de negocio
 
     Pago registrarPagoPendiente(
@@ -28,16 +30,20 @@ public interface PagoServicio {
             @NotNull(message = ValidationMessages.PAYMENT_PURCHASE_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE) Integer compraCodigo) throws Exception;
 
-    List<Pago> listar();
-
     OrdenPagoResponse crearOrden(@Valid OrdenPagoRequest request) throws Exception;
-
-    Optional<OrdenPagoResponse> procesarNotificacion(String dataId, String tipo,
-                                                     String firma, String requestId) throws Exception;
 
     OrdenPagoResponse conciliarEstado(
             @NotNull(message = ValidationMessages.PAYMENT_PURCHASE_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE) Integer compraCodigo) throws Exception;
 
     // !SECTION
+
+    // 1️⃣ Funciones del Administrador
+
+    List<Pago> listar();
+
+    // *️⃣ Funciones Generales
+
+    Optional<OrdenPagoResponse> procesarNotificacion(String dataId, String tipo,
+                                                     String firma, String requestId) throws Exception;
 }

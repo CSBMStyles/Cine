@@ -44,7 +44,7 @@ public class ConfiteriaController {
         this.confiteriaServicio = confiteriaServicio;
     }
 
-    // SECTION: Escritura protegida
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @PostMapping
     @Operation(summary = "Registrar confitería", description = "Solo ADMIN o ADMINISTRADOR_TEATRO.")
@@ -76,6 +76,9 @@ public class ConfiteriaController {
         return ResponseEntity.ok(confiteriaServicio.actualizar(request));
     }
 
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar confitería — requiere ?confirmacion=true", description = "Solo ADMIN.")
     public ResponseEntity<Void> eliminar(
@@ -93,7 +96,7 @@ public class ConfiteriaController {
     }
 
     // !SECTION
-    // SECTION: Lectura publica
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener confitería por código")

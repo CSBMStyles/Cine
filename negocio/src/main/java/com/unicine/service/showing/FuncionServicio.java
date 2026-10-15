@@ -15,11 +15,7 @@ import jakarta.validation.constraints.Positive;
 
 public interface FuncionServicio {
 
-    // *️⃣ Funciones de Soporte
-
-    Double calcularPrecio(Sala sala, Horario horario);
-
-    // 2️⃣ Funciones del Administrador de Teatro
+    // 3️⃣ Funciones del Administrador Teatro
 
     FuncionResponse registrar(@Valid FuncionRequest request) throws Exception;
 
@@ -28,6 +24,8 @@ public interface FuncionServicio {
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
     // *️⃣ Funciones Generales
+
+    Double calcularPrecio(Sala sala, Horario horario);
 
     Optional<FuncionResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 

@@ -14,27 +14,25 @@ import jakarta.validation.constraints.Positive;
 
 public interface CompraServicio {
 
-    // SECTION: Metodos Crud base
+    // 2️⃣ Funciones del Cliente
 
     CompraResponse registrar(@Valid CompraRequest request) throws Exception;
+
+    CompraResponse registrarCompraCompleta(@Valid CompraCompletaRequest request) throws Exception;
+
+    Optional<CompraResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
+
+    List<CompraResponse> obtenerComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
+
+    Double obtenerTotalComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
+
+    // 1️⃣ Funciones del Administrador
 
     CompraResponse actualizar(@Valid CompraRequest request) throws Exception;
 
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 
-    Optional<CompraResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
-
     List<CompraResponse> listar();
 
     List<CompraResponse> listarPaginado();
-
-    // !SECTION
-    // SECTION: Metodos de negocio
-
-    CompraResponse registrarCompraCompleta(@Valid CompraCompletaRequest request) throws Exception;
-
-    List<CompraResponse> obtenerComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
-
-    Double obtenerTotalComprasCliente(@NotNull(message = ValidationMessages.CEDULA_NOT_NULL) @Positive(message = ValidationMessages.CEDULA_POSITIVE) Integer cedula) throws Exception;
-    // !SECTION
 }

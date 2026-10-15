@@ -20,17 +20,23 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ConfiteriaServicio {
 
-    // SECTION: Crud base
+    // 3️⃣ Funciones del Administrador Teatro
 
     ConfiteriaResponse registrar(@Valid ConfiteriaRequest request) throws Exception;
 
     ConfiteriaResponse actualizar(@Valid ConfiteriaRequest request) throws Exception;
+
+    // 1️⃣ Funciones del Administrador
 
     void eliminar(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo,
             boolean confirmacion) throws Exception;
+
+    // *️⃣ Funciones Generales
+
+    // SECTION: Crud base
 
     Optional<ConfiteriaResponse> obtener(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)

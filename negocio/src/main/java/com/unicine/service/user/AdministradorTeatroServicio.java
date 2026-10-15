@@ -13,17 +13,23 @@ import jakarta.validation.constraints.Positive;
 
 public interface AdministradorTeatroServicio {
 
+    // *️⃣ Funciones Generales
+
     AdministradorTeatro login(String correo, String password) throws Exception;
 
+    // 1️⃣ Funciones del Administrador
+
     AdministradorTeatroResponse registrar(@Valid AdministradorTeatroRequest request) throws Exception;
+
+    void eliminar(@NotNull @Positive Integer cedula, boolean confirmacion) throws Exception;
+
+    List<AdministradorTeatroResponse> listar();
+
+    // 3️⃣ Funciones del Administrador Teatro
 
     AdministradorTeatroResponse actualizar(@Valid AdministradorTeatroRequest request) throws Exception;
 
     AdministradorTeatro cambiarPassword(AdministradorTeatro administrador, String passwordActual, String passwordNuevo) throws Exception;
 
-    void eliminar(@NotNull @Positive Integer cedula, boolean confirmacion) throws Exception;
-
     Optional<AdministradorTeatroResponse> obtener(@NotNull @Positive Integer cedula) throws Exception;
-
-    List<AdministradorTeatroResponse> listar();
 }

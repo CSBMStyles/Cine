@@ -56,7 +56,7 @@ public class AuthController {
         this.refrescoServicio = refrescoServicio;
     }
 
-    // SECTION: Registro
+    // SECTION: *️⃣ Funciones Generales
 
     /**
      * Registro unico para cliente.
@@ -70,9 +70,6 @@ public class AuthController {
         ClienteResponse response = clienteServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-    // !SECTION
-    // SECTION: Login
 
     @PostMapping("/login")
     @Operation(summary = "Login", description = "Un solo formulario correo+password. Resuelve tipo CLIENTE/ADMIN/ADMIN_TEATRO y crea sesion con par access+refresh.")
@@ -116,9 +113,6 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
-
-    // !SECTION
-    // SECTION: Refresh y logout
 
     @PostMapping("/refresh")
     @Operation(summary = "Rotar sesion", description = "Revoca el refresh usado y emite un par nuevo. Reusar un refresh revocado revoca todas las sesiones.")

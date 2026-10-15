@@ -40,7 +40,7 @@ public class AdministradorController {
         this.administradorServicio = administradorServicio;
     }
 
-    // SECTION: Perfil propio
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @GetMapping("/me")
     @Operation(summary = "Obtener mi perfil administrador")
@@ -65,9 +65,6 @@ public class AdministradorController {
         AdministradorResponse response = administradorServicio.actualizar(request);
         return ResponseEntity.ok(response);
     }
-
-    // !SECTION
-    // SECTION: Administración
 
     @GetMapping
     @Operation(summary = "Listar administradores", description = "Solo rol ADMINISTRADOR. 401 sin auth, 403 sin rol.")

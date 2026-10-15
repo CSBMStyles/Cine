@@ -24,6 +24,8 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ColeccionServicio {
 
+    // 2️⃣ Funciones del Cliente
+
     // SECTION: Crud base
 
     ColeccionResponse registrar(@Valid ColeccionRequest request) throws Exception;

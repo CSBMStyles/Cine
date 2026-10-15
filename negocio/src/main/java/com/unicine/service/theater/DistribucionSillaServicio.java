@@ -12,13 +12,17 @@ import jakarta.validation.constraints.Positive;
 
 public interface DistribucionSillaServicio {
 
-    // 2️⃣ Funciones del Administrador Teatro
+    // 3️⃣ Funciones del Administrador Teatro
 
     DistribucionSillaResponse registrar(@Valid DistribucionSillaRequest request) throws Exception;
 
     DistribucionSillaResponse actualizar(@Valid DistribucionSillaRequest request) throws Exception;
 
+    // 1️⃣ Funciones del Administrador
+
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
+
+    // 2️⃣ Funciones del Cliente
 
     Optional<DistribucionSillaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 

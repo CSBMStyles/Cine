@@ -43,7 +43,7 @@ public class ComentarioController {
         this.comentarioServicio = comentarioServicio;
     }
 
-    // SECTION: Escritura propia o ADMIN
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @PostMapping
     @Operation(summary = "Registrar comentario",
@@ -128,7 +128,7 @@ public class ComentarioController {
     }
 
     // !SECTION
-    // SECTION: Lectura publica
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener comentario por código")

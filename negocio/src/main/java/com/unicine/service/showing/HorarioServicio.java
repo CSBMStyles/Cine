@@ -14,21 +14,21 @@ import jakarta.validation.constraints.Positive;
 
 public interface HorarioServicio {
 
-    // *️⃣ Funciones de Soporte
-
-    Double obtenerDescuentoDia(LocalDateTime fechaInicio);
-
-    String obtenerDia(LocalDateTime fechaInicio);
-
-    // 2️⃣ Funciones del Administrador de Teatro
+    // 3️⃣ Funciones del Administrador Teatro
 
     HorarioResponse registrar(@Valid HorarioRequest request, @NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer salaCodigo) throws Exception;
 
     HorarioResponse actualizar(@Valid HorarioRequest request) throws Exception;
 
+    // 1️⃣ Funciones del Administrador
+
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
-    // *️⃣ Funciones Globales
+    // *️⃣ Funciones Generales
+
+    Double obtenerDescuentoDia(LocalDateTime fechaInicio);
+
+    String obtenerDia(LocalDateTime fechaInicio);
 
     Optional<HorarioResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 

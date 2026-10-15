@@ -43,7 +43,7 @@ public class CuponClienteController {
         this.cuponClienteServicio = cuponClienteServicio;
     }
 
-    // SECTION: Escritura ADMIN
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Asignar cupón a cliente", description = "Solo ADMIN.")
@@ -92,7 +92,7 @@ public class CuponClienteController {
     }
 
     // !SECTION
-    // SECTION: Lectura propio o ADMIN
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener asignación por código", description = "Propio o ADMIN.")

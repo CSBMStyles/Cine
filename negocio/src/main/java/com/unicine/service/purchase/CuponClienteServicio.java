@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface CuponClienteServicio {
 
-    // SECTION: Crud base
+    // 1️⃣ Funciones del Administrador
 
     CuponClienteResponse registrar(@Valid CuponClienteRequest request) throws Exception;
 
@@ -31,14 +31,16 @@ public interface CuponClienteServicio {
             Integer codigo,
             boolean confirmacion) throws Exception;
 
+    List<CuponClienteResponse> listar();
+
+    List<CuponClienteResponse> listarPaginado();
+
+    // 2️⃣ Funciones del Cliente
+
     Optional<CuponClienteResponse> obtener(
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
-
-    List<CuponClienteResponse> listar();
-
-    List<CuponClienteResponse> listarPaginado();
 
     // !SECTION
     // SECTION: Metodos de negocio

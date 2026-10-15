@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ComentarioServicio {
 
-    // SECTION: Crud base
+    // 2️⃣ Funciones del Cliente
 
     ComentarioResponse registrar(@Valid ComentarioRequest request) throws Exception;
 
@@ -30,31 +30,6 @@ public interface ComentarioServicio {
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo,
             boolean confirmacion) throws Exception;
-
-    Optional<ComentarioResponse> obtener(
-            @NotNull(message = ValidationMessages.ID_NOT_NULL)
-            @Positive(message = ValidationMessages.ID_POSITIVE)
-            Integer codigo) throws Exception;
-
-    List<ComentarioResponse> listar();
-
-    List<ComentarioResponse> listarPaginado();
-
-    // !SECTION
-
-    // SECTION: Metodos de negocio
-
-    /**
-     * Lista los comentarios de una pelicula especifica.
-     *
-     * @param codigoPelicula Codigo de la pelicula
-     * @return Lista de comentarios
-     * @throws Exception si la pelicula no existe o no tiene comentarios
-     */
-    List<ComentarioResponse> listarPorPelicula(
-            @NotNull(message = ValidationMessages.ID_NOT_NULL)
-            @Positive(message = ValidationMessages.ID_POSITIVE)
-            Integer codigoPelicula) throws Exception;
 
     /**
      * Lista los comentarios de un cliente especifico.
@@ -91,5 +66,32 @@ public interface ComentarioServicio {
             @NotNull(message = ValidationMessages.ID_NOT_NULL)
             @Positive(message = ValidationMessages.ID_POSITIVE)
             Integer codigo) throws Exception;
+
+    // *️⃣ Funciones Generales
+
+    Optional<ComentarioResponse> obtener(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigo) throws Exception;
+
+    List<ComentarioResponse> listar();
+
+    List<ComentarioResponse> listarPaginado();
+
+    // !SECTION
+
+    // SECTION: Metodos de negocio
+
+    /**
+     * Lista los comentarios de una pelicula especifica.
+     *
+     * @param codigoPelicula Codigo de la pelicula
+     * @return Lista de comentarios
+     * @throws Exception si la pelicula no existe o no tiene comentarios
+     */
+    List<ComentarioResponse> listarPorPelicula(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigoPelicula) throws Exception;
     // !SECTION
 }

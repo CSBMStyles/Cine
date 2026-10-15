@@ -13,15 +13,17 @@ import jakarta.validation.constraints.Positive;
 
 public interface FuncionEsquemaServicio {
 
-    // *️⃣ Funciones Automaticas
+    // 3️⃣ Funciones del Administrador Teatro
 
     FuncionEsquemaResponse registrar(@Valid FuncionEsquemaRequest request) throws Exception;
 
     FuncionEsquemaResponse actualizar(@Valid FuncionEsquemaRequest request) throws Exception;
 
+    // 1️⃣ Funciones del Administrador
+
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
 
-    // *️⃣ Funciones Globales
+    // *️⃣ Funciones Generales
 
     Optional<FuncionEsquemaResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 

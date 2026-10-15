@@ -20,6 +20,8 @@ import jakarta.validation.constraints.Positive;
  */
 public interface EntradaServicio {
 
+    // 2️⃣ Funciones del Cliente
+
     EntradaResponse registrar(@Valid EntradaRequest request) throws Exception;
 
     EntradaResponse actualizar(@Valid EntradaRequest request) throws Exception;
@@ -35,6 +37,8 @@ public interface EntradaServicio {
     List<EntradaResponse> listarPaginado();
 
     List<EntradaResponse> listarPorCompra(@NotNull @Positive Integer codigoCompra) throws Exception;
+
+    // *️⃣ Funciones Generales
 
     List<EntradaResponse> listarPorFuncion(@NotNull @Positive Integer codigoFuncion) throws Exception;
 

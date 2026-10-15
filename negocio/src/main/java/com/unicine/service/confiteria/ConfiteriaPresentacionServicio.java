@@ -19,15 +19,21 @@ import jakarta.validation.constraints.Positive;
  */
 public interface ConfiteriaPresentacionServicio {
 
+    // 3️⃣ Funciones del Administrador Teatro
+
     ConfiteriaPresentacionResponse registrar(@Valid ConfiteriaPresentacionRequest request) throws Exception;
 
     ConfiteriaPresentacionResponse actualizar(@Valid ConfiteriaPresentacionRequest request, LocalDateTime fechaExpiracionTemporal) throws Exception;
+
+    // 1️⃣ Funciones del Administrador
 
     void eliminar(
             @NotNull(message = "El codigo no puede estar vacio")
             @Positive(message = "El codigo debe ser un numero positivo")
             Integer codigo,
             boolean confirmacion) throws Exception;
+
+    // *️⃣ Funciones Generales
 
     Optional<ConfiteriaPresentacionResponse> obtener(
             @NotNull(message = "El codigo no puede estar vacio")

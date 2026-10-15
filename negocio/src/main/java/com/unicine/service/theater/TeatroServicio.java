@@ -12,13 +12,15 @@ import jakarta.validation.constraints.Positive;
 
 public interface TeatroServicio {
 
-    // 2️⃣ Funciones del Administrador Teatro
+    // 1️⃣ Funciones del Administrador
 
     TeatroResponse registrar(@Valid TeatroRequest request) throws Exception;
 
     TeatroResponse actualizar(@Valid TeatroRequest request) throws Exception;
 
     void eliminar(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo, boolean confirmacion) throws Exception;
+
+    // *️⃣ Funciones Generales
 
     Optional<TeatroResponse> obtener(@NotNull(message = ValidationMessages.ID_NOT_NULL) @Positive(message = ValidationMessages.ID_POSITIVE) Integer codigo) throws Exception;
 

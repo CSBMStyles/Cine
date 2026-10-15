@@ -45,7 +45,7 @@ public class PresentacionController {
         this.presentacionServicio = presentacionServicio;
     }
 
-    // SECTION: Escritura protegida
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @PostMapping
     @Operation(summary = "Registrar presentación", description = "Solo ADMIN o ADMINISTRADOR_TEATRO.")
@@ -80,6 +80,9 @@ public class PresentacionController {
         return ResponseEntity.ok(presentacionServicio.actualizar(request, expiracion));
     }
 
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar presentación — requiere ?confirmacion=true", description = "Solo ADMIN.")
     public ResponseEntity<Void> eliminar(
@@ -97,7 +100,7 @@ public class PresentacionController {
     }
 
     // !SECTION
-    // SECTION: Lectura publica
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener presentación por código")

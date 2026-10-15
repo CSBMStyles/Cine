@@ -19,6 +19,8 @@ import jakarta.validation.constraints.Positive;
  */
 public interface CompraConfiteriaServicio {
 
+    // 2️⃣ Funciones del Cliente
+
     // SECTION: Crud base
 
     CompraConfiteriaResponse registrar(@Valid CompraConfiteriaRequest request) throws Exception;

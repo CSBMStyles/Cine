@@ -47,7 +47,7 @@ public class ClienteController {
         this.compraServicio = compraServicio;
     }
 
-    // SECTION: Perfil propio
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/me")
     @Operation(summary = "Obtener mi perfil", description = "Requiere autenticación. Devuelve el cliente del principal sin password.")
@@ -72,22 +72,6 @@ public class ClienteController {
         request.setEstado(true);
         ClienteResponse response = clienteServicio.actualizar(request);
         return ResponseEntity.ok(response);
-    }
-
-    // !SECTION
-    // SECTION: Administración protegida
-
-    @GetMapping
-    @Operation(summary = "Listar clientes", description = "Solo rol ADMINISTRADOR. 401 sin auth, 403 sin rol.")
-    public ResponseEntity<List<ClienteResponse>> listar(
-            @AuthenticationPrincipal UsuarioPrincipal principal) {
-        if (principal == null) {
-            return ResponseEntity.status(401).build();
-        }
-        if (!principal.esAdministrador()) {
-            return ResponseEntity.status(403).build();
-        }
-        return ResponseEntity.ok(clienteServicio.listar());
     }
 
     @GetMapping("/{cedula}")
@@ -144,6 +128,24 @@ public class ClienteController {
             return ResponseEntity.ok(List.of());
         }
     }
+
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
+    @GetMapping
+    @Operation(summary = "Listar clientes", description = "Solo rol ADMINISTRADOR. 401 sin auth, 403 sin rol.")
+    public ResponseEntity<List<ClienteResponse>> listar(
+            @AuthenticationPrincipal UsuarioPrincipal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(403).build();
+        }
+        return ResponseEntity.ok(clienteServicio.listar());
+    }
+
+    // !SECTION
 
     private Comparator<CompraResponse> ordenHistorial(String direction) {
         Comparator<CompraResponse> porFecha = Comparator.comparing(

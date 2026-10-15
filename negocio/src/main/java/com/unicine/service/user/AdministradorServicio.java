@@ -13,9 +13,13 @@ import jakarta.validation.constraints.Positive;
 
 public interface AdministradorServicio {
 
+    // *️⃣ Funciones Generales
+
     Administrador login(String correo, String password) throws Exception;
 
     AdministradorResponse registrar(@Valid AdministradorRequest request) throws Exception;
+
+    // 1️⃣ Funciones del Administrador
 
     AdministradorResponse actualizar(@Valid AdministradorRequest request) throws Exception;
 

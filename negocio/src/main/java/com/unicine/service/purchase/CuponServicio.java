@@ -21,7 +21,7 @@ import jakarta.validation.constraints.PositiveOrZero;
  */
 public interface CuponServicio {
 
-    // SECTION: Crud base
+    // 1️⃣ Funciones del Administrador
 
     CuponResponse registrar(@Valid CuponRequest request) throws Exception;
 
@@ -33,11 +33,6 @@ public interface CuponServicio {
             Integer codigo,
             boolean confirmacion) throws Exception;
 
-    Optional<CuponResponse> obtener(
-            @NotNull(message = ValidationMessages.ID_NOT_NULL)
-            @Positive(message = ValidationMessages.ID_POSITIVE)
-            Integer codigo) throws Exception;
-
     List<CuponResponse> listar();
 
     List<CuponResponse> listarPaginado();
@@ -46,16 +41,8 @@ public interface CuponServicio {
     // SECTION: Metodos de negocio
 
     /**
-     * Lista los cupones cuya fecha de vencimiento aun no ha pasado.
-     * 
-     * @return Lista de cupones activos
-     * @throws Exception si no hay cupones activos
-     */
-    List<CuponResponse> listarActivos() throws Exception;
-
-    /**
      * Lista los cupones cuya fecha de vencimiento ya paso.
-     * 
+     *
      * @return Lista de cupones vencidos
      * @throws Exception si no hay cupones vencidos
      */
@@ -63,7 +50,7 @@ public interface CuponServicio {
 
     /**
      * Busca cupones cuyo criterio contenga el texto dado.
-     * 
+     *
      * @param criterio Texto a buscar en el criterio del cupon
      * @return Lista de cupones que coinciden
      * @throws Exception si no se encuentran coincidencias
@@ -72,7 +59,7 @@ public interface CuponServicio {
 
     /**
      * Lista los cupones cuyo descuento este dentro del rango indicado.
-     * 
+     *
      * @param min Valor minimo del descuento (inclusive)
      * @param max Valor maximo del descuento (inclusive)
      * @return Lista de cupones dentro del rango
@@ -88,10 +75,25 @@ public interface CuponServicio {
 
     /**
      * Lista los cupones que tienen al menos una asignacion a un cliente.
-     * 
+     *
      * @return Lista de cupones con asignaciones
      * @throws Exception si no hay cupones con asignaciones
      */
     List<CuponResponse> listarConAsignaciones() throws Exception;
     // !SECTION
+
+    // 2️⃣ Funciones del Cliente
+
+    Optional<CuponResponse> obtener(
+            @NotNull(message = ValidationMessages.ID_NOT_NULL)
+            @Positive(message = ValidationMessages.ID_POSITIVE)
+            Integer codigo) throws Exception;
+
+    /**
+     * Lista los cupones cuya fecha de vencimiento aun no ha pasado.
+     *
+     * @return Lista de cupones activos
+     * @throws Exception si no hay cupones activos
+     */
+    List<CuponResponse> listarActivos() throws Exception;
 }

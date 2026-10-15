@@ -8,6 +8,8 @@ import com.unicine.transfer.dto.auth.ParTokensResponse;
  */
 public interface RefrescoServicio {
 
+    // *️⃣ Funciones Generales
+
     /**
      * Crea sesion: emite par access+refresh y persiste el hash del refresh.
      */

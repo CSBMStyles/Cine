@@ -16,15 +16,11 @@ import com.unicine.transfer.dto.response.VersionArchivoResponse;
  */
 public interface ImagenServicio {
 
-    // *️⃣ Funciones Generales
+    // 2️⃣ Funciones del Cliente
 
     ImagenResponse registrar(ImagenRequest request, MultipartFile file) throws Exception;
 
     ImagenResponse actualizar(ImagenRequest request, MultipartFile file) throws Exception;
-
-    ImagenResponse restaurar(ImagenRequest request, String versionId) throws Exception;
-
-    ImagenResponse renombrar(ImagenRequest request, String nuevoNombre) throws Exception;
 
     void eliminar(String codigo, boolean confirmacion) throws Exception;
 
@@ -41,4 +37,10 @@ public interface ImagenServicio {
     List<ImagenResponse> listarAscendente();
 
     List<ImagenResponse> listarDescendente();
+
+    // 1️⃣ Funciones del Administrador
+
+    ImagenResponse restaurar(ImagenRequest request, String versionId) throws Exception;
+
+    ImagenResponse renombrar(ImagenRequest request, String nuevoNombre) throws Exception;
 }

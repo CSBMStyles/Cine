@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Positive;
 
 public interface HistorialEstadoPeliculaServicio {
 
+    // 1️⃣ Funciones del Administrador
+
     HistorialEstadoPeliculaResponse registrar(@Valid HistorialEstadoPeliculaRequest request);
 
     List<HistorialEstadoPeliculaResponse> obtenerPorPelicula(
