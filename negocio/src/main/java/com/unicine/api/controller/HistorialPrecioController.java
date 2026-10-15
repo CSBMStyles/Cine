@@ -41,7 +41,7 @@ public class HistorialPrecioController {
         this.historialServicio = historialServicio;
     }
 
-    // SECTION: Escritura y borrado ADMIN
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar entrada de historial", description = "Solo ADMIN.")
@@ -78,7 +78,7 @@ public class HistorialPrecioController {
     }
 
     // !SECTION
-    // SECTION: Lectura por rol
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener entrada por código", description = "Requiere autenticación.")
@@ -95,7 +95,7 @@ public class HistorialPrecioController {
 
     @GetMapping("/ultimo")
     @Operation(summary = "Último registro por presentación",
-            description = "Cliente y administrador de teatro ven % descuento. Requiere autenticación.")
+            description = "Lectura pública. Muestra el % de descuento vigente.")
     public ResponseEntity<HistorialPrecioPresentacionResponse> ultimoPorPresentacion(
             @RequestParam @Positive Integer presentacion,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
@@ -106,6 +106,9 @@ public class HistorialPrecioController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @GetMapping
     @Operation(summary = "Historial completo por presentación", description = "Solo ADMIN.")

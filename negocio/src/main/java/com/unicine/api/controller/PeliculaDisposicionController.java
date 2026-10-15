@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.movie.PeliculaDisposicionServicio;
 import com.unicine.transfer.dto.request.PeliculaDisposicionRequest;
 import com.unicine.transfer.dto.response.PeliculaDisposicionResponse;
@@ -43,12 +45,19 @@ public class PeliculaDisposicionController {
         this.disposicionServicio = disposicionServicio;
     }
 
-    // SECTION: Escritura
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar disposición")
     public ResponseEntity<PeliculaDisposicionResponse> registrar(
-            @Valid @RequestBody PeliculaDisposicionRequest request) throws Exception {
+            @Valid @RequestBody PeliculaDisposicionRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         PeliculaDisposicionResponse response = disposicionServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -56,7 +65,14 @@ public class PeliculaDisposicionController {
     @PutMapping
     @Operation(summary = "Actualizar disposición (clave compuesta en body)")
     public ResponseEntity<PeliculaDisposicionResponse> actualizar(
-            @Valid @RequestBody PeliculaDisposicionRequest request) throws Exception {
+            @Valid @RequestBody PeliculaDisposicionRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         PeliculaDisposicionResponse response = disposicionServicio.actualizar(request);
         return ResponseEntity.ok(response);
     }
@@ -66,13 +82,20 @@ public class PeliculaDisposicionController {
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer peliculaCodigo,
             @PathVariable @Positive Integer ciudadCodigo,
-            @RequestParam boolean confirmacion) throws Exception {
+            @RequestParam boolean confirmacion,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         disposicionServicio.eliminar(peliculaCodigo, ciudadCodigo, confirmacion);
         return ResponseEntity.noContent().build();
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{peliculaCodigo}/{ciudadCodigo}")
     @Operation(summary = "Obtener disposición por clave compuesta")

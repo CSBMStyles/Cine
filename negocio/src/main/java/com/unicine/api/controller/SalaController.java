@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.theater.SalaServicio;
 import com.unicine.transfer.dto.request.SalaRequest;
 import com.unicine.transfer.dto.response.SalaResponse;
@@ -43,11 +45,22 @@ public class SalaController {
         this.salaServicio = salaServicio;
     }
 
-    // SECTION: Escritura
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @PostMapping
     @Operation(summary = "Registrar sala")
-    public ResponseEntity<SalaResponse> registrar(@Valid @RequestBody SalaRequest request) throws Exception {
+    public ResponseEntity<SalaResponse> registrar(
+            @Valid @RequestBody SalaRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esGestorCatalogo()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        if (fueraDeAlcance(principal, request.getTeatroCodigo())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         SalaResponse response = salaServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -56,23 +69,47 @@ public class SalaController {
     @Operation(summary = "Actualizar sala")
     public ResponseEntity<SalaResponse> actualizar(
             @PathVariable @Positive Integer codigo,
-            @Valid @RequestBody SalaRequest request) throws Exception {
+            @Valid @RequestBody SalaRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esGestorCatalogo()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         request.setCodigo(codigo);
+        Integer teatroExistente = salaServicio.obtener(codigo)
+                .map(s -> s.getTeatro() == null ? null : s.getTeatro().getCodigo())
+                .orElse(null);
+        if (fueraDeAlcance(principal, teatroExistente)
+                || fueraDeAlcance(principal, request.getTeatroCodigo())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         SalaResponse response = salaServicio.actualizar(request);
         return ResponseEntity.ok(response);
     }
+
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar sala — requiere ?confirmacion=true")
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer codigo,
-            @RequestParam boolean confirmacion) throws Exception {
+            @RequestParam boolean confirmacion,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         salaServicio.eliminar(codigo, confirmacion);
         return ResponseEntity.noContent().build();
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener sala por código")
@@ -131,4 +168,16 @@ public class SalaController {
     }
 
     // !SECTION
+
+    /**
+     * Alcance por teatro (5.2 B4): el ADMIN opera en todos; el resto solo en
+     * los teatros de su claim teatroIds. Teatro desconocido niega por defecto.
+     */
+    private boolean fueraDeAlcance(UsuarioPrincipal principal, Integer teatroCodigo) {
+        if (principal.esAdministrador()) {
+            return false;
+        }
+        List<Integer> teatros = principal.getTeatroIds();
+        return teatroCodigo == null || teatros == null || !teatros.contains(teatroCodigo);
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.movie.ColeccionServicio;
 import com.unicine.transfer.dto.request.ColeccionRequest;
 import com.unicine.transfer.dto.response.ColeccionResponse;
@@ -43,18 +45,34 @@ public class ColeccionController {
         this.coleccionServicio = coleccionServicio;
     }
 
-    // SECTION: Escritura
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @PostMapping
     @Operation(summary = "Registrar colección")
-    public ResponseEntity<ColeccionResponse> registrar(@Valid @RequestBody ColeccionRequest request) throws Exception {
+    public ResponseEntity<ColeccionResponse> registrar(
+            @Valid @RequestBody ColeccionRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador() && !principal.getCedula().equals(request.getClienteCedula())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         ColeccionResponse response = coleccionServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping
     @Operation(summary = "Actualizar colección (por clave compuesta en body)")
-    public ResponseEntity<ColeccionResponse> actualizar(@Valid @RequestBody ColeccionRequest request) throws Exception {
+    public ResponseEntity<ColeccionResponse> actualizar(
+            @Valid @RequestBody ColeccionRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador() && !principal.getCedula().equals(request.getClienteCedula())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         ColeccionResponse response = coleccionServicio.actualizar(request);
         return ResponseEntity.ok(response);
     }
@@ -64,13 +82,20 @@ public class ColeccionController {
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer cedula,
             @PathVariable @Positive Integer codigoPelicula,
-            @RequestParam boolean confirmacion) throws Exception {
+            @RequestParam boolean confirmacion,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador() && !principal.getCedula().equals(cedula)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         coleccionServicio.eliminar(cedula, codigoPelicula, confirmacion);
         return ResponseEntity.noContent().build();
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/{cedula}/{codigoPelicula}")
     @Operation(summary = "Obtener colección por clave compuesta")

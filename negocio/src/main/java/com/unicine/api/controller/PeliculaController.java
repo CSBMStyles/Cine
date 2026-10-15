@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.transfer.dto.request.PeliculaRequest;
 import com.unicine.transfer.dto.response.PeliculaResponse;
@@ -46,11 +48,19 @@ public class PeliculaController {
         this.peliculaServicio = peliculaServicio;
     }
 
-    // SECTION: Escritura
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar película")
-    public ResponseEntity<PeliculaResponse> registrar(@Valid @RequestBody PeliculaRequest request) throws Exception {
+    public ResponseEntity<PeliculaResponse> registrar(
+            @Valid @RequestBody PeliculaRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         PeliculaResponse response = peliculaServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -59,7 +69,14 @@ public class PeliculaController {
     @Operation(summary = "Actualizar película")
     public ResponseEntity<PeliculaResponse> actualizar(
             @PathVariable @Positive Integer codigo,
-            @Valid @RequestBody PeliculaRequest request) throws Exception {
+            @Valid @RequestBody PeliculaRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         request.setCodigo(codigo);
         PeliculaResponse response = peliculaServicio.actualizar(request);
         return ResponseEntity.ok(response);
@@ -69,13 +86,20 @@ public class PeliculaController {
     @Operation(summary = "Eliminar película — requiere ?confirmacion=true")
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer codigo,
-            @RequestParam boolean confirmacion) throws Exception {
+            @RequestParam boolean confirmacion,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         peliculaServicio.eliminar(codigo, confirmacion);
         return ResponseEntity.noContent().build();
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener película por código")
@@ -117,7 +141,7 @@ public class PeliculaController {
     }
 
     // !SECTION
-    // SECTION: Demo QUERY (RFC 10008) — lectura con body
+    // SECTION: *️⃣ Funciones Generales(RFC 10008) — lectura con body
 
     /**
      * Demo del método QUERY: búsqueda compleja con body JSON.

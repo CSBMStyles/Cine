@@ -43,7 +43,7 @@ public class DistribucionSillaController {
         this.distribucionServicio = distribucionServicio;
     }
 
-    // SECTION: Escritura protegida
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @PostMapping
     @Operation(summary = "Registrar distribución", description = "Solo ADMIN o ADMINISTRADOR_TEATRO.")
@@ -75,6 +75,9 @@ public class DistribucionSillaController {
         return ResponseEntity.ok(distribucionServicio.actualizar(request));
     }
 
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar distribución — requiere ?confirmacion=true", description = "Solo ADMIN.")
     public ResponseEntity<Void> eliminar(
@@ -92,30 +95,24 @@ public class DistribucionSillaController {
     }
 
     // !SECTION
-    // SECTION: Lectura autenticada
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener distribución por código")
     public ResponseEntity<DistribucionSillaResponse> obtener(
             @PathVariable @Positive Integer codigo,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         return distribucionServicio.obtener(codigo)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    @Operation(summary = "Listar distribuciones", description = "Requiere autenticación. ?page=&size=")
+    @Operation(summary = "Listar distribuciones", description = "Lectura pública. ?page=&size=")
     public ResponseEntity<List<DistribucionSillaResponse>> listar(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size,
             @AuthenticationPrincipal UsuarioPrincipal principal) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         return ResponseEntity.ok(PaginadoManual.paginar(distribucionServicio.listar(), page, size));
     }
 

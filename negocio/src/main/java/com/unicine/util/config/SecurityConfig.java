@@ -62,6 +62,10 @@ public class SecurityConfig {
      *   <li>GET /api/confiterias/**, /api/presentaciones/** (catalogo comercial 4.5.1)</li>
      *   <li>GET /api/horarios/**, /api/funcion-esquemas/** (programacion 4.5.2)</li>
      *   <li>GET /api/comentarios/** (resenas publicas)</li>
+     *   <li>GET /api/colecciones/**, /api/pelicula-disposiciones/**, /api/distribuciones-silla/**,
+     *   /api/imagenes/**, /api/cupones/** (lecturas abiertas 5.2 B2)</li>
+     *   <li>GET /api/historial-precios/ultimo y /api/historial-precios/{codigo} (5.2 B2)</li>
+     *   <li>POST /api/peliculas/query (demo lectura 5.2 B2)</li>
      *   <li>GET /actuator/health</li>
      *   <li>POST /api/auth/** (placeholder para registro/login 4.3.2)</li>
      *   <li>POST /api/pagos/webhooks (webhook MP 4.7.3, defensa por HMAC)</li>
@@ -89,7 +93,14 @@ public class SecurityConfig {
                                 "/api/presentaciones/**",
                                 "/api/horarios/**",
                                 "/api/funcion-esquemas/**",
-                                "/api/comentarios/**")
+                                "/api/comentarios/**",
+                                "/api/colecciones/**",
+                                "/api/pelicula-disposiciones/**",
+                                "/api/distribuciones-silla/**",
+                                "/api/imagenes/**",
+                                "/api/cupones/**",
+                                "/api/historial-precios/ultimo",
+                                "/api/historial-precios/*")
                         .permitAll()
                         .requestMatchers("/actuator/health")
                         .permitAll()
@@ -97,6 +108,9 @@ public class SecurityConfig {
                         .permitAll()
                         // Webhook Mercado Pago 4.7.3: MP no tiene JWT, se defiende con HMAC
                         .requestMatchers(HttpMethod.POST, "/api/pagos/webhooks")
+                        .permitAll()
+                        // Demo QUERY 5.2 (B2): lectura publica aunque sea POST
+                        .requestMatchers(HttpMethod.POST, "/api/peliculas/query")
                         .permitAll()
                         .requestMatchers("/security/public", "/security/public/**")
                         .permitAll()

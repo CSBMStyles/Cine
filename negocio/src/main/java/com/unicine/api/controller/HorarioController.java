@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.showing.HorarioServicio;
+import com.unicine.service.theater.SalaServicio;
 import com.unicine.transfer.dto.request.HorarioRequest;
 import com.unicine.transfer.dto.response.HorarioResponse;
 import com.unicine.util.pagination.PaginadoManual;
@@ -39,12 +40,14 @@ import jakarta.validation.constraints.Positive;
 public class HorarioController {
 
     private final HorarioServicio horarioServicio;
+    private final SalaServicio salaServicio;
 
-    public HorarioController(HorarioServicio horarioServicio) {
+    public HorarioController(HorarioServicio horarioServicio, SalaServicio salaServicio) {
         this.horarioServicio = horarioServicio;
+        this.salaServicio = salaServicio;
     }
 
-    // SECTION: Escritura protegida
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @PostMapping
     @Operation(summary = "Registrar horario",
@@ -57,6 +60,10 @@ public class HorarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         if (!principal.esGestorCatalogo()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        Integer teatro = teatroDeSala(salaCodigo);
+        if (teatro != null && fueraDeAlcance(principal, teatro)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(horarioServicio.registrar(request, salaCodigo));
@@ -78,6 +85,9 @@ public class HorarioController {
         return ResponseEntity.ok(horarioServicio.actualizar(request));
     }
 
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar horario — requiere ?confirmacion=true", description = "Solo ADMIN.")
     public ResponseEntity<Void> eliminar(
@@ -95,7 +105,7 @@ public class HorarioController {
     }
 
     // !SECTION
-    // SECTION: Lectura publica
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener horario por código")
@@ -117,4 +127,26 @@ public class HorarioController {
     }
 
     // !SECTION
+
+    /**
+     * Alcance por teatro (5.2 B4): el ADMIN opera en todos; el resto solo en
+     * los teatros de su claim teatroIds. Teatro desconocido niega por defecto.
+     * actualizar/eliminar no verifican alcance: HorarioResponse no trae sala.
+     */
+    private boolean fueraDeAlcance(UsuarioPrincipal principal, Integer teatroCodigo) {
+        if (principal.esAdministrador()) {
+            return false;
+        }
+        List<Integer> teatros = principal.getTeatroIds();
+        return teatroCodigo == null || teatros == null || !teatros.contains(teatroCodigo);
+    }
+
+    private Integer teatroDeSala(Integer salaCodigo) throws Exception {
+        if (salaCodigo == null) {
+            return null;
+        }
+        return salaServicio.obtener(salaCodigo)
+                .map(s -> s.getTeatro() == null ? null : s.getTeatro().getCodigo())
+                .orElse(null);
+    }
 }

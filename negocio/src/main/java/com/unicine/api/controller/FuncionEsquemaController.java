@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.showing.FuncionEsquemaServicio;
+import com.unicine.service.showing.FuncionServicio;
 import com.unicine.transfer.dto.request.FuncionEsquemaRequest;
 import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
 import com.unicine.util.pagination.PaginadoManual;
@@ -38,12 +39,14 @@ import jakarta.validation.constraints.Positive;
 public class FuncionEsquemaController {
 
     private final FuncionEsquemaServicio esquemaServicio;
+    private final FuncionServicio funcionServicio;
 
-    public FuncionEsquemaController(FuncionEsquemaServicio esquemaServicio) {
+    public FuncionEsquemaController(FuncionEsquemaServicio esquemaServicio, FuncionServicio funcionServicio) {
         this.esquemaServicio = esquemaServicio;
+        this.funcionServicio = funcionServicio;
     }
 
-    // SECTION: Escritura protegida
+    // SECTION: 3️⃣ Funciones del Administrador Teatro
 
     @PostMapping
     @Operation(summary = "Registrar esquema", description = "Solo ADMIN o ADMINISTRADOR_TEATRO.")
@@ -54,6 +57,10 @@ public class FuncionEsquemaController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         if (!principal.esGestorCatalogo()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        Integer teatro = teatroDeFuncion(request.getFuncionCodigo());
+        if (teatro != null && fueraDeAlcance(principal, teatro)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(esquemaServicio.registrar(request));
@@ -72,8 +79,19 @@ public class FuncionEsquemaController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         request.setCodigo(codigo);
+        Integer teatroExistente = esquemaServicio.obtener(codigo)
+                .map(e -> teatroDeFuncion(e.getFuncionCodigo()))
+                .orElse(null);
+        Integer teatroSolicitado = teatroDeFuncion(request.getFuncionCodigo());
+        if ((teatroExistente != null && fueraDeAlcance(principal, teatroExistente))
+                || (teatroSolicitado != null && fueraDeAlcance(principal, teatroSolicitado))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(esquemaServicio.actualizar(request));
     }
+
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar esquema — requiere ?confirmacion=true", description = "Solo ADMIN.")
@@ -92,7 +110,7 @@ public class FuncionEsquemaController {
     }
 
     // !SECTION
-    // SECTION: Lectura publica
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener esquema por código")
@@ -119,4 +137,31 @@ public class FuncionEsquemaController {
     }
 
     // !SECTION
+
+    /**
+     * Alcance por teatro (5.2 B4): el ADMIN opera en todos; el resto solo en
+     * los teatros de su claim teatroIds. Teatro desconocido niega por defecto.
+     */
+    private boolean fueraDeAlcance(UsuarioPrincipal principal, Integer teatroCodigo) {
+        if (principal.esAdministrador()) {
+            return false;
+        }
+        List<Integer> teatros = principal.getTeatroIds();
+        return teatroCodigo == null || teatros == null || !teatros.contains(teatroCodigo);
+    }
+
+    private Integer teatroDeFuncion(Integer funcionCodigo) {
+        if (funcionCodigo == null) {
+            return null;
+        }
+        try {
+            return funcionServicio.obtener(funcionCodigo)
+                    .map(f -> f.getSala() == null || f.getSala().getTeatro() == null
+                            ? null
+                            : f.getSala().getTeatro().getCodigo())
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

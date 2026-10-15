@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.theater.CiudadServicio;
 import com.unicine.transfer.dto.request.CiudadRequest;
 import com.unicine.transfer.dto.response.CiudadResponse;
@@ -44,11 +46,19 @@ public class CiudadController {
         this.ciudadServicio = ciudadServicio;
     }
 
-    // SECTION: Escritura
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar ciudad", description = "Crea una nueva ciudad. Requiere autenticación.")
-    public ResponseEntity<CiudadResponse> registrar(@Valid @RequestBody CiudadRequest request) throws Exception {
+    public ResponseEntity<CiudadResponse> registrar(
+            @Valid @RequestBody CiudadRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         CiudadResponse response = ciudadServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -57,7 +67,14 @@ public class CiudadController {
     @Operation(summary = "Actualizar ciudad")
     public ResponseEntity<CiudadResponse> actualizar(
             @PathVariable @Positive Integer codigo,
-            @Valid @RequestBody CiudadRequest request) throws Exception {
+            @Valid @RequestBody CiudadRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         request.setCodigo(codigo);
         CiudadResponse response = ciudadServicio.actualizar(request);
         return ResponseEntity.ok(response);
@@ -65,13 +82,21 @@ public class CiudadController {
 
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar ciudad")
-    public ResponseEntity<Void> eliminar(@PathVariable @Positive Integer codigo) throws Exception {
+    public ResponseEntity<Void> eliminar(
+            @PathVariable @Positive Integer codigo,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         ciudadServicio.eliminar(codigo);
         return ResponseEntity.noContent().build();
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener ciudad por código")

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.theater.TeatroServicio;
 import com.unicine.transfer.dto.request.TeatroRequest;
 import com.unicine.transfer.dto.response.TeatroResponse;
@@ -42,11 +44,19 @@ public class TeatroController {
         this.teatroServicio = teatroServicio;
     }
 
-    // SECTION: Escritura
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar teatro")
-    public ResponseEntity<TeatroResponse> registrar(@Valid @RequestBody TeatroRequest request) throws Exception {
+    public ResponseEntity<TeatroResponse> registrar(
+            @Valid @RequestBody TeatroRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         TeatroResponse response = teatroServicio.registrar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -55,7 +65,14 @@ public class TeatroController {
     @Operation(summary = "Actualizar teatro")
     public ResponseEntity<TeatroResponse> actualizar(
             @PathVariable @Positive Integer codigo,
-            @Valid @RequestBody TeatroRequest request) throws Exception {
+            @Valid @RequestBody TeatroRequest request,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         request.setCodigo(codigo);
         TeatroResponse response = teatroServicio.actualizar(request);
         return ResponseEntity.ok(response);
@@ -65,13 +82,20 @@ public class TeatroController {
     @Operation(summary = "Eliminar teatro — requiere ?confirmacion=true")
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer codigo,
-            @RequestParam boolean confirmacion) throws Exception {
+            @RequestParam boolean confirmacion,
+            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         teatroServicio.eliminar(codigo, confirmacion);
         return ResponseEntity.noContent().build();
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: *️⃣ Funciones Generales
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener teatro por código")

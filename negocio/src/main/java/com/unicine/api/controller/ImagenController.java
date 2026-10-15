@@ -46,7 +46,7 @@ public class ImagenController {
         this.imagenServicio = imagenServicio;
     }
 
-    // SECTION: Escritura multipart
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Subir imagen",
@@ -75,6 +75,9 @@ public class ImagenController {
         return ResponseEntity.ok(imagenServicio.actualizar(request, file));
     }
 
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
     @PostMapping("/{codigo}/restaurar")
     @Operation(summary = "Restaurar versión", description = "Requiere ?versionId=. Compensación ante fallo externo incluida.")
     public ResponseEntity<ImagenResponse> restaurar(
@@ -101,6 +104,9 @@ public class ImagenController {
         return ResponseEntity.ok(imagenServicio.renombrar(request, nombre));
     }
 
+    // !SECTION
+    // SECTION: 2️⃣ Funciones del Cliente
+
     @DeleteMapping("/{codigo}")
     @Operation(summary = "Eliminar imagen — requiere ?confirmacion=true")
     public ResponseEntity<Void> eliminar(
@@ -115,16 +121,13 @@ public class ImagenController {
     }
 
     // !SECTION
-    // SECTION: Lectura
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener metadata por fileId")
     public ResponseEntity<ImagenResponse> obtener(
             @PathVariable String codigo,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         return imagenServicio.obtener(codigo)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -137,9 +140,6 @@ public class ImagenController {
             @RequestParam TipoPropietarioImagen tipoPropietario,
             @RequestParam Integer codigoPropietario,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         return ResponseEntity.ok(imagenServicio.listar(tipoPropietario, codigoPropietario));
     }
 
@@ -148,9 +148,6 @@ public class ImagenController {
     public ResponseEntity<List<VersionArchivoResponse>> listarVersiones(
             @PathVariable String codigo,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         return ResponseEntity.ok(imagenServicio.listarVersiones(codigo));
     }
 

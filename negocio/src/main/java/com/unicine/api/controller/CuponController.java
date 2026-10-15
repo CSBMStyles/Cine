@@ -44,7 +44,7 @@ public class CuponController {
         this.cuponServicio = cuponServicio;
     }
 
-    // SECTION: Escritura ADMIN
+    // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping
     @Operation(summary = "Registrar cupón", description = "Solo ADMIN.")
@@ -93,7 +93,7 @@ public class CuponController {
     }
 
     // !SECTION
-    // SECTION: Lectura autenticada
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener cupón por código")
@@ -118,12 +118,18 @@ public class CuponController {
         return ResponseEntity.ok(cuponServicio.listarActivos());
     }
 
+    // !SECTION
+    // SECTION: 1️⃣ Funciones del Administrador
+
     @GetMapping("/vencidos")
     @Operation(summary = "Cupones vencidos")
     public ResponseEntity<List<CuponResponse>> vencidos(
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(cuponServicio.listarVencidos());
     }
@@ -134,6 +140,9 @@ public class CuponController {
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(cuponServicio.listarConAsignaciones());
     }
@@ -149,6 +158,9 @@ public class CuponController {
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!principal.esAdministrador()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (criterio != null && !criterio.isBlank()) {
             return ResponseEntity.ok(cuponServicio.buscarPorCriterio(criterio));

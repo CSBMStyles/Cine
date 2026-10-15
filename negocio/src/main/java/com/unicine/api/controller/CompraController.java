@@ -45,7 +45,7 @@ public class CompraController {
         this.compraServicio = compraServicio;
     }
 
-    // SECTION: Checkout
+    // SECTION: 2️⃣ Funciones del Cliente
 
     @PostMapping
     @Operation(summary = "Registrar compra simple", description = "Ignora valorTotal del body — se calcula server-side. Valida cliente == principal.")
@@ -56,7 +56,9 @@ public class CompraController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         if (!principal.getCedula().equals(request.getClienteCedula())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            if (!principal.esAdministrador()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         }
         // Idempotencia: si codigo ya existe, devolver existente
         if (request.getCodigo() != null) {
@@ -96,9 +98,6 @@ public class CompraController {
         CompraResponse response = compraServicio.registrarCompraCompleta(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-    // !SECTION
-    // SECTION: Lectura
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener compra por código", description = "Solo owner o ADMIN")
