@@ -1,0 +1,5 @@
+# Artefactos npm/bun de las skills — NO ignorar package.json ni .gitignore
+# (son fixtures del corpus de remotion-to-hyperframes y deben versionarse)
+node_modules
+package-lock.json
+bun.lock
