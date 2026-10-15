@@ -1,22 +1,38 @@
-// graphify OpenCode plugin
-// Injects a knowledge graph reminder before bash tool calls when the graph exists.
+// graphify OpenCode plugin (V2 + V1 compatible)
+// Injects a knowledge graph reminder before shell/bash tool calls when the graph exists.
 import { existsSync } from "fs";
 import { join } from "path";
 
-export const GraphifyPlugin = async ({ directory }) => {
-  let reminded = false;
+const REMINDER =
+  'echo "[graphify] Knowledge graph available. Read graphify-out/GRAPH_REPORT.md for god nodes and architecture context before searching files." && ';
 
-  return {
-    "tool.execute.before": async (input, output) => {
+export default {
+  id: "graphify",
+  async setup(ctx) {
+    let reminded = false;
+    const directory = ctx.location.directory;
+
+    await ctx.shell.hook("create.before", (event) => {
       if (reminded) return;
       if (!existsSync(join(directory, "graphify-out", "graph.json"))) return;
 
-      if (input.tool === "bash") {
-        output.args.command =
-          'echo "[graphify] Knowledge graph available. Read graphify-out/GRAPH_REPORT.md for god nodes and architecture context before searching files." && ' +
-          output.args.command;
-        reminded = true;
-      }
-    },
-  };
+      event.command = REMINDER + event.command;
+      reminded = true;
+    });
+  },
+  async server({ directory }) {
+    let reminded = false;
+
+    return {
+      "tool.execute.before": async (input, output) => {
+        if (reminded) return;
+        if (!existsSync(join(directory, "graphify-out", "graph.json"))) return;
+
+        if (input.tool === "bash") {
+          output.args.command = REMINDER + output.args.command;
+          reminded = true;
+        }
+      },
+    };
+  },
 };
