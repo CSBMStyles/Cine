@@ -27,7 +27,10 @@ import com.unicine.enums.user.TipoUsuario;
 import com.unicine.exception.BusinessRuleException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.showing.HorarioServicio;
+import com.unicine.service.theater.SalaServicio;
 import com.unicine.transfer.dto.response.HorarioResponse;
+import com.unicine.transfer.dto.response.SalaResponse;
+import com.unicine.transfer.dto.response.TeatroResponse;
 import com.unicine.util.config.SecurityConfig;
 import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 
@@ -43,6 +46,9 @@ class HorarioControllerTest {
 
     @MockitoBean
     private HorarioServicio horarioServicio;
+
+    @MockitoBean
+    private SalaServicio salaServicio;
 
     private UsuarioPrincipal principalTeatro() {
         return new UsuarioPrincipal(3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO);
@@ -79,6 +85,28 @@ class HorarioControllerTest {
                 .andExpect(status().isNotFound())
                 .andReturn();
         sout("obtener404", result);
+    }
+
+    @Test
+    void registrarTeatroAjeno403() throws Exception {
+        when(salaServicio.obtener(1)).thenReturn(Optional.of(
+                SalaResponse.builder().codigo(1).teatro(TeatroResponse.builder().codigo(1).build()).build()));
+
+        UsuarioPrincipal ajeno = new UsuarioPrincipal(
+                3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(99));
+        String body = """
+                {"fechaInicio":"2030-01-01T10:00:00","fechaFin":"2030-01-01T12:00:00"}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/horarios")
+                        .param("salaCodigo", "1")
+                        .with(user(ajeno))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarHorarioTeatroAjeno403", result);
     }
 
     @Test

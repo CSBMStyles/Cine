@@ -66,6 +66,19 @@ class ImagenControllerTest {
     }
 
     @Test
+    void obtenerPublico200() throws Exception {
+        ImagenResponse mock = ImagenResponse.builder().codigo("abc123").url("https://img.test/abc123").build();
+        when(imagenServicio.obtener("abc123")).thenReturn(Optional.of(mock));
+
+        MvcResult result = mockMvc.perform(get("/api/imagenes/abc123"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value("abc123"))
+                .andReturn();
+
+        sout("obtenerImagenPublico200", result);
+    }
+
+    @Test
     void subir201() throws Exception {
         ImagenResponse mock = ImagenResponse.builder().codigo("abc123").url("https://img.test/abc123").build();
         when(imagenServicio.registrar(any(), any())).thenReturn(mock);

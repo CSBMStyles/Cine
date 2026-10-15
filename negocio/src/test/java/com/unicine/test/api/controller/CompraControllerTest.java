@@ -108,6 +108,26 @@ class CompraControllerTest {
     }
 
     @Test
+    void registrarSimpleComoAdmin201() throws Exception {
+        CompraResponse mock = CompraResponse.builder().codigo(2).valorTotal(17000.0).build();
+        when(compraServicio.registrar(any())).thenReturn(mock);
+
+        String body = """
+                {"clienteCedula":1009000011,"funcionCodigo":1,"medioPago":"NEQUI","estado":true,"fechaCompra":"2030-01-01T10:00:00","fechaPelicula":"2030-01-02T18:00:00","valorTotal":999}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/compras")
+                        .with(user(principalAdmin(2001)))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codigo").value(2))
+                .andReturn();
+
+        sout("registrarSimpleAdmin201 bypass 5.2 B6", result);
+    }
+
+    @Test
     void registrarCompraCompletaSinAuth401() throws Exception {
         String body = """
                 {"compra": {"clienteCedula":1009000011,"funcionCodigo":1,"medioPago":"NEQUI","estado":true,"fechaCompra":"2030-01-01T10:00:00","fechaPelicula":"2030-01-02T18:00:00","valorTotal":1},"entradas":[],"confiterias":[]}

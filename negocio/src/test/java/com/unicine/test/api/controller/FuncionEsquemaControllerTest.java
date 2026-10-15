@@ -25,7 +25,11 @@ import com.unicine.api.controller.FuncionEsquemaController;
 import com.unicine.enums.user.TipoUsuario;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.showing.FuncionEsquemaServicio;
+import com.unicine.service.showing.FuncionServicio;
 import com.unicine.transfer.dto.response.FuncionEsquemaResponse;
+import com.unicine.transfer.dto.response.FuncionResponse;
+import com.unicine.transfer.dto.response.SalaResponse;
+import com.unicine.transfer.dto.response.TeatroResponse;
 import com.unicine.util.config.SecurityConfig;
 
 /**
@@ -40,6 +44,9 @@ class FuncionEsquemaControllerTest {
 
     @MockitoBean
     private FuncionEsquemaServicio esquemaServicio;
+
+    @MockitoBean
+    private FuncionServicio funcionServicio;
 
     private UsuarioPrincipal principalAdmin() {
         return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
@@ -90,6 +97,29 @@ class FuncionEsquemaControllerTest {
                 .andExpect(status().isNotFound())
                 .andReturn();
         sout("obtener404", result);
+    }
+
+    @Test
+    void registrarTeatroAjeno403() throws Exception {
+        FuncionResponse funcion = FuncionResponse.builder().codigo(6)
+                .sala(SalaResponse.builder().codigo(5).teatro(TeatroResponse.builder().codigo(1).build()).build())
+                .build();
+        when(funcionServicio.obtener(6)).thenReturn(Optional.of(funcion));
+
+        UsuarioPrincipal ajeno = new UsuarioPrincipal(
+                3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(99));
+        String body = """
+                {"ocupadas":0,"disponibles":96,"mantenimiento":0,"funcionCodigo":6}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/funcion-esquemas")
+                        .with(user(ajeno))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarEsquemaTeatroAjeno403", result);
     }
 
     @Test

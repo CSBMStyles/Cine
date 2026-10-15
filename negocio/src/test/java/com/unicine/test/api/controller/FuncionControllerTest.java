@@ -1,7 +1,11 @@
 package com.unicine.test.api.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,13 +16,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.FuncionController;
+import com.unicine.enums.user.TipoUsuario;
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.purchase.EntradaServicio;
 import com.unicine.service.showing.FuncionServicio;
+import com.unicine.service.theater.SalaServicio;
 import com.unicine.transfer.dto.response.CiudadResponse;
 import com.unicine.transfer.dto.response.DetalleSillaResponse;
 import com.unicine.transfer.dto.response.FuncionResponse;
@@ -44,11 +52,75 @@ class FuncionControllerTest {
     @MockitoBean
     private EntradaServicio entradaServicio;
 
+    @MockitoBean
+    private SalaServicio salaServicio;
+
+    private UsuarioPrincipal principalCliente() {
+        return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
+    private UsuarioPrincipal gestorTeatro(Integer... teatros) {
+        return new UsuarioPrincipal(
+                3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(teatros));
+    }
+
     private void sout(String titulo, MvcResult result) throws Exception {
         String body = result.getResponse().getContentAsString();
         System.out.println("\n>>> " + titulo + " | status=" + result.getResponse().getStatus());
         System.out.println(body.isBlank() ? "(sin body)" : body);
         System.out.println("<<<\n");
+    }
+
+    @Test
+    void registrarComoGestor201() throws Exception {
+        when(salaServicio.obtener(5)).thenReturn(Optional.of(
+                SalaResponse.builder().codigo(5).teatro(TeatroResponse.builder().codigo(1).build()).build()));
+        when(funcionServicio.registrar(any())).thenReturn(FuncionResponse.builder().codigo(3).build());
+
+        String body = """
+                {"precio":17000.0,"formato":"DOBLADO","salaCodigo":5,"horarioCodigo":1,"peliculaCodigo":1}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/funciones").with(csrf())
+                        .with(user(gestorTeatro(1)))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codigo").value(3))
+                .andReturn();
+
+        sout("registrarFuncionGestor201", result);
+    }
+
+    @Test
+    void registrarTeatroAjeno403() throws Exception {
+        when(salaServicio.obtener(5)).thenReturn(Optional.of(
+                SalaResponse.builder().codigo(5).teatro(TeatroResponse.builder().codigo(1).build()).build()));
+        String body = """
+                {"precio":17000.0,"formato":"DOBLADO","salaCodigo":5,"horarioCodigo":1,"peliculaCodigo":1}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/funciones").with(csrf())
+                        .with(user(gestorTeatro(99)))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarFuncionTeatroAjeno403", result);
+    }
+
+    @Test
+    void registrarComoCliente403() throws Exception {
+        String body = """
+                {"precio":17000.0,"formato":"DOBLADO","salaCodigo":5,"horarioCodigo":1,"peliculaCodigo":1}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/funciones").with(csrf())
+                        .with(user(principalCliente()))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarFuncionCliente403", result);
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.unicine.test.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.unicine.api.controller.PeliculaController;
+import com.unicine.enums.user.TipoUsuario;
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.movie.PeliculaServicio;
 import com.unicine.transfer.dto.response.PeliculaResponse;
 import com.unicine.util.config.SecurityConfig;
@@ -69,6 +72,14 @@ class PeliculaControllerTest {
         sout("listarConNombreFiltro200 ?nombre=Avengers", result);
     }
 
+    private UsuarioPrincipal principalAdmin() {
+        return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
+    }
+
+    private UsuarioPrincipal principalCliente() {
+        return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
     @Test
     @WithMockUser
     void registrarPelicula201() throws Exception {
@@ -80,12 +91,28 @@ class PeliculaControllerTest {
                 """;
 
         MvcResult result = mockMvc.perform(post("/api/peliculas").with(csrf())
+                        .with(user(principalAdmin()))
                         .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nombre").value("Dune"))
                 .andReturn();
 
         sout("registrarPelicula201", result);
+    }
+
+    @Test
+    void registrarComoCliente403() throws Exception {
+        String body = """
+                {"generos":["ACCION"],"nombre":"Dune","sinopsis":"Sinopsis Dune","puntuacion":5.0,"restriccionEdad":12}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/peliculas").with(csrf())
+                        .with(user(principalCliente()))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarPeliculaCliente403", result);
     }
 
     @Test

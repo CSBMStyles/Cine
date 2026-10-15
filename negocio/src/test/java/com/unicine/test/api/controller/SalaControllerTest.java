@@ -3,6 +3,7 @@ package com.unicine.test.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.SalaController;
+import com.unicine.enums.user.TipoUsuario;
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.enums.theater.TipoSala;
 import com.unicine.service.theater.SalaServicio;
 import com.unicine.transfer.dto.response.SalaResponse;
@@ -43,6 +46,14 @@ class SalaControllerTest {
         System.out.println("<<<\n");
     }
 
+    private UsuarioPrincipal principalAdmin() {
+        return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
+    }
+
+    private UsuarioPrincipal principalCliente() {
+        return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
     @Test
     @WithMockUser
     void registrarSala201() throws Exception {
@@ -54,12 +65,45 @@ class SalaControllerTest {
                 """;
 
         MvcResult result = mockMvc.perform(post("/api/salas").with(csrf())
+                        .with(user(principalAdmin()))
                         .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nombre").value("Sala 3D"))
                 .andReturn();
 
         sout("registrarSala201", result);
+    }
+
+    @Test
+    void registrarComoCliente403() throws Exception {
+        String body = """
+                {"nombre":"Sala 3D","tipoSala":"VIP","teatroCodigo":1,"distribucionSillaCodigo":1}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/salas").with(csrf())
+                        .with(user(principalCliente()))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarSalaCliente403", result);
+    }
+
+    @Test
+    void registrarTeatroAjeno403() throws Exception {
+        UsuarioPrincipal teatroAjeno = new UsuarioPrincipal(
+                3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(99));
+        String body = """
+                {"nombre":"Sala 3D","tipoSala":"VIP","teatroCodigo":1,"distribucionSillaCodigo":1}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/salas").with(csrf())
+                        .with(user(teatroAjeno))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarSalaTeatroAjeno403", result);
     }
 
     @Test

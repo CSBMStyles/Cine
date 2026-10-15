@@ -84,11 +84,21 @@ class CuponControllerTest {
 
         MvcResult result = mockMvc.perform(get("/api/cupones")
                         .param("criterio", "registro")
-                        .with(user(principalCliente())))
+                        .with(user(principalAdmin())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].codigo").value(1))
                 .andReturn();
         sout("buscarPorCriterio200", result);
+    }
+
+    @Test
+    void vencidosComoCliente403() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/cupones/vencidos")
+                        .with(user(principalCliente())))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("vencidosCliente403", result);
     }
 
     @Test

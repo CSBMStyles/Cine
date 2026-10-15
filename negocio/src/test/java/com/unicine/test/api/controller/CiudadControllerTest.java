@@ -3,6 +3,7 @@ package com.unicine.test.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,6 +26,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicine.api.controller.CiudadController;
+import com.unicine.enums.user.TipoUsuario;
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.theater.CiudadServicio;
 import com.unicine.transfer.dto.response.CiudadResponse;
 import com.unicine.util.config.SecurityConfig;
@@ -58,6 +61,14 @@ class CiudadControllerTest {
     // !SECTION
     // SECTION: Escritura
 
+    private UsuarioPrincipal principalAdmin() {
+        return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
+    }
+
+    private UsuarioPrincipal principalCliente() {
+        return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
     @Test
     @WithMockUser
     void registrarCiudadValida201VisibleEnConsola() throws Exception {
@@ -66,6 +77,7 @@ class CiudadControllerTest {
 
         MvcResult result = mockMvc.perform(post("/api/ciudades")
                         .with(csrf())
+                        .with(user(principalAdmin()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nombre\":\"Garzon\"}"))
                 .andExpect(status().isCreated())
@@ -73,6 +85,19 @@ class CiudadControllerTest {
                 .andReturn();
 
         sout("registrarCiudadValida201", result);
+    }
+
+    @Test
+    void registrarComoCliente403() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/ciudades")
+                        .with(csrf())
+                        .with(user(principalCliente()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Garzon\"}"))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarCiudadCliente403", result);
     }
 
     @Test

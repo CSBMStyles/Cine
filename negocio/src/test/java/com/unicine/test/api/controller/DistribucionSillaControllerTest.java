@@ -57,11 +57,13 @@ class DistribucionSillaControllerTest {
     }
 
     @Test
-    void listarSinAuth401() throws Exception {
+    void listarPublico200() throws Exception {
+        when(distribucionServicio.listar()).thenReturn(List.of());
+
         MvcResult result = mockMvc.perform(get("/api/distribuciones-silla"))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isOk())
                 .andReturn();
-        sout("listar401", result);
+        sout("listarPublico200", result);
     }
 
     @Test

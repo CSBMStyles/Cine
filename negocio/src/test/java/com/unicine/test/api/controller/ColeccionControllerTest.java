@@ -3,6 +3,7 @@ package com.unicine.test.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.ColeccionController;
+import com.unicine.enums.user.TipoUsuario;
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.movie.ColeccionServicio;
 import com.unicine.transfer.dto.response.ColeccionResponse;
 import com.unicine.util.config.SecurityConfig;
@@ -44,6 +47,14 @@ class ColeccionControllerTest {
         System.out.println("<<<\n");
     }
 
+    private UsuarioPrincipal principalAdmin() {
+        return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
+    }
+
+    private UsuarioPrincipal principalCliente() {
+        return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
     @Test
     @WithMockUser
     void registrarColeccion201() throws Exception {
@@ -55,11 +66,38 @@ class ColeccionControllerTest {
                 """;
 
         MvcResult result = mockMvc.perform(post("/api/colecciones").with(csrf())
+                        .with(user(principalAdmin()))
                         .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
                 .andReturn();
 
         sout("registrarColeccion201", result);
+    }
+
+    @Test
+    void registrarColeccionAjena403() throws Exception {
+        String bodyAjeno = """
+                {"clienteCedula":2002,"peliculaCodigo":1,"puntuacion":4.5,"notificacionActiva":true}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/colecciones").with(csrf())
+                        .with(user(principalCliente()))
+                        .contentType(MediaType.APPLICATION_JSON).content(bodyAjeno))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarColeccionAjena403", result);
+    }
+
+    @Test
+    void listarPublico200() throws Exception {
+        when(coleccionServicio.listar()).thenReturn(List.of());
+
+        MvcResult result = mockMvc.perform(get("/api/colecciones"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        sout("listarColeccionesPublico200", result);
     }
 
     @Test
@@ -92,7 +130,7 @@ class ColeccionControllerTest {
     @WithMockUser
     void eliminarConConfirmacion204() throws Exception {
         MvcResult result = mockMvc.perform(delete("/api/colecciones/1009000011/1")
-                        .with(csrf()).param("confirmacion", "true"))
+                        .with(csrf()).with(user(principalAdmin())).param("confirmacion", "true"))
                 .andExpect(status().isNoContent())
                 .andReturn();
 

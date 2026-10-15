@@ -3,6 +3,7 @@ package com.unicine.test.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.TeatroController;
+import com.unicine.enums.user.TipoUsuario;
+import com.unicine.security.UsuarioPrincipal;
 import com.unicine.transfer.dto.response.CiudadResponse;
 import com.unicine.transfer.dto.response.TeatroResponse;
 import com.unicine.util.config.SecurityConfig;
@@ -45,6 +48,14 @@ class TeatroControllerTest {
         System.out.println("<<<\n");
     }
 
+    private UsuarioPrincipal principalAdmin() {
+        return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
+    }
+
+    private UsuarioPrincipal principalCliente() {
+        return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
     @Test
     @WithMockUser
     void registrarTeatro201() throws Exception {
@@ -59,12 +70,28 @@ class TeatroControllerTest {
                 """;
 
         MvcResult result = mockMvc.perform(post("/api/teatros").with(csrf())
+                        .with(user(principalAdmin()))
                         .contentType(MediaType.APPLICATION_JSON).content(body))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.direccion").value("Calle 123"))
                 .andReturn();
 
         sout("registrarTeatro201", result);
+    }
+
+    @Test
+    void registrarComoCliente403() throws Exception {
+        String body = """
+                {"direccion":"Calle 123","telefono":"3001234567","ciudadCodigo":1,"administradorTeatroCedula":1119000000}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/teatros").with(csrf())
+                        .with(user(principalCliente()))
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        sout("registrarTeatroCliente403", result);
     }
 
     @Test
@@ -83,7 +110,7 @@ class TeatroControllerTest {
     @WithMockUser
     void eliminarConConfirmacion204() throws Exception {
         MvcResult result = mockMvc.perform(delete("/api/teatros/1")
-                        .with(csrf()).param("confirmacion", "true"))
+                        .with(csrf()).with(user(principalAdmin())).param("confirmacion", "true"))
                 .andExpect(status().isNoContent())
                 .andReturn();
 
