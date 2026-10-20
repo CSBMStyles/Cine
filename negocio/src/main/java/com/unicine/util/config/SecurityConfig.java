@@ -63,15 +63,17 @@ public class SecurityConfig {
      *   <li>GET /api/horarios/**, /api/funcion-esquemas/** (programacion 4.5.2)</li>
      *   <li>GET /api/comentarios/** (resenas publicas)</li>
      *   <li>GET /api/colecciones/**, /api/pelicula-disposiciones/**, /api/distribuciones-silla/**,
-     *   /api/imagenes/**, /api/cupones/** (lecturas abiertas 5.2 B2)</li>
+     *   /api/imagenes/**, /api/cupones/** (lecturas abiertas 5.2 B2; el controller de
+     *   cupones sigue exigiendo autenticacion para sus lecturas)</li>
      *   <li>GET /api/historial-precios/ultimo y /api/historial-precios/{codigo} (5.2 B2)</li>
      *   <li>POST /api/peliculas/query (demo lectura 5.2 B2)</li>
      *   <li>GET /actuator/health</li>
      *   <li>POST /api/auth/** (placeholder para registro/login 4.3.2)</li>
      *   <li>POST /api/pagos/webhooks (webhook MP 4.7.3, defensa por HMAC)</li>
      * </ul>
-     * <p>El resto requiere autenticacion. Metodos protegidos con @PreAuthorize se validan
-     * via {@code @EnableMethodSecurity}.</p>
+     * <p>El resto requiere autenticacion. La autorizacion por rol y ownership se valida
+     * con checks manuales en los controllers sobre {@link com.unicine.security.UsuarioPrincipal};
+     * {@code @EnableMethodSecurity} queda habilitado para usos puntuales.</p>
      */
     @Bean
     public SecurityFilterChain securityFilterChain(

@@ -29,7 +29,7 @@ import jakarta.validation.constraints.Positive;
 
 /**
  * Controller de distribuciones de silla — layouts de sala.
- * Todo requiere autenticacion; escritura solo ADMIN o ADMINISTRADOR_TEATRO.
+ * Lectura publica; escritura solo ADMIN o ADMINISTRADOR_TEATRO.
  */
 @RestController
 @RequestMapping("/api/distribuciones-silla")

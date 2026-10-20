@@ -79,9 +79,10 @@ public class FuncionEsquemaController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         request.setCodigo(codigo);
-        Integer teatroExistente = esquemaServicio.obtener(codigo)
-                .map(e -> teatroDeFuncion(e.getFuncionCodigo()))
-                .orElse(null);
+        var existente = esquemaServicio.obtener(codigo);
+        Integer teatroExistente = existente.isPresent()
+                ? teatroDeFuncion(existente.get().getFuncionCodigo())
+                : null;
         Integer teatroSolicitado = teatroDeFuncion(request.getFuncionCodigo());
         if ((teatroExistente != null && fueraDeAlcance(principal, teatroExistente))
                 || (teatroSolicitado != null && fueraDeAlcance(principal, teatroSolicitado))) {
@@ -150,18 +151,14 @@ public class FuncionEsquemaController {
         return teatroCodigo == null || teatros == null || !teatros.contains(teatroCodigo);
     }
 
-    private Integer teatroDeFuncion(Integer funcionCodigo) {
+    private Integer teatroDeFuncion(Integer funcionCodigo) throws Exception {
         if (funcionCodigo == null) {
             return null;
         }
-        try {
-            return funcionServicio.obtener(funcionCodigo)
-                    .map(f -> f.getSala() == null || f.getSala().getTeatro() == null
-                            ? null
-                            : f.getSala().getTeatro().getCodigo())
-                    .orElse(null);
-        } catch (Exception e) {
-            return null;
-        }
+        return funcionServicio.obtener(funcionCodigo)
+                .map(f -> f.getSala() == null || f.getSala().getTeatro() == null
+                        ? null
+                        : f.getSala().getTeatro().getCodigo())
+                .orElse(null);
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unicine.enums.image.TipoPropietarioImagen;
+import com.unicine.enums.user.TipoUsuario;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.image.ImagenServicio;
 import com.unicine.transfer.dto.request.ImagenRequest;
@@ -31,7 +32,7 @@ import jakarta.validation.Valid;
 
 /**
  * Controller de imagenes — gateway ImageKit detras del servicio.
- * Todo requiere autenticacion; escritura valida ownership en servidor.
+ * Lectura publica; escritura autenticada con ownership por rol (5.2 B5).
  * Limite 5MB (spring.servlet.multipart). Nunca expone el SDK en responses.
  */
 @RestController
@@ -50,7 +51,8 @@ public class ImagenController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Subir imagen",
-            description = "Partes: datos (JSON ImagenRequest) + file (JPG/PNG/WEBP, max 5MB). Ownership validado en servidor.")
+            description = "Partes: datos (JSON ImagenRequest) + file (JPG/PNG/WEBP, max 5MB). "
+                    + "CLIENTE/ADMINISTRADOR_TEATRO solo su propia imagen; ADMIN global cualquiera.")
     public ResponseEntity<ImagenResponse> subir(
             @RequestPart("datos") @Valid ImagenRequest request,
             @RequestPart("file") MultipartFile file,
@@ -58,11 +60,15 @@ public class ImagenController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if (!puedeGestionar(principal, request.getTipoPropietario(), request.getCodigoPropietario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(imagenServicio.registrar(request, file));
     }
 
     @PutMapping(value = "/{codigo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Reemplazar imagen", description = "Partes: datos + file. Requiere autenticación.")
+    @Operation(summary = "Reemplazar imagen",
+            description = "Partes: datos + file. Dueño de la imagen o ADMIN.")
     public ResponseEntity<ImagenResponse> reemplazar(
             @PathVariable String codigo,
             @RequestPart("datos") @Valid ImagenRequest request,
@@ -71,7 +77,18 @@ public class ImagenController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        ImagenResponse existente = obtenerImagenExistente(codigo);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        TipoPropietarioImagen tipo = tipoPropietario(existente);
+        if (!puedeGestionar(principal, tipo, existente.getCodigoPropietario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        // El dueño se toma de la imagen persistida, no del body: evita cambiar de propietario.
         request.setCodigo(codigo);
+        request.setTipoPropietario(tipo);
+        request.setCodigoPropietario(existente.getCodigoPropietario());
         return ResponseEntity.ok(imagenServicio.actualizar(request, file));
     }
 
@@ -79,7 +96,8 @@ public class ImagenController {
     // SECTION: 1️⃣ Funciones del Administrador
 
     @PostMapping("/{codigo}/restaurar")
-    @Operation(summary = "Restaurar versión", description = "Requiere ?versionId=. Compensación ante fallo externo incluida.")
+    @Operation(summary = "Restaurar versión",
+            description = "Requiere ?versionId=. Dueño de la imagen o ADMIN. Compensación ante fallo externo incluida.")
     public ResponseEntity<ImagenResponse> restaurar(
             @PathVariable String codigo,
             @RequestParam String versionId,
@@ -87,12 +105,25 @@ public class ImagenController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        ImagenRequest request = ImagenRequest.builder().codigo(codigo).build();
+        ImagenResponse existente = obtenerImagenExistente(codigo);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        TipoPropietarioImagen tipo = tipoPropietario(existente);
+        if (!puedeGestionar(principal, tipo, existente.getCodigoPropietario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        ImagenRequest request = ImagenRequest.builder()
+                .codigo(codigo)
+                .tipoPropietario(tipo)
+                .codigoPropietario(existente.getCodigoPropietario())
+                .build();
         return ResponseEntity.ok(imagenServicio.restaurar(request, versionId));
     }
 
     @PostMapping("/{codigo}/renombrar")
-    @Operation(summary = "Renombrar imagen", description = "Requiere ?nombre=.")
+    @Operation(summary = "Renombrar imagen",
+            description = "Requiere ?nombre=. Dueño de la imagen o ADMIN.")
     public ResponseEntity<ImagenResponse> renombrar(
             @PathVariable String codigo,
             @RequestParam String nombre,
@@ -100,7 +131,19 @@ public class ImagenController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        ImagenRequest request = ImagenRequest.builder().codigo(codigo).build();
+        ImagenResponse existente = obtenerImagenExistente(codigo);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        TipoPropietarioImagen tipo = tipoPropietario(existente);
+        if (!puedeGestionar(principal, tipo, existente.getCodigoPropietario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        ImagenRequest request = ImagenRequest.builder()
+                .codigo(codigo)
+                .tipoPropietario(tipo)
+                .codigoPropietario(existente.getCodigoPropietario())
+                .build();
         return ResponseEntity.ok(imagenServicio.renombrar(request, nombre));
     }
 
@@ -108,13 +151,21 @@ public class ImagenController {
     // SECTION: 2️⃣ Funciones del Cliente
 
     @DeleteMapping("/{codigo}")
-    @Operation(summary = "Eliminar imagen — requiere ?confirmacion=true")
+    @Operation(summary = "Eliminar imagen — requiere ?confirmacion=true",
+            description = "Dueño de la imagen o ADMIN.")
     public ResponseEntity<Void> eliminar(
             @PathVariable String codigo,
             @RequestParam boolean confirmacion,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        ImagenResponse existente = obtenerImagenExistente(codigo);
+        if (existente == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!puedeGestionar(principal, tipoPropietario(existente), existente.getCodigoPropietario())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         imagenServicio.eliminar(codigo, confirmacion);
         return ResponseEntity.noContent().build();
@@ -125,9 +176,7 @@ public class ImagenController {
 
     @GetMapping("/{codigo}")
     @Operation(summary = "Obtener metadata por fileId")
-    public ResponseEntity<ImagenResponse> obtener(
-            @PathVariable String codigo,
-            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+    public ResponseEntity<ImagenResponse> obtener(@PathVariable String codigo) throws Exception {
         return imagenServicio.obtener(codigo)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -138,17 +187,59 @@ public class ImagenController {
             description = "Requiere ?tipoPropietario=CLIENTE|ADMINISTRADOR|ADMINISTRADOR_TEATRO|PELICULA|CONFITERIA&codigoPropietario=")
     public ResponseEntity<List<String>> listarPorPropietario(
             @RequestParam TipoPropietarioImagen tipoPropietario,
-            @RequestParam Integer codigoPropietario,
-            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+            @RequestParam Integer codigoPropietario) throws Exception {
         return ResponseEntity.ok(imagenServicio.listar(tipoPropietario, codigoPropietario));
     }
 
     @GetMapping("/{codigo}/versiones")
     @Operation(summary = "Listar versiones del archivo")
     public ResponseEntity<List<VersionArchivoResponse>> listarVersiones(
-            @PathVariable String codigo,
-            @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
+            @PathVariable String codigo) throws Exception {
         return ResponseEntity.ok(imagenServicio.listarVersiones(codigo));
+    }
+
+    // !SECTION
+    // SECTION: Metodos de soporte
+
+    /**
+     * Carga la imagen que se va a modificar. Devuelve null cuando no existe para
+     * que el controller responda 404 sin depender del servicio.
+     */
+    private ImagenResponse obtenerImagenExistente(String codigo) throws Exception {
+        return imagenServicio.obtener(codigo).orElse(null);
+    }
+
+    /**
+     * Ownership de imagenes (5.2 B5): ADMIN global gestiona cualquier propietario;
+     * CLIENTE y ADMINISTRADOR_TEATRO solo su propia imagen. Propietarios de catalogo
+     * (PELICULA, CONFITERIA) quedan reservados al ADMIN.
+     */
+    private boolean puedeGestionar(UsuarioPrincipal principal, TipoPropietarioImagen tipo,
+            Integer codigoPropietario) {
+        if (principal.esAdministrador()) {
+            return true;
+        }
+        if (tipo == null || codigoPropietario == null) {
+            return false;
+        }
+        return switch (tipo) {
+            case CLIENTE -> principal.getTipo() == TipoUsuario.CLIENTE
+                    && principal.getCedula().equals(codigoPropietario);
+            case ADMINISTRADOR_TEATRO -> principal.getTipo() == TipoUsuario.ADMINISTRADOR_TEATRO
+                    && principal.getCedula().equals(codigoPropietario);
+            default -> false;
+        };
+    }
+
+    private TipoPropietarioImagen tipoPropietario(ImagenResponse imagen) {
+        if (imagen.getTipoPropietario() == null) {
+            return null;
+        }
+        try {
+            return TipoPropietarioImagen.valueOf(imagen.getTipoPropietario());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     // !SECTION

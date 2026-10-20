@@ -81,6 +81,10 @@ public class HorarioController {
         if (!principal.esGestorCatalogo()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        var existente = horarioServicio.obtener(codigo);
+        if (existente.isPresent() && fueraDeAlcance(principal, existente.get().getSalaCodigo())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         request.setCodigo(codigo);
         return ResponseEntity.ok(horarioServicio.actualizar(request));
     }
@@ -131,7 +135,7 @@ public class HorarioController {
     /**
      * Alcance por teatro (5.2 B4): el ADMIN opera en todos; el resto solo en
      * los teatros de su claim teatroIds. Teatro desconocido niega por defecto.
-     * actualizar/eliminar no verifican alcance: HorarioResponse no trae sala.
+     * actualizar usa la sala de la funcion asociada; eliminar es solo ADMIN.
      */
     private boolean fueraDeAlcance(UsuarioPrincipal principal, Integer teatroCodigo) {
         if (principal.esAdministrador()) {
