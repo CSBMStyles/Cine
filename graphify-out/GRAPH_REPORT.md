@@ -1,12 +1,12 @@
 # Graph Report - Cine  (2026-10-20)
 
 ## Corpus Check
-- 376 files · ~1,478,464 words
+- 378 files · ~1,479,410 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3600 nodes · 6087 edges · 175 communities detected
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 924 edges (avg confidence: 0.79)
+- 3637 nodes · 6196 edges · 171 communities detected
+- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 942 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -105,10 +105,10 @@
 - [[_COMMUNITY_Community 92|Community 92]]
 - [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
-- [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
 - [[_COMMUNITY_Community 102|Community 102]]
@@ -174,17 +174,13 @@
 - [[_COMMUNITY_Community 162|Community 162]]
 - [[_COMMUNITY_Community 163|Community 163]]
 - [[_COMMUNITY_Community 164|Community 164]]
-- [[_COMMUNITY_Community 165|Community 165]]
-- [[_COMMUNITY_Community 166|Community 166]]
-- [[_COMMUNITY_Community 167|Community 167]]
-- [[_COMMUNITY_Community 168|Community 168]]
+- [[_COMMUNITY_Community 188|Community 188]]
+- [[_COMMUNITY_Community 189|Community 189]]
+- [[_COMMUNITY_Community 190|Community 190]]
+- [[_COMMUNITY_Community 191|Community 191]]
 - [[_COMMUNITY_Community 192|Community 192]]
 - [[_COMMUNITY_Community 193|Community 193]]
 - [[_COMMUNITY_Community 194|Community 194]]
-- [[_COMMUNITY_Community 195|Community 195]]
-- [[_COMMUNITY_Community 196|Community 196]]
-- [[_COMMUNITY_Community 197|Community 197]]
-- [[_COMMUNITY_Community 198|Community 198]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `ImagenServicioImp` - 37 edges
@@ -199,118 +195,114 @@
 10. `SalaServicioImp` - 20 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Image Repository` --extended by--> `Spring Data JPA Repository Interface`  [INFERRED]
-   →   _Bridges community 2 → community 0_
-- `Theater Service Test` --framework for--> `Spring Boot Test Framework`  [INFERRED]
-   →   _Bridges community 3 → community 2_
-- `Theater Service` --manages_via_relation--> `Sala`  [INFERRED]
-   →   _Bridges community 3 → community 0_
-- `UsuarioPrincipal` --implements--> `UserDetails`  [EXTRACTED]
-  negocio/src/main/java/com/unicine/security/UsuarioPrincipal.java →   _Bridges community 1 → community 2_
-- `Cliente` --implements--> `Serializable`  [EXTRACTED]
-  negocio/src/main/java/com/unicine/entity/user/Cliente.java →   _Bridges community 5 → community 2_
+- `Image Service Test` --framework for--> `Spring Boot Test Framework`  [INFERRED]
+   →   _Bridges community 4 → community 0_
+- `City Repository` --extended by--> `Spring Data JPA Repository Interface`  [INFERRED]
+   →   _Bridges community 5 → community 0_
+- `ConfiteriaPresentacion` --implements--> `Serializable`  [EXTRACTED]
+  negocio/src/main/java/com/unicine/entity/confiteria/ConfiteriaPresentacion.java →   _Bridges community 4 → community 13_
+- `AdministradorTeatro` --extends--> `Persona`  [EXTRACTED]
+  negocio/src/main/java/com/unicine/entity/user/AdministradorTeatro.java →   _Bridges community 4 → community 1_
+- `SalaServicioImp` --implements--> `SalaServicio`  [EXTRACTED]
+  negocio/src/main/java/com/unicine/service/theater/SalaServicioImp.java →   _Bridges community 21 → community 0_
 
-## Communities (199 total, 147 thin omitted)
+## Communities (195 total, 144 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.01
-Nodes (104): Purchase/Order Entity, Purchase Repository, Purchase Detail Data Transfer Object, DetalleFuncionMapper, DetalleFuncionesDTO, DetalleFuncionesProjection, DetallePeliculaHorarioDTO, Seat Detail Data Transfer Object (+96 more)
+Nodes (107): Customer Entity, Customer Repository, Collection/Catalog Entity, Collection Repository, Purchase/Order Entity, Purchase Repository, Purchase Detail Data Transfer Object, DetalleFuncionMapper (+99 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.02
-Nodes (24): AdministradorController, AdministradorTeatroController, CiudadController, ClienteController, ColeccionController, ComentarioController, CompraController, ConfiteriaController (+16 more)
+Cohesion: 0.01
+Nodes (38): Administrador, AdministradorServicioImp, AdministradorTeatro, AdministradorTeatroServicioImp, AuthenticationService, ClienteServicioImp, Person Service (Generic), AdministradorServicio (+30 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.02
-Nodes (57): Administrador, AdministradorServicioImp, AdministradorTeatro, AdministradorTeatroServicioImp, AuthenticationService, Customer Entity, Customer Repository, ClienteServicioImp (+49 more)
+Nodes (25): AdministradorController, AdministradorTeatroController, CiudadController, ClienteController, ColeccionController, ComentarioController, CompraController, ConfiteriaController (+17 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.01
-Nodes (33): City Entity, City Attribute Validator, City Repository, City Service, CiudadServicioImp, CompraServicio, Theater Entity, Theater Attribute Validator (+25 more)
+Nodes (19): PeliculaFiltroRequest, Imagenable, CiudadMapperTest, TeatroMapperTest, PeliculaRepo, PeliculaServicioImp, AdministradorTeatroTest, AdministradorTest (+11 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.02
-Nodes (17): SecurityConfig, AuthController, FuncionControllerTest, HorarioControllerTest, PagoControllerTest, PresentacionControllerTest, SalaControllerTest, UnicineException (+9 more)
+Cohesion: 0.01
+Nodes (58): ImageKit Integration Service, Image Entity, Image Repository, Image Service, Image Service Test, Person Base Entity, SesionRefresh, ColeccionCompuesta (+50 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.01
-Nodes (51): SesionRefresh, ColeccionCompuesta, PeliculaDisposicionCompuesta, Confiteria, ConfiteriaPresentacion, HistorialPrecioPresentacion, Administrador, AdministradorTeatro (+43 more)
+Nodes (30): City Entity, City Attribute Validator, City Repository, City Service, CiudadServicioImp, CompraServicio, Theater Entity, Theater Attribute Validator (+22 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.02
-Nodes (18): SalaPrecioInit, Imagenable, CiudadMapperTest, AdministradorTeatroTest, AdministradorTest, CiudadTest, ClienteTest, ConfiteriaTest (+10 more)
+Cohesion: 0.03
+Nodes (12): SecurityConfig, CompraControllerTest, FuncionControllerTest, FuncionEsquemaControllerTest, HorarioControllerTest, PagoControllerTest, PeliculaControllerTest, SalaControllerTest (+4 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.03
 Nodes (15): ImageKitConfig, ImagenIdentificadorConfig, GeneradorNombreImagen, GeneradorNombreImagenTest, ImageKitService, ImagenRepo, ImagenServicioImp, ProcesadorImagen (+7 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.03
-Nodes (10): ContratoIdentidadTest, UsuarioDetailsService, AdministradorServicioTest, AdministradorTeatroServicioTest, AuthenticationServiceTest, ClienteServicioTest, AdministradorServicioImp, AdministradorTeatroServicioImp (+2 more)
+Cohesion: 0.02
+Nodes (22): Distribution Attribute Validator, Seat Distribution Entity, Seat Distribution Repository, Seat Distribution Service, Seat Distribution Service Test, DistribucionSilla, FuncionEsquemaServicioImp, FuncionEsquema (+14 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.03
-Nodes (10): EstadoPeliculaService, PeliculaDisposicionRepo, PeliculaDisposicionServicioImp, FuncionRepo, PeliculaDisposicionRepo, EstadoPeliculaServiceTest, PeliculaDisposicionServicioImp, PeliculaDisposicionServicioTest (+2 more)
+Nodes (12): PeliculaDisposicionControllerTest, EstadoPeliculaService, PeliculaDisposicionRepo, PeliculaDisposicionServicioImp, PeliculaDisposicionServicio, FuncionRepo, PeliculaDisposicionRepo, EstadoPeliculaServiceTest (+4 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.03
-Nodes (9): DistribucionSillaParser, EntradaRepo, EntradaServicioImp, DistribucionSillaTest, EntradaTest, DistribucionSillaServicioTest, EntradaServicioTest, FuncionEsquemaServicioTest (+1 more)
+Cohesion: 0.04
+Nodes (9): UnicineException, ApiError, ContractTestController, GlobalExceptionHandler, PagoServicioImpTest, RuntimeException, ColeccionServicioTest, CompraServicioTest (+1 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.03
-Nodes (11): Coupon/Discount Entity, Coupon Repository, CuponControllerTest, CuponServicio, CuponMapper, CuponRepo, CuponServicio, CuponServicioImp (+3 more)
+Cohesion: 0.04
+Nodes (7): ClienteControllerTest, DistribucionSillaParser, EntradaRepo, EntradaServicioImp, EntradaTest, EntradaServicioTest, HorarioServicioTest
 
 ### Community 12 - "Community 12"
-Cohesion: 0.06
-Nodes (6): ImagenControllerTest, TeatroControllerTest, ContractTestController, GlobalExceptionHandlerTest, ColeccionTest, CompraConfiteriaTest
+Cohesion: 0.05
+Nodes (9): RefrescoServicioImp, RefrescoServicioImpTest, SesionRefreshRepo, AuthControllerTest, RefrescoServicio, JwtFilterIT, JwtServicio, JwtServicioTest (+1 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.04
-Nodes (7): DetalleFuncionMapper, FuncionMapperTest, DetalleFuncionesProjection, PeliculaTest, FuncionServicioImp, FuncionServicioTest, FuncionServicioImp
+Nodes (11): ConfiteriaPresentacion, ConfiteriaRepo, ConfiteriaServicioImp, ConfiteriaPresentacionServicio, ConfiteriaServicio, ConfiteriaControllerTest, HistorialPrecioControllerTest, PresentacionControllerTest (+3 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.06
-Nodes (9): RefrescoServicioImp, RefrescoServicioImpTest, SesionRefreshRepo, AuthControllerTest, RefrescoServicio, JwtFilterIT, JwtPrincipalConverter, JwtServicio (+1 more)
+Cohesion: 0.04
+Nodes (7): DetalleFuncionMapper, FuncionMapperTest, DetalleFuncionesProjection, PeliculaTest, FuncionServicioImp, FuncionServicioTest, FuncionServicioImp
 
 ### Community 15 - "Community 15"
 Cohesion: 0.05
-Nodes (6): CuponClienteControllerTest, CuponClienteServicio, CuponClienteRepo, CuponClienteServicioImp, CuponClienteTest, CuponClienteServicioTest
+Nodes (10): ColeccionServicio, ColeccionControllerTest, HistorialEstadoPeliculaServicio, EmailService, ColeccionRepo, ColeccionServicioImp, HistorialEstadoPeliculaRepo, HistorialEstadoPeliculaServicioImp (+2 more)
 
 ### Community 16 - "Community 16"
+Cohesion: 0.05
+Nodes (6): CuponClienteControllerTest, CuponClienteServicio, CuponClienteRepo, CuponClienteServicioImp, CuponClienteTest, CuponClienteServicioTest
+
+### Community 17 - "Community 17"
+Cohesion: 0.07
+Nodes (5): ImagenControllerTest, TeatroControllerTest, GlobalExceptionHandlerTest, ColeccionTest, CompraConfiteriaTest
+
+### Community 18 - "Community 18"
 Cohesion: 0.06
 Nodes (7): MercadoPagoConfig, puedePasarA(), EstadoPagoTest, PagoRepo, PagoServicioConciliacionTest, PagoServicioImp, PagoServicioWebhookTest
 
-### Community 17 - "Community 17"
-Cohesion: 0.04
-Nodes (5): PeliculaFiltroRequest, PeliculaRepo, PeliculaServicioImp, PeliculaRepo, PeliculaServicioImp
+### Community 19 - "Community 19"
+Cohesion: 0.05
+Nodes (9): Coupon/Discount Entity, Coupon Repository, CuponControllerTest, CuponServicio, CuponMapper, CuponRepo, CuponServicio, CuponServicioImp (+1 more)
 
-### Community 18 - "Community 18"
+### Community 20 - "Community 20"
 Cohesion: 0.04
 Nodes (60): AuthenticationService, ColeccionCompuesta, PeliculaDisposicionCompuesta, TaskSchedulerConfig, Test Dataset SQL, EmailService, Administrador Entity, AdministradorTeatro Entity (+52 more)
 
-### Community 19 - "Community 19"
-Cohesion: 0.06
-Nodes (8): HistorialEstadoPeliculaServicio, EmailService, ColeccionRepo, ColeccionServicioImp, HistorialEstadoPeliculaRepo, HistorialEstadoPeliculaServicioImp, PeliculaStateChangeEventListener, EmailService
-
-### Community 20 - "Community 20"
-Cohesion: 0.1
-Nodes (4): CompraServicio, ClienteControllerTest, CompraControllerTest, PagoServicio
-
 ### Community 21 - "Community 21"
+Cohesion: 0.06
+Nodes (5): SalaPrecioInit, SalaRepo, SalaServicioImp, SalaRepo, SalaServicioImp
+
+### Community 22 - "Community 22"
 Cohesion: 0.07
 Nodes (3): HorarioDescuentoInit, HorarioServicioImp, HorarioServicioImp
 
-### Community 22 - "Community 22"
+### Community 23 - "Community 23"
 Cohesion: 0.1
 Nodes (4): ComentarioServicio, ComentarioControllerTest, ComentarioRepo, ComentarioServicioImp
-
-### Community 24 - "Community 24"
-Cohesion: 0.06
-Nodes (3): HistorialEstadoPeliculaServicio, PeliculaDisposicionServicio, PeliculaDisposicionServicio
-
-### Community 25 - "Community 25"
-Cohesion: 0.07
-Nodes (3): EntradaMapper, CompraServicio, EntradaServicio
 
 ### Community 29 - "Community 29"
 Cohesion: 0.13
@@ -320,7 +312,7 @@ Nodes (3): ConfiteriaPresentacionJob, ConfiteriaPresentacionRepo, ConfiteriaPres
 Cohesion: 0.1
 Nodes (7): AuthenticationException, AuthorizationException, BusinessRuleException, ExternalServiceException, ResourceNotFoundException, ValidationException, UnicineException
 
-### Community 86 - "Community 86"
+### Community 82 - "Community 82"
 Cohesion: 0.4
 Nodes (5): MultiPattern, CiudadAtributoValidator, MultiPatternValidator, PeliculaAtributoValidator, PersonaAtributoValidator
 
@@ -331,22 +323,22 @@ Nodes (5): MultiPattern, CiudadAtributoValidator, MultiPatternValidator, Pelicul
 ## Knowledge Gaps
 - **83 isolated node(s):** `OnUpdate`, `OnCreate`, `Comentario`, `VersionArchivoResponse`, `CompraConfiteriaResponse` (+78 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **147 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **144 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `Purchase Detail Data Transfer Object` and `MedioPago`?**
   _Edge tagged AMBIGUOUS (relation: could_contain) - confidence is low._
-- **Why does `GlobalExceptionHandler` connect `Community 4` to `Community 30`?**
-  _High betweenness centrality (0.023) - this node is a cross-community bridge._
-- **Why does `SalaServicio` connect `Community 49` to `Community 0`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **Why does `FuncionRepo` connect `Community 9` to `Community 0`, `Community 21`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Why does `EntradaServicioImp` connect `Community 11` to `Community 0`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+- **Why does `ContractTestController` connect `Community 10` to `Community 17`, `Community 2`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Are the 4 inferred relationships involving `Spring Data JPA Repository Interface` (e.g. with `Image Repository` and `Function Schema Repository`) actually correct?**
   _`Spring Data JPA Repository Interface` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `Customer Entity` (e.g. with `Image Entity` and `Person Base Entity`) actually correct?**
   _`Customer Entity` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `OnUpdate`, `OnCreate`, `Comentario` to the rest of the system?**
   _83 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Community 0` be split into smaller, more focused modules?**
+  _Cohesion score 0.01 - nodes in this community are weakly interconnected._
