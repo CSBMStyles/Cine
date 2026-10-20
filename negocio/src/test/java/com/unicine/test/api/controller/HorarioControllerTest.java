@@ -7,6 +7,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,6 +57,16 @@ class HorarioControllerTest {
 
     private UsuarioPrincipal principalCliente() {
         return new UsuarioPrincipal(1009000011, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
+    }
+
+    private UsuarioPrincipal principalAdmin() {
+        return new UsuarioPrincipal(2001, "admin@test.com", "hash", TipoUsuario.ADMINISTRADOR);
+    }
+
+    private String bodyHorario() {
+        return """
+                {"fechaInicio":"2030-01-01T10:00:00","fechaFin":"2030-01-01T12:00:00"}
+                """;
     }
 
     private void sout(String titulo, MvcResult result) throws Exception {
@@ -152,17 +163,66 @@ class HorarioControllerTest {
 
     @Test
     void registrarComoCliente403() throws Exception {
-        String body = """
-                {"fechaInicio":"2030-01-01T10:00:00","fechaFin":"2030-01-01T12:00:00"}
-                """;
-
         MvcResult result = mockMvc.perform(post("/api/horarios")
                         .param("salaCodigo", "1")
                         .with(user(principalCliente()))
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                        .contentType(MediaType.APPLICATION_JSON).content(bodyHorario()))
                 .andExpect(status().isForbidden())
                 .andReturn();
         sout("registrarCliente403", result);
+    }
+
+    @Test
+    void actualizarTeatroAjeno403() throws Exception {
+        when(horarioServicio.obtener(5)).thenReturn(Optional.of(
+                HorarioResponse.builder().codigo(5).salaCodigo(1).build()));
+
+        UsuarioPrincipal ajeno = new UsuarioPrincipal(
+                3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(99));
+
+        MvcResult result = mockMvc.perform(put("/api/horarios/5")
+                        .with(user(ajeno))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(bodyHorario()))
+                .andExpect(status().isForbidden())
+                .andReturn();
+        sout("actualizarHorarioTeatroAjeno403", result);
+    }
+
+    @Test
+    void actualizarPropio200() throws Exception {
+        when(horarioServicio.obtener(5)).thenReturn(Optional.of(
+                HorarioResponse.builder().codigo(5).salaCodigo(1).build()));
+        when(horarioServicio.actualizar(any())).thenReturn(
+                HorarioResponse.builder().codigo(5).salaCodigo(1).build());
+
+        UsuarioPrincipal propio = new UsuarioPrincipal(
+                3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(1));
+
+        MvcResult result = mockMvc.perform(put("/api/horarios/5")
+                        .with(user(propio))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(bodyHorario()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.codigo").value(5))
+                .andReturn();
+        sout("actualizarHorarioPropio200", result);
+    }
+
+    @Test
+    void actualizarAdmin200() throws Exception {
+        when(horarioServicio.obtener(5)).thenReturn(Optional.of(
+                HorarioResponse.builder().codigo(5).salaCodigo(1).build()));
+        when(horarioServicio.actualizar(any())).thenReturn(
+                HorarioResponse.builder().codigo(5).salaCodigo(1).build());
+
+        MvcResult result = mockMvc.perform(put("/api/horarios/5")
+                        .with(user(principalAdmin()))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(bodyHorario()))
+                .andExpect(status().isOk())
+                .andReturn();
+        sout("actualizarHorarioAdmin200", result);
     }
 }

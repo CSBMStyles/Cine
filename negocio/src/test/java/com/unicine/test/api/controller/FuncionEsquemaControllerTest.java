@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.unicine.api.controller.FuncionEsquemaController;
 import com.unicine.enums.user.TipoUsuario;
+import com.unicine.exception.ResourceNotFoundException;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.showing.FuncionEsquemaServicio;
 import com.unicine.service.showing.FuncionServicio;
@@ -31,6 +32,7 @@ import com.unicine.transfer.dto.response.FuncionResponse;
 import com.unicine.transfer.dto.response.SalaResponse;
 import com.unicine.transfer.dto.response.TeatroResponse;
 import com.unicine.util.config.SecurityConfig;
+import com.unicine.util.validation.catalog.domain.ShowingErrorCatalog;
 
 /**
  * Tests slice para FuncionEsquemaController.
@@ -154,5 +156,23 @@ class FuncionEsquemaControllerTest {
                 .andExpect(status().isForbidden())
                 .andReturn();
         sout("registrarCliente403", result);
+    }
+
+    @Test
+    void registrarConFuncionInexistente404() throws Exception {
+        when(funcionServicio.obtener(999)).thenThrow(new ResourceNotFoundException(
+                ShowingErrorCatalog.DOMAIN_SHOWING_ENTITY_FUNCTION_NOT_FOUND));
+
+        String body = """
+                {"ocupadas":0,"disponibles":96,"mantenimiento":0,"funcionCodigo":999}
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/funcion-esquemas")
+                        .with(user(principalAdmin()))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        sout("registrarFuncionInexistente404", result);
     }
 }
