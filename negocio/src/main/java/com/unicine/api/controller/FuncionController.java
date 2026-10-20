@@ -100,7 +100,8 @@ public class FuncionController {
     }
 
     @DeleteMapping("/{codigo}")
-    @Operation(summary = "Eliminar función", description = "Solo ADMIN.")
+    @Operation(summary = "Eliminar función",
+            description = "Solo ADMIN o ADMINISTRADOR_TEATRO de su teatro. Requiere ?confirmacion=true.")
     public ResponseEntity<Void> eliminar(
             @PathVariable @Positive Integer codigo,
             @RequestParam boolean confirmacion,
@@ -108,8 +109,17 @@ public class FuncionController {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        if (!principal.esAdministrador()) {
+        if (!principal.esGestorCatalogo()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        var funcion = funcionServicio.obtener(codigo);
+        if (funcion.isPresent()) {
+            Integer teatro = funcion.get().getSala() == null || funcion.get().getSala().getTeatro() == null
+                    ? null
+                    : funcion.get().getSala().getTeatro().getCodigo();
+            if (teatro != null && fueraDeAlcance(principal, teatro)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         }
         funcionServicio.eliminar(codigo, confirmacion);
         return ResponseEntity.noContent().build();
