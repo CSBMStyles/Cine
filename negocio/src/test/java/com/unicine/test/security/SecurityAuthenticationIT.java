@@ -125,6 +125,25 @@ class SecurityAuthenticationIT {
     }
 
     @Test
+    void cuponesSinToken401() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/cupones/activos"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("DOMAIN_USER_AUTH_INVALID_CREDENTIALS"))
+                .andReturn();
+        sout("cuponesSinToken401", result);
+    }
+
+    @Test
+    void historialPreciosSinToken401() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/historial-precios/ultimo")
+                        .param("presentacion", "1"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("DOMAIN_USER_AUTH_INVALID_CREDENTIALS"))
+                .andReturn();
+        sout("historialPreciosSinToken401", result);
+    }
+
+    @Test
     void tokenInvalido401() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/compras/1")
                         .header("Authorization", "Bearer roto"))
