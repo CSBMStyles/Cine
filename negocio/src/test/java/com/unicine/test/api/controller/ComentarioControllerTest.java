@@ -51,6 +51,11 @@ class ComentarioControllerTest {
         return new UsuarioPrincipal(cedula, "pepe@test.com", "hash", TipoUsuario.CLIENTE);
     }
 
+    private UsuarioPrincipal principalTeatro() {
+        return new UsuarioPrincipal(3001, "teatro@test.com", "hash",
+                TipoUsuario.ADMINISTRADOR_TEATRO, List.of(1));
+    }
+
     private ComentarioResponse comentario(Integer codigo, Integer cedula) {
         return ComentarioResponse.builder()
                 .codigo(codigo)
@@ -148,5 +153,37 @@ class ComentarioControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andReturn();
         sout("like401", result);
+    }
+
+    @Test
+    void likeComoAdmin200() throws Exception {
+        when(comentarioServicio.darLike(1)).thenReturn(comentario(1, 1009000011));
+
+        MvcResult result = mockMvc.perform(post("/api/comentarios/1/like")
+                        .with(user(principalAdmin()))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+        sout("likeAdmin200", result);
+    }
+
+    @Test
+    void likeComoTeatro403() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/comentarios/1/like")
+                        .with(user(principalTeatro()))
+                        .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andReturn();
+        sout("likeTeatro403", result);
+    }
+
+    @Test
+    void dislikeComoTeatro403() throws Exception {
+        MvcResult result = mockMvc.perform(post("/api/comentarios/1/dislike")
+                        .with(user(principalTeatro()))
+                        .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andReturn();
+        sout("dislikeTeatro403", result);
     }
 }

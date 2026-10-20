@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unicine.enums.user.TipoUsuario;
 import com.unicine.security.UsuarioPrincipal;
 import com.unicine.service.movie.ComentarioServicio;
 import com.unicine.transfer.dto.request.ComentarioRequest;
@@ -106,23 +107,29 @@ public class ComentarioController {
     }
 
     @PostMapping("/{codigo}/like")
-    @Operation(summary = "Dar like", description = "Requiere autenticación.")
+    @Operation(summary = "Dar like", description = "Cliente o ADMIN.")
     public ResponseEntity<ComentarioResponse> darLike(
             @PathVariable @Positive Integer codigo,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if (!puedeReaccionar(principal)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(comentarioServicio.darLike(codigo));
     }
 
     @PostMapping("/{codigo}/dislike")
-    @Operation(summary = "Dar dislike", description = "Requiere autenticación.")
+    @Operation(summary = "Dar dislike", description = "Cliente o ADMIN.")
     public ResponseEntity<ComentarioResponse> darDislike(
             @PathVariable @Positive Integer codigo,
             @AuthenticationPrincipal UsuarioPrincipal principal) throws Exception {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!puedeReaccionar(principal)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(comentarioServicio.darDislike(codigo));
     }
@@ -156,6 +163,17 @@ public class ComentarioController {
             return ResponseEntity.ok(PaginadoManual.paginar(comentarioServicio.listar(), page, size));
         }
         return ResponseEntity.ok(comentarioServicio.listar());
+    }
+
+    // !SECTION
+    // SECTION: Metodos de soporte
+
+    /**
+     * Las reacciones son una accion de cliente; el ADMIN puede participar como
+     * moderador. El ADMINISTRADOR_TEATRO no tiene perfil de cliente.
+     */
+    private boolean puedeReaccionar(UsuarioPrincipal principal) {
+        return principal.esAdministrador() || principal.getTipo() == TipoUsuario.CLIENTE;
     }
 
     // !SECTION
