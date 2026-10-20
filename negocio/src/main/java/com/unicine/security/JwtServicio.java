@@ -3,6 +3,7 @@ package com.unicine.security;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -81,6 +82,7 @@ public class JwtServicio {
         Instant ahora = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(emisor)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(ahora)
                 .expiresAt(ahora.plusSeconds(segundosVida))
                 .subject(String.valueOf(principal.getCedula()))
@@ -120,9 +122,14 @@ public class JwtServicio {
     public UsuarioPrincipal principalDesde(Jwt jwt) {
         Integer cedula = Integer.valueOf(jwt.getSubject());
         TipoUsuario tipo = TipoUsuario.valueOf(jwt.getClaimAsString("tipo"));
-        List<Integer> teatros = jwt.getClaim("teatroIds");
-        return new UsuarioPrincipal(cedula, null, null, tipo,
-                teatros == null ? List.of() : teatros);
+        // Los claims JSON llegan como Number (normalmente Long); se normalizan a
+        // Integer para que List.contains() funcione en los checks de alcance.
+        List<?> teatrosClaim = jwt.getClaim("teatroIds");
+        List<Integer> teatros = teatrosClaim == null ? List.of() : teatrosClaim.stream()
+                .filter(java.util.Objects::nonNull)
+                .map(valor -> ((Number) valor).intValue())
+                .toList();
+        return new UsuarioPrincipal(cedula, null, null, tipo, teatros);
     }
 
     // !SECTION

@@ -35,6 +35,29 @@ public class JwtServicioTest {
     }
 
     @Test
+    public void reconstruyeTeatroIdsComoInteger() {
+        JwtServicio servicio = new JwtServicio(SECRETO, 15, 7, "unicine");
+        UsuarioPrincipal principal = new UsuarioPrincipal(1557000000, "teatro@test.com", null,
+                TipoUsuario.ADMINISTRADOR_TEATRO, List.of(5));
+
+        UsuarioPrincipal reconstruido = servicio.principalDesde(
+                servicio.validar(servicio.emitirAcceso(principal)));
+
+        Assertions.assertEquals(List.of(5), reconstruido.getTeatroIds());
+        Assertions.assertTrue(reconstruido.getTeatroIds().contains(5));
+    }
+
+    @Test
+    public void tokensEmitidosEnElMismoSegundoSonDistintos() {
+        JwtServicio servicio = new JwtServicio(SECRETO, 15, 7, "unicine");
+
+        String primero = servicio.emitirAcceso(principalCliente());
+        String segundo = servicio.emitirAcceso(principalCliente());
+
+        Assertions.assertNotEquals(primero, segundo);
+    }
+
+    @Test
     public void firmaDistintaSeRechaza() {
         JwtServicio emisor = new JwtServicio(SECRETO, 15, 7, "unicine");
         JwtServicio otro = new JwtServicio("FEDCBA9876543210FEDCBA9876543210", 15, 7, "unicine");
