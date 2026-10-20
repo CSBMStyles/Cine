@@ -176,7 +176,7 @@ class HorarioControllerTest {
     @Test
     void actualizarTeatroAjeno403() throws Exception {
         when(horarioServicio.obtener(5)).thenReturn(Optional.of(
-                HorarioResponse.builder().codigo(5).salaCodigo(1).build()));
+                HorarioResponse.builder().codigo(5).salaCodigo(1).teatroCodigo(1).build()));
 
         UsuarioPrincipal ajeno = new UsuarioPrincipal(
                 3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(99));
@@ -193,9 +193,9 @@ class HorarioControllerTest {
     @Test
     void actualizarPropio200() throws Exception {
         when(horarioServicio.obtener(5)).thenReturn(Optional.of(
-                HorarioResponse.builder().codigo(5).salaCodigo(1).build()));
+                HorarioResponse.builder().codigo(5).salaCodigo(1).teatroCodigo(1).build()));
         when(horarioServicio.actualizar(any())).thenReturn(
-                HorarioResponse.builder().codigo(5).salaCodigo(1).build());
+                HorarioResponse.builder().codigo(5).salaCodigo(1).teatroCodigo(1).build());
 
         UsuarioPrincipal propio = new UsuarioPrincipal(
                 3001, "teatro@test.com", "hash", TipoUsuario.ADMINISTRADOR_TEATRO, List.of(1));
@@ -213,9 +213,9 @@ class HorarioControllerTest {
     @Test
     void actualizarAdmin200() throws Exception {
         when(horarioServicio.obtener(5)).thenReturn(Optional.of(
-                HorarioResponse.builder().codigo(5).salaCodigo(1).build()));
+                HorarioResponse.builder().codigo(5).salaCodigo(1).teatroCodigo(1).build()));
         when(horarioServicio.actualizar(any())).thenReturn(
-                HorarioResponse.builder().codigo(5).salaCodigo(1).build());
+                HorarioResponse.builder().codigo(5).salaCodigo(1).teatroCodigo(1).build());
 
         MvcResult result = mockMvc.perform(put("/api/horarios/5")
                         .with(user(principalAdmin()))

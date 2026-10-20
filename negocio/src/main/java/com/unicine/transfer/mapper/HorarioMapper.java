@@ -16,6 +16,7 @@ import java.util.List;
 public interface HorarioMapper {
 
     @Mapping(target = "salaCodigo", source = "funcion.sala.codigo")
+    @Mapping(target = "teatroCodigo", source = "funcion.sala.teatro.codigo")
     HorarioResponse toResponse(Horario horario);
 
     List<HorarioResponse> toResponseList(List<Horario> horarios);

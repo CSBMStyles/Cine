@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
  *
  * Incluido:
  * - {@code codigo}, {@code fechaInicio}, {@code fechaFin}.
- * - {@code salaCodigo} derivado de la funcion asociada, para validar alcance por teatro.
+ * - {@code salaCodigo} y {@code teatroCodigo} derivados de la funcion asociada,
+ *   para validar el alcance por teatro.
  *
  * Excluido:
  * - Funcion asociada para evitar ciclos.
@@ -34,4 +35,6 @@ public class HorarioResponse {
     private LocalDateTime fechaFin;
 
     private Integer salaCodigo;
+
+    private Integer teatroCodigo;
 }

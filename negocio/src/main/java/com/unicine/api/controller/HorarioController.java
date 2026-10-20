@@ -82,7 +82,7 @@ public class HorarioController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         var existente = horarioServicio.obtener(codigo);
-        if (existente.isPresent() && fueraDeAlcance(principal, existente.get().getSalaCodigo())) {
+        if (existente.isPresent() && fueraDeAlcance(principal, existente.get().getTeatroCodigo())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         request.setCodigo(codigo);
