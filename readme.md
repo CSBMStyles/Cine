@@ -9,7 +9,7 @@ Es una aplicación web desarrollada con **Spring Boot** que ofrece una plataform
 
 ## Resumen del Proyecto
 
-**UniCine** es un backend REST construido con Spring Boot 3.3.4 y Java 21. El módulo principal (`negocio`) implementa toda la lógica de negocio de una cadena de cines nacional, cubriendo:
+**UniCine** es un backend REST construido con Spring Boot 3.5.15 y Java 21. El módulo principal (`negocio`) implementa toda la lógica de negocio de una cadena de cines nacional, cubriendo:
 
 - Gestión de **películas**, **funciones** y **carteleras**
 - Administración de **teatros**, **salas** y **distribución de sillas**
